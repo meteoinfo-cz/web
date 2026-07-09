@@ -5,7 +5,8 @@
 <meta name="seznam-wmt" content="MJSxoUABEnAZFjswvy4JZjy6yms6sC35" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MeteoInfo.cz - Živá předpověď</title>
+        <title>Předpověď počasí, meteoradar online a srážky | MeteoInfo.cz</title>
+    <meta name="description" content="Aktuální předpověď počasí, meteoradar online, srážky a teploty pro města. Sledujte vývoj počasí na MeteoInfo.cz.">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
@@ -156,27 +157,33 @@
 </head>
 <body>
     <div class="container">
-        <header>
-            <div class="header-left">
-                <span id="live-time" style="font-size: 1.3rem; font-weight: bold; letter-spacing: 0.5px;"></span>
-                <div style="font-size: 0.85rem; color: var(--text-muted); display: flex; align-items: center; margin-bottom: 5px;">
-                    <span id="live-date"></span>
-                    <button class="o-webu-btn" onclick="document.getElementById('author-modal').classList.add('active')">O webu</button>
-                    <span style="color: var(--text-muted); font-size: 0.85rem; margin-left: 5px;">|</span>
-                    <button class="o-webu-btn" onclick="document.getElementById('updates-modal').classList.add('active')">Aktualizace</button>
-                </div>
-            </div>
-            
-            <h1 class="header-center-title">MeteoInfo.cz</h1>
-            
-            <div class="header-right">
-                <button class="header-btn" onclick="document.getElementById('radar-modal').classList.add('active')">🛰️ Meteoradar</button>
-                <button id="moon-trigger-btn" class="header-btn" onclick="document.getElementById('moon-modal').classList.add('active')">🌙 Měsíc: 🌗</button>
-                <button id="theme-button" class="header-btn" onclick="toggleTheme()" style="font-size: 1.1rem; padding: 4px 10px;">🌙</button>
-            </div>
-        </header>
+         <header style="display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; background: var(--bg-header); border-radius: 12px; position: relative;">
 
-        <div class="grid-top">
+        
+        <!-- LEVÁ STRANA: Čas, datum a systémová tlačítka -->
+        <div class="header-left" style="display: flex; align-items: center; gap: 8px;">
+            <span id="live-time" style="font-size: 1.3rem; font-weight: bold; letter-spacing: 0.5px; color: #fff;">13:57:13</span>
+            <div style="font-size: 0.85rem; color: var(--text-muted); display: flex; align-items: center; gap: 5px;">
+                <span id="live-date">9. 7. 2026</span>
+                <span>|</span>
+                <button class="o-webu-btn" onclick="document.getElementById('author-modal').classList.add('active')">O webu</button>
+                <span>|</span>
+                <button class="o-webu-btn" onclick="document.getElementById('updates-modal').classList.add('active')">Aktualizace</button>
+            </div>
+        </div>
+
+        <!-- STŘED: Původní nápis s neviditelným textem pro Google -->
+        <h1 class="header-center-title" style="margin: 0; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);">MeteoInfo.cz</h1>
+        <h2 style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0;">Aktuální předpověď počasí, meteoradar, srážky a teploty pro města online</h2>
+
+        <!-- PRAVÁ STRANA: Krabičky natvrdo vpravo (přesně tam, kde je chceš) -->
+        <div style="display: flex; gap: 8px; align-items: center;">
+            <button class="header-btn" onclick="document.getElementById('radar-modal').classList.add('active')">☄️ Meteoradar</button>
+            <button id="moon-trigger-btn" class="header-btn" onclick="document.getElementById('moon-modal').classList.add('active')">🌙 Měsíc: 🌓</button>
+            <button id="theme-button" class="header-btn" onclick="toggleTheme()" style="font-size: 1.1rem; padding: 4px 10px;">🌙</button>
+        </div>
+
+    </header>        <div class="grid-top">
             <div class="card" style="gap: 15px;">
                 <div style="text-align: center; position: relative;">
                     <h2 id="mesto-hlavni-nazev" style="margin: 0 0 5px 0; font-size: 1.4rem; font-weight: bold; display: inline-block;">---</h2>
@@ -571,45 +578,45 @@
         }
 
         function aktAsist(t) {
-            const h = document.getElementById('asistent-hlaska');
-            document.getElementById('asistent-stupne').innerText = `METEO ASISTENT PRO MĚSTO (${mName}):`;
-            let textDoporuceni = "Příjemné počasí.";
-            
-            if (t <= -20) textDoporuceni = "Pozor, extrémní mráz pod -20°C! Vycházejte jen v nouzi.";
-            else if (t >= -19 && t <= -15) textDoporuceni = "Venku je extrémní zima, nedoporučujeme dlouhý pobyt wenku, hrozí omrzliny.";
-            else if (t >= -14 && t <= -10) textDoporuceni = "Venku je velká zima, pořádně se oblečte, hrozí prochladnutí.";
-            else if (t >= -9 && t <= -5) textDoporuceni = "Začíná přituhovat, nutná zimní čepice and rukavice pro delší pobyt.";
-            else if (t >= -4 && t <= 0) textDoporuceni = "Nutná zimní bunda, čepice a popřípadě i rukavice.";
-            else if (t >= 1 && t <= 5) textDoporuceni = "Nemrzne, rukavice nutné nejsou, čepice je dobrovolná, zimní bunda se hodí.";
-            else if (t >= 6 && t <= 10) textDoporuceni = "Příjemné teploty pro lidi, kterým je více zima, doporučujeme softshellovou bundu.";
-            else if (t >= 11 && t <= 15) textDoporuceni = "Jarní teploty, doporučujeme letní bundu nebo mikinu.";
-            else if (t >= 16 && t <= 20) textDoporuceni = "Stále svěží teploty, pro většinu lidí už na krátké tričko a kraťasy.";
-            else if (t >= 21 && t <= 25) textDoporuceni = "Letní teploty, vhodné vzít krátké tričko a kraťasy. Slunce začíná pálit.";
-            else if (t >= 26 && t <= 30) textDoporuceni = "Letní až tropické teploty, vezměte jen kraťasy a tričko, UV index bývá silný.";
-            else if (t >= 31 && t <= 35) textDoporuceni = "Tropické až supertropické teploty, opalovací krém je nutný! Nezdržujte se na slunci.";
-            else if (t >= 36) textDoporuceni = "Extrémní neúnosná vedra nad 36°C! Nevycházejte na přímé slunce, hrozí úpal.";
-            h.innerHTML = textDoporuceni;
-        }
+    const h = document.getElementById('asistent-hlaska');
+    document.getElementById('asistent-stupne').innerText = `METEO ASISTENT PRO MĚSTO (${mName}):`;
+    let textDoporuceni = "Aktuální předpověď počasí a doporučení.";
 
+    if (t <= -20) textDoporuceni = "Pozor, extrémní mráz pod -20°C! Aktuální počasí doporučuje vycházet jen v nouzi.";
+    else if (t >= -19 && t <= -15) textDoporuceni = "Venku je extrémní zima. Sledujte meteoradar a omezte dlouhý pobyt venku, hrozí omrzliny.";
+    else if (t >= -14 && t <= -10) textDoporuceni = "Venku je velká zima, předpověď počasí radí pořádně se obléct, hrozí prochladnutí.";
+    else if (t >= -9 && t <= -5) textDoporuceni = "Začíná přituhovat. Dnešní počasí vyžaduje zimní čepici a rukavice pro delší pobyt.";
+    else if (t >= -4 && t <= 0) textDoporuceni = "Nutná zimní bunda, čepice a popřípadě i rukavice. Sledujte náš meteoradar online.";
+    else if (t >= 1 && t <= 5) textDoporuceni = "Předpověď hlásí jarní teploty, ale nemrzne. Rukavice nutné nejsou, čepice je dobrovolná, zimní bunda se hodí.";
+    else if (t >= 6 && t <= 10) textDoporuceni = "Příjemné počasí. Pro lidi, kterým je více zima, předpověď doporučuje softshellovou bundu.";
+    else if (t >= 11 && t <= 15) textDoporuceni = "Jarní teploty, pro aktuální počasí doporučujeme jarní bundu nebo mikinu.";
+    else if (t >= 16 && t <= 20) textDoporuceni = "Stále svěží teploty, dnešní předpověď počasí dovoluje pro většinu lidí už krátké tričko a kraťasy.";
+    else if (t >= 21 && t <= 25) textDoporuceni = "Letní počasí, vhodné vzít krátké tričko a kraťasy. Slunce začíná pálit.";
+    else if (t >= 26 && t <= 30) textDoporuceni = "Letní až tropické počasí, vezměte jen kraťasy a tričko, UV index bývá silný, sledujte meteoradar, pokud hrozí bouřkové meteorologické jevy";
+    else if (t >= 31 && t <= 35) textDoporuceni = "Tropické až supertropické teploty. Předpověď počasí radí opalovací krém! Nezdržujte se na slunci!";
+    else if (t >= 36) textDoporuceni = "Extrémní neúnosná vedra! Předpověď doporučuje nevycházet na přímé slunce, hrozí úpal. Pokud je to nutné vycházet, rozhodně nezapoměňte opalovací krém!";
+    h.innerHTML = textDoporuceni;
+}
         function aktualizujPsiIndex(t) {
-            const box = document.getElementById('psi-box');
-            const hlaska = document.getElementById('psi-hlaska');
-            document.getElementById('psi-stupne').innerText = `PSÍ INDEX PRO MĚSTO (${mName}):`;
-            let text = ""; let barva = "";
-            if (t < -15) { text = "Pod -15 °C: Venčení pouze na nezbytnou potřebu."; barva = "#7f1d1d"; }
-            else if (t >= -15 && t <= -10) { text = "-10 °C až -15 °C: Venčení zkraťte na maximum 15 minut."; barva = "#ef4444"; }
-            else if (t >= -9 && t <= -4) { text = "-4 °C až -9 °C: Nebezpečné pro malá plemena bez oblečku."; barva = "#f97316"; }
-            else if (t >= -3 && t <= -1) { text = "-1 °C až -3 °C: Naháči už potřebují funkční obleček."; barva = "#eab308"; }
-            else if (t >= 0 && t <= 10) { text = "0 °C až 10 °C: Ideální teplota pro psí aktivitu a běh."; barva = "#065f46"; }
-            else if (t >= 11 && t <= 19) { text = "11 °C až 19 °C: Ideální počasí na dlouhé procházky."; barva = "#10b981"; }
-            else if (t >= 20 && t <= 23) { text = "20 °C až 23 °C: Pozor u starších nebo nemocných psů."; barva = "#eab308"; }
-            else if (t >= 24 && t <= 28) { text = "24 °C až 28 °C: Omezte náročný trénink, hrozí přehřátí."; barva = "#f97316"; }
-            else if (t >= 29 && t <= 31) { text = "29 °C až 31 °C: Riziko přehřátí, venčení pouze ve stínu."; barva = "#ef4444"; }
-            else { text = "Nad 32 °C: Hrozí okamžitý úpal a kolaps! Tlapky pálí o asfalt."; barva = "#7f1d1d"; }
-            hlaska.innerHTML = text;
-            box.style.borderLeft = `4px solid ${barva}`;
-        }
+    const box = document.getElementById('psi-box');
+    const hlaska = document.getElementById('psi-hlaska');
+    document.getElementById('psi-stupne').innerText = `PSÍ INDEX PRO MĚSTO (${mName}):`;
+    let text = ""; let barva = "";
 
+    if (t < -15) { text = "Pod -15 °C: Extrémní počasí. Venčení psů zkraťte pouze na nezbytnou potřebu."; barva = "#7f1d1d"; }
+    else if (t >= -15 && t <= -10) { text = "-10 °C až -15 °C: Mrazivé počasí. Venčení zkraťte na maximálně 15 minut."; barva = "#ef4444"; }
+    else if (t >= -9 && t <= -4) { text = "-4 °C až -9 °C: Nebezpečné počasí pro malá plemena psů bez oblečku."; barva = "#f97316"; }
+    else if (t >= -3 && t <= -1) { text = "-1 °C až -3 °C: Zimní počasí, naháči už potřebují pro venčení funkční obleček."; barva = "#eab308"; }
+    else if (t >= 0 && t <= 10) { text = "0 °C až 10 °C: Ideální počasí pro psí aktivitu, běh a dlouhé procházky."; barva = "#065f46"; }
+    else if (t >= 11 && t <= 19) { text = "11 °C až 19 °C: Skvělé počasí na dlouhé procházky a bezpečné venčení psů."; barva = "#10b981"; }
+    else if (t >= 20 && t <= 23) { text = "20 °C až 23 °C: Pozor u starších nebo nemocných psů při venčení na přímém slunci."; barva = "#eab308"; }
+    else if (t >= 24 && t <= 28) { text = "24 °C až 28 °C: Začíná být teplo. Omezte náročný trénink psů, hrozí rychlé přehřátí."; barva = "#f97316"; }
+    else if (t >= 29 && t <= 31) { text = "29 °C až 31 °C: Riziko přehřátí psa, hlavně na asfaltu. Bezpečné venčení směřujte pouze do stínu na trávu."; barva = "#ef4444"; }
+    else { text = "Nad 32 °C: Extrémní vedro! Hrozí okamžitý úpal, při nejhorším kolaps psa. Tlapky pálí o horký asfalt. Rychle vyvenčte pouze ve stínu!"; barva = "#7f1d1d"; }
+    
+    hlaska.innerHTML = text;
+    box.style.borderLeft = `4px solid ${barva}`;
+}
         function aktualizujFaziMesice() {
             const trg = document.getElementById('moon-trigger-btn');
             const rows = document.getElementById('moon-forecast-rows');
