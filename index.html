@@ -162,7 +162,7 @@
         
         <!-- LEVÁ STRANA: Čas, datum a systémová tlačítka -->
         <div class="header-left" style="display: flex; align-items: center; gap: 8px;">
-            <span id="live-time" style="font-size: 1.3rem; font-weight: bold; letter-spacing: 0.5px; color: #fff;">13:57:13</span>
+            <span id="live-time" style="font-size: 1.3rem; font-weight: bold; letter-spacing: 0.5px; color: var(--text-main);">13:57:13</span>
             <div style="font-size: 0.85rem; color: var(--text-muted); display: flex; align-items: center; gap: 5px;">
                 <span id="live-date">9. 7. 2026</span>
                 <span>|</span>
@@ -185,7 +185,108 @@
 
     </header>        <div class="grid-top">
             <div class="card" style="gap: 15px;">
-                <div style="text-align: center; position: relative;">
+    <!-- ======================================================= -->
+    <!-- FINÁLNÍ A STABLE NAŠEPTÁVAČ MĚST WITH AUTOMATIC PRAHA    -->
+    <!-- ======================================================= -->
+    <div style="position: relative; width: 100%; margin-bottom: 10px; box-sizing: border-box;">
+        <input type="text" id="main-search" placeholder="🔍 Napiš město a vyber ze seznamu..." style="width: 100%; padding: 12px 15px; border: 2px solid var(--border-color); border-radius: 8px; background: var(--bg-color); color: var(--text-main); font-size: 16px; box-sizing: border-box; outline: none; transition: border-color 0.2s;">
+        
+        <!-- Plovoucí tabulka s výsledky vyhledávání -->
+        <div id="main-suggestions" style="position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-card); border: 2px solid var(--border-color); border-radius: 8px; max-height: 250px; overflow-y: auto; z-index: 9999; display: none; margin-top: 5px; box-shadow: 0 8px 16px rgba(0,0,0,0.2); box-sizing: border-box;"></div>
+    </div>
+
+    <script>
+    (function() {
+      // --- 1. KONTROLA PŘI STARTU STRÁNKY / STISKNUTÍ F5 ---
+      const savedUserCity = localStorage.getItem('user_permanently_saved_home');
+      
+      // Pokud uživatel vybral město přes vyhledávač v této relaci
+      if (sessionStorage.getItem('search_city_active') === 'true') {
+        // Počkáme na načtení HTML a čtvereček natvrdo odškrtneme
+        window.addEventListener('DOMContentLoaded', () => {
+          const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
+          if (chkBox) chkBox.checked = false;
+          sessionStorage.removeItem('search_city_active'); // Smažeme dočasný stav pro příští F5
+        });
+      } 
+      // Pokud uživatel nemá trvale uložený domov, podstrčíme mu Prahu se zaškrtnutým políčkem
+      else if (savedUserCity !== 'true') {
+        localStorage.setItem('defaultCityName', 'Praha');
+        localStorage.setItem('defaultCityLat', '50.08');
+        localStorage.setItem('defaultCityLon', '14.42');
+        localStorage.setItem('defaultCityTemp', '22');
+        
+        // Aktualizace proměnných pro tvůj hlavní skript
+        mName = "Praha"; lat = 50.08; lon = 14.42; sTemp = 22;
+        
+        // Počkáme na načtení HTML a čtvereček natvrdo zaškrtneme
+        window.addEventListener('DOMContentLoaded', () => {
+          const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
+          if (chkBox) chkBox.checked = true;
+        });
+      }
+
+      // --- 2. SLEDOVÁNÍ ZMĚNY CHECKBOXU PRO TRVALÉ ULOŽENÍ VÝCHOZÍHO MĚSTA ---
+      window.addEventListener('DOMContentLoaded', () => {
+        const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
+        if (chkBox) {
+          chkBox.addEventListener('change', function() {
+            if (this.checked) {
+              // Pokud uživatel čtvereček zaškrtne sám, zablokujeme automatický návrat k Praze při F5
+              localStorage.setItem('user_permanently_saved_home', 'true');
+            } else {
+              // Pokud ho odškrtne, web se při F5 vrátí k Praze
+              localStorage.removeItem('user_permanently_saved_home');
+            }
+          });
+        }
+
+        // --- 3. LOGIKA SAMOTNÉHO VYHLEDÁVÁNÍ MĚST ---
+        const mainSearch = document.getElementById('main-search');
+        const mainSuggestions = document.getElementById('main-suggestions');
+        if (!mainSearch || !mainSuggestions) return;
+
+        mainSearch.addEventListener('input', function(e) {
+          const text = e.target.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+          mainSuggestions.innerHTML = '';
+          if (text.length === 0) { mainSuggestions.style.display = 'none'; return; }
+          
+          const nalezenaMesta = mm.filter(m => m.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").startsWith(text));
+          if (nalezenaMesta.length > 0) {
+            mainSuggestions.style.display = 'block';
+            nalezenaMesta.forEach(mesta => {
+              const div = document.createElement('div'); div.innerText = mesta.n;
+              div.style.padding = '12px 15px'; div.style.cursor = 'pointer'; div.style.borderBottom = '1px solid var(--border-inner)'; div.style.color = 'var(--text-main)'; div.style.fontSize = '15px';
+              div.addEventListener('mouseenter', () => div.style.background = 'var(--border-color)');
+              div.addEventListener('mouseleave', () => div.style.background = 'transparent');
+              
+              // KLIKNUTÍ NA MĚSTO V SEZNAMU VYHLEDÁVAČE
+              div.addEventListener('click', () => {
+                // Aktivujeme režim vyhledaného města (odškrtne checkbox po reloadu)
+                sessionStorage.setItem('search_city_active', 'true');
+                
+                // Zapíšeme hodnoty vybraného města do paměti
+                localStorage.setItem('defaultCityName', mesta.n);
+                localStorage.setItem('defaultCityLat', mesta.la.toString());
+                localStorage.setItem('defaultCityLon', mesta.lo.toString());
+                localStorage.setItem('defaultCityTemp', mesta.t.toString());
+
+                mainSearch.value = '';
+                mainSuggestions.style.display = 'none';
+                
+                // Restartujeme stránku pro 100% načtení čistých dat z API
+                location.reload();
+              });
+              mainSuggestions.appendChild(div);
+            });
+          } else { mainSuggestions.style.display = 'none'; }
+        });
+
+        document.addEventListener('click', function(e) { if (e.target !== mainSearch && e.target !== mainSuggestions) mainSuggestions.style.display = 'none'; });
+      });
+    })();
+    </script>
+                 <div style="text-align: center; position: relative;">
                     <h2 id="mesto-hlavni-nazev" style="margin: 0 0 5px 0; font-size: 1.4rem; font-weight: bold; display: inline-block;">---</h2>
                     <div id="teplota-aktualni" style="font-size: 3.5rem; font-weight: bold; margin: 5px 0; line-height: 1;">---°C</div>
                     <div id="teplota-pocitova" style="font-size: 0.9rem; color: var(--text-muted);">Pocitová teplota: ---°C</div>
@@ -193,7 +294,7 @@
                         <label style="cursor: pointer; user-select: none;">
                             <input type="checkbox" id="set-default-city-chk"> Nastavit jako výchozí
                         </label>
-                        <span style="color: var(--text-accent); cursor: pointer; text-decoration: underline; font-size: 0.9rem; font-weight: bold;" onclick="document.getElementById('m-modal').classList.add('active')">Vyber město</span>
+                        
                     </div>
                 </div>
 
@@ -314,7 +415,7 @@
         <div class="modal-box">
             <h3 style="margin-top: 0; color: var(--text-accent);">O webu MeteoInfo.cz</h3>
             <p style="font-size: 0.95rem; line-height: 1.6; color: var(--text-main); text-align: left; margin-bottom: 0;">
-                Tato webová stránka byla založena 28. 6. 2026 uživatelem Tadeas, který je také přítomen na meteorologickém portálu In-počasí. Můžete zde najít kolem 200 měst a informace o počasí v každém z nich, nebo třeba i meteo asistenta či psí index. Lze si také měnit tmavý a světlý motiv stránky.
+                Tato webová stránka byla založena 28. 6. 2026 uživatelem Tadeas, který je také přítomen na meteorologickém portálu In-počasí. Můžete zde najít kolem 300 měst a informace o počasí v každém z nich, nebo třeba i meteo asistenta či psí index. Lze si také měnit tmavý a světlý motiv stránky.
             </p>
             <button class="close-btn" onclick="document.getElementById('author-modal').classList.remove('active')">Zavřít okno</button>
         </div>
@@ -323,20 +424,29 @@
     <div id="updates-modal" class="modal-overlay">
         <div class="modal-box">
             <h3 style="margin-top: 0; color: var(--text-accent);">Aktualizace webu</h3>
-            <p style="font-size: 0.95rem; line-height: 1.6; color: var(--text-main); text-align: left; margin-bottom: 0;">
-                Tento web bude pravidelně procházet několika aktualizacemi, které pomohou náš web vylepšit a rozšířit.
-            </p>
-            <button class="close-btn" onclick="document.getElementById('updates-modal').classList.remove('active')">Zavřít okno</button>
+            <p style="font-size: 0.95rem; line-height: 1.6; color: var(--text-main); text-align: left; margin-bottom: 20px;">
+    Tento web bude pravidelně procházet několika aktualizacemi, které pomohou náš web vylepšit a rozšířit.
+</p>
+
+<div style="text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-accent); margin-bottom: 25px; box-sizing: border-box;">
+    <span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 11. 7. 2026</span>
+    <p style="margin: 0; color: var(--text-main); font-size: 15px; line-height: 1.4;">Přidán vyhledávač měst, přidáno 100 měst, změna drobných věcí, opravené malé chyby.</p>
+</div>
+
+<button class="close-btn" onclick="document.getElementById('updates-modal').classList.remove('active')">Zavřít okno</button>
+
         </div>
     </div>
 
     <script>
         const mm = [
             {n:"Aš",la:50.22,lo:12.18,t:19},{n:"Benešov",la:49.78,lo:14.68,t:22},{n:"Beroun",la:49.96,lo:14.07,t:22},{n:"Bílina",la:50.54,lo:13.77,t:21},{n:"Blansko",la:49.36,lo:16.64,t:22},{n:"Bohumín",la:49.90,lo:18.35,t:22},{n:"Brandýs nad Labem",la:50.18,lo:14.66,t:23},{n:"Brno",la:49.19,lo:16.61,t:23},{n:"Brumov-Bylnice",la:49.07,lo:18.02,t:21},{n:"Bruntál",la:49.99,lo:17.46,t:21},{n:"Břeclav",la:48.75,lo:16.88,t:23},{n:"Březová",la:50.14,lo:12.64,t:19},{n:"Čachtice",la:48.71,lo:17.84,t:22},{n:"Čáslav",la:49.91,lo:15.39,t:22},{n:"Čelákovice",la:50.16,lo:14.75,t:23},{n:"Čerčany",la:49.85,lo:14.70,t:22},{n:"Česká Lípa",la:50.68,lo:14.53,t:22},{n:"Česká Třebová",la:49.90,lo:16.44,t:21},{n:"České Budějovice",la:48.97,lo:14.47,t:22},{n:"Český Brod",la:50.07,lo:14.86,t:23},{n:"Český Těšín",la:49.74,lo:18.60,t:22},{n:"Děčín",la:50.77,lo:14.21,t:22},{n:"Dobříš",la:49.78,lo:14.17,t:21},{n:"Doksy",la:50.56,lo:14.65,t:22},{n:"Domažlice",la:49.44,lo:12.92,t:21},{n:"Duchcov",la:50.60,lo:13.74,t:21},{n:"Dvůr Králové nad Labem",la:50.43,lo:15.81,t:21},{n:"Frýdek-Místek",la:49.68,lo:18.34,t:22},{n:"Frýdlant",la:50.92,lo:15.07,t:21},{n:"Havířov",la:49.77,lo:18.43,t:22},{n:"Havlíčkův Brod",la:49.60,lo:15.58,t:21},{n:"Hlinsko",la:49.76,lo:15.90,t:21},{n:"Hlučín",la:49.89,lo:18.19,t:22},{n:"Hodonín",la:48.85,lo:17.13,t:23},{n:"Holešov",la:49.33,lo:17.57,t:22},{n:"Holice",la:50.06,lo:15.98,t:22},{n:"Horažďovice",la:49.32,lo:13.70,t:21},{n:"Hořice",la:50.36,lo:15.63,t:22},{n:"Hořovice",la:49.83,lo:13.90,t:21},{n:"Hradec Králové",la:50.21,lo:15.83,t:22},{n:"Hrádek nad Nisou",la:50.85,lo:14.84,t:21},{n:"Hranice",la:49.54,lo:17.75,t:22},{n:"Humpolec",la:49.54,lo:15.35,t:21},{n:"Chabařovice",la:50.67,lo:13.94,t:21},{n:"Cheb",la:50.07,lo:12.37,t:19},{n:"Chodov",la:50.24,lo:12.74,t:19},{n:"Chomutov",la:50.46,lo:13.41,t:21},{n:"Chotěboř",la:49.72,lo:15.67,t:21},{n:"Chrudim",la:49.95,lo:15.79,t:22},{n:"Ivančice",la:49.10,lo:16.37,t:23},{n:"Jablonec nad Nisou",la:50.72,lo:15.17,t:20},{n:"Jablunkov",la:49.57,lo:18.76,t:21},{n:"Jaroměř",la:50.35,lo:15.91,t:22},{n:"Jeseník",la:50.05,lo:17.20,t:20},{n:"Jičín",la:50.43,lo:15.35,t:22},{n:"Jihlava",la:49.39,lo:15.59,t:21},{n:"Jilemnice",la:50.61,lo:15.50,t:20},{n:"Jindřichův Hradec",la:49.14,lo:15.00,t:21},{n:"Kadaň",la:50.37,lo:13.27,t:21},{n:"Karlovy Vary",la:50.22,lo:12.87,t:19},{n:"Karviná",la:49.85,lo:18.54,t:22},{n:"Kladno",la:50.14,lo:14.10,t:22},{n:"Klatovy",la:49.39,lo:13.29,t:21},{n:"Klášterec nad Ohří",la:50.38,lo:13.17,t:21},{n:"Kolín",la:50.02,lo:15.20,t:23},{n:"Kopřivnice",la:49.59,lo:18.14,t:22},{n:"Kostelec nad Orlicí",la:50.12,lo:16.21,t:22},{n:"Králíky",la:50.08,lo:16.76,t:19},{n:"Kralupy nad Vltavou",la:50.24,lo:14.31,t:22},{n:"Kravaře",la:49.93,lo:18.02,t:22},{n:"Krnov",la:50.08,lo:17.70,t:21},{n:"Kroměříž",la:49.29,lo:17.39,t:23},{n:"Kuřim",la:49.30,lo:16.53,t:23},{n:"Kutná Hora",la:49.94,lo:15.26,t:22},{n:"Kyjov",la:49.01,lo:17.12,t:23},{n:"Lanškroun",la:49.91,lo:16.61,t:21},{n:"Ledeč nad Sázavou",la:49.68,lo:15.27,t:21},{n:"Letohrad",la:50.03,lo:16.50,t:21},{n:"Letovice",la:49.54,lo:16.57,t:22},{n:"Liberec",la:50.76,lo:15.05,t:21},{n:"Lipník nad Bečvou",la:49.52,lo:17.58,t:22},{n:"Litoměřice",la:50.53,lo:14.13,t:22},{n:"Litomyšl",la:49.87,lo:16.31,t:21},{n:"Litvínov",la:50.59,lo:13.61,t:21},{n:"Lomnice nad Popelkou",la:50.53,lo:15.37,t:21},{n:"Louny",la:50.35,lo:13.79,t:22},{n:"Lovosice",la:50.51,lo:14.05,t:22},{n:"Luhačovice",la:49.10,lo:17.75,t:21},{n:"Lysá nad Labem",la:50.20,lo:14.84,t:23},{n:"Mariánské Lázně",la:49.96,lo:12.70,t:18},{n:"Mělník",la:50.35,lo:14.47,t:22},{n:"Mikulov",la:48.80,lo:16.63,t:23},{n:"Milevsko",la:49.45,lo:14.36,t:21},{n:"Mimoň",la:50.66,lo:14.72,t:22},{n:"Mladá Boleslav",la:50.41,lo:14.90,t:22},{n:"Mnichovo Hradiště",la:50.52,lo:14.97,t:22},{n:"Mníšek pod Brdy",la:49.86,lo:14.26,t:21},{n:"Mohelnice",la:49.77,lo:16.92,t:22},{n:"Moravská Třebová",la:49.75,lo:16.66,t:21},{n:"Moravské Budějovice",la:49.05,lo:15.81,t:21},{n:"Most",la:50.50,lo:13.64,t:21},{n:"Náchod",la:50.41,lo:16.16,t:21},{n:"Náměšť nad Oslavou",la:49.20,lo:16.16,t:22},{n:"Neratovice",la:50.26,lo:14.51,t:23},{n:"Nová Paka",la:50.49,lo:15.51,t:21},{n:"Nové Město na Moravě",la:49.56,lo:16.07,t:20},{n:"Nové Město nad Metují",la:50.34,lo:16.15,t:21},{n:"Nové Strašecí",la:50.15,lo:13.90,t:21},{n:"Nový Bor",la:50.75,lo:14.55,t:21},{n:"Nový Jičín",la:49.59,lo:18.01,t:21},{n:"Nymburk",la:50.18,lo:15.04,t:23},{n:"Nýrsko",la:49.29,lo:13.14,t:21},{n:"Odry",la:49.66,lo:17.83,t:21},{n:"Olomouc",la:49.59,lo:17.25,t:22},{n:"Opava",la:49.93,lo:17.90,t:22},{n:"Orlová",la:49.84,lo:18.42,t:22},{n:"Ostrava",la:49.83,lo:18.28,t:22},{n:"Ostrov",la:50.30,lo:12.93,t:19},{n:"Otrokovice",la:49.20,lo:17.53,t:22},{n:"Pacov",la:49.47,lo:15.00,t:21},{n:"Pardubice",la:50.03,lo:15.77,t:22},{n:"Pelhřimov",la:49.43,lo:15.22,t:21},{n:"Písek",la:49.30,lo:14.14,t:21},{n:"Plzeň",la:49.74,lo:13.37,t:21},{n:"Poděbrady",la:50.14,lo:15.11,t:23},{n:"Pohořelice",la:48.98,lo:16.52,t:23},{n:"Polanka nad Odrou",la:49.78,lo:18.17,t:22},{n:"Polička",la:49.71,lo:16.26,t:21},{n:"Polná",la:49.48,lo:15.71,t:21},{n:"Praha",la:50.08,lo:14.42,t:22},{n:"Prachatice",la:49.01,lo:13.99,t:20},{n:"Prostějov",la:49.47,lo:17.11,t:22},{n:"Přerov",la:49.45,lo:17.45,t:22},{n:"Přeštice",la:49.57,lo:13.32,t:21},{n:"Příbram",la:49.68,lo:13.99,t:21},{n:"Rakovník",la:50.10,lo:13.73,t:21},{n:"Rokycany",la:49.74,lo:13.59,t:21},{n:"Roudnice nad Labem",la:50.42,lo:14.25,t:22},{n:"Rožnov pod Radhoštěm",la:49.45,lo:18.14,t:21},{n:"Rumburk",la:50.95,lo:14.55,t:21},{n:"Rychnov nad Kněžnou",la:50.16,lo:16.27,t:21},{n:"Říčany",la:49.99,lo:14.65,t:22},{n:"Semily",la:50.60,lo:15.33,t:21},{n:"Slaný",la:50.23,lo:14.08,t:22},{n:"Slavičín",la:49.08,lo:17.87,t:21},{n:"Slavkov u Brna",la:49.15,lo:16.87,t:23},{n:"Soběslav",la:49.26,lo:14.71,t:22},{n:"Sokolov",la:50.18,lo:12.64,t:19},{n:"Strakonice",la:49.26,lo:13.90,t:21},{n:"Sušice",la:49.23,lo:13.52,t:21},{n:"Světlá nad Sázavou",la:49.66,lo:15.40,t:21},{n:"Svitavy",la:49.75,lo:16.47,t:21},
-            {n:"Šternberk",la:49.73,lo:17.30,t:22},{n:"Štětí",la:50.45,lo:14.32,t:22},{n:"Šumperk",la:49.96,lo:16.97,t:21},{n:"Tábor",la:49.41,lo:14.65,t:21},{n:"Tachov",la:49.79,lo:12.63,t:20},{n:"Tanvald",la:50.73,lo:15.30,t:20},{n:"Teplice",la:50.64,lo:13.82,t:21},{n:"Tišnov",la:49.34,lo:16.42,t:22},{n:"Trutnov",la:50.56,lo:15.91,t:21},{n:"Třebíč",la:49.21,lo:15.87,t:21},{n:"Třeboň",la:49.00,lo:14.76,t:22},{n:"Třinec",la:49.67,lo:18.67,t:22},{n:"Turnov",la:50.58,lo:15.15,t:21},{n:"Týn nad Vltavou",la:49.22,lo:14.42,t:22},{n:"Uherské Hradiště",la:49.06,lo:17.46,t:23},{n:"Uherský Brod",la:49.02,lo:17.65,t:23},{n:"Uničov",la:49.77,lo:17.12,t:22},{n:"Ústí nad Labem",la:50.66,lo:14.03,t:22},{n:"Ústí nad Orlicí",la:49.97,lo:16.39,t:21},{n:"Valašské Meziříčí",la:49.47,lo:17.97,t:21},{n:"Vamberk",la:50.11,lo:16.28,t:21},{n:"Varnsdorf",la:50.91,lo:15.61,t:21},{n:"Velké Meziříčí",la:49.35,lo:16.01,t:21},{n:"Veselí nad Moravou",la:48.95,lo:17.37,t:23},{n:"Veselí nad Moravou",la:48.95,lo:17.37,t:23},{n:"Vimperk",la:49.05,lo:13.77,t:19},{n:"Vítkov",la:49.77,lo:17.75,t:21},{n:"Vlašim",la:49.70,lo:14.90,t:21},{n:"Vodňany",la:49.14,lo:14.17,t:21},{n:"Volary",la:48.91,lo:13.89,t:18},{n:"Volfartice",la:50.73,lo:14.45,t:21},{n:"Vsetín",la:49.33,lo:17.99,t:21},{n:"Vysoké Mýto",la:49.95,lo:16.16,t:22},{n:"Vyškov",la:49.27,lo:16.99,t:23},{n:"Zábřeh",la:49.88,lo:16.87,t:21},{n:"Zlín",la:49.22,lo:17.66,t:22},{n:"Znojmo",la:48.85,lo:16.05,t:23},{n:"Žamberk",la:50.08,lo:16.46,t:21},{n:"Žatec",la:50.32,lo:13.54,t:22},{n:"Žďár nad Sázavou",la:49.56,lo:15.93,t:20},{n:"Železný Brod",la:50.64,lo:15.25,t:21}
-        ];
+            {n:"Šternberk",la:49.73,lo:17.30,t:22},{n:"Štětí",la:50.45,lo:14.32,t:22},{n:"Šumperk",la:49.96,lo:16.97,t:21},{n:"Tábor",la:49.41,lo:14.65,t:21},{n:"Tachov",la:49.79,lo:12.63,t:20},{n:"Tanvald",la:50.73,lo:15.30,t:20},{n:"Teplice",la:50.64,lo:13.82,t:21},{n:"Tišnov",la:49.34,lo:16.42,t:22},{n:"Trutnov",la:50.56,lo:15.91,t:21},{n:"Třebíč",la:49.21,lo:15.87,t:21},{n:"Třeboň",la:49.00,lo:14.76,t:22},{n:"Třinec",la:49.67,lo:18.67,t:22},{n:"Turnov",la:50.58,lo:15.15,t:21},{n:"Týn nad Vltavou",la:49.22,lo:14.42,t:22},{n:"Uherské Hradiště",la:49.06,lo:17.46,t:23},{n:"Uherský Brod",la:49.02,lo:17.65,t:23},{n:"Uničov",la:49.77,lo:17.12,t:22},{n:"Ústí nad Labem",la:50.66,lo:14.03,t:22},{n:"Ústí nad Orlicí",la:49.97,lo:16.39,t:21},{n:"Valašské Meziříčí",la:49.47,lo:17.97,t:21},{n:"Vamberk",la:50.11,lo:16.28,t:21},{n:"Varnsdorf",la:50.91,lo:15.61,t:21},{n:"Velké Meziříčí",la:49.35,lo:16.01,t:21},{n:"Veselí nad Moravou",la:48.95,lo:17.37,t:23},{n:"Veselí nad Moravou",la:48.95,lo:17.37,t:23},{n:"Vimperk",la:49.05,lo:13.77,t:19},{n:"Vítkov",la:49.77,lo:17.75,t:21},{n:"Vlašim",la:49.70,lo:14.90,t:21},{n:"Vodňany",la:49.14,lo:14.17,t:21},{n:"Volary",la:48.91,lo:13.89,t:18},{n:"Volfartice",la:50.73,lo:14.45,t:21},{n:"Vsetín",la:49.33,lo:17.99,t:21},{n:"Vysoké Mýto",la:49.95,lo:16.16,t:22},{n:"Vyškov",la:49.27,lo:16.99,t:23},{n:"Zábřeh",la:49.88,lo:16.87,t:21},{n:"Zlín",la:49.22,lo:17.66,t:22},{n:"Znojmo",la:48.85,lo:16.05,t:23},{n:"Žamberk",la:50.08,lo:16.46,t:21},{n:"Žatec",la:50.32,lo:13.54,t:22},{n:"Žďár nad Sázavou",la:49.56,lo:15.93,t:20},{n:"Železný Brod",la:50.64,lo:15.25,t:21},{n:"Adamov", la: 49.30, lo: 16.65, t: 22},{n:"Abertamy", la: 50.36, lo: 12.82, t: 18},{n:"Andělská Hora", la: 50.06, lo: 17.38, t: 20},{n:"Andělská Hora (střední)", la: 50.20, lo: 12.96, t: 21},{n:"Anežská", la: 49.95, lo: 14.15, t: 22},{n:"Anenská Studánka", la: 49.85, lo: 16.60, t: 20},{n:"Archlebov", la: 49.03, lo: 17.00, t: 23},{n:"Arnoštov", la: 50.49, lo: 15.58, t: 21},{n:"Bakov nad Jizerou", la: 50.48, lo: 14.94, t: 22},{n:"Bavorov", la: 49.12, lo: 14.07, t: 21},{n:"Bechyně", la: 49.30, lo: 14.47, t: 21},{n:"Bělá pod Bezdězem", la: 50.50, lo: 14.80, t: 22},{n:"Bělčice", la: 49.50, lo: 13.87, t: 21},{n:"Benátky nad Jizerou", la: 50.29, lo: 14.82, t: 23},{n:"Bezdružice", la: 49.91, lo: 12.97, t: 20},{n:"Blovice", la: 49.58, lo: 13.54, t: 21},{n:"Blšany", la: 50.21, lo: 13.47, t: 22},{n:"Brtnice", la: 49.30, lo: 15.67, t: 21},{n:"Brtníky", la: 50.94, lo: 14.44, t: 21},{n:"Brumov", la: 49.09, lo: 18.02, t: 21},{n:"Břidličná", la: 49.91, lo: 17.37, t: 20},{n:"Bystřice", la: 49.64, lo: 18.72, t: 22},{n:"Bystřice nad Pernštejnem", la: 49.52, lo: 16.26, t: 21},{n:"Bystřice pod Hostýnem", la: 49.40, lo: 17.67, t: 22},{n:"Bzenec", la: 48.97, lo: 17.27, t: 23},{n:"Cvikov", la: 50.77, lo: 14.63, t: 21},{n:"Černošín", la: 49.81, lo: 12.87, t: 20},{n:"Černošice", la: 49.95, lo: 14.32, t: 22},{n:"Červená Voda", la: 50.03, lo: 16.74, t: 19},{n:"Česká Kamenice", la: 50.79, lo: 14.42, t: 21},{n:"Český Dub", la: 50.66, lo: 14.99, t: 21},{n:"Český Krumlov", la: 48.81, lo: 14.31, t: 21},{n:"Dačice", la: 49.08, lo: 15.43, t: 21},{n:"Desná", la: 50.76, lo: 15.30, t: 20},{n:"Dubá", la: 50.54, lo: 14.54, t: 22},{n:"Dubňany", la: 48.92, lo: 17.09, t: 23},{n:"Františkovy Lázně", la: 50.12, lo: 12.35, t: 19},{n:"Frenštát pod Radhoštěm", la: 49.54, lo: 18.21, t: 21},{n:"Fryšták", la: 49.28, lo: 17.68, t: 22},{n:"Fulnek", la: 49.71, lo: 17.90, t: 21},{n:"Golčův Jeníkov", la: 49.81, lo: 15.47, t: 21},{n:"Habartov", la: 50.18, lo: 12.55, t: 19},{n:"Hanušovice", la: 50.07, lo: 16.93, t: 20},{n:"Harachov", la: 50.77, lo: 15.43, t: 18},{n:"Heřmanův Městec", la: 49.94, lo: 15.67, t: 22},{n:"Hluboká nad Vltavou", la: 49.05, lo: 14.43, t: 22},{n:"Hluk", la: 48.98, lo: 17.52, t: 23},{n:"Hnanice", la: 48.80, lo: 15.98, t: 23},{n:"Hodonín u Kunštátu", la: 49.50, lo: 16.42, t: 21},{n:"Horní Blatná", la: 50.39, lo: 12.77, t: 17},{n:"Horní Bříza", la: 49.84, lo: 13.36, t: 21},{n:"Horní Cerekev", la: 49.32, lo: 15.32, t: 21},{n:"Horní Jelení", la: 50.04, lo: 16.08, t: 22},{n:"Horní Jiřetín", la: 50.57, lo: 13.54, t: 21},{n:"Horní Planá", la: 48.76, lo: 14.03, t: 19},{n:"Horní Slavkov", la: 50.13, lo: 12.80, t: 19},{n:"Hostivice", la: 50.08, lo: 14.25, t: 22},{n:"Hostomice", la: 49.80, lo: 14.04, t: 21},{n:"Hostouň", la: 49.56, lo: 12.77, t: 20},{n:"Hrádek", la: 49.71, lo: 13.65, t: 21},{n:"Hrob", la: 50.65, lo: 13.72, t: 21},{n:"Hrotovice", la: 49.10, lo: 15.99, t: 21},{n:"Hroznětín", la: 50.31, lo: 12.87, t: 19},{n:"Hrušovany nad Jevišovkou", la: 48.83, lo: 16.40, t: 23},{n:"Husinec", la: 49.03, lo: 13.93, t: 20},{n:"Chrast", la: 49.90, lo: 15.93, t: 21},{n:"Chrastava", la: 50.81, lo: 15.00, t: 21},{n:"Chropyně", la: 49.35, lo: 17.36, t: 23},{n:"Chvaletice", la: 50.03, lo: 15.41, t: 22},{n:"Chýnov", la: 49.40, lo: 14.81, t: 21},{n:"Jablonecké Paseky", la: 50.73, lo: 15.19, t: 20},{n:"Jáchymov", la: 50.36, lo: 12.93, t: 18},{n:"Janov", la: 50.24, lo: 17.57, t: 21},{n:"Janovice nad Úhlavou", la: 49.34, lo: 13.21, t: 21},{n:"Jánské Lázně", la: 50.63, lo: 15.77, t: 19},{n:"Jarošov nad Nežárkou", la: 49.19, lo: 15.06, t: 21},{n:"Javorník", la: 50.39, lo: 17.00, t: 21},{n:"Jemnice", la: 49.01, lo: 15.57, t: 21},{n:"Jesenice", la: 50.09, lo: 13.47, t: 21},{n:"Jevíčko", la: 49.63, lo: 16.71, t: 22},{n:"Jevišovice", la: 48.99, lo: 15.98, t: 22},{n:"Jílové", la: 50.76, lo: 14.10, t: 21},{n:"Jílové u Prahy", la: 49.89, lo: 14.49, t: 21},{n:"Jiřetín pod Bukovou", la: 50.75, lo: 15.26, t: 20},{n:"Jiříkov", la: 51.02, lo: 14.57, t: 21},{n:"Jistebnice", la: 49.48, lo: 14.52, t: 21},{n:"Kamenice nad Lipou", la: 49.30, lo: 15.07, t: 20},{n:"Kamenický Šenov", la: 50.77, lo: 14.47, t: 21},{n:"Kaplice", la: 48.73, lo: 14.49, t: 21},{n:"Kardašova Řečice", la: 49.18, lo: 14.85, t: 22},{n:"Kelč", la: 49.47, lo: 17.81, t: 22},{n:"Klobouky u Brna", la: 48.99, lo: 16.86, t: 23},{n:"Kdyně", la: 49.39, lo: 13.03, t: 21},{n:"Kojetín", la: 49.35, lo: 17.30, t: 23},{n:"Konečná", la: 49.42, lo: 18.52, t: 20},{n:"Konice", la: 49.59, lo: 16.88, t: 21},{n:"Koryčany", la: 49.10, lo: 17.16, t: 22},{n:"Kosmonosy", la: 50.44, lo: 14.92, t: 22},{n:"Košťany", la: 50.65, lo: 13.75, t: 21},{n:"Kostelec na Hané", la: 49.51, lo: 17.05, t: 22},{n:"Kostelec nad Černými lesy", la: 49.99, lo: 14.85, t: 22},{n:"Kostelec nad Labem", la: 50.22, lo: 14.58, t: 23},{n:"Kovářská", la: 50.43, lo: 13.05, t: 18},{n:"Kozlov", la: 49.60, lo: 17.54, t: 21},{n:"Krásná Lípa", la: 50.91, lo: 14.50, t: 21},{n:"Krásno", la: 50.11, lo: 12.78, t: 19}
+];
+        
 
         let mName = localStorage.getItem('defaultCityName') || "Olomouc";
+        mm.sort((a, b) => a.n.localeCompare(b.n, 'cs'));
         let lat = parseFloat(localStorage.getItem('defaultCityLat')) || 49.59;
         let lon = parseFloat(localStorage.getItem('defaultCityLon')) || 17.25;
         let sTemp = parseFloat(localStorage.getItem('defaultCityTemp')) || 22;
@@ -431,21 +541,31 @@
             updateWindDisplay();
         });
 
-        let currentTheme = 'dark';
-        function toggleTheme() {
-            const btn = document.getElementById('theme-button');
-            if (currentTheme === 'dark') {
-                document.documentElement.setAttribute('data-theme', 'light');
-                btn.innerText = "☀️";
-                currentTheme = "light";
-            } else {
-                document.documentElement.removeAttribute('data-theme');
-                btn.innerText = "🌙";
-                currentTheme = "dark";
-            }
-            if (myChart) { createOrUpdateChart(); }
-        }
+        // Načteme uložený motiv z paměti, a pokud tam žádný není, nastavíme jako výchozí SVĚTLÝ ('light')
+let currentTheme = localStorage.getItem('theme') || 'light';
+document.documentElement.setAttribute('data-theme', currentTheme);
 
+// Pomocná kontrola při startu webu, aby ikonka na tlačítku odpovídala motivu
+window.addEventListener('DOMContentLoaded', () => {
+    const btn = document.getElementById('theme-button');
+    if (btn) btn.innerText = currentTheme === 'dark' ? "🌙" : "☀️";
+});
+
+function toggleTheme() {
+    const btn = document.getElementById('theme-button');
+    if (currentTheme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        if (btn) btn.innerText = "☀️";
+        currentTheme = "light";
+        localStorage.setItem('theme', 'light'); // Uložíme světlý motiv do paměti
+    } else {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        if (btn) btn.innerText = "🌙";
+        currentTheme = "dark";
+        localStorage.setItem('theme', 'dark'); // Uložíme tmavý motiv do paměti
+    }
+    if (myChart) { createOrUpdateChart(); }
+}
         let globHourlyTimes = [], globHourlyTemp = [], globHourlyRain = [], globHourlyWind = [];
         let myChart = null;
         let activeChartType = 'temp';
