@@ -28,8 +28,8 @@
             --bg-body: #f1f5f9;
             --bg-card: #ffffff;
             --bg-header: #cbd5e1;
-            --bg-inner: #e2e8f0;
-            --bg-inner-forecast: #f1f5f9;
+            --bg-inner: #cbd5e1;
+            --bg-inner-forecast: #94a3b8;
             --text-main: #0f172a;
             --text-muted: #64748b;
             --text-accent: #0284c7;
@@ -153,6 +153,94 @@
     width: 100% !important;
   }
 }
+/* Kontejner pod přepínačem měsíce */
+.follow-container-header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 8px;
+    position: absolute;
+    right: 15px;
+    top: 45px;
+}
+
+/* Tlačítko Sledovat web */
+.btn-follow {
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.btn-follow:hover { 
+    background-color: #1d4ed8; 
+}
+
+/* Aktivní stav po kliknutí (Sledováno) */
+.btn-follow.active {
+    background-color: #1e293b;
+    color: #94a3b8;
+    border: 1px solid #334155;
+}
+
+/* Čtvereček [i] */
+.info-tooltip-container {
+    position: relative;
+    display: inline-block;
+}
+
+.info-box {
+    width: 20px;
+    height: 20px;
+    background-color: #1e293b;
+    color: #94a3b8;
+    border: 1px solid #334155;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: monospace;
+    font-weight: bold;
+    font-size: 12px;
+    cursor: help;
+    transition: all 0.2s;
+}
+.info-box:hover {
+    background-color: #334155;
+    color: white;
+}
+
+/* Vyskakovací bublina s textem */
+.tooltip-text {
+    visibility: hidden;
+    width: 240px;
+    background-color: #0f172a;
+    color: #e2e8f0;
+    text-align: left;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 12px;
+    line-height: 1.4;
+    position: absolute;
+    top: 125%;
+    right: 0;
+    z-index: 99;
+    opacity: 0;
+    transition: opacity 0.3s;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
+}
+
+/* Zobrazení bubliny při najetí myší na [i] */
+.info-tooltip-container:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
     </style>
 </head>
 <body>
@@ -181,6 +269,16 @@
             <button class="header-btn" onclick="document.getElementById('radar-modal').classList.add('active')">☄️ Meteoradar</button>
             <button id="moon-trigger-btn" class="header-btn" onclick="document.getElementById('moon-modal').classList.add('active')">🌙 Měsíc: 🌓</button>
             <button id="theme-button" class="header-btn" onclick="toggleTheme()" style="font-size: 1.1rem; padding: 4px 10px;">🌙</button>
+<div class="follow-container-header">
+    <button id="follow-btn" class="btn-follow">🔔 Sledovat web</button>
+    <div class="info-tooltip-container">
+        <div class="info-box">i</div>
+        <div class="tooltip-text">
+            Po kliknutí na tlačítko Sledovat Vám začnou přicházet zprávy o mimořádných situacích (např. silné bouřky, vichřice). Sledování můžete kdykoliv zrušit.
+        </div>
+    </div>
+</div>
+
         </div>
 
     </header>        <div class="grid-top">
@@ -415,7 +513,7 @@
         <div class="modal-box">
             <h3 style="margin-top: 0; color: var(--text-accent);">O webu MeteoInfo.cz</h3>
             <p style="font-size: 0.95rem; line-height: 1.6; color: var(--text-main); text-align: left; margin-bottom: 0;">
-                Tato webová stránka byla založena 28. 6. 2026 uživatelem Tadeas, který je také přítomen na meteorologickém portálu In-počasí. Můžete zde najít kolem 300 měst a informace o počasí v každém z nich, nebo třeba i meteo asistenta či psí index. Lze si také měnit tmavý a světlý motiv stránky.
+                Tato webová stránka byla založena 28. 6. 2026 uživatelem Tadeas, který je také přítomen na meteorologickém portálu In-počasí. Můžete zde najít všechna města v ČR (610 měst), a informace o počasí v každém z nich, nebo třeba i meteo asistenta či psí index. Lze si také měnit tmavý a světlý motiv stránky.
             </p>
             <button class="close-btn" onclick="document.getElementById('author-modal').classList.remove('active')">Zavřít okno</button>
         </div>
@@ -432,6 +530,11 @@
     <span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 11. 7. 2026</span>
     <p style="margin: 0; color: var(--text-main); font-size: 15px; line-height: 1.4;">Přidán vyhledávač měst, přidáno 100 měst, změna drobných věcí, opravené malé chyby.</p>
 </div>
+<div style="text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-accent); margin-bottom: 25px; box-sizing: border-box;">
+    <span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 13. 7. 2026</span>
+    <p style="margin: 0; color: var(--text-main); font-size: 15px; line-height: 1.4;">Přidán zbytek měst z celé ČR, přidáno push upozornění, opravené malé chyby.</p>
+</div>
+
 
 <button class="close-btn" onclick="document.getElementById('updates-modal').classList.remove('active')">Zavřít okno</button>
 
@@ -440,8 +543,616 @@
 
     <script>
         const mm = [
-            {n:"Aš",la:50.22,lo:12.18,t:19},{n:"Benešov",la:49.78,lo:14.68,t:22},{n:"Beroun",la:49.96,lo:14.07,t:22},{n:"Bílina",la:50.54,lo:13.77,t:21},{n:"Blansko",la:49.36,lo:16.64,t:22},{n:"Bohumín",la:49.90,lo:18.35,t:22},{n:"Brandýs nad Labem",la:50.18,lo:14.66,t:23},{n:"Brno",la:49.19,lo:16.61,t:23},{n:"Brumov-Bylnice",la:49.07,lo:18.02,t:21},{n:"Bruntál",la:49.99,lo:17.46,t:21},{n:"Břeclav",la:48.75,lo:16.88,t:23},{n:"Březová",la:50.14,lo:12.64,t:19},{n:"Čachtice",la:48.71,lo:17.84,t:22},{n:"Čáslav",la:49.91,lo:15.39,t:22},{n:"Čelákovice",la:50.16,lo:14.75,t:23},{n:"Čerčany",la:49.85,lo:14.70,t:22},{n:"Česká Lípa",la:50.68,lo:14.53,t:22},{n:"Česká Třebová",la:49.90,lo:16.44,t:21},{n:"České Budějovice",la:48.97,lo:14.47,t:22},{n:"Český Brod",la:50.07,lo:14.86,t:23},{n:"Český Těšín",la:49.74,lo:18.60,t:22},{n:"Děčín",la:50.77,lo:14.21,t:22},{n:"Dobříš",la:49.78,lo:14.17,t:21},{n:"Doksy",la:50.56,lo:14.65,t:22},{n:"Domažlice",la:49.44,lo:12.92,t:21},{n:"Duchcov",la:50.60,lo:13.74,t:21},{n:"Dvůr Králové nad Labem",la:50.43,lo:15.81,t:21},{n:"Frýdek-Místek",la:49.68,lo:18.34,t:22},{n:"Frýdlant",la:50.92,lo:15.07,t:21},{n:"Havířov",la:49.77,lo:18.43,t:22},{n:"Havlíčkův Brod",la:49.60,lo:15.58,t:21},{n:"Hlinsko",la:49.76,lo:15.90,t:21},{n:"Hlučín",la:49.89,lo:18.19,t:22},{n:"Hodonín",la:48.85,lo:17.13,t:23},{n:"Holešov",la:49.33,lo:17.57,t:22},{n:"Holice",la:50.06,lo:15.98,t:22},{n:"Horažďovice",la:49.32,lo:13.70,t:21},{n:"Hořice",la:50.36,lo:15.63,t:22},{n:"Hořovice",la:49.83,lo:13.90,t:21},{n:"Hradec Králové",la:50.21,lo:15.83,t:22},{n:"Hrádek nad Nisou",la:50.85,lo:14.84,t:21},{n:"Hranice",la:49.54,lo:17.75,t:22},{n:"Humpolec",la:49.54,lo:15.35,t:21},{n:"Chabařovice",la:50.67,lo:13.94,t:21},{n:"Cheb",la:50.07,lo:12.37,t:19},{n:"Chodov",la:50.24,lo:12.74,t:19},{n:"Chomutov",la:50.46,lo:13.41,t:21},{n:"Chotěboř",la:49.72,lo:15.67,t:21},{n:"Chrudim",la:49.95,lo:15.79,t:22},{n:"Ivančice",la:49.10,lo:16.37,t:23},{n:"Jablonec nad Nisou",la:50.72,lo:15.17,t:20},{n:"Jablunkov",la:49.57,lo:18.76,t:21},{n:"Jaroměř",la:50.35,lo:15.91,t:22},{n:"Jeseník",la:50.05,lo:17.20,t:20},{n:"Jičín",la:50.43,lo:15.35,t:22},{n:"Jihlava",la:49.39,lo:15.59,t:21},{n:"Jilemnice",la:50.61,lo:15.50,t:20},{n:"Jindřichův Hradec",la:49.14,lo:15.00,t:21},{n:"Kadaň",la:50.37,lo:13.27,t:21},{n:"Karlovy Vary",la:50.22,lo:12.87,t:19},{n:"Karviná",la:49.85,lo:18.54,t:22},{n:"Kladno",la:50.14,lo:14.10,t:22},{n:"Klatovy",la:49.39,lo:13.29,t:21},{n:"Klášterec nad Ohří",la:50.38,lo:13.17,t:21},{n:"Kolín",la:50.02,lo:15.20,t:23},{n:"Kopřivnice",la:49.59,lo:18.14,t:22},{n:"Kostelec nad Orlicí",la:50.12,lo:16.21,t:22},{n:"Králíky",la:50.08,lo:16.76,t:19},{n:"Kralupy nad Vltavou",la:50.24,lo:14.31,t:22},{n:"Kravaře",la:49.93,lo:18.02,t:22},{n:"Krnov",la:50.08,lo:17.70,t:21},{n:"Kroměříž",la:49.29,lo:17.39,t:23},{n:"Kuřim",la:49.30,lo:16.53,t:23},{n:"Kutná Hora",la:49.94,lo:15.26,t:22},{n:"Kyjov",la:49.01,lo:17.12,t:23},{n:"Lanškroun",la:49.91,lo:16.61,t:21},{n:"Ledeč nad Sázavou",la:49.68,lo:15.27,t:21},{n:"Letohrad",la:50.03,lo:16.50,t:21},{n:"Letovice",la:49.54,lo:16.57,t:22},{n:"Liberec",la:50.76,lo:15.05,t:21},{n:"Lipník nad Bečvou",la:49.52,lo:17.58,t:22},{n:"Litoměřice",la:50.53,lo:14.13,t:22},{n:"Litomyšl",la:49.87,lo:16.31,t:21},{n:"Litvínov",la:50.59,lo:13.61,t:21},{n:"Lomnice nad Popelkou",la:50.53,lo:15.37,t:21},{n:"Louny",la:50.35,lo:13.79,t:22},{n:"Lovosice",la:50.51,lo:14.05,t:22},{n:"Luhačovice",la:49.10,lo:17.75,t:21},{n:"Lysá nad Labem",la:50.20,lo:14.84,t:23},{n:"Mariánské Lázně",la:49.96,lo:12.70,t:18},{n:"Mělník",la:50.35,lo:14.47,t:22},{n:"Mikulov",la:48.80,lo:16.63,t:23},{n:"Milevsko",la:49.45,lo:14.36,t:21},{n:"Mimoň",la:50.66,lo:14.72,t:22},{n:"Mladá Boleslav",la:50.41,lo:14.90,t:22},{n:"Mnichovo Hradiště",la:50.52,lo:14.97,t:22},{n:"Mníšek pod Brdy",la:49.86,lo:14.26,t:21},{n:"Mohelnice",la:49.77,lo:16.92,t:22},{n:"Moravská Třebová",la:49.75,lo:16.66,t:21},{n:"Moravské Budějovice",la:49.05,lo:15.81,t:21},{n:"Most",la:50.50,lo:13.64,t:21},{n:"Náchod",la:50.41,lo:16.16,t:21},{n:"Náměšť nad Oslavou",la:49.20,lo:16.16,t:22},{n:"Neratovice",la:50.26,lo:14.51,t:23},{n:"Nová Paka",la:50.49,lo:15.51,t:21},{n:"Nové Město na Moravě",la:49.56,lo:16.07,t:20},{n:"Nové Město nad Metují",la:50.34,lo:16.15,t:21},{n:"Nové Strašecí",la:50.15,lo:13.90,t:21},{n:"Nový Bor",la:50.75,lo:14.55,t:21},{n:"Nový Jičín",la:49.59,lo:18.01,t:21},{n:"Nymburk",la:50.18,lo:15.04,t:23},{n:"Nýrsko",la:49.29,lo:13.14,t:21},{n:"Odry",la:49.66,lo:17.83,t:21},{n:"Olomouc",la:49.59,lo:17.25,t:22},{n:"Opava",la:49.93,lo:17.90,t:22},{n:"Orlová",la:49.84,lo:18.42,t:22},{n:"Ostrava",la:49.83,lo:18.28,t:22},{n:"Ostrov",la:50.30,lo:12.93,t:19},{n:"Otrokovice",la:49.20,lo:17.53,t:22},{n:"Pacov",la:49.47,lo:15.00,t:21},{n:"Pardubice",la:50.03,lo:15.77,t:22},{n:"Pelhřimov",la:49.43,lo:15.22,t:21},{n:"Písek",la:49.30,lo:14.14,t:21},{n:"Plzeň",la:49.74,lo:13.37,t:21},{n:"Poděbrady",la:50.14,lo:15.11,t:23},{n:"Pohořelice",la:48.98,lo:16.52,t:23},{n:"Polanka nad Odrou",la:49.78,lo:18.17,t:22},{n:"Polička",la:49.71,lo:16.26,t:21},{n:"Polná",la:49.48,lo:15.71,t:21},{n:"Praha",la:50.08,lo:14.42,t:22},{n:"Prachatice",la:49.01,lo:13.99,t:20},{n:"Prostějov",la:49.47,lo:17.11,t:22},{n:"Přerov",la:49.45,lo:17.45,t:22},{n:"Přeštice",la:49.57,lo:13.32,t:21},{n:"Příbram",la:49.68,lo:13.99,t:21},{n:"Rakovník",la:50.10,lo:13.73,t:21},{n:"Rokycany",la:49.74,lo:13.59,t:21},{n:"Roudnice nad Labem",la:50.42,lo:14.25,t:22},{n:"Rožnov pod Radhoštěm",la:49.45,lo:18.14,t:21},{n:"Rumburk",la:50.95,lo:14.55,t:21},{n:"Rychnov nad Kněžnou",la:50.16,lo:16.27,t:21},{n:"Říčany",la:49.99,lo:14.65,t:22},{n:"Semily",la:50.60,lo:15.33,t:21},{n:"Slaný",la:50.23,lo:14.08,t:22},{n:"Slavičín",la:49.08,lo:17.87,t:21},{n:"Slavkov u Brna",la:49.15,lo:16.87,t:23},{n:"Soběslav",la:49.26,lo:14.71,t:22},{n:"Sokolov",la:50.18,lo:12.64,t:19},{n:"Strakonice",la:49.26,lo:13.90,t:21},{n:"Sušice",la:49.23,lo:13.52,t:21},{n:"Světlá nad Sázavou",la:49.66,lo:15.40,t:21},{n:"Svitavy",la:49.75,lo:16.47,t:21},
-            {n:"Šternberk",la:49.73,lo:17.30,t:22},{n:"Štětí",la:50.45,lo:14.32,t:22},{n:"Šumperk",la:49.96,lo:16.97,t:21},{n:"Tábor",la:49.41,lo:14.65,t:21},{n:"Tachov",la:49.79,lo:12.63,t:20},{n:"Tanvald",la:50.73,lo:15.30,t:20},{n:"Teplice",la:50.64,lo:13.82,t:21},{n:"Tišnov",la:49.34,lo:16.42,t:22},{n:"Trutnov",la:50.56,lo:15.91,t:21},{n:"Třebíč",la:49.21,lo:15.87,t:21},{n:"Třeboň",la:49.00,lo:14.76,t:22},{n:"Třinec",la:49.67,lo:18.67,t:22},{n:"Turnov",la:50.58,lo:15.15,t:21},{n:"Týn nad Vltavou",la:49.22,lo:14.42,t:22},{n:"Uherské Hradiště",la:49.06,lo:17.46,t:23},{n:"Uherský Brod",la:49.02,lo:17.65,t:23},{n:"Uničov",la:49.77,lo:17.12,t:22},{n:"Ústí nad Labem",la:50.66,lo:14.03,t:22},{n:"Ústí nad Orlicí",la:49.97,lo:16.39,t:21},{n:"Valašské Meziříčí",la:49.47,lo:17.97,t:21},{n:"Vamberk",la:50.11,lo:16.28,t:21},{n:"Varnsdorf",la:50.91,lo:15.61,t:21},{n:"Velké Meziříčí",la:49.35,lo:16.01,t:21},{n:"Veselí nad Moravou",la:48.95,lo:17.37,t:23},{n:"Veselí nad Moravou",la:48.95,lo:17.37,t:23},{n:"Vimperk",la:49.05,lo:13.77,t:19},{n:"Vítkov",la:49.77,lo:17.75,t:21},{n:"Vlašim",la:49.70,lo:14.90,t:21},{n:"Vodňany",la:49.14,lo:14.17,t:21},{n:"Volary",la:48.91,lo:13.89,t:18},{n:"Volfartice",la:50.73,lo:14.45,t:21},{n:"Vsetín",la:49.33,lo:17.99,t:21},{n:"Vysoké Mýto",la:49.95,lo:16.16,t:22},{n:"Vyškov",la:49.27,lo:16.99,t:23},{n:"Zábřeh",la:49.88,lo:16.87,t:21},{n:"Zlín",la:49.22,lo:17.66,t:22},{n:"Znojmo",la:48.85,lo:16.05,t:23},{n:"Žamberk",la:50.08,lo:16.46,t:21},{n:"Žatec",la:50.32,lo:13.54,t:22},{n:"Žďár nad Sázavou",la:49.56,lo:15.93,t:20},{n:"Železný Brod",la:50.64,lo:15.25,t:21},{n:"Adamov", la: 49.30, lo: 16.65, t: 22},{n:"Abertamy", la: 50.36, lo: 12.82, t: 18},{n:"Andělská Hora", la: 50.06, lo: 17.38, t: 20},{n:"Andělská Hora (střední)", la: 50.20, lo: 12.96, t: 21},{n:"Anežská", la: 49.95, lo: 14.15, t: 22},{n:"Anenská Studánka", la: 49.85, lo: 16.60, t: 20},{n:"Archlebov", la: 49.03, lo: 17.00, t: 23},{n:"Arnoštov", la: 50.49, lo: 15.58, t: 21},{n:"Bakov nad Jizerou", la: 50.48, lo: 14.94, t: 22},{n:"Bavorov", la: 49.12, lo: 14.07, t: 21},{n:"Bechyně", la: 49.30, lo: 14.47, t: 21},{n:"Bělá pod Bezdězem", la: 50.50, lo: 14.80, t: 22},{n:"Bělčice", la: 49.50, lo: 13.87, t: 21},{n:"Benátky nad Jizerou", la: 50.29, lo: 14.82, t: 23},{n:"Bezdružice", la: 49.91, lo: 12.97, t: 20},{n:"Blovice", la: 49.58, lo: 13.54, t: 21},{n:"Blšany", la: 50.21, lo: 13.47, t: 22},{n:"Brtnice", la: 49.30, lo: 15.67, t: 21},{n:"Brtníky", la: 50.94, lo: 14.44, t: 21},{n:"Brumov", la: 49.09, lo: 18.02, t: 21},{n:"Břidličná", la: 49.91, lo: 17.37, t: 20},{n:"Bystřice", la: 49.64, lo: 18.72, t: 22},{n:"Bystřice nad Pernštejnem", la: 49.52, lo: 16.26, t: 21},{n:"Bystřice pod Hostýnem", la: 49.40, lo: 17.67, t: 22},{n:"Bzenec", la: 48.97, lo: 17.27, t: 23},{n:"Cvikov", la: 50.77, lo: 14.63, t: 21},{n:"Černošín", la: 49.81, lo: 12.87, t: 20},{n:"Černošice", la: 49.95, lo: 14.32, t: 22},{n:"Červená Voda", la: 50.03, lo: 16.74, t: 19},{n:"Česká Kamenice", la: 50.79, lo: 14.42, t: 21},{n:"Český Dub", la: 50.66, lo: 14.99, t: 21},{n:"Český Krumlov", la: 48.81, lo: 14.31, t: 21},{n:"Dačice", la: 49.08, lo: 15.43, t: 21},{n:"Desná", la: 50.76, lo: 15.30, t: 20},{n:"Dubá", la: 50.54, lo: 14.54, t: 22},{n:"Dubňany", la: 48.92, lo: 17.09, t: 23},{n:"Františkovy Lázně", la: 50.12, lo: 12.35, t: 19},{n:"Frenštát pod Radhoštěm", la: 49.54, lo: 18.21, t: 21},{n:"Fryšták", la: 49.28, lo: 17.68, t: 22},{n:"Fulnek", la: 49.71, lo: 17.90, t: 21},{n:"Golčův Jeníkov", la: 49.81, lo: 15.47, t: 21},{n:"Habartov", la: 50.18, lo: 12.55, t: 19},{n:"Hanušovice", la: 50.07, lo: 16.93, t: 20},{n:"Harachov", la: 50.77, lo: 15.43, t: 18},{n:"Heřmanův Městec", la: 49.94, lo: 15.67, t: 22},{n:"Hluboká nad Vltavou", la: 49.05, lo: 14.43, t: 22},{n:"Hluk", la: 48.98, lo: 17.52, t: 23},{n:"Hnanice", la: 48.80, lo: 15.98, t: 23},{n:"Hodonín u Kunštátu", la: 49.50, lo: 16.42, t: 21},{n:"Horní Blatná", la: 50.39, lo: 12.77, t: 17},{n:"Horní Bříza", la: 49.84, lo: 13.36, t: 21},{n:"Horní Cerekev", la: 49.32, lo: 15.32, t: 21},{n:"Horní Jelení", la: 50.04, lo: 16.08, t: 22},{n:"Horní Jiřetín", la: 50.57, lo: 13.54, t: 21},{n:"Horní Planá", la: 48.76, lo: 14.03, t: 19},{n:"Horní Slavkov", la: 50.13, lo: 12.80, t: 19},{n:"Hostivice", la: 50.08, lo: 14.25, t: 22},{n:"Hostomice", la: 49.80, lo: 14.04, t: 21},{n:"Hostouň", la: 49.56, lo: 12.77, t: 20},{n:"Hrádek", la: 49.71, lo: 13.65, t: 21},{n:"Hrob", la: 50.65, lo: 13.72, t: 21},{n:"Hrotovice", la: 49.10, lo: 15.99, t: 21},{n:"Hroznětín", la: 50.31, lo: 12.87, t: 19},{n:"Hrušovany nad Jevišovkou", la: 48.83, lo: 16.40, t: 23},{n:"Husinec", la: 49.03, lo: 13.93, t: 20},{n:"Chrast", la: 49.90, lo: 15.93, t: 21},{n:"Chrastava", la: 50.81, lo: 15.00, t: 21},{n:"Chropyně", la: 49.35, lo: 17.36, t: 23},{n:"Chvaletice", la: 50.03, lo: 15.41, t: 22},{n:"Chýnov", la: 49.40, lo: 14.81, t: 21},{n:"Jablonecké Paseky", la: 50.73, lo: 15.19, t: 20},{n:"Jáchymov", la: 50.36, lo: 12.93, t: 18},{n:"Janov", la: 50.24, lo: 17.57, t: 21},{n:"Janovice nad Úhlavou", la: 49.34, lo: 13.21, t: 21},{n:"Jánské Lázně", la: 50.63, lo: 15.77, t: 19},{n:"Jarošov nad Nežárkou", la: 49.19, lo: 15.06, t: 21},{n:"Javorník", la: 50.39, lo: 17.00, t: 21},{n:"Jemnice", la: 49.01, lo: 15.57, t: 21},{n:"Jesenice", la: 50.09, lo: 13.47, t: 21},{n:"Jevíčko", la: 49.63, lo: 16.71, t: 22},{n:"Jevišovice", la: 48.99, lo: 15.98, t: 22},{n:"Jílové", la: 50.76, lo: 14.10, t: 21},{n:"Jílové u Prahy", la: 49.89, lo: 14.49, t: 21},{n:"Jiřetín pod Bukovou", la: 50.75, lo: 15.26, t: 20},{n:"Jiříkov", la: 51.02, lo: 14.57, t: 21},{n:"Jistebnice", la: 49.48, lo: 14.52, t: 21},{n:"Kamenice nad Lipou", la: 49.30, lo: 15.07, t: 20},{n:"Kamenický Šenov", la: 50.77, lo: 14.47, t: 21},{n:"Kaplice", la: 48.73, lo: 14.49, t: 21},{n:"Kardašova Řečice", la: 49.18, lo: 14.85, t: 22},{n:"Kelč", la: 49.47, lo: 17.81, t: 22},{n:"Klobouky u Brna", la: 48.99, lo: 16.86, t: 23},{n:"Kdyně", la: 49.39, lo: 13.03, t: 21},{n:"Kojetín", la: 49.35, lo: 17.30, t: 23},{n:"Konečná", la: 49.42, lo: 18.52, t: 20},{n:"Konice", la: 49.59, lo: 16.88, t: 21},{n:"Koryčany", la: 49.10, lo: 17.16, t: 22},{n:"Kosmonosy", la: 50.44, lo: 14.92, t: 22},{n:"Košťany", la: 50.65, lo: 13.75, t: 21},{n:"Kostelec na Hané", la: 49.51, lo: 17.05, t: 22},{n:"Kostelec nad Černými lesy", la: 49.99, lo: 14.85, t: 22},{n:"Kostelec nad Labem", la: 50.22, lo: 14.58, t: 23},{n:"Kovářská", la: 50.43, lo: 13.05, t: 18},{n:"Kozlov", la: 49.60, lo: 17.54, t: 21},{n:"Krásná Lípa", la: 50.91, lo: 14.50, t: 21},{n:"Krásno", la: 50.11, lo: 12.78, t: 19}
+{"n":"Abertamy", "la":50.37, "lo":12.82, "t":21},
+  {"n":"Adamov", "la":49.30, "lo":16.65, "t":21},
+  {"n":"Andělská Hora", "la":50.06, "lo":17.39, "t":21},
+  {"n":"Aš", "la":50.22, "lo":12.19, "t":21},
+  {"n":"Bakov nad Jizerou", "la":50.48, "lo":14.94, "t":21},
+  {"n":"Bavorov", "la":49.12, "lo":14.08, "t":21},
+  {"n":"Bečov nad Teplou", "la":50.08, "lo":12.84, "t":21},
+  {"n":"Bechyně", "la":49.29, "lo":14.47, "t":21},
+  {"n":"Bělá nad Radbuzou", "la":49.59, "lo":12.72, "t":21},
+  {"n":"Bělá pod Bezdězem", "la":50.50, "lo":14.80, "t":21},
+  {"n":"Bělčice", "la":49.50, "lo":13.88, "t":21},
+  {"n":"Benátky nad Jizerou", "la":50.29, "lo":14.82, "t":21},
+  {"n":"Benešov", "la":49.78, "lo":14.69, "t":21},
+  {"n":"Benešov nad Ploučnicí", "la":50.73, "lo":14.31, "t":21},
+  {"n":"Beroun", "la":49.96, "lo":14.07, "t":21},
+  {"n":"Bezdružice", "la":49.91, "lo":12.97, "t":21},
+  {"n":"Bílina", "la":50.55, "lo":13.78, "t":21},
+  {"n":"Bílovec", "la":49.76, "lo":18.01, "t":21},
+  {"n":"Blansko", "la":49.36, "lo":16.64, "t":21},
+  {"n":"Blatná", "la":49.42, "lo":13.88, "t":21},
+  {"n":"Blovice", "la":49.58, "lo":13.54, "t":21},
+  {"n":"Blšany", "la":50.21, "lo":13.47, "t":21},
+  {"n":"Bohumín", "la":49.90, "lo":18.35, "t":21},
+  {"n":"Bohušovice nad Ohří", "la":50.49, "lo":14.15, "t":21},
+  {"n":"Bochov", "la":50.15, "lo":13.05, "t":21},
+  {"n":"Bojkovice", "la":49.04, "lo":17.81, "t":21},
+  {"n":"Bor", "la":49.71, "lo":12.77, "t":21},
+  {"n":"Borohrádek", "la":50.10, "lo":16.09, "t":21},
+  {"n":"Borovany", "la":48.90, "lo":14.64, "t":21},
+  {"n":"Boskovice", "la":49.49, "lo":16.66, "t":21},
+  {"n":"Boží Dar", "la":50.41, "lo":12.92, "t":21},
+  {"n":"Brandýs nad Labem-Stará Boleslav", "la":50.19, "lo":14.66, "t":21},
+  {"n":"Brandýs nad Orlicí", "la":50.00, "lo":16.22, "t":21},
+  {"n":"Brno", "la":49.20, "lo":16.61, "t":21},
+  {"n":"Broumov", "la":50.59, "lo":16.33, "t":21},
+  {"n":"Brtnice", "la":49.30, "lo":15.67, "t":21},
+  {"n":"Brumov-Bylnice", "la":49.02, "lo":18.02, "t":21},
+  {"n":"Bruntál", "la":49.99, "lo":17.46, "t":21},
+  {"n":"Brušperk", "la":49.70, "lo":18.22, "t":21},
+  {"n":"Břeclav", "la":48.76, "lo":16.88, "t":21},
+  {"n":"Březnice", "la":49.56, "lo":13.95, "t":21},
+  {"n":"Březová", "la":50.14, "lo":12.65, "t":21},
+  {"n":"Březová nad Svitavou", "la":49.64, "lo":16.51, "t":21},
+  {"n":"Břidličná", "la":49.91, "lo":17.37, "t":21},
+  {"n":"Bučovice", "la":49.15, "lo":17.00, "t":21},
+  {"n":"Budišov nad Budišovkou", "la":49.79, "lo":17.62, "t":21},
+  {"n":"Budyně nad Ohří", "la":50.40, "lo":14.12, "t":21},
+  {"n":"Buštěhrad", "la":50.15, "lo":14.19, "t":21},
+  {"n":"Bystré", "la":49.63, "lo":16.35, "t":21},
+  {"n":"Bystřice", "la":49.73, "lo":14.67, "t":21},
+  {"n":"Bystřice nad Pernštejnem", "la":49.52, "lo":16.26, "t":21},
+  {"n":"Bystřice pod Hostýnem", "la":49.40, "lo":17.67, "t":21},
+  {"n":"Bzenec", "la":48.97, "lo":17.27, "t":21},
+  {"n":"Cvikov", "la":50.77, "lo":14.63, "t":21},
+  {"n":"Čáslav", "la":49.91, "lo":15.39, "t":21},
+  {"n":"Čelákovice", "la":50.16, "lo":14.75, "t":21},
+  {"n":"Černošice", "la":49.96, "lo":14.32, "t":21},
+  {"n":"Černošín", "la":49.81, "lo":12.87, "t":21},
+  {"n":"Černovice", "la":49.37, "lo":14.96, "t":21},
+  {"n":"Červená Řečice", "la":49.51, "lo":15.17, "t":21},
+  {"n":"Červený Kostelec", "la":50.48, "lo":16.09, "t":21},
+  {"n":"Česká Kamenice", "la":50.79, "lo":14.42, "t":21},
+  {"n":"Česká Lípa", "la":50.69, "lo":14.54, "t":21},
+  {"n":"Česká Skalice", "la":50.39, "lo":16.04, "t":21},
+  {"n":"Česká Třebová", "la":49.90, "lo":16.44, "t":21},
+  {"n":"České Budějovice", "la":48.97, "lo":14.47, "t":21},
+  {"n":"České Velenice", "la":48.77, "lo":14.96, "t":21},
+  {"n":"Český Brod", "la":50.07, "lo":14.86, "t":21},
+  {"n":"Český Dub", "la":50.66, "lo":14.99, "t":21},
+  {"n":"Český Krumlov", "la":48.81, "lo":14.31, "t":21},
+  {"n":"Český Těšín", "la":49.75, "lo":18.63, "t":21},
+  {"n":"Dačice", "la":49.08, "lo":15.43, "t":21},
+  {"n":"Dašice", "la":50.03, "lo":15.91, "t":21},
+  {"n":"Děčín", "la":50.78, "lo":14.21, "t":21},
+  {"n":"Desná", "la":50.76, "lo":15.30, "t":21},
+  {"n":"Deštná", "la":49.26, "lo":14.92, "t":21},
+  {"n":"Dobrovice", "la":50.37, "lo":14.96, "t":21},
+  {"n":"Dobruška", "la":50.29, "lo":16.16, "t":21},
+  {"n":"Dobřany", "la":49.66, "lo":13.29, "t":21},
+  {"n":"Dobřichovice", "la":49.93, "lo":14.27, "t":21},
+  {"n":"Dobříš", "la":49.78, "lo":14.17, "t":21},
+  {"n":"Doksy", "la":50.56, "lo":14.65, "t":21},
+  {"n":"Dolní Benešov", "la":49.92, "lo":18.11, "t":21},
+  {"n":"Dolní Bousov", "la":50.43, "lo":15.12, "t":21},
+  {"n":"Dolní Kounice", "la":49.07, "lo":16.47, "t":21},
+  {"n":"Dolní Poustevna", "la":51.00, "lo":14.28, "t":21},
+  {"n":"Domažlice", "la":49.44, "lo":12.93, "t":21},
+  {"n":"Dubá", "la":50.54, "lo":14.54, "t":21},
+  {"n":"Dubí", "la":50.68, "lo":13.79, "t":21},
+  {"n":"Dubňany", "la":48.92, "lo":17.09, "t":21},
+  {"n":"Duchcov", "la":50.60, "lo":13.74, "t":21},
+  {"n":"Dvůr Králové nad Labem", "la":50.43, "lo":15.81, "t":21},
+  {"n":"Františkovy Lázně", "la":50.12, "lo":12.35, "t":21},
+  {"n":"Frenštát pod Radhoštěm", "la":49.54, "lo":18.21, "t":21},
+  {"n":"Frýdek-Místek", "la":49.68, "lo":18.35, "t":21},
+  {"n":"Frýdlant", "la":50.92, "lo":15.08, "t":21},
+  {"n":"Frýdlant nad Ostravicí", "la":49.59, "lo":18.36, "t":21},
+  {"n":"Fryšták", "la":49.28, "lo":17.68, "t":21},
+  {"n":"Fulnek", "la":49.71, "lo":17.90, "t":21},
+  {"n":"Golčův Jeníkov", "la":49.81, "lo":15.47, "t":21},
+  {"n":"Habartov", "la":50.18, "lo":12.55, "t":21},
+  {"n":"Habry", "la":49.75, "lo":15.50, "t":21},
+  {"n":"Hanušovice", "la":50.07, "lo":16.94, "t":21},
+  {"n":"Harrachov", "la":50.77, "lo":15.43, "t":21},
+  {"n":"Hartmanice", "la":49.17, "lo":13.45, "t":21},
+  {"n":"Havířov", "la":49.78, "lo":18.44, "t":21},
+  {"n":"Havlíčkův Brod", "la":49.61, "lo":15.58, "t":21},
+  {"n":"Hejnice", "la":50.88, "lo":15.18, "t":21},
+  {"n":"Heřmanův Městec", "la":49.94, "lo":15.67, "t":21},
+  {"n":"Hlinsko", "la":49.76, "lo":15.91, "t":21},
+  {"n":"Hluboká nad Vltavou", "la":49.05, "lo":14.43, "t":21},
+  {"n":"Hluk", "la":48.98, "lo":17.52, "t":21},
+  {"n":"Hlučín", "la":49.89, "lo":18.19, "t":21},
+  {"n":"Hodkovice nad Mohelkou", "la":50.66, "lo":15.08, "t":21},
+  {"n":"Hodonín", "la":48.85, "lo":17.13, "t":21},
+  {"n":"Holešov", "la":49.33, "lo":17.58, "t":21},
+  {"n":"Holice", "la":50.07, "lo":15.99, "t":21},
+  {"n":"Holýšov", "la":49.59, "lo":13.10, "t":21},
+  {"n":"Hora Svaté Kateřiny", "la":50.61, "lo":13.44, "t":21},
+  {"n":"Horažďovice", "la":49.32, "lo":13.70, "t":21},
+  {"n":"Horní Benešov", "la":49.96, "lo":17.60, "t":21},
+  {"n":"Horní Blatná", "la":50.39, "lo":12.77, "t":21},
+  {"n":"Horní Bříza", "la":49.84, "lo":13.36, "t":21},
+  {"n":"Horní Cerekev", "la":49.32, "lo":15.33, "t":21},
+  {"n":"Horní Jelení", "la":50.04, "lo":16.08, "t":21},
+  {"n":"Horní Jiřetín", "la":50.57, "lo":13.54, "t":21},
+  {"n":"Horní Planá", "la":48.76, "lo":14.03, "t":21},
+  {"n":"Horní Slavkov", "la":50.13, "lo":12.80, "t":21},
+  {"n":"Horšovský Týn", "la":49.53, "lo":12.94, "t":21},
+  {"n":"Hořice", "la":50.36, "lo":15.63, "t":21},
+  {"n":"Hořovice", "la":49.84, "lo":13.90, "t":21},
+  {"n":"Hostinné", "la":50.54, "lo":15.72, "t":21},
+  {"n":"Hostivice", "la":50.08, "lo":14.25, "t":21},
+  {"n":"Hostomice", "la":49.82, "lo":14.04, "t":21},
+  {"n":"Hostouň", "la":49.56, "lo":12.77, "t":21},
+  {"n":"Hoštka", "la":50.48, "lo":14.33, "t":21},
+  {"n":"Hradec Králové", "la":50.21, "lo":15.83, "t":21},
+  {"n":"Hradec nad Moravicí", "la":49.87, "lo":17.87, "t":21},
+  {"n":"Hrádek", "la":49.71, "lo":13.65, "t":21},
+  {"n":"Hrádek nad Nisou", "la":50.85, "lo":14.84, "t":21},
+  {"n":"Hranice (okres Cheb)", "la":50.30, "lo":12.18, "t":21},
+  {"n":"Hranice (okres Přerov)", "la":49.55, "lo":17.73, "t":21},
+  {"n":"Hrob", "la":50.66, "lo":13.72, "t":21},
+  {"n":"Hrochův Týnec", "la":49.95, "lo":15.91, "t":21},
+  {"n":"Hronov", "la":50.48, "lo":16.18, "t":21},
+  {"n":"Hrotovice", "la":49.10, "lo":16.05, "t":21},
+  {"n":"Hroznětín", "la":50.31, "lo":12.87, "t":21},
+  {"n":"Hrušovany nad Jevišovkou", "la":48.83, "lo":16.40, "t":21},
+  {"n":"Hulín", "la":49.31, "lo":17.48, "t":21},
+  {"n":"Humpolec", "la":49.54, "lo":15.35, "t":21},
+  {"n":"Husinec", "la":49.05, "lo":13.93, "t":21},
+  {"n":"Hustopeče", "la":48.94, "lo":16.73, "t":21},
+  {"n":"Chabařovice", "la":50.67, "lo":13.94, "t":21},
+  {"n":"Cheb", "la":50.08, "lo":12.37, "t":21},
+  {"n":"Chlumec", "la":50.70, "lo":13.94, "t":21},
+  {"n":"Chlumec nad Cidlinou", "la":50.15, "lo":15.46, "t":21},
+  {"n":"Chocen", "la":50.00, "lo":16.22, "t":21},
+  {"n":"Chodov", "la":50.24, "lo":12.75, "t":21},
+  {"n":"Chomutov", "la":50.46, "lo":13.41, "t":21},
+  {"n":"Chotěboř", "la":49.72, "lo":15.66, "t":21},
+  {"n":"Chrast", "la":49.90, "lo":15.93, "t":21},
+  {"n":"Chrastava", "la":50.81, "lo":15.00, "t":21},
+  {"n":"Chropyně", "la":49.35, "lo":17.36, "t":21},
+  {"n":"Chrudim", "la":49.95, "lo":15.79, "t":21},
+  {"n":"Chřibská", "la":50.86, "lo":14.48, "t":21},
+  {"n":"Chvaletice", "la":50.03, "lo":15.41, "t":21},
+  {"n":"Chýně", "la":50.06, "lo":14.22, "t":21},
+  {"n":"Chýnov", "la":49.40, "lo":14.81, "t":21},
+  {"n":"Chyše", "la":50.10, "lo":13.24, "t":21},
+  {"n":"Ivančice", "la":49.10, "lo":16.37, "t":21},
+  {"n":"Ivanovice na Hané", "la":49.30, "lo":17.09, "t":21},
+  {"n":"Jablonec nad Jizerou", "la":50.70, "lo":15.42, "t":21},
+  {"n":"Jablonec nad Nisou", "la":50.72, "lo":15.17, "t":21},
+  {"n":"Jablonné nad Orlicí", "la":50.03, "lo":16.60, "t":21},
+  {"n":"Jablonné v Podještědí", "la":50.76, "lo":14.76, "t":21},
+  {"n":"Jablunkov", "la":49.57, "lo":18.76, "t":21},
+  {"n":"Jáchymov", "la":50.36, "lo":12.93, "t":21},
+  {"n":"Janov", "la":50.24, "lo":17.57, "t":21},
+  {"n":"Janovice nad Úhlavou", "la":49.34, "lo":13.21, "t":21},
+  {"n":"Jánské Lázně", "la":50.63, "lo":15.77, "t":21},
+  {"n":"Jaroměř", "la":50.35, "lo":15.92, "t":21},
+  {"n":"Jaroměřice nad Rokytnou", "la":49.11, "lo":15.89, "t":21},
+  {"n":"Javorník", "la":50.39, "lo":17.00, "t":21},
+  {"n":"Jemnice", "la":49.01, "lo":15.57, "t":21},
+  {"n":"Jesenice (okres Rakovník)", "la":50.09, "lo":13.46, "t":21},
+  {"n":"Jesenice (okres Praha-západ)", "la":49.96, "lo":14.51, "t":21},
+  {"n":"Jeseník", "la":50.22, "lo":17.20, "t":21},
+  {"n":"Jevíčko", "la":49.63, "lo":16.71, "t":21},
+  {"n":"Jevišovice", "la":48.99, "lo":15.99, "t":21},
+  {"n":"Jičín", "la":50.43, "lo":15.35, "t":21},
+  {"n":"Jihlava", "la":49.40, "lo":15.59, "t":21},
+  {"n":"Jilemnice", "la":50.60, "lo":15.50, "t":21},
+  {"n":"Jílové", "la":50.76, "lo":14.10, "t":21},
+  {"n":"Jílové u Prahy", "la":49.89, "lo":14.49, "t":21},
+  {"n":"Jindřichův Hradec", "la":49.14, "lo":15.00, "t":21},
+  {"n":"Jirkov", "la":50.50, "lo":13.44, "t":21},
+  {"n":"Jiříkov", "la":50.99, "lo":14.56, "t":21},
+  {"n":"Jistebnice", "la":49.48, "lo":14.52, "t":21},
+  {"n":"Kadaň", "la":50.37, "lo":13.27, "t":21},
+  {"n":"Kamenice nad Lipou", "la":49.30, "lo":15.07, "t":21},
+  {"n":"Kamenický Šenov", "la":50.77, "lo":14.47, "t":21},
+  {"n":"Kaplice", "la":48.73, "lo":14.49, "t":21},
+  {"n":"Kardašova Řečice", "la":49.18, "lo":14.85, "t":21},
+  {"n":"Karlovy Vary", "la":50.23, "lo":12.87, "t":21},
+  {"n":"Karolinka", "la":49.35, "lo":18.24, "t":21},
+  {"n":"Karviná", "la":49.85, "lo":18.54, "t":21},
+  {"n":"Kasejovice", "la":49.45, "lo":13.73, "t":21},
+  {"n":"Kašperské Hory", "la":49.14, "lo":13.55, "t":21},
+  {"n":"Kaznějov", "la":49.89, "lo":13.38, "t":21},
+  {"n":"Kdyně", "la":49.39, "lo":13.03, "t":21},
+  {"n":"Kelč", "la":49.47, "lo":17.81, "t":21},
+  {"n":"Kladno", "la":50.14, "lo":14.10, "t":21},
+  {"n":"Kladruby", "la":49.71, "lo":12.98, "t":21},
+  {"n":"Klášterec nad Ohří", "la":50.38, "lo":13.17, "t":21},
+  {"n":"Klatovy", "la":49.39, "lo":13.29, "t":21},
+  {"n":"Klecany", "la":50.17, "lo":14.41, "t":21},
+  {"n":"Klimkovice", "la":49.78, "lo":18.13, "t":21},
+  {"n":"Klobouky u Brna", "la":48.99, "lo":16.86, "t":21},
+  {"n":"Kojetín", "la":49.35, "lo":17.30, "t":21},
+  {"n":"Kolin", "la":50.02, "lo":15.20, "t":21},
+  {"n":"Konice", "la":49.59, "lo":16.88, "t":21},
+  {"n":"Kopidlno", "la":50.32, "lo":15.26, "t":21},
+  {"n":"Kopřivnice", "la":49.59, "lo":18.14, "t":21},
+  {"n":"Koryčany", "la":49.10, "lo":17.16, "t":21},
+  {"n":"Kosmonosy", "la":50.44, "lo":14.92, "t":21},
+  {"n":"Kostelec na Hané", "la":49.51, "lo":17.05, "t":21},
+  {"n":"Kostelec nad Černými lesy", "la":49.99, "lo":14.85, "t":21},
+  {"n":"Kostelec nad Labem", "la":50.22, "lo":14.58, "t":21},
+  {"n":"Kostelec nad Orlicí", "la":50.12, "lo":16.21, "t":21},
+  {"n":"Košťany", "la":50.65, "lo":13.75, "t":21},
+  {"n":"Kouřim", "la":50.00, "lo":14.97, "t":21},
+  {"n":"Kožlany", "la":50.00, "lo":13.54, "t":21},
+  {"n":"Králíky", "la":50.08, "lo":16.76, "t":21},
+  {"n":"Kralovice", "la":49.98, "lo":13.48, "t":21},
+  {"n":"Kralupy nad Vltavou", "la":50.24, "lo":14.31, "t":21},
+  {"n":"Králův Dvůr", "la":49.94, "lo":14.03, "t":21},
+  {"n":"Kraslice", "la":50.32, "lo":12.50, "t":21},
+  {"n":"Krásná Hora nad Vltavou", "la":49.64, "lo":14.27, "t":21},
+  {"n":"Krásná Lípa", "la":50.91, "lo":14.50, "t":21},
+  {"n":"Krásná Údolí", "la":50.07, "lo":12.98, "t":21},
+  {"n":"Krásno", "la":50.11, "lo":12.78, "t":21},
+  {"n":"Kravaře", "la":49.93, "lo":18.04, "t":21},
+  {"n":"Krnov", "la":50.08, "lo":17.70, "t":21},
+  {"n":"Kroměříž", "la":49.29, "lo":17.39, "t":21},
+  {"n":"Krupka", "la":50.68, "lo":13.85, "t":21},
+  {"n":"Kryry", "la":50.17, "lo":13.42, "t":21},
+  {"n":"Kunovice", "la":49.04, "lo":17.46, "t":21},
+  {"n":"Kunštát", "la":49.50, "lo":16.51, "t":21},
+  {"n":"Kuřim", "la":49.30, "lo":16.53, "t":21},
+  {"n":"Kutná Hora", "la":49.94, "lo":15.26, "t":21},
+  {"n":"Kyjov", "la":49.01, "lo":17.12, "t":21},
+  {"n":"Kynšperk nad Ohří", "la":50.11, "lo":12.53, "t":21},
+  {"n":"Lanškroun", "la":49.91, "lo":16.61, "t":21},
+  {"n":"Lanžhot", "la":48.72, "lo":16.96, "t":21},
+  {"n":"Lázně Bělohrad", "la":50.42, "lo":15.58, "t":21},
+  {"n":"Lázně Bohdaneč", "la":50.07, "lo":15.67, "t":21},
+  {"n":"Lázně Kynžvart", "la":50.00, "lo":12.62, "t":21},
+  {"n":"Ledeč nad Sázavou", "la":49.68, "lo":15.27, "t":21},
+  {"n":"Lednice", "la":48.79, "lo":16.80, "t":21},
+  {"n":"Letohrad", "la":50.03, "lo":16.49, "t":21},
+  {"n":"Letovice", "la":49.54, "lo":16.57, "t":21},
+  {"n":"Libáň", "la":50.37, "lo":15.17, "t":21},
+  {"n":"Libčice nad Vltavou", "la":50.19, "lo":14.36, "t":21},
+  {"n":"Liběchov", "la":50.40, "lo":14.44, "t":21},
+  {"n":"Liberec", "la":50.76, "lo":15.05, "t":21},
+  {"n":"Libochovice", "la":50.40, "lo":14.04, "t":21},
+  {"n":"Libušín", "la":50.16, "lo":14.04, "t":21},
+  {"n":"Lipník nad Bečvou", "la":49.52, "lo":17.58, "t":21},
+  {"n":"Lipnice nad Sázavou", "la":49.61, "lo":15.41, "t":21},
+  {"n":"Lišov", "la":49.01, "lo":14.61, "t":21},
+  {"n":"Litoměřice", "la":50.53, "lo":14.13, "t":21},
+  {"n":"Litomyšl", "la":49.87, "lo":16.31, "t":21},
+  {"n":"Litovel", "la":49.70, "lo":17.05, "t":21},
+  {"n":"Litvínov", "la":50.59, "lo":13.61, "t":21},
+  {"n":"Loket", "la":50.18, "lo":12.75, "t":21},
+  {"n":"Lom", "la":50.59, "lo":13.65, "t":21},
+  {"n":"Lomnice nad Lužnicí", "la":49.08, "lo":14.71, "t":21},
+  {"n":"Lomnice nad Popelkou", "la":50.53, "lo":15.37, "t":21},
+  {"n":"Loštice", "la":49.74, "lo":16.92, "t":21},
+  {"n":"Loučná pod Klínovcem", "la":50.41, "lo":12.98, "t":21},
+  {"n":"Louny", "la":50.35, "lo":13.79, "t":21},
+  {"n":"Lovosice", "la":50.51, "lo":14.05, "t":21},
+  {"n":"Luby", "la":50.25, "lo":12.40, "t":21},
+  {"n":"Lučany nad Nisou", "la":50.73, "lo":15.22, "t":21},
+  {"n":"Luhačovice", "la":49.10, "lo":17.75, "t":21},
+  {"n":"Luže", "la":49.89, "lo":16.02, "t":21},
+  {"n":"Lysá nad Labem", "la":50.20, "lo":14.84, "t":21},
+  {"n":"Manětín", "la":49.99, "lo":13.23, "t":21},
+  {"n":"Mariánské Lázně", "la":49.96, "lo":12.70, "t":21},
+  {"n":"Mašťov", "la":50.29, "lo":13.28, "t":21},
+  {"n":"Měčín", "la":49.47, "lo":13.41, "t":21},
+  {"n":"Mělník", "la":50.35, "lo":14.47, "t":21},
+  {"n":"Městec Králové", "la":50.16, "lo":15.29, "t":21},
+  {"n":"Město Albrechtice", "la":50.16, "lo":17.57, "t":21},
+  {"n":"Město Touškov", "la":49.77, "lo":13.25, "t":21},
+  {"n":"Meziboří", "la":50.62, "lo":13.60, "t":21},
+  {"n":"Meziměstí", "la":50.62, "lo":16.23, "t":21},
+  {"n":"Mikulášovice", "la":50.96, "lo":14.35, "t":21},
+  {"n":"Mikulov", "la":48.80, "lo":16.63, "t":21},
+  {"n":"Miletín", "la":50.40, "lo":15.68, "t":21},
+  {"n":"Milevsko", "la":49.45, "lo":14.36, "t":21},
+  {"n":"Miličín", "la":49.57, "lo":14.66, "t":21},
+  {"n":"Milovice", "la":50.22, "lo":14.88, "t":21},
+  {"n":"Mimoň", "la":50.65, "lo":14.72, "t":21},
+  {"n":"Miroslav", "la":48.94, "lo":16.31, "t":21},
+  {"n":"Mirošov", "la":49.71, "lo":13.65, "t":21},
+  {"n":"Mirotice", "la":49.43, "lo":14.03, "t":21},
+  {"n":"Mirovice", "la":49.51, "lo":14.03, "t":21},
+  {"n":"Mladá Boleslav", "la":50.41, "lo":14.90, "t":21},
+  {"n":"Mladá Vožice", "la":49.53, "lo":14.80, "t":21},
+  {"n":"Mnichovice", "la":49.93, "lo":14.71, "t":21},
+  {"n":"Mnichovo Hradiště", "la":50.52, "lo":14.97, "t":21},
+  {"n":"Mníšek pod Brdy", "la":49.86, "lo":14.26, "t":21},
+  {"n":"Modřice", "la":49.12, "lo":16.61, "t":21},
+  {"n":"Mohelnice", "la":49.77, "lo":16.91, "t":21},
+  {"n":"Moravská Třebová", "la":49.75, "lo":16.66, "t":21},
+  {"n":"Moravské Budějovice", "la":49.05, "lo":15.80, "t":21},
+  {"n":"Moravský Beroun", "la":49.79, "lo":17.44, "t":21},
+  {"n":"Moravský Krumlov", "la":49.04, "lo":16.31, "t":21},
+  {"n":"Morkovice-Slížany", "la":49.24, "lo":17.20, "t":21},
+  {"n":"Most", "la":50.50, "lo":13.64, "t":21},
+  {"n":"Mšeno", "la":50.43, "lo":14.63, "t":21},
+  {"n":"Mýto", "la":49.78, "lo":13.73, "t":21},
+  {"n":"Náchod", "la":50.41, "lo":16.16, "t":21},
+  {"n":"Nalžovské Hory", "la":49.33, "lo":13.55, "t":21},
+  {"n":"Náměšť nad Oslavou", "la":49.20, "lo":16.15, "t":21},
+  {"n":"Napajedla", "la":49.17, "lo":17.51, "t":21},
+  {"n":"Nasavrky", "la":49.84, "lo":15.80, "t":21},
+  {"n":"Nechanice", "la":50.23, "lo":15.63, "t":21},
+  {"n":"Nejdek", "la":50.32, "lo":12.73, "t":21},
+  {"n":"Němčice nad Hanou", "la":49.34, "lo":17.20, "t":21},
+  {"n":"Nepomuk", "la":49.48, "lo":13.58, "t":21},
+  {"n":"Neratovice", "la":50.26, "lo":14.51, "t":21},
+  {"n":"Netolice", "la":49.04, "lo":14.19, "t":21},
+  {"n":"Neveklov", "la":49.75, "lo":14.53, "t":21},
+  {"n":"Nová Bystřice", "la":49.01, "lo":15.10, "t":21},
+  {"n":"Nová Paka", "la":50.49, "lo":15.51, "t":21},
+  {"n":"Nová Role", "la":50.27, "lo":12.78, "t":21},
+  {"n":"Nová Včelnice", "la":49.23, "lo":15.07, "t":21},
+  {"n":"Nové Hrady", "la":48.78, "lo":14.77, "t":21},
+  {"n":"Nové Město na Moravě", "la":49.56, "lo":16.07, "t":21},
+  {"n":"Nové Město nad Metují", "la":50.34, "lo":16.15, "t":21},
+  {"n":"Nové Město pod Smrkem", "la":50.92, "lo":15.22, "t":21},
+  {"n":"Nové Sedlo", "la":50.20, "lo":12.76, "t":21},
+  {"n":"Nové Strašecí", "la":50.15, "lo":13.90, "t":21},
+  {"n":"Nový Bor", "la":50.75, "lo":14.55, "t":21},
+  {"n":"Nový Bydžov", "la":50.24, "lo":15.49, "t":21},
+  {"n":"Nový Jičín", "la":49.59, "lo":18.01, "t":21},
+  {"n":"Nový Knín", "la":49.81, "lo":14.29, "t":21},
+  {"n":"Nymburk", "la":50.18, "lo":15.04, "t":21},
+  {"n":"Nýrsko", "la":49.29, "lo":13.14, "t":21},
+  {"n":"Nýřany", "la":49.71, "lo":13.20, "t":21},
+  {"n":"Odolena Voda", "la":50.23, "lo":14.41, "t":21},
+  {"n":"Odry", "la":49.66, "lo":17.83, "t":21},
+  {"n":"Olejnice", "la":49.57, "lo":16.51, "t":21},
+  {"n":"Olomouc", "la":49.59, "lo":17.25, "t":21},
+  {"n":"Oloví", "la":50.24, "lo":12.55, "t":21},
+  {"n":"Opava", "la":49.93, "lo":17.90, "t":21},
+  {"n":"Opočno", "la":50.26, "lo":16.11, "t":21},
+  {"n":"Orlová", "la":49.84, "lo":18.43, "t":21},
+  {"n":"Osečná", "la":50.69, "lo":14.92, "t":21},
+  {"n":"Osek", "la":50.62, "lo":13.69, "t":21},
+  {"n":"Oslavany", "la":49.12, "lo":16.33, "t":21},
+  {"n":"Ostrava", "la":49.83, "lo":18.28, "t":21},
+  {"n":"Ostrov", "la":50.30, "lo":12.93, "t":21},
+  {"n":"Otrokovice", "la":49.20, "lo":17.53, "t":21},
+  {"n":"Pacov", "la":49.47, "lo":15.00, "t":21},
+  {"n":"Pardubice", "la":50.03, "lo":15.77, "t":21},
+  {"n":"Paskov", "la":49.73, "lo":18.29, "t":21},
+  {"n":"Pec pod Sněžkou", "la":50.69, "lo":15.73, "t":21},
+  {"n":"Pečky", "la":50.07, "lo":15.03, "t":21},
+  {"n":"Pelhřimov", "la":49.43, "lo":15.22, "t":21},
+  {"n":"Petřvald", "la":49.82, "lo":18.39, "t":21},
+  {"n":"Pilníkov", "la":50.53, "lo":15.82, "t":21},
+  {"n":"Písek", "la":49.30, "lo":14.14, "t":21},
+  {"n":"Planá", "la":49.86, "lo":12.74, "t":21},
+  {"n":"Planá nad Lužnicí", "la":49.35, "lo":14.70, "t":21},
+  {"n":"Plánice", "la":49.39, "lo":13.46, "t":21},
+  {"n":"Plasy", "la":49.93, "lo":13.38, "t":21},
+  {"n":"Plesná", "la":50.22, "lo":12.34, "t":21},
+  {"n":"Plumlov", "la":49.46, "lo":17.01, "t":21},
+  {"n":"Plzeň", "la":49.73, "lo":13.37, "t":21},
+  {"n":"Poběžovice", "la":49.51, "lo":12.80, "t":21},
+  {"n":"Počátky", "la":49.26, "lo":15.24, "t":21},
+  {"n":"Podbořany", "la":50.22, "lo":13.41, "t":21},
+  {"n":"Poděbrady", "la":50.14, "lo":15.11, "t":21},
+  {"n":"Podivín", "la":48.82, "lo":16.84, "t":21},
+  {"n":"Pohořelice", "la":48.98, "lo":16.52, "t":21},
+  {"n":"Police nad Metují", "la":50.53, "lo":16.23, "t":21},
+  {"n":"Polička", "la":49.71, "lo":16.26, "t":21},
+  {"n":"Polná", "la":49.48, "lo":15.71, "t":21},
+  {"n":"Postoloprty", "la":50.35, "lo":13.70, "t":21},
+  {"n":"Potštát", "la":49.62, "lo":17.65, "t":21},
+  {"n":"Praha", "la":50.07, "lo":14.43, "t":21},
+  {"n":"Prachatice", "la":49.01, "lo":13.99, "t":21},
+  {"n":"Proseč", "la":49.80, "lo":16.11, "t":21},
+  {"n":"Prostějov", "la":49.47, "lo":17.11, "t":21},
+  {"n":"Protivín", "la":49.20, "lo":14.21, "t":21},
+  {"n":"Přebuz", "la":50.36, "lo":12.61, "t":21},
+  {"n":"Přelouč", "la":50.03, "lo":15.56, "t":21},
+  {"n":"Přerov", "la":49.45, "lo":17.45, "t":21},
+  {"n":"Přeštice", "la":49.57, "lo":13.32, "t":21},
+  {"n":"Příbor", "la":49.64, "lo":18.14, "t":21},
+  {"n":"Příbram", "la":49.68, "lo":13.99, "t":21},
+  {"n":"Přibyslav", "la":49.57, "lo":15.73, "t":21},
+  {"n":"Přimda", "la":49.67, "lo":12.67, "t":21},
+  {"n":"Pyšely", "la":49.88, "lo":14.67, "t":21},
+  {"n":"Rabí", "la":49.28, "lo":13.61, "t":21},
+  {"n":"Radnice", "la":49.85, "lo":13.61, "t":21},
+  {"n":"Rájec-Jestřebí", "la":49.40, "lo":16.63, "t":21},
+  {"n":"Rajhrad", "la":49.08, "lo":16.60, "t":21},
+  {"n":"Rakovník", "la":50.10, "lo":13.73, "t":21},
+  {"n":"Ralsko", "la":50.58, "lo":14.80, "t":21},
+  {"n":"Raspenava", "la":50.90, "lo":15.11, "t":21},
+  {"n":"Rejštejn", "la":49.13, "lo":13.51, "t":21},
+  {"n":"Rokycany", "la":49.74, "lo":13.59, "t":21},
+  {"n":"Rokytnice nad Jizerou", "la":50.72, "lo":15.44, "t":21},
+  {"n":"Rokytnice v Orlických horách", "la":50.16, "lo":16.46, "t":21},
+  {"n":"Ronov nad Doubravou", "la":49.88, "lo":15.52, "t":21},
+  {"n":"Rosice", "la":49.18, "lo":16.38, "t":21},
+  {"n":"Rotava", "la":50.29, "lo":12.57, "t":21},
+  {"n":"Roudnice nad Labem", "la":50.42, "lo":14.25, "t":21},
+  {"n":"Rousínov", "la":49.20, "lo":16.88, "t":21},
+  {"n":"Rovensko pod Troskami", "la":50.53, "lo":15.26, "t":21},
+  {"n":"Roztoky", "la":50.15, "lo":14.39, "t":21},
+  {"n":"Rožďalovice", "la":50.30, "lo":15.17, "t":21},
+  {"n":"Rožmberk nad Vltavou", "la":48.65, "lo":14.36, "t":21},
+  {"n":"Rožmitál pod Třemšínem", "la":49.60, "lo":13.86, "t":21},
+  {"n":"Rožnov pod Radhoštěm", "la":49.45, "lo":18.14, "t":21},
+  {"n":"Rtyně v Podkrkonoší", "la":50.50, "lo":16.07, "t":21},
+  {"n":"Rudná", "la":50.03, "lo":14.23, "t":21},
+  {"n":"Rudolfov", "la":48.99, "lo":14.54, "t":21},
+  {"n":"Rumburk", "la":50.95, "lo":14.55, "t":21},
+  {"n":"Rychnov nad Kněžnou", "la":50.16, "lo":16.27, "t":21},
+  {"n":"Rychnov u Jablonce nad Nisou", "la":50.68, "lo":15.14, "t":21},
+  {"n":"Rychvald", "la":49.86, "lo":18.37, "t":21},
+  {"n":"Rýmařov", "la":49.93, "lo":17.27, "t":21},
+  {"n":"Řevnice", "la":49.91, "lo":14.23, "t":21},
+  {"n":"Říčany", "la":49.99, "lo":14.65, "t":21},
+  {"n":"Sadská", "la":50.13, "lo":14.98, "t":21},
+  {"n":"Sázava", "la":49.87, "lo":14.89, "t":21},
+  {"n":"Seč", "la":49.82, "lo":15.65, "t":21},
+  {"n":"Sedlčany", "la":49.65, "lo":14.42, "t":21},
+  {"n":"Sedlec-Prčice", "la":49.57, "lo":14.53, "t":21},
+  {"n":"Sedlice", "la":49.37, "lo":13.93, "t":21},
+  {"n":"Semily", "la":50.60, "lo":15.33, "t":21},
+  {"n":"Sezemice", "la":50.06, "lo":15.85, "t":21},
+  {"n":"Sezimovo Ústí", "la":49.38, "lo":14.68, "t":21},
+  {"n":"Skalná", "la":50.16, "lo":12.36, "t":21},
+  {"n":"Skuteč", "la":49.84, "lo":15.99, "t":21},
+  {"n":"Slaný", "la":50.23, "lo":14.08, "t":21},
+  {"n":"Slatiňany", "la":49.91, "lo":15.81, "t":21},
+  {"n":"Slavičín", "la":49.08, "lo":17.87, "t":21},
+  {"n":"Slavkov u Brna", "la":49.15, "lo":16.87, "t":21},
+  {"n":"Slavonice", "la":48.99, "lo":15.35, "t":21},
+  {"n":"Slušovice", "la":49.26, "lo":17.80, "t":21},
+  {"n":"Smečno", "la":50.18, "lo":14.03, "t":21},
+  {"n":"Smiřice", "la":50.29, "lo":15.86, "t":21},
+  {"n":"Smržovka", "la":50.73, "lo":15.24, "t":21},
+  {"n":"Soběslav", "la":49.25, "lo":14.71, "t":21},
+  {"n":"Sobotka", "la":50.46, "lo":15.17, "t":21},
+  {"n":"Sokolov", "la":50.17, "lo":12.64, "t":21},
+  {"n":"Solnice", "la":50.20, "lo":16.23, "t":21},
+  {"n":"Spálené Poříčí", "la":49.61, "lo":13.60, "t":21},
+  {"n":"Staňkov", "la":49.55, "lo":13.07, "t":21},
+  {"n":"Staré Město (okres Šumperk)", "la":50.16, "lo":16.94, "t":21},
+  {"n":"Staré Město (okres Uherské Hradiště)", "la":49.07, "lo":17.43, "t":21},
+  {"n":"Stárkov", "la":50.48, "lo":16.15, "t":21},
+  {"n":"Starý Plzenec", "la":49.69, "lo":13.47, "t":21},
+  {"n":"Stod", "la":49.63, "lo":13.16, "t":21},
+  {"n":"Stochov", "la":50.14, "lo":13.95, "t":21},
+  {"n":"Strakonice", "la":49.26, "lo":13.90, "t":21},
+  {"n":"Stráž nad Nežárkou", "la":49.06, "lo":14.90, "t":21},
+  {"n":"Stráž pod Ralskem", "la":50.70, "lo":14.80, "t":21},
+  {"n":"Strážnice", "la":48.90, "lo":17.31, "t":21},
+  {"n":"Strážov", "la":49.30, "lo":13.24, "t":21},
+  {"n":"Strmilov", "la":49.15, "lo":15.18, "t":21},
+  {"n":"Stříbro", "la":49.75, "lo":13.00, "t":21},
+  {"n":"Studénka", "la":49.72, "lo":18.07, "t":21},
+  {"n":"Suchdol nad Lužnicí", "la":48.89, "lo":14.88, "t":21},
+  {"n":"Sušice", "la":49.23, "lo":13.52, "t":21},
+  {"n":"Světlá nad Sázavou", "la":49.66, "lo":15.40, "t":21},
+  {"n":"Svitavy", "la":49.75, "lo":16.47, "t":21},
+  {"n":"Svoboda nad Úpou", "la":50.62, "lo":15.81, "t":21},
+  {"n":"Svratka", "la":49.71, "lo":16.03, "t":21},
+  {"n":"Šenov", "la":49.79, "lo":18.37, "t":21},
+  {"n":"Šlapanice", "la":49.16, "lo":16.72, "t":21},
+  {"n":"Šluknov", "la":51.00, "lo":14.45, "t":21},
+  {"n":"Špindlerův Mlýn", "la":50.72, "lo":15.60, "t":21},
+  {"n":"Štěpánov", "la":49.68, "lo":17.22, "t":21},
+  {"n":"Šternberk", "la":49.73, "lo":17.29, "t":21},
+  {"n":"Štěti", "la":50.45, "lo":14.32, "t":21},
+  {"n":"Štíty", "la":49.96, "lo":16.76, "t":21},
+  {"n":"Štramberk", "la":49.59, "lo":18.11, "t":21},
+  {"n":"Šumperk", "la":49.96, "lo":16.97, "t":21},
+  {"n":"Švihov", "la":49.47, "lo":13.28, "t":21},
+  {"n":"Tábor", "la":49.41, "lo":14.65, "t":21},
+  {"n":"Tachov", "la":49.79, "lo":12.63, "t":21},
+  {"n":"Tanvald", "la":50.73, "lo":15.30, "t":21},
+  {"n":"Telč", "la":49.18, "lo":15.45, "t":21},
+  {"n":"Teplá", "la":49.98, "lo":12.87, "t":21},
+  {"n":"Teplice", "la":50.64, "lo":13.82, "t":21},
+  {"n":"Teplice nad Metují", "la":50.59, "lo":16.16, "t":21},
+  {"n":"Terezín", "la":50.51, "lo":14.15, "t":21},
+  {"n":"Tišnov", "la":49.34, "lo":16.42, "t":21},
+  {"n":"Toužim", "la":50.05, "lo":12.98, "t":21},
+  {"n":"Tovačov", "la":49.43, "lo":17.28, "t":21},
+  {"n":"Trhové Sviny", "la":48.84, "lo":14.63, "t":21},
+  {"n":"Trhový Štěpánov", "la":49.71, "lo":15.01, "t":21},
+  {"n":"Trmice", "la":50.64, "lo":13.99, "t":21},
+  {"n":"Trutnov", "la":50.56, "lo":15.91, "t":21},
+  {"n":"Třebechovice pod Orebem", "la":50.20, "lo":15.99, "t":21},
+  {"n":"Třebenice", "la":50.47, "lo":13.99, "t":21},
+  {"n":"Třebíč", "la":49.21, "lo":15.88, "t":21},
+  {"n":"Třeboň", "la":49.00, "lo":14.77, "t":21},
+  {"n":"Třemošná", "la":49.82, "lo":13.39, "t":21},
+  {"n":"Třemošnice", "la":49.86, "lo":15.58, "t":21},
+  {"n":"Třešť", "la":49.29, "lo":15.48, "t":21},
+  {"n":"Třinec", "la":49.67, "lo":18.67, "t":21},
+  {"n":"Turnov", "la":50.58, "lo":15.15, "t":21},
+  {"n":"Týn nad Vltavou", "la":49.22, "lo":14.42, "t":21},
+  {"n":"Týnec nad Labem", "la":50.04, "lo":15.35, "t":21},
+  {"n":"Týnec nad Sázavou", "la":49.83, "lo":14.59, "t":21},
+  {"n":"Týniště nad Orlicí", "la":50.15, "lo":16.07, "t":21},
+  {"n":"Uherské Hradiště", "la":49.06, "lo":17.45, "t":21},
+  {"n":"Uherský Brod", "la":49.02, "lo":17.64, "t":21},
+  {"n":"Uherský Ostroh", "la":48.99, "lo":17.39, "t":21},
+  {"n":"Uhlířské Janovice", "la":49.87, "lo":15.06, "t":21},
+  {"n":"Unhošť", "la":50.08, "lo":14.12, "t":21},
+  {"n":"Uničov", "la":49.77, "lo":17.11, "t":21},
+  {"n":"Újezd u Brna", "la":49.10, "lo":16.76, "t":21},
+  {"n":"Úpice", "la":50.51, "lo":16.01, "t":21},
+  {"n":"Úsov", "la":49.79, "lo":17.01, "t":21},
+  {"n":"Ústí nad Labem", "la":50.66, "lo":14.03, "t":21},
+  {"n":"Ústí nad Orlicí", "la":49.97, "lo":16.39, "t":21},
+  {"n":"Úštěk", "la":50.58, "lo":14.34, "t":21},
+  {"n":"Úterý", "la":49.93, "lo":13.00, "t":21},
+  {"n":"Úvaly", "la":50.07, "lo":14.73, "t":21},
+  {"n":"Valašské Klobouky", "la":49.14, "lo":18.00, "t":21},
+  {"n":"Valašské Meziříčí", "la":49.47, "lo":17.97, "t":21},
+  {"n":"Valtice", "la":48.74, "lo":16.75, "t":21},
+  {"n":"Vamberk", "la":50.11, "lo":16.28, "t":21},
+  {"n":"Varnsdorf", "la":50.91, "lo":14.62, "t":21},
+  {"n":"Vejprty", "la":50.49, "lo":13.03, "t":21},
+  {"n":"Velešín", "la":48.82, "lo":14.46, "t":21},
+  {"n":"Velká Bíteš", "la":49.28, "lo":16.22, "t":21},
+  {"n":"Velká Bystřice", "la":49.59, "lo":17.35, "t":21},
+  {"n":"Velké Bílovice", "la":48.84, "lo":16.89, "t":21},
+  {"n":"Velké Hamry", "la":50.71, "lo":15.31, "t":21},
+  {"n":"Velké Meziříčí", "la":49.35, "lo":16.01, "t":21},
+  {"n":"Velké Opatovice", "la":49.61, "lo":16.66, "t":21},
+  {"n":"Velké Pavlovice", "la":48.89, "lo":16.81, "t":21},
+  {"n":"Velký Šenov", "la":50.99, "lo":14.37, "t":21},
+  {"n":"Veltrusy", "la":50.27, "lo":14.32, "t":21},
+  {"n":"Velvary", "la":50.28, "lo":14.23, "t":21},
+  {"n":"Verneřice", "la":50.66, "lo":14.30, "t":21},
+  {"n":"Veselí nad Lužnicí", "la":49.18, "lo":14.70, "t":21},
+  {"n":"Veselí nad Moravou", "la":48.95, "lo":17.37, "t":21},
+  {"n":"Veverská Bítýška", "la":49.27, "lo":16.43, "t":21},
+  {"n":"Větřní", "la":48.77, "lo":14.29, "t":21},
+  {"n":"Vidnava", "la":50.37, "lo":17.18, "t":21},
+  {"n":"Vimperk", "la":49.05, "lo":13.78, "t":21},
+  {"n":"Vítkov", "la":49.77, "lo":17.75, "t":21},
+  {"n":"Vizovice", "la":49.22, "lo":17.85, "t":21},
+  {"n":"Vlachovo Březí", "la":49.08, "lo":13.96, "t":21},
+  {"n":"Vlašim", "la":49.70, "lo":14.90, "t":21},
+  {"n":"Vodňany", "la":49.14, "lo":14.17, "t":21},
+  {"n":"Volary", "la":48.91, "lo":13.89, "t":21},
+  {"n":"Volyně", "la":49.16, "lo":13.88, "t":21},
+  {"n":"Votice", "la":49.63, "lo":14.64, "t":21},
+  {"n":"Vracov", "la":48.97, "lo":17.21, "t":21},
+  {"n":"Vratimov", "la":49.77, "lo":18.31, "t":21},
+  {"n":"Vrbno pod Pradědem", "la":50.12, "lo":17.37, "t":21},
+  {"n":"Vrchlabí", "la":50.62, "lo":15.61, "t":21},
+  {"n":"Vroutek", "la":50.17, "lo":13.38, "t":21},
+  {"n":"Vsetín", "la":49.33, "lo":17.99, "t":21},
+  {"n":"Všeruby", "la":49.34, "lo":13.00, "t":21},
+  {"n":"Výsluní", "la":50.46, "lo":13.23, "t":21},
+  {"n":"Vysoké Mýto", "la":49.95, "lo":16.16, "t":21},
+  {"n":"Vysoké nad Jizerou", "la":50.68, "lo":15.40, "t":21},
+  {"n":"Vysoké Veselí", "la":50.33, "lo":15.52, "t":21},
+  {"n":"Vyškov", "la":49.27, "lo":16.99, "t":21},
+  {"n":"Vyšší Brod", "la":48.61, "lo":14.31, "t":21},
+  {"n":"Zábřeh", "la":49.88, "lo":16.87, "t":21},
+  {"n":"Zákupy", "la":50.68, "lo":14.64, "t":21},
+  {"n":"Zásmuky", "la":49.95, "lo":15.02, "t":21},
+  {"n":"Zbiroh", "la":49.85, "lo":13.77, "t":21},
+  {"n":"Zbyšov", "la":49.16, "lo":16.34, "t":21},
+  {"n":"Zdice", "la":49.91, "lo":13.97, "t":21},
+  {"n":"Zlaté Hory", "la":50.26, "lo":17.39, "t":21},
+  {"n":"Zlín", "la":49.22, "lo":17.66, "t":21},
+  {"n":"Zliv", "la":49.06, "lo":14.36, "t":21},
+  {"n":"Znojmo", "la":48.85, "lo":16.05, "t":21},
+  {"n":"Zruč nad Sázavou", "la":49.74, "lo":15.10, "t":21},
+  {"n":"Zubří", "la":49.49, "lo":18.09, "t":21},
+  {"n":"Žacléř", "la":50.66, "lo":15.90, "t":21},
+  {"n":"Žamberk", "la":50.08, "lo":16.46, "t":21},
+  {"n":"Žandov", "la":50.71, "lo":14.39, "t":21},
+  {"n":"Žatec", "la":50.32, "lo":13.54, "t":21},
+  {"n":"Ždánice", "la":49.06, "lo":17.02, "t":21},
+  {"n":"Žďár nad Sázavou", "la":49.56, "lo":15.93, "t":21},
+  {"n":"Ždírec nad Doubravou", "la":49.69, "lo":15.81, "t":21},
+  {"n":"Žebrák", "la":49.87, "lo":13.89, "t":21},
+  {"n":"Železná Ruda", "la":49.13, "lo":13.23, "t":21},
+  {"n":"Železnice", "la":50.47, "lo":15.38, "t":21},
+  {"n":"Železný Brod", "la":50.64, "lo":15.25, "t":21},
+  {"n":"Židlochovice", "la":49.03, "lo":16.61, "t":21},
+  {"n":"Žirovnice", "la":49.25, "lo":15.18, "t":21},
+  {"n":"Žlutice", "la":50.09, "lo":13.16, "t":21},
+  {"n":"Žulová", "la":50.31, "lo":17.10, "t":21}          
 ];
         
 
@@ -738,36 +1449,59 @@ function toggleTheme() {
     box.style.borderLeft = `4px solid ${barva}`;
 }
         function aktualizujFaziMesice() {
-            const trg = document.getElementById('moon-trigger-btn');
-            const rows = document.getElementById('moon-forecast-rows');
-            const status = document.getElementById('moon-current-status');
-            if(!rows) return;
-            rows.innerHTML = "";
-            const fazaText = ["Novoluní", "Dorůstající srpek", "První čtvrť", "Dorůstající měsíc", "Úplněk", "Couvající měsíc", "Poslední čtvrť", "Ubývající srpek"];
-            const fazaIko = ["🌑", "🌒", "🌓", "🌔", "🌕", "🌖", "🌗", "🌘"];
-            let d = new Date();
-            let ts = d.getTime();
-            
-            let synodic = 29.530588853;
-            let baseDate = new Date(1970, 0, 7, 20, 35, 0).getTime();
-            let diff = ts - baseDate;
-            let lCycle = diff / (1000 * 60 * 60 * 24);
-            let age = lCycle % synodic;
-            let idx = Math.floor((age / synodic) * 8) % 8;
-            
-            trg.innerText = `🌙 Měsíc: ${fazaIko[idx]}`;
-            status.innerText = `Dnes je: ${fazaText[idx]} ${fazaIko[idx]} (Stáří: ${age.toFixed(1)} dní)`;
-            
-            for(let i=0; i<7; i++) {
-                let tDate = new Date();
-                tDate.setDate(d.getDate() + i);
-                let fAge = ((tDate.getTime() - baseDate) / (1000 * 60 * 60 * 24)) % synodic;
-                let fIdx = Math.floor((fAge / synodic) * 8) % 8;
-                let pct = fAge <= synodic/2 ? (fAge / (synodic/2)) * 100 : (1 - ((fAge - synodic/2) / (synodic/2))) * 100;
-                
-                rows.innerHTML += `<tr style="border-bottom:1px solid var(--border-inner);"> <td style="padding:6px 0;">${tDate.getDate()}.${tDate.getMonth()+1}.</td> <td style="text-align:center;">${fazaIko[fIdx]}</td> <td>${fazaText[fIdx]}</td> <td style="text-align:right;">${pct.toFixed(0)}%</td> </tr>`;
-            }
-        }
+  const trg = document.getElementById('moon-trigger-btn');
+  const rows = document.getElementById('moon-forecast-rows');
+  const status = document.getElementById('moon-current-status');
+  if(!rows) return;
+  rows.innerHTML = "";
+  
+  const fazaText = ["Novoluní", "Dorůstající srpek", "První čtvrť", "Dorůstající měsíc", "Úplněk", "Couvající měsíc", "Poslední čtvrť", "Ubývající srpek"];
+  const fazaIko = ["🌑", "🌒", "🌓", "🌔", "🌕", "🌖", "🌗", "🌘"];
+  
+  let d = new Date();
+  let ts = d.getTime();
+  
+  let synodic = 29.530588853;
+  let baseDate = new Date(1970, 0, 7, 20, 35, 0).getTime();
+  let diff = ts - baseDate;
+  let lcycle = diff / (1000 * 60 * 60 * 24);
+  let age = lcycle % synodic;
+  if (age < 0) age += synodic;
+
+  // HLAVNÍ OPRAVA: PŘESNÉ URČENÍ FÁZE PODLE DNŮ, ABY NEBYLO NOVOLUNÍ PŘI 21 %
+  function spoctiIndexFaze(vynasobeneDny) {
+    if (vynasobeneDny < 1.0 || vynasobeneDny > 28.53) return 0; // Novoluní
+    if (vynasobeneDny >= 1.0 && vynasobeneDny < 6.38) return 1;  // Dorůstající srpek
+    if (vynasobeneDny >= 6.38 && vynasobeneDny < 8.38) return 2; // První čtvrť
+    if (vynasobeneDny >= 8.38 && vynasobeneDny < 13.76) return 3;// Dorůstající měsíc
+    if (vynasobeneDny >= 13.76 && vynasobeneDny < 15.76) return 4;// Úplněk
+    if (vynasobeneDny >= 15.76 && vynasobeneDny < 21.14) return 5;// Couvající měsíc
+    if (vynasobeneDny >= 21.14 && vynasobeneDny < 23.14) return 6;// Poslední čtvrť
+    return 7; // Ubývající srpek
+  }
+
+  let idx = spoctiIndexFaze(age);
+
+  trg.innerText = ` Měsíc: ${fazaIko[idx]}`;
+  status.innerText = `Dnes je: ${fazaText[idx]} ${fazaIko[idx]} (Stáří: ${age.toFixed(1)} dní)`;
+
+  for(let i=0; i<7; i++) {
+    let tDate = new Date();
+    tDate.setDate(d.getDate() + i);
+    let fAge = ((tDate.getTime() - baseDate) / (1000 * 60 * 60 * 24)) % synodic;
+    if (fAge < 0) fAge += synodic;
+    
+    let fIdx = spoctiIndexFaze(fAge);
+    let pct = fAge < synodic / 2 ? (fAge / (synodic / 2)) * 100 : (1 - ((fAge - (synodic / 2)) / (synodic / 2))) * 100;
+
+    rows.innerHTML += `<tr style="border-bottom:1px solid var(--border-inner);">
+      <td style="padding:6px 0;">${tDate.getDate()}.${tDate.getMonth()+1}.</td>
+      <td style="text-align:center;">${fazaIko[fIdx]}</td>
+      <td>${fazaText[fIdx]}</td>
+      <td style="text-align:right;">${pct.toFixed(0)}%</td>
+    </tr>`;
+  }
+}
 
         function updateClock() {
             const now = new Date();
@@ -779,6 +1513,357 @@ function toggleTheme() {
         updateClock();
         setInterval(nactiPocasi, 600000);
         nactiPocasi();
+    // --- KÓD PRO SLEDOVÁNÍ WEBU ---
+    const followBtn = document.getElementById('follow-btn');
+
+    if (localStorage.getItem('webSledovan') === 'true') {
+        nastavStavSledovano();
+    }
+
+    if (followBtn) {
+        followBtn.addEventListener('click', () => {
+            if (localStorage.getItem('webSledovan') === 'true') {
+                localStorage.setItem('webSledovan', 'false');
+                followBtn.innerText = '🔔 Sledovat web';
+                followBtn.classList.remove('active');
+            } else {
+                localStorage.setItem('webSledovan', 'true');
+                nastavStavSledovano();
+                aktivovatSystemoveNotifikace();
+            }
+        });
+    }
+
+    function nastavStavSledovano() {
+        if (followBtn) {
+            followBtn.innerText = '✓ Sledováno';
+            followBtn.classList.add('active');
+        }
+    }
+
+    function aktivovatSystemoveNotifikace() {
+        if ('Notification' in window) {
+            Notification.requestPermission().then(permission => {
+                if (permission === 'granted') {
+                    new Notification("MeteoInfo.cz", {
+                        body: "Sledování aktivováno. Budeme vás informovat o mimořádných situacích.",
+                        icon: "https://github.io"
+                    });
+                }
+            });
+        }
+    }
+// === 1. KOMPLETNÍ DATABÁZE VÝSTRAH (VŠECH 10 JEVŮ BEZ CHYB) ===
+const meteoDopodusVystrahy = {
+  bourky: {
+    1: {
+      titul: "Upozornění",
+      text: "Hrozí slabé bouřky, které mohou být doprovázené silným deštěm, čerstvým až silným větrem a také menšími krupkami/kroupami.\n\nDoporučení: Je třeba zabezpečit předměty, které mohou lehce ulétnout větrem, na silnici snížit rychlost a dávat si pozor na případné zlomení větví. Větší škody ale nehrozí."
+    },
+    2: {
+      titul: "Upozornění",
+      text: "Hrozí silné bouřky, které mohou být často doprovázené přívalovým deštěm, silným nárazovým větrem do 70 km/h and malými kroupami.\n\nDoporučení: Je třeba zabezpečit předměty, které mohou lehce ulétnout větrem, na silnici snížit rychlost, dávat si pozor na častější pády menších a ojediněle i věvších větví. Zavřít všechna okna a dveře. Hrozí škody hlavně kvůli zasažení blesků, kroupami a silnému větru."
+    },
+    3: {
+      titul: "Upozornění",
+      text: "POZOR! Hrozí velmi silné bouřky, které mohou doprovázet velmi silné lijáky, silné až velmi silné nárazy větru o rychlosti i kolem 90 km/h (výjimečně i více), a větší kroupy. Mohou hrozit také supercely, ve kterých by potom vítr mohl přesáhnout 100 km/h a kroupy dosahovat velikosti velkých rozměrů!\n\nDoporučení: Je potřeba předměty, které snadno mohou uletět, hodně zabezpečit, popřípadě odnést domů a během bouřky je venku nenechávat. Kroupy už mohou ničit hlavně auta a domy, je potřeba být ve střehu! Vítr může snadno lámat i větší větvě, ojediněle i celé stromy a způsobit tak škody. Během bouřky nezůstávejte venku! Pokud jedete autem, zastavte, pokud můžete. Pokud nemůžete, jezděte velmi opatrně!"
+    },
+    4: {
+      titul: "Upozornění",
+      text: "POZOR!! Hrozí až extrémně silné bouřky, které mohou doprovázet extrémní jevy, jako prudké lijáky, extrémní silné nárazy větru přesahující 100 km/h (výjimečně i více), a velké kroupy! Mohou hrozit i silné supercely hlavně s extrémním větrem nad 120 km/h and obřími kroupami, které mohou dosáhnout velikosti až 8 cm (ojediněle i více). Výjimečně, pokud hrozí supercely, nejsou vyloučena i tornáda!\n\nDoporučení: Před takto silnými bouřkami se snažte venku rozhodně nic nenechávat a pokud možno, předměty ukryjte doma. Takto silný vítr už může lámat i celé stromy, odnášet střechy a působit velké komplikace v dopravě, tak v energetice! Kroupy mohou rozbít celá auta, stromy a střechy! Pokud by vás takto silná bouřka zastihla v autě, rozhodně se nesnažte bouřce ujet a nejlépe úplně ZASTAVTE! Vysoké nebezpečí představují i blesky a lijáky, které mohou dospět k bleskovým povodním. Rozhodně buďte ve střehu!"
+    }
+  },
+  vitr: {
+    1: {
+      titul: "Upozornění",
+      text: "Hrozí čerstvé nárazy větru o rychlosti 40-60 km/h.\n\nDoporučení: Zajistěte lehké předměty, které mohou snadno uletět větrem."
+    },
+    2: {
+      titul: "Upozornění",
+      text: "Hrozí čerstvé až silné nárazy větru o rychlosti 60-80 km/h.\n\nDoporučení: Zajistěte i těžší předměty, které mohou lehce uletět větrem. Hrozí také pády větví a ojediněle i celých stromů! Hrozí i problémy v energetice."
+    },
+    3: {
+      titul: "Upozornění",
+      text: "POZOR! Hrozí silné až velmi silné nárazy větru o rychlosti 80-100 km/h!\n\nDoporučení: Je třeba zajistit i těžší předměty, vítr je může snadno unést. Hrozí četné pády větví, stromů a problémy v dopravě a energetice! Buďte ve střehu!"
+    },
+    4: {
+      titul: "Upozornění",
+      text: "POZOR!! Hrozí velmi silný až extrémně silný nárazový vítr o síle vichřice! Hrozí nárazy větru od 100-120 km/h (výjimečně i více)!\n\nDoporučení: Nutně zajistěte všechny předměty, které mohou být okamžitě uneseny větrem! Hrozí četné pády celých stromů a velké komplikace na silnicích and v energetice! Je potřeba být akutně ve střehu!"
+    }
+  },
+  dest: {
+    1: {
+      titul: "Upozornění",
+      text: "V následujících hodinách hrozí vydatný déšť, během kterého by mohlo napršet 30-50 mm srážek.\n\nDoporučení: Hrozí zatopení níže položených míst a sklepů. Mohou se také zvedat hladiny řek, ale zatím bez ohrožení."
+    },
+    2: {
+      titul: "Upozornění",
+      text: "V následujících hodinách hrozí velmi vydatný déšť, během kterého by mohlo napršet 50-70 mm srážek.\n\nDoporučení: Hrozí zatopení níže položených silnic a sklepů. V ohrožení je i 1. a 2. SPA (stupně povodňové aktivity) na řekách. Sledujte aktuální stavy hladin řek a buďte ve střehu!"
+    },
+    3: {
+      titul: "Upozornění",
+      text: "POZOR! V následujících hodinách hrozí extrémně vydatný déšť, během kterého by mohlo napršet 70-100 mm srážek!\n\nDoporučení: Hrozí zaplavení silnic a rozsáhlé zaplavení domů, řeky mohou stoupat až na 3. SPA (stupeň povodňové aktivity) a obyvatelé jsou v ohrožení! Připravte se na možnou evakuaci a sledujte situaci!"
+    },
+    4: {
+      titul: "Upozornění",
+      text: "POZOR!! V následujících hodinách hrozí až mimořádně vydatný déšť, během kterého může během několika hodin spadnout i nad 100 mm srážek!\n\nDoporučení: Hrozí rozsáhlé a ničivé povodně, řeky mohou stoupat i nad 3. SPA (stupeň povodňové aktivity)! Obyvatelé are v extrémním nebezpečí a pravděpodobně hrozí i evakuace! Nastat mohou i výpadky proudů."
+    }
+  },
+  snezeni: {
+    1: {
+      titul: "Upozornění",
+      text: "Hrozí slabé až mírné sněžení. Za několik hodin může napadnout 5-10 cm sněhu (v horských oblastech 10-20 cm sněhu).\n\nDoporučení: Hrozí drobné komplikace v dopravě, proto doporučujeme jet opatrně a dávat si pozor i na chodnících."
+    },
+    2: {
+      titul: "Upozornění",
+      text: "Hrozí mírné až silné sněžení. Za několik hodin může napadnout 10-20 cm sněhu (v horských oblastech 20-40 cm sněhu).\n\nDoporučení: Hrozí výrazné komplikace v dopravě. Hlavně na horách se mohou vytvářet i sněhové jazyky, jsou zde proto nutné sněhové řetězy. Pokud je sníh těžký a mokrý, hrozí pády větví, protože je potřeba zvýšená opatrnost."
+    },
+    3: {
+      titul: "Upozornění",
+      text: "POZOR! Hrozí silné až velmi silné sněžení. Napadnout může 20-40 cm sněhu během několika hodin. Hrozí kalamita.\n\nDoporučení: Hrozí kalamitní stav, při těžkém a mokrém sněhu hrozí časté pády větví! Některé silnice mohou být velmi obtížně sjízdné, nebo téměř nesjízdné. Hrozí také komplikace v energetice. Na hřebenech hor je riziko lavin, takže tam vůbec nejezděte!"
+    },
+    4: {
+      titul: "Upozornění",
+      text: "POZOR!! Hrozí velmi silné až extrémně silné sněžení. Napadnout může 40-50 cm sněhu! Výjimečně i přes půl metru sněhu!\n\nDoporučení: Celé obce mohou zůstat odříznuty od světa, hrozí pády stromů, ojediněle proboření střech pod těžkým a mokrým sněhem a dlouhodobé výpadky elektřiny! Připravte se popřípadě na nouzový režim a pokud možno, ven raději vůbec nechoďte!"
+    }
+  },
+  naledi_zmrazky: {
+    1: {
+      titul: "Upozornění",
+      text: "Při poklesu teplotu pod nulu hrozí namrzání vlhkých povrchů, hlavně od tajícího sněhu, a proto hrozí náledí či zmrazky.\n\nDoporučení: Hrozí až extrémní kluzkost chodníků a silnic. Choďte velmi opatrně a nejlépe ani nevycházejte z domů. Řidiči musí jezdit extrémně opatrně!"
+    }
+  },
+  ledovka: {
+    1: {
+      titul: "Upozornění",
+      text: "Hrozí slabá ledovka s tloušťkou ledu do 2 mm. Krátkodobý mrznoucí déšť nebo mrholení.\n\nDoporučení: Povrchy mohou začít slabě namrzat a klouzat. Klouzat to může hlavně na silnicích a chodnících, proto doporučujeme zvýšenou opatrnost pro chodce a řidiče. Škody na stromech and energetice zatím nehrozí."
+    },
+    2: {
+      titul: "Upozornění",
+      text: "Hrozí mírná ledovka s tloušťkou ledu 2-5 mm. Vytrvalý mrznoucí déšť.\n\nDoporučení: Na silnicích a chodnících to může už dost klouzat, hrozí dopravní komplikace a kalamitní situace. Řidiči a chodci musí být velmi opatrně! Pod tíhou ledu se mohou začít lámat malé větve stromů."
+    },
+    3: {
+      titul: "Upozornění",
+      text: "Hrozí silná ledovka s tloušťkou ledu 5-10 mm. Dlouhotrvající mrznoucí déšť.\n\nDoporučení: Hrozí kalamitní stav. Těžký led může začít lámat i velké větve stromů, venku všechny cesty and chodníky silně kloužou, proto nedoporučujeme se vydávat ven. Pokud musíte, jeďte extrémně opatrně! Mohou namrzat také troleje. Hrozí také první výpadky elektřiny."
+    },
+    4: {
+      titul: "Upozornění",
+      text: "POZOR! Hrozí velmi silná ledovka s tloušťkou ledu 10-15 mm. Vydatný a trvalý mrznoucí déšť.\n\nDoporučení: Hrozí až extrémně vysoké risiko pádů na chodnících. Silnice jsou téměř nesjízdné, auta jsou jen koule ledu. Začíná docházet ke kolapsu železniční a tramvajové dopravy. Tíha ledu už může vyvracet i menší stromy and dráty elektrického napětí. Hrozí častější výpadky elektřiny. Buďte ve střehu and nedoporučujeme vůbec vycházet ven!"
+    },
+    5: {
+      titul: "Upozornění",
+      text: "POZOR!! Hrozí až extrémně silná ledovka s tloušťkou ledu nad 15 mm. Prudký a trvalejší mrznoucí déšť.\n\nDoporučení: Hrozí katastrofální situace, která se vyskytuje jen málokdy. Venku jen led, desítky tisíc lidí může zůstat i bez proudu. Doprava stojí. Absolutní zákaz vycházení ven! Připravte se popřípadě na nouzový režim!"
+    }
+  },
+  mraz: {
+    1: {
+      titul: "Upozornění",
+      text: "Očekává se slabý mráz. Noční a ranní teploty místy klesnou na 0 až -5 °C.\n\nDoporučení: Teple se oblečte. Je třeba počítat se škrábáním auta (hlavně skel). Dávejte pozor především na kluzké mosty."
+    },
+    2: {
+      titul: "Upozornění",
+      text: "Očekává se silný mráz. Noční a ranní teploty místy klesnou na -5 až -12 °C.\n\nDoporučení: Při delším pobytu venku bez teplejšího oblečení může dojít k omrzlinám během několika minut. Je potřeba se teple obléct (hlavně zimní bunda, čepice, rukavice, šála a teplé boty!). Můžete zvolit i termo prádlo. Pro malé dětí and starší osoby nedoporučujeme delší pobyt venku. Auta budou zamrzlá, proto počítejte se škrábáním."
+    },
+    3: {
+      titul: "Upozornění",
+      text: "POZOR! Očekává se velmi silný mráz. Noční a ranní teploty místy klesnou na -12 až -20 °C!\n\nDoporučení: Nebezpečně nízké teploty, v ČR se objevují jen ojediněle. Teplé oblečení je nutností, jinak během pár minut na odkryté kůži hrozí omrzliny! Auta budou pořádně zamrzlá, malé děti a starší osoby by se měly vyvarovat takto silnému mrazu!"
+    },
+    4: {
+      titul: "Upozornění",
+      text: "POZOR!! Očekává se extrémně silný mráz. Noční a ranní teploty místy klesnou i pod -20 °C!\n\nDoporučení: Výjimečně nízké teploty, ohrožující život. Pokud není nutné chodit ven, nechoďte! Pokud je to nutné, pohybujte se, abyste udrželi tělesné teplo! Řidiči dieselových aut by měli mít v nádrži zimní naftu s aditivy, jinak hrozí, že nenastartují!"
+    }
+  },
+  teplo: {
+    1: {
+      titul: "Upozornění",
+      text: "Očekávají se vyšší teploty, které mohou v odpoledních hodinách dosahovat 28-32 °C.\n\nDoporučení: Zvyšte denní příjem nealkoholických tekutin (nejlépe čistá voda a mléko). Doporučujeme omezit těžkou fyzickou zátěž. Nenechávejte děti nebo zvířata zaparkovaná v autech!"
+    },
+    2: {
+      titul: "Upozornění",
+      text: "Očekávají se vysoké teploty, které mohou v odpoledních hodinách dosahovat 32-35 °C.\n\nDoporučení: Je potřeba zvýšit denní příjem nealkoholických tekutin (nejlépe čistá voda a mléko). Vypijte za day i 3 l vody. Doporučujeme omezit pobyt na přímém slunečním svitu během dopoledních a odpoledních hodin. Vyhněte se jakékoliv fyzické námaze (fyzická námaha v takových teplotách představuje velkou zátěž pro organismus). Je důležité se také natřít opalovacím krémem!"
+    },
+    3: {
+      titul: "Upozornění",
+      text: "POZOR! Očekávají se velmi vysoké teploty, které mohou dosahovat 35-38 °C!\n\nDoporučení: Velmi vysoká zátěž pro organismus! Omezte nejlépe pobyt venku, maximálně pokud je to nutné, tak choďte pouze ve stínu. Výrazně zvyšte denní příjem nealkoholických tekutin a je potřeba pít i 3 l denně. Je nutné se namazat, aby se předešlo spálení kůže! V autě ROZHODNĚ NENECHÁVEJTE malé děti a zvířata, mohlo by dojít ke kolapsu!"
+    },
+    4: {
+      titul: "Upozornění",
+      text: "POZOR!! Očekávají se extrémně vysoké teploty, které mohou dosahovat 38-41 °C!\n\nDoporučení: Vedra, která jsou v Česku jen velmi výjimečná a objevují se jen jednou za několik let. Život ohrožující situace! Akutně zvyšte pitný režim (bez alkoholických nápojů!) na více, jak 3 l denně (ideálně 4 l), při fyzických nutných pracích venku klidně i 5 l vody (ale postupně!). Ideálně 200-300 ml každou hodinu. Na přímý sluneční svit v dopoledních a odpoledních hodinách vůbec nechoďte, maximálně ve stínu!"
+    }
+  },
+  mlha: {
+    1: {
+      titul: "Upozornění",
+      text: "Hrozí výskyt slabé mlhy, viditelnost může 500-200 metrů.\n\nDoporučení: Žádné větší nebezpečí nehrozí, jen je potřeba na silnicích popřípadě lehce snížit rychlost a zapnout světla."
+    },
+    2: {
+      titul: "Upozornění",
+      text: "Hrozí výskyt silné mlhy, viditelnost může 200-100 metrů.\n\nDoporučení: Řidiči už hůře vidí před sebe, proto je potřeba výrazněji snížit rychlost, povinně zapnout zadní mlhová světla, ale pokud stojíte v koloně, vypněte je, abyste neoslepovali řidiče za vámi!"
+    },
+    3: {
+      titul: "Upozornění",
+      text: "POZOR! Hrozí výskyt velmi silné mlhy, viditelnost může dosahovat 100-50 metrů!\n\nDoporučení: Před Vámi bude doslova mléko. Absolutní ztráta orientace na silnici. Pokud možno, nikam nevyjíždějte! Pokud je to ale nutné, jeďte na silnicích pouze 30-40 km/h a zapněte zadní mlhová světla na maximum! V kolonách je vypněte. Pokud potřebujete nutně zastavit u silnice, nutně zapněte výstražná světla!"
+    },
+    4: {
+      titul: "Upozornění",
+      text: "POZOR!! Hrozí výskyt extrémně silné mlhy, viditelnost může dosahovat i pod 50 metrů!\n\nDoporučení: Pokud to opravdu není nutné, nikam nevyjíždějte, jinak hrozí extrémní nebezpečí a extrémní riziko nehody. Pokud ale přeci musíte, zadní mlhová světla na maximum a jezdit extrémně opatrně (i pod 30 km/h)."
+    }
+  }
+};
+
+// === 2. FUNKCE: ODESÍLÁNÍ VÝSTRAH S POJISTKOU PROTI SPAMU ===
+function odeslatMeteoVystrahu(jev, stupen) {
+  if (localStorage.getItem('webSledovan') !== 'true') {
+    return; // Pojistka s velkým "S"
+  }
+
+  const posledniOdeslanaVystraha = localStorage.getItem('posledni_vystraha_klic');
+  const aktualniVystrahaKlic = `${jev}_${stupen}`;
+
+  if (posledniOdeslanaVystraha === aktualniVystrahaKlic) {
+    return; // Pojistka proti spamu
+  }
+
+  if (meteoDopodusVystrahy[jev] && meteoDopodusVystrahy[jev][stupen]) {
+    const dataVystrahy = meteoDopodusVystrahy[jev][stupen];
+
+    if ('Notification' in window && Notification.permission === 'granted') {
+      const notif = new Notification(dataVystrahy.titul, {
+        body: dataVystrahy.text,
+        icon: "https://github.io",
+        requireInteraction: true
+      });
+
+      // PO KLIKNUTÍ OTEVŘE TVŮJ WEB NA GITHUBU A PŘEDÁ TEXT DO PAMĚTI
+      notif.onclick = function(event) {
+        event.preventDefault();
+        
+        localStorage.setItem('aktivni_vystraha_titul', dataVystrahy.titul);
+        localStorage.setItem('aktivni_vystraha_text', dataVystrahy.text);
+        
+        window.open('https://github.io', '_blank');
+      };
+
+      localStorage.setItem('posledni_vystraha_klic', aktualniVystrahaKlic);
+    }
+  } else {
+    console.error("Chyba: Tento meteo jev nebo stupeň neexistuje v databázi.");
+  }
+}
+
+
+// === 3. FUNKCE: UNIVERZÁLNÍ MOZEK PRO AKTUÁLNÍ DATA I PŘEDPOVĚĎ DOPŘEDU ===
+function zkontrolujInternetAPosliVystrahy() {
+  const apiKey = "TVUJ_ZADANNY_API_KLIC"; // Sem dej svůj klíč z OpenWeatherMap
+  const mesto = "Praha"; 
+  
+  // 1. ADRESA PRO TVÉ GRAFY A TEPLOTY (AKTUÁLNÍ POČASÍ)
+  const urlAktualni = `https://openweathermap.org{mesto}&appid=${apiKey}&units=metric&lang=cz`;
+  
+  // 2. ADRESA PRO TVÉ VÝSTRAHY (PŘEDPOVĚĎ NA 24 HODIN DOPŘEDU)
+  const urlPredpoved = `https://openweathermap.org{mesto}&appid=${apiKey}&units=metric&lang=cz`;
+
+  // --- KROK A: NAČTENÍ DAT PRO GRAFY ---
+  fetch(urlAktualni)
+    .then(response => response.json())
+    .then(data => {
+      if (!data || !data.main) return;
+      // Tady tvůj web dál zpracovává data pro grafy a teploty na stránce, jak to máš vymyšlené
+    })
+    .catch(error => console.error("Chyba grafů:", error));
+
+  // --- KROK B: AUTOMATICKÉ VAROVÁNÍ DOPŘEDU (ČTE BUDOUCNOST) ---
+  fetch(urlPredpoved)
+    .then(response => response.json())
+    .then(data => {
+      if (!data.list || data.list.length === 0) return;
+
+      let hroziBourka = false;
+      let maximalniVitr = 0;
+      let maximalniTeplota = -99;
+      let minimalniTeplota = 99;
+
+      // Projdeme předpověď na nejbližších 24 hodin (prvních 8 záznamů, protože každý je po 3 hodinách)
+      for (let i = 0; i < 8; i++) {
+        const bod = data.list[i];
+        if (!bod) continue;
+
+        // Kontrola, zda v příštích 24h hrozí kód bouřky (2xx)
+        if (bod.weather && bod.weather[0] && bod.weather[0].id >= 200 && bod.weather[0].id <= 232) {
+          hroziBourka = true;
+        }
+
+        // Hledáme nejvyšší vítr a teplotní extrémy v příštích 24h
+        if (bod.wind && bod.wind.speed * 3.6 > maximalniVitr) {
+          maximalniVitr = bod.wind.speed * 3.6;
+        }
+        if (bod.main && bod.main.temp > maximalniTeplota) {
+          maximalniTeplota = bod.main.temp;
+        }
+        if (bod.main && bod.main.temp < minimalniTeplota) {
+          minimalniTeplota = bod.main.temp;
+        }
+      }
+
+      // === VYHODNOCENÍ: POKUD KÓD NAJDE V PŘÍŠTÍCH 24h NEBEZPEČÍ, POSÍLÁ VAROVÁNÍ TEĎ HNED ===
+
+      // ⚡ Varování před bouřkou dopředu
+      if (hroziBourka) {
+        if (maximalniVitr >= 100) odeslatMeteoVystrahu('bourky', 4);
+        else if (maximalniVitr >= 80) odeslatMeteoVystrahu('bourky', 3); // ZÍTŘEJŠÍ VELMI SILNÉ BOUŘKY PÍPNOU UŽ TEĎ!
+        else if (maximalniVitr >= 60) odeslatMeteoVystrahu('bourky', 2);
+        else odeslatMeteoVystrahu('bourky', 1);
+      }
+
+      // 💨 Varování před silným větrem dopředu
+      if (maximalniVitr >= 40 && maximalniVitr < 60) odeslatMeteoVystrahu('vitr', 1);
+      else if (maximalniVitr >= 60 && maximalniVitr < 80) odeslatMeteoVystrahu('vitr', 2);
+      else if (maximalniVitr >= 80 && maximalniVitr < 100) odeslatMeteoVystrahu('vitr', 3);
+      else if (maximalniVitr >= 100) odeslatMeteoVystrahu('vitr', 4);
+
+      // 🔥 Varování před vedrem dopředu
+      if (maximalniTeplota >= 28 && maximalniTeplota < 32) odeslatMeteoVystrahu('teplo', 1);
+      else if (maximalniTeplota >= 32 && maximalniTeplota < 35) odeslatMeteoVystrahu('teplo', 2);
+      else if (maximalniTeplota >= 35 && maximalniTeplota < 38) odeslatMeteoVystrahu('teplo', 3);
+      else if (maximalniTeplota >= 38) odeslatMeteoVystrahu('teplo', 4);
+
+      // 🥶 Varování před mrazem dopředu
+      if (minimalniTeplota <= 0 && minimalniTeplota > -5) odeslatMeteoVystrahu('mraz', 1);
+      else if (minimalniTeplota <= -5 && minimalniTeplota > -12) odeslatMeteoVystrahu('mraz', 2);
+      else if (minimalniTeplota <= -12 && minimalniTeplota > -20) odeslatMeteoVystrahu('mraz', 3);
+      else if (minimalniTeplota <= -20) odeslatMeteoVystrahu('mraz', 4);
+    })
+    .catch(error => console.error("Chyba předpovědi výstrah:", error));
+}
+
+// První spuštění hned po načtení
+zkontrolujInternetAPosliVystrahy();
+
+// Automatická kontrola každých 30 minut
+setInterval(zkontrolujInternetAPosliVystrahy, 30 * 60 * 1000);
+
+// === 4. KONTROLA PŘI NAČTENÍ WEBU: PŘIŠEL UŽIVATEL Z NOTIFIKACE? ===
+function zkontrolujPrichodZVystrahy() {
+  const urlParams = new URLSearchParams(window.location.search);
+  
+  if (urlParams.has('vystraha')) {
+    const titul = localStorage.getItem('aktivni_vystraha_titul');
+    const text = localStorage.getItem('aktivni_vystraha_text');
+    
+    if (titul && text) {
+      alert(`${titul}\n\n${text}`); // Zde uživatel uvidí kompletní text
+      
+      // Vyčistíme adresu a paměť, ať okno nevyskakuje při každém obnovení
+      window.history.replaceState({}, document.title, window.location.pathname);
+      localStorage.removeItem('aktivni_vystraha_titul');
+      localStorage.removeItem('aktivni_vystraha_text');
+    }
+  }
+}
+
+// Spustíme kontrolu hned při načtení stránky
+zkontrolujPrichodZVystrahy();
+
     </script>
 </body>
 </html>
