@@ -5,7 +5,7 @@
 <meta name="seznam-wmt" content="MJSxoUABEnAZFjswvy4JZjy6yms6sC35" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Předpověď počasí, meteoradar online a srážky | MeteoInfo.cz</title>
+        <title>Předpověď počasí, meteoradar online a srážky | MeteoInfo</title>
     <meta name="description" content="Aktuální předpověď počasí, meteoradar online, srážky a teploty pro města. Sledujte vývoj počasí na MeteoInfo.cz.">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
@@ -73,9 +73,9 @@
 
         .meteo-srazky, .meteo-vitr { cursor: pointer; user-select: none; }
         .hourly-scroll-container { display: flex; justify-content: flex-start; gap: 10px; overflow-x: auto !important; padding-bottom: 12px; margin-top: 10px; margin-bottom: 5px; scrollbar-width: thin; flex-wrap: nowrap !important; width: 100%; box-sizing: border-box; }
-        .hourly-item { background: var(--bg-inner-forecast); border: 1px solid var(--border-inner); border-radius: 10px; padding: 8px; text-align: center; min-width: 65px; max-width: 65px; flex-shrink: 0 !important; display: inline-block; box-sizing: border-box; }
-        .hourly-time { font-size: 0.8rem; color: var(--text-muted); font-weight: bold; }
-        .hourly-icon { width: 32px; height: 32px; margin: 4px 0; }
+        .hourly-item { background: var(--bg-inner-forecast); border: 1px solid var(--border-inner); border-radius: 10px; padding: 8px; text-align: center; min-width: 85px; max-width: 85px; flex-shrink: 0 !important; display: inline-block; box-sizing: border-box; }
+        .hourly-time { font-size: 0.8rem; color: var(--text-main) !important; font-weight: bold; }
+        .hourly-icon { width: 52px; height: 52px; margin: 4px 0; }
         .hourly-temp { font-size: 0.9rem; font-weight: bold; }
 
         .chart-container { position: relative; height: 220px; width: 100%; margin-top: 10px; }
@@ -128,6 +128,16 @@
     gap: 15px !important;
     padding: 15px !important;
   }
+    .mobilni-sledovat-kontejner {
+        position: static !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        width: 100% !important;
+        margin-top: 10px !important;
+    
+    }
+
   .header-left, .header-right {
     min-width: unset !important;
     width: 100% !important;
@@ -164,6 +174,63 @@
     right: 15px;
     top: 45px;
 }
+/* Stylování informačního kontejneru */
+.info-tooltip-container {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    margin-left: 8px;
+    cursor: pointer;
+}
+
+/* Vzhled kroužku s "i" */
+.info-box {
+    width: 18px;
+    height: 18px;
+    background-color: #374151;
+    color: #9ca3af;
+    border-radius: 50%;
+    text-align: center;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 18px;
+    font-family: sans-serif;
+    border: 1px solid #4b5563;
+    transition: background 0.2s, color 0.2s;
+}
+
+.info-tooltip-container:hover .info-box {
+    background-color: #4b5563;
+    color: #fff;
+}
+
+/* Skrytý text nápovědy, který se objeví nad ikonkou */
+.tooltip-text {
+    visibility: hidden;
+    width: 240px;
+    background-color: #1f2937;
+    color: #fff;
+    text-align: left;
+    border-radius: 6px;
+    padding: 10px;
+    position: absolute;
+    z-index: 1000;
+    bottom: 130%; /* Zobrazí se nad ikonkou */
+    right: 0;
+    font-size: 12px;
+    line-height: 1.4;
+    border: 1px solid #374151;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    opacity: 0;
+    transition: opacity 0.2s, visibility 0.2s;
+}
+
+/* Zobrazení bubliny při najetí myší */
+.info-tooltip-container:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
 
 /* Tlačítko Sledovat web */
 .btn-follow {
@@ -177,6 +244,7 @@
     cursor: pointer;
     transition: all 0.3s ease;
 }
+
 .btn-follow:hover { 
     background-color: #1d4ed8; 
 }
@@ -261,15 +329,18 @@
         </div>
 
         <!-- STŘED: Původní nápis s neviditelným textem pro Google -->
-        <h1 class="header-center-title" style="margin: 0; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);">MeteoInfo.cz</h1>
-        <h2 style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0;">Aktuální předpověď počasí, meteoradar, srážky a teploty pro města online</h2>
+        <h1 class="header-center-title" style="margin: 0; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);">MeteoInfo</h1>
+<h2 style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0;">
+Aktuální předpověď počasí, meteoradar, srážky a teploty pro města online</h2>
+        
 
         <!-- PRAVÁ STRANA: Krabičky natvrdo vpravo (přesně tam, kde je chceš) -->
         <div style="display: flex; gap: 8px; align-items: center;">
             <button class="header-btn" onclick="document.getElementById('radar-modal').classList.add('active')">☄️ Meteoradar</button>
-            <button id="moon-trigger-btn" class="header-btn" onclick="document.getElementById('moon-modal').classList.add('active')">🌙 Měsíc: 🌓</button>
+            <button id="moon-trigger-btn" class="header-btn" onclick="document.getElementById('moon-modal').classList.add('active')">🌙 Měsíc: 🌓
             <button id="theme-button" class="header-btn" onclick="toggleTheme()" style="font-size: 1.1rem; padding: 4px 10px;">🌙</button>
-<div class="follow-container-header">
+
+<div class="mobilni-sledovat-kontejner">
     <button id="follow-btn" class="btn-follow">🔔 Sledovat web</button>
     <div class="info-tooltip-container">
         <div class="info-box">i</div>
@@ -279,7 +350,6 @@
     </div>
 </div>
 
-        </div>
 
     </header>        <div class="grid-top">
             <div class="card" style="gap: 15px;">
@@ -511,7 +581,7 @@
 
     <div id="author-modal" class="modal-overlay">
         <div class="modal-box">
-            <h3 style="margin-top: 0; color: var(--text-accent);">O webu MeteoInfo.cz</h3>
+            <h3 style="margin-top: 0; color: var(--text-accent);">O webu MeteoInfo</h3>
             <p style="font-size: 0.95rem; line-height: 1.6; color: var(--text-main); text-align: left; margin-bottom: 0;">
                 Tato webová stránka byla založena 28. 6. 2026 uživatelem Tadeas, který je také přítomen na meteorologickém portálu In-počasí. Můžete zde najít všechna města v ČR (610 měst), a informace o počasí v každém z nich, nebo třeba i meteo asistenta či psí index. Lze si také měnit tmavý a světlý motiv stránky.
             </p>
@@ -532,7 +602,7 @@
 </div>
 <div style="text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-accent); margin-bottom: 25px; box-sizing: border-box;">
     <span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 13. 7. 2026</span>
-    <p style="margin: 0; color: var(--text-main); font-size: 15px; line-height: 1.4;">Přidán zbytek měst z celé ČR, přidáno push upozornění, opravené malé chyby.</p>
+    <p style="margin: 0; color: var(--text-main); font-size: 15px; line-height: 1.4;">Přidán zbytek měst z celé ČR, přidáno push upozornění, změna drobných věcí, opravené malé chyby.</p>
 </div>
 
 
@@ -1176,14 +1246,68 @@
             nactiPocasi();
         }
 
-        function ziskejIkonuUrl(kod) {
-            const mapovani = {
-                0: "01d", 1: "02d", 2: "03d", 3: "04d", 45: "50d", 48: "50d",
-                51: "09d", 53: "09d", 55: "09d", 61: "10d", 63: "10d", 65: "10d",
-                71: "13d", 73: "13d", 75: "13d", 77: "13d", 80: "09d", 81: "09d", 82: "09d", 95: "11d"
-            };
-            return `https://openweathermap.org/img/wn/${mapovani[kod] || "03d"}@2x.png`;
-        }
+        function ziskejIkonuUrl(kod, aktualniCasText, vychodSlunceText, zapadSlunceText) {
+    const aktualniMesic = new Date().getMonth();
+    const jeZima = aktualniMesic === 9 || aktualniMesic === 10 || aktualniMesic === 11 || 
+                   aktualniMesic === 0 || aktualniMesic === 1 || aktualniMesic === 2 || 
+                   aktualniMesic === 3;
+
+    if (!aktualniCasText || !vychodSlunceText || !zapadSlunceText) {
+        const mapovaniDen = {
+            0: "jasno", 1: "polojasno", 2: "polojasno", 3: "zatazeno", 45: "zatazeno", 48: "zatazeno",
+            51: jeZima ? "mrznouci_dest" : "dest", 53: "dest", 55: "dest", 61: "dest", 63: "dest", 65: "dest",
+            71: "snih", 73: "snih", 75: "snih", 77: "snih", 80: "prehanky", 81: "prehanky", 82: "prehanky", 95: "bourka"
+        };
+        if (kod >= 71 && kod <= 77) return `png/${jeZima ? "snih" : "prehanky"}.png`;
+        return `png/${mapovaniDen[kod] || "polojasno"}.png`;
+    }
+
+    const spoctiMinuty = (textKombinovany) => {
+        if (typeof textKombinovany !== 'string') return 0;
+        const indexT = textKombinovany.indexOf("T");
+        if (indexT === -1) return 0;
+        const casCasti = textKombinovany.substring(indexT + 1).split(":");
+        const hodiny = parseInt(casCasti[0], 10) || 0;
+        const minuty = parseInt(casCasti[1], 10) || 0;
+        return (hodiny * 60) + minuty;
+    };
+
+    const tedMinuty = spoctiMinuty(aktualniCasText);
+    const vychodMinuty = spoctiMinuty(vychodSlunceText);
+    const zapadMinuty = spoctiMinuty(zapadSlunceText);
+
+    const jeNoc = tedMinuty < vychodMinuty || tedMinuty > zapadMinuty;
+
+    const mapovani = {
+        0: jeNoc ? "jasno_noc" : "jasno",
+        1: jeNoc ? "polojasno_noc" : "polojasno",
+        2: jeNoc ? "polojasno_noc" : "polojasno",
+        3: "zatazeno",
+        45: "zatazeno",
+        48: "zatazeno",
+        51: jeZima ? "mrznouci_dest" : "dest", 
+        53: "dest",
+        55: "dest",
+        61: "dest",
+        63: "dest",
+        65: "dest",
+        71: "snih",
+        73: "snih",
+        75: "snih",
+        77: "snih",
+        80: jeNoc ? "destove_prehanky_noc" : "prehanky", 
+        81: jeNoc ? "destove_prehanky_noc" : "prehanky",
+        82: jeNoc ? "destove_prehanky_noc" : "prehanky",
+        95: "bourka"
+    };
+
+    if (kod >= 71 && kod <= 77) {
+        if (jeZima) return `png/snih.png`;
+        return `png/${jeNoc ? "destove_prehanky_noc" : "prehanky"}.png`;
+    }
+
+    return `png/${mapovani[kod] || "polojasno"}.png`;
+}
 
         function aktualizujHomeCheck() {
             const icon = document.getElementById('set-default-city-chk');
@@ -1383,7 +1507,10 @@ function toggleTheme() {
                     const hData = new Date(d.hourly.time[j]);
                     const fCas = `${hData.getHours().toString().padStart(2, '0')}:00`;
                     if (j < aktualniHodina + 24) {
-                        hourlyContainer.innerHTML += `<div class="hourly-item"><div class="hourly-time">${fCas}</div><img src="${ziskejIkonuUrl(d.hourly.weather_code[j])}" class="hourly-icon" alt="počasí"><div class="hourly-temp">${Math.round(d.hourly.temperature_2m[j])}°C</div></div>`;
+                                    const denIndex = Math.floor(j / 24);
+            hourlyContainer.innerHTML += `<div class="hourly-item"><div class="hourly-time">${fCas}</div><img src="${ziskejIkonuUrl(d.hourly.weather_code[j], d.hourly.time[j], d.daily.sunrise[denIndex], d.daily.sunset[denIndex])}" class="hourly-icon" alt="počasí"><div class="hourly-temp">${Math.round(d.hourly.temperature_2m[j])}°C</div></div>`;
+
+
                     }
                     if (j % 2 === 0) {
                         globHourlyTimes.push(fCas);
@@ -1711,57 +1838,70 @@ const meteoDopodusVystrahy = {
   }
 };
 
-// === 2. FUNKCE: ODESÍLÁNÍ VÝSTRAH S POJISTKOU PROTI SPAMU ===
-function odeslatMeteoVystrahu(jev, stupen) {
-  if (localStorage.getItem('webSledovan') !== 'true') {
-    return; // Pojistka s velkým "S"
-  }
-
-  const posledniOdeslanaVystraha = localStorage.getItem('posledni_vystraha_klic');
-  const aktualniVystrahaKlic = `${jev}_${stupen}`;
-
-  if (posledniOdeslanaVystraha === aktualniVystrahaKlic) {
-    return; // Pojistka proti spamu
-  }
-
-  if (meteoDopodusVystrahy[jev] && meteoDopodusVystrahy[jev][stupen]) {
-    const dataVystrahy = meteoDopodusVystrahy[jev][stupen];
-
-    if ('Notification' in window && Notification.permission === 'granted') {
-      const notif = new Notification(dataVystrahy.titul, {
-        body: dataVystrahy.text,
-        icon: "https://github.io",
-        requireInteraction: true
-      });
-
-      // PO KLIKNUTÍ OTEVŘE TVŮJ WEB NA GITHUBU A PŘEDÁ TEXT DO PAMĚTI
-      notif.onclick = function(event) {
-        event.preventDefault();
-        
-        localStorage.setItem('aktivni_vystraha_titul', dataVystrahy.titul);
-        localStorage.setItem('aktivni_vystraha_text', dataVystrahy.text);
-        
-        window.open('https://github.io', '_blank');
-      };
-
-      localStorage.setItem('posledni_vystraha_klic', aktualniVystrahaKlic);
+// === 2. FUNKCE: ODESÍLÁNÍ VÝSTRAH S POJISTKOU PROTI SPAMU (PRO VŠECHNA MĚSTA) ===
+function odeslatMeteoVystrahu(jev, stupen, mesto) {
+    // 1. POJISTKA S VELKÝM "S": Pokud uživatel nemá zapnuté sledování, kód nic neposílá
+    if (localStorage.getItem('webSledovan') !== 'true') {
+        return; 
     }
-  } else {
-    console.error("Chyba: Tento meteo jev nebo stupeň neexistuje v databázi.");
-  }
+
+    // 2. POJISTKA PROTI SPAMU: Hlídá, aby nevyskočila stejná výstraha pro stejné město znovu
+    const posledniOdeslanaVystraha = localStorage.getItem('posledni_vystraha_klic');
+    const aktualniVystrahaKlic = `${mesto}_${jev}_${stupen}`;
+
+    if (posledniOdeslanaVystraha === aktualniVystrahaKlic) {
+        console.log(`Výstraha na ${jev} pro lokalitu ${mesto} už byla odeslána. Konstrukce ignorována.`);
+        return; 
+    }
+
+    // 3. GENEROVÁNÍ TEXTU Z TVÉ DATABÁZE V KÓDU
+    if (meteoDopodusVystrahy[jev] && meteoDopodusVystrahy[jev][stupen]) {
+        const dataVystrahy = meteoDopodusVystrahy[jev][stupen];
+        
+        // Do textu dynamicky doplníme název aktuálního města
+        const upravenyTitul = `${dataVystrahy.titul}`;
+        const upravenyText = `V lokalitě ${mesto}: ${dataVystrahy.text}`;
+
+        // 4. ODESLÁNÍ SKUTEČNÉ SYSTÉMOVÉ NOTIFIKACE
+        if ('Notification' in window && Notification.permission === 'granted') {
+            const notif = new Notification(upravenyTitul, {
+                body: upravenyText,
+                icon: "https://github.io", // zde si pak doplň svou skutečnou ikonu webu
+                requireInteraction: true
+            });
+
+            // PO KLIKNUTÍ OTEVŘE TVŮJ WEB NA GITHUBU A PŘEDÁ TEXT DO PAMĚTI
+            notif.onclick = function(event) {
+                event.preventDefault();
+                localStorage.setItem('aktivni_vystraha_titul', upravenyTitul);
+                localStorage.setItem('aktivni_vystraha_text', upravenyText);
+                window.open('https://github.io', '_blank'); // zde si uprav na svou přesnou adresu webu
+            };
+        }
+
+        // Uložíme klíč do paměti, aby se výstraha za 30 minut neopakovala
+        localStorage.setItem('posledni_vystraha_klic', aktualniVystrahaKlic);
+
+    } else {
+        console.error("Chyba: Tento meteo jev nebo stupeň neexistuje v databázi.");
+    }
 }
 
 
 // === 3. FUNKCE: UNIVERZÁLNÍ MOZEK PRO AKTUÁLNÍ DATA I PŘEDPOVĚĎ DOPŘEDU ===
 function zkontrolujInternetAPosliVystrahy() {
-  const apiKey = "TVUJ_ZADANNY_API_KLIC"; // Sem dej svůj klíč z OpenWeatherMap
+  const apiKey = "042016eb9aaabd813847dc8153bfb03c"; // Sem dej svůj klíč z OpenWeatherMap
   const mesto = "Praha"; 
   
-  // 1. ADRESA PRO TVÉ GRAFY A TEPLOTY (AKTUÁLNÍ POČASÍ)
-  const urlAktualni = `https://openweathermap.org{mesto}&appid=${apiKey}&units=metric&lang=cz`;
-  
-  // 2. ADRESA PRO TVÉ VÝSTRAHY (PŘEDPOVĚĎ NA 24 HODIN DOPŘEDU)
-  const urlPredpoved = `https://openweathermap.org{mesto}&appid=${apiKey}&units=metric&lang=cz`;
+ // === NAČTENÍ AKTUÁLNÍHO MĚSTA A OPRAVA ADRES PRO API ===
+const aktualniMesto = document.getElementById('nazev-mesta')?.innerText || 'Olomouc';
+
+// 1. ADRESA PRO TVÉ GRAFY A TEPLOTY (AKTUÁLNÍ POČASÍ)
+const urlAktualni = `https://api.openweathermap.org/data/2.5/weather?q=${aktualniMesto}&appid=${apiKey}&units=metric&lang=cz`;
+
+// 2. ADRESA PRO TVÉ VÝSTRAHY (PŘEDPOVĚĎ NA 24 HODIN DOPŘEDU)
+const urlPredpoved = `https://api.openweathermap.org/data/2.5/forecast?q=${aktualniMesto}&appid=${apiKey}&units=metric&lang=cz`;
+
 
   // --- KROK A: NAČTENÍ DAT PRO GRAFY ---
   fetch(urlAktualni)
@@ -1807,31 +1947,34 @@ function zkontrolujInternetAPosliVystrahy() {
 
       // === VYHODNOCENÍ: POKUD KÓD NAJDE V PŘÍŠTÍCH 24h NEBEZPEČÍ, POSÍLÁ VAROVÁNÍ TEĎ HNED ===
 
-      // ⚡ Varování před bouřkou dopředu
-      if (hroziBourka) {
-        if (maximalniVitr >= 100) odeslatMeteoVystrahu('bourky', 4);
-        else if (maximalniVitr >= 80) odeslatMeteoVystrahu('bourky', 3); // ZÍTŘEJŠÍ VELMI SILNÉ BOUŘKY PÍPNOU UŽ TEĎ!
-        else if (maximalniVitr >= 60) odeslatMeteoVystrahu('bourky', 2);
-        else odeslatMeteoVystrahu('bourky', 1);
-      }
+          // 1. Zjistíme název aktuálně vybraného města z tvé stránky (uprav 'nazev-mesta' podle svého HTML)
+    const aktualniMesto = document.getElementById('nazev-mesta')?.innerText || 'vašem městě';
 
-      // 💨 Varování před silným větrem dopředu
-      if (maximalniVitr >= 40 && maximalniVitr < 60) odeslatMeteoVystrahu('vitr', 1);
-      else if (maximalniVitr >= 60 && maximalniVitr < 80) odeslatMeteoVystrahu('vitr', 2);
-      else if (maximalniVitr >= 80 && maximalniVitr < 100) odeslatMeteoVystrahu('vitr', 3);
-      else if (maximalniVitr >= 100) odeslatMeteoVystrahu('vitr', 4);
+    // 2. Vyhodnocení priorit – posílá se vždy jen jedna hlavní výstraha pro dané město
+    if (hroziBourka) {
+        if (maximalniVitr >= 100) odeslatMeteoVystrahu('bourky', 4, aktualniMesto);
+        else if (maximalniVitr >= 80) odeslatMeteoVystrahu('bourky', 3, aktualniMesto);
+        else if (maximalniVitr >= 60) odeslatMeteoVystrahu('bourky', 2, aktualniMesto);
+        else odeslatMeteoVystrahu('bourky', 1, aktualniMesto);
+    } 
+    else if (maximalniVitr >= 40) {
+        if (maximalniVitr >= 80) odeslatMeteoVystrahu('vitr', 3, aktualniMesto);
+        else if (maximalniVitr >= 60) odeslatMeteoVystrahu('vitr', 2, aktualniMesto);
+        else odeslatMeteoVystrahu('vitr', 1, aktualniMesto);
+    }
+    else if (maximalniTeplota >= 28) {
+        if (maximalniTeplota >= 38) odeslatMeteoVystrahu('teplo', 4, aktualniMesto);
+        else if (maximalniTeplota >= 35) odeslatMeteoVystrahu('teplo', 3, aktualniMesto);
+        else if (maximalniTeplota >= 32) odeslatMeteoVystrahu('teplo', 2, aktualniMesto);
+        else odeslatMeteoVystrahu('teplo', 1, aktualniMesto);
+    }
+    else if (minimalniTeplota <= 0) {
+        if (minimalniTeplota <= -20) odeslatMeteoVystrahu('mraz', 4, aktualniMesto);
+        else if (minimalniTeplota <= -12) odeslatMeteoVystrahu('mraz', 3, aktualniMesto);
+        else if (minimalniTeplota <= -5) odeslatMeteoVystrahu('mraz', 2, aktualniMesto);
+        else odeslatMeteoVystrahu('mraz', 1, aktualniMesto);
+    }
 
-      // 🔥 Varování před vedrem dopředu
-      if (maximalniTeplota >= 28 && maximalniTeplota < 32) odeslatMeteoVystrahu('teplo', 1);
-      else if (maximalniTeplota >= 32 && maximalniTeplota < 35) odeslatMeteoVystrahu('teplo', 2);
-      else if (maximalniTeplota >= 35 && maximalniTeplota < 38) odeslatMeteoVystrahu('teplo', 3);
-      else if (maximalniTeplota >= 38) odeslatMeteoVystrahu('teplo', 4);
-
-      // 🥶 Varování před mrazem dopředu
-      if (minimalniTeplota <= 0 && minimalniTeplota > -5) odeslatMeteoVystrahu('mraz', 1);
-      else if (minimalniTeplota <= -5 && minimalniTeplota > -12) odeslatMeteoVystrahu('mraz', 2);
-      else if (minimalniTeplota <= -12 && minimalniTeplota > -20) odeslatMeteoVystrahu('mraz', 3);
-      else if (minimalniTeplota <= -20) odeslatMeteoVystrahu('mraz', 4);
     })
     .catch(error => console.error("Chyba předpovědi výstrah:", error));
 }
@@ -1860,9 +2003,6 @@ function zkontrolujPrichodZVystrahy() {
     }
   }
 }
-
-// Spustíme kontrolu hned při načtení stránky
-zkontrolujPrichodZVystrahy();
 
     </script>
 </body>
