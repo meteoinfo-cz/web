@@ -597,12 +597,16 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
 </p>
 
 <div style="text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-accent); margin-bottom: 25px; box-sizing: border-box;">
-    <span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 11. 7. 2026</span>
-    <p style="margin: 0; color: var(--text-main); font-size: 15px; line-height: 1.4;">Přidán vyhledávač měst, přidáno 100 měst, změna drobných věcí, opravené malé chyby.</p>
+    <span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 18. 7. 2026</span>
+    <p style="margin: 0; color: var(--text-main); font-size: 15px; line-height: 1.4;">Přidáno 10 nových indexů, změna drobných věcí.</p>
 </div>
 <div style="text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-accent); margin-bottom: 25px; box-sizing: border-box;">
     <span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 13. 7. 2026</span>
     <p style="margin: 0; color: var(--text-main); font-size: 15px; line-height: 1.4;">Přidán zbytek měst z celé ČR, přidáno push upozornění, změna drobných věcí, opravené malé chyby.</p>
+</div>
+<div style="text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-accent); margin-bottom: 25px; box-sizing: border-box;">
+    <span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 11. 7. 2026</span>
+    <p style="margin: 0; color: var(--text-main); font-size: 15px; line-height: 1.4;">Přidán vyhledávač měst, přidáno 100 měst, změna drobných věcí, opravené malé chyby.</p>
 </div>
 
 
@@ -1352,13 +1356,35 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
         let rawSnowfall = 0;
 
         function updatePrecipitationDisplay() {
-            const elHodnota = document.getElementById('srazky-hodnota');
-            if (srazkyJednotka === "mm") {
-                elHodnota.innerText = rawPrecipitation !== undefined ? `${rawPrecipitation.toFixed(1)} mm` : "0.0 mm";
-            } else {
-                elHodnota.innerText = rawPrecipitation !== undefined ? `${(rawPrecipitation / 10).toFixed(2)} cm` : "0.00 cm";
+    const elHodnota = document.getElementById('srazky-hodnota');
+    if (!elHodnota) return;
+
+    // 1. Spočítáme celkový součet srážek od půlnoci do aktuální hodiny
+    let celkoveSrazkyDnes = 0;
+    const aktualniHodina = new Date().getHours();
+
+    // Předpokládám, že data z API máš v globální proměnné 'd' nebo 'data'
+    // Pokud se tvá proměnná s daty z API jmenuje jinak než 'd', přepiš to 'd' níže na tvůj název
+    const meteoData = (typeof d !== 'undefined') ? d : (typeof data !== 'undefined' ? data : null);
+
+    if (meteoData && meteoData.hourly && meteoData.hourly.precipitation) {
+        for (let i = 0; i <= aktualniHodina; i++) {
+            if (meteoData.hourly.precipitation[i] !== undefined) {
+                celkoveSrazkyDnes += meteoData.hourly.precipitation[i];
             }
         }
+    } else {
+        // Pokud data z pole ještě nejsou načtená, použijeme aktuální hodnotu
+        celkoveSrazkyDnes = rawPrecipitation !== undefined ? rawPrecipitation : 0;
+    }
+
+    // 2. Vypíšeme hodnotu podle zvolené jednotky (mm nebo cm)
+    if (srazkyJednotka === "mm") {
+        elHodnota.innerText = `${celkoveSrazkyDnes.toFixed(1)} mm`;
+    } else {
+        elHodnota.innerText = `${(celkoveSrazkyDnes / 10).toFixed(2)} cm`;
+    }
+}
 
         document.getElementById('meteo-srazky').addEventListener('click', () => {
             srazkyJednotka = (srazkyJednotka === "mm") ? "cm" : "mm";
@@ -1481,11 +1507,31 @@ function toggleTheme() {
                 rawWindSpeed = d.current.wind_speed_10m;
                 updateWindDisplay();
 
+
                 document.getElementById('meteo-vlhkost').innerHTML = `${Math.round(d.current.relative_humidity_2m)} %`;
                 document.getElementById('meteo-tlak').innerHTML = `${Math.round(d.current.pressure_msl)} hPa`;
 
                 rawPrecipitation = d.current.precipitation;
                 rawSnowfall = d.current.snowfall;
+
+// Spočítáme celkový součet srážek od půlnoci
+let celkoveSrazkyDnes = 0;
+const mistniHodina = new Date().getHours();
+const casovyPosunHodin = Math.round(new Date().getTimezoneOffset() / 60);
+const apiAktualniIndex = mistniHodina + casovyPosunHodin;
+
+if (d && d.hourly && d.hourly.precipitation) {
+    for (let i = 0; i <= apiAktualniIndex; i++) {
+        if (d.hourly.precipitation[i] !== undefined) {
+            celkoveSrazkyDnes += d.hourly.precipitation[i];
+        }
+    }
+} else {
+    celkoveSrazkyDnes = d.current.precipitation !== undefined ? d.current.precipitation : 0;
+}
+
+rawPrecipitation = celkoveSrazkyDnes;
+
                 updatePrecipitationDisplay();
 
                 document.getElementById('meteo-vychod').innerHTML = d.daily && d.daily.sunrise ? formatujCasSlunce(d.daily.sunrise[0]) : "---:---";
@@ -1557,6 +1603,7 @@ function toggleTheme() {
 }
         function aktualizujPsiIndex(t) {
     const box = document.getElementById('psi-box');
+    if (box) box.style.display = 'none';
     const hlaska = document.getElementById('psi-hlaska');
     document.getElementById('psi-stupne').innerText = `PSÍ INDEX PRO MĚSTO (${mName}):`;
     let text = ""; let barva = "";
@@ -1640,6 +1687,240 @@ function toggleTheme() {
         updateClock();
         setInterval(nactiPocasi, 600000);
         nactiPocasi();
+
+// Bezpečné vložení tlačítka PŘESNĚ pod zaškrtávátko
+if (!document.getElementById('open-indexes-btn')) {
+    const btn = document.createElement('button');
+    btn.id = 'open-indexes-btn';
+    btn.innerHTML = '📊 Zobrazit indexy aktivit (11)';
+    btn.style = "display:flex; align-items:center; justify-content:center; gap:8px; width:100%; background:linear-gradient(135deg, #1e293b, #0f172a); color:#f8fafc; border:1px solid #f97316; padding:10px 16px; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer; transition:all 0.2s; margin:15px 0 15px 0;";
+    btn.onmouseover = () => { btn.style.background = '#f97316'; btn.style.color = '#0f172a'; };
+    btn.onmouseout = () => { btn.style.background = 'linear-gradient(135deg, #1e293b, #0f172a)'; btn.style.color = '#f8fafc'; };
+
+    let foundLabel = null;
+    const labels = document.getElementsByTagName('label');
+    for (let i = 0; i < labels.length; i++) {
+        if (labels[i].textContent.includes('Nastavit jako výchozí')) {
+            foundLabel = labels[i];
+            break;
+        }
+    }
+
+    if (foundLabel) {
+        foundLabel.parentNode.insertBefore(btn, foundLabel.nextSibling);
+    } else {
+        const checkbox = document.querySelector('input[type="checkbox"]');
+        if (checkbox && checkbox.parentNode) {
+            checkbox.parentNode.appendChild(btn);
+        }
+    }
+
+        // Funkce pro otevření okna s 10 indexy vytáhnutými přímo z webu
+    btn.onclick = function() {
+        // Vytáhneme hodnoty přímo z textu prvků na webu
+        let temp = 25;
+        const tempEl = document.getElementById('teplota-aktualni');
+        if (tempEl) {
+            temp = parseFloat(tempEl.innerText.replace(/[^\d.-]/g, '')) || 25;
+        }
+
+        let humidity = 50;
+        const humEl = document.getElementById('meteo-vlhkost');
+        if (humEl) {
+            humidity = parseFloat(humEl.innerText.replace(/[^\d.-]/g, '')) || 50;
+        }
+
+        let wind = 10;
+        const windEl = document.getElementById('meteo-vitr') || document.querySelector('[id*="vitr"]');
+        if (windEl) {
+            wind = parseFloat(windEl.innerText.replace(/[^\d.-]/g, '')) || 10;
+        }
+
+        let rain = 0;
+        const rainEl = document.getElementById('meteo-srazky') || document.querySelector('[id*="srazky"]');
+        if (rainEl) {
+            rain = parseFloat(rainEl.innerText.replace(/[^\d.-]/g, '')) || 0;
+        }
+
+        let uv = 2.5;
+        const uvEl = document.getElementById('meteo-uv') || document.querySelector('[id*="uv"]');
+        if (uvEl) {
+            uv = parseFloat(uvEl.innerText.replace(/[^\d.-]/g, '')) || 2.5;
+        }
+
+        let indexModal = document.getElementById('indexes-modal');
+        if (!indexModal) {
+            indexModal = document.createElement('div');
+            indexModal.id = 'indexes-modal';
+            indexModal.style = "display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background-color:rgba(15,23,42,0.85); backdrop-filter:blur(5px); justify-content:center; align-items:center; padding:20px; box-sizing:border-box;";
+            document.body.appendChild(indexModal);
+        }
+
+        // 1. Komáři
+        let komari = "Nízká aktivita";
+        if (temp > 20 && wind < 10 && humidity > 60) komari = "Vysoká aktivita (ideální podmínky)";
+        else if (temp > 15 && wind < 15) komari = "Střední aktivita";
+
+        // 2. Klíšťata
+        let klistata = "Nízká aktivita";
+        if (temp >= 15 && temp <= 25 && humidity > 50) klistata = "Mimořádné riziko (předpověď stupně 9-10)";
+        else if (temp > 25 || temp < 10) klistata = "Mírné riziko";
+
+        // 3. Sušení prádla
+        let pradlo = "Nevhodné (uschne pomalu)";
+        if (rain > 0) pradlo = "⚠️ Nedoporučuje se (prší)";
+        else if (temp > 20 && humidity < 60) pradlo = "Vynikající (uschne velmi rychle)";
+        else if (temp > 15 && humidity < 70) pradlo = "Dobré (uschne během dne)";
+
+                        // 4. Astronomický index (analyzuje hodinovou předpověď na celou noc: 22:00 - 04:00)
+        let astro = "Zhoršená viditelnost, hvězd bude vidět málo.";
+        
+        try {
+            if (typeof d !== 'undefined' && d.hourly && d.hourly.weather_code) {
+                // Zjistíme aktuální index hodiny v poli
+                const aktualniHodina = new Date().getHours();
+                
+                // Nasbíráme kódy počasí a srážky pro kritické noční hodiny (od 22:00 do 04:00 rána)
+                let nocniKody = [];
+                let nocniSrazky = 0;
+                
+                // Projdeme následujících 8 hodin předpovědi
+                for (let i = 0; i < 8; i++) {
+                    let hIdx = aktualniHodina + i;
+                    // Pokud přejdeme přes půlnoc, Open-Meteo pole pokračuje dál (má 24 nebo více hodin)
+                    if (d.hourly.weather_code[hIdx] !== undefined) {
+                        nocniKody.push(d.hourly.weather_code[hIdx]);
+                        if (d.hourly.precipitation && d.hourly.precipitation[hIdx]) {
+                            nocniSrazky += d.hourly.precipitation[hIdx];
+                        }
+                    }
+                }
+
+                // Spočítáme, kolikrát se v noci objeví jaký typ počasí
+                let pocetJasno = 0;
+                let pocetPolojasno = 0;
+                let pocetZle = 0;
+
+                nocniKody.forEach(k => {
+                    if (k === 0) {
+                        pocetJasno++;
+                    } else if (k === 1 || k === 2 || k === 80 || k === 81 || k === 82) {
+                        pocetPolojasno++;
+                    } else if (k === 3 || k === 45 || k === 48 || k === 51 || k === 53 || k === 55 || k === 61 || k === 63 || k === 65 || k === 71 || k === 73 || k === 75 || k === 77 || k === 95) {
+                        pocetZle++;
+                    }
+                });
+
+                // Vyhodnocení podle vašich přesných pravidel pro celou noc
+                if (nocniSrazky > 0.5 || pocetZle >= 3) {
+                    // Pokud bude pršet nebo bude většinu noci zataženo/mlha/bouřka
+                    astro = "🚫 Mraky překrývají prakticky celou oblohu, pozorování hvězd je nemožné.";
+                } else if (pocetJasno > pocetPolojasno && pocetZle === 0) {
+                    // Pokud bude převládat úplně čisté nebe bez mraků
+                    astro = "🌌 Ideální příležitost pro sledování hvězd/planet.";
+                } else {
+                    // Polojasno, slabé přeháňky nebo střídavá oblačnost s měsícem
+                    astro = "☁️ Zhoršená viditelnost, hvězd bude vidět málo.";
+                }
+            } else {
+                // Záložní plán, pokud by hodinová data selhala, podíváme se na aktuální ikonku
+                const oblohaText = document.body.innerText.toLowerCase();
+                if (oblohaText.includes('zataženo') || oblohaText.includes('déšť') || oblohaText.includes('bouřka')) {
+                    astro = "🚫 Mraky překrývají prakticky celou oblohu, pozorování hvězd je nemožné.";
+                } else if (oblohaText.includes('jasno')) {
+                    astro = "🌌 Ideální příležitost pro sledování hvězd/planet.";
+                } else {
+                    astro = "☁️ Zhoršená viditelnost, hvězd bude vidět málo.";
+                }
+            }
+        } catch(e) {
+            astro = "☁️ Zhoršená viditelnost, hvězd bude vidět málo.";
+        }
+
+        // 5. Běžecký index
+        let beh = "Ideální na běh";
+        if (temp > 25) beh = "Zhoršené (příliš velké horko)";
+        else if (temp < 5 || rain > 1) beh = "Nevhodné podmínky";
+
+        // 6. Cyklistický index
+        let cyklo = "Skvělé na vyjížďku";
+        if (wind > 20) cyklo = "⚠️ Nebezpečné (silný nárazový vítr)";
+        else if (rain > 0.5) cyklo = "Zhoršené (mokrá silnice)";
+
+        // 7. Přírodní koupání
+        let prirKoupal = "Voda může být čistá (začátek sezóny)";
+        if (temp > 28 && humidity > 65) prirKoupal = "⚠️ Riziko výskytu sinic a zhoršené kvality vody!";
+
+        // 8. Ideální den na koupačku
+        let koupacka = "Zatím chladno na koupání";
+        if (temp >= 25 && uv > 2 && !prirKoupal.includes('sinic')) koupacka = "☀️ Perfektní den na koupačku u vody!";
+        else if (temp >= 25 && prirKoupal.includes('sinic')) koupacka = "Teplo je, ale přírodní koupaliště raději vynechte.";
+
+        // 9. Vyhřáté auto
+        let auto = "Bezpečné";
+        if (temp > 22 && uv > 1.5) {
+            let uvnitr = Math.round(temp + 15);
+            auto = `🚨 Kritické! Pokud svítí slunce, teplota v autě stoupne na ${uvnitr}°C během 20 minut!`;
+        }
+
+        // 10. Aquaplaning
+        let aqua = "Nízké riziko";
+        if (rain > 1.5 || (rain > 0 && wind > 20)) aqua = "⚠️ Vysoké riziko! Na silnicích hrozí stojící voda.";
+
+// Výpočet textu a barvy pro Psí index přímo z aktuální teploty (temp)
+let psiText = "";
+let barvaPsi = "";
+
+if (temp < -15) { psiText = "Pod -15 °C: Extrémní počasí. Venčení psů zkraťte pouze na nezbytnou potřebu."; barvaPsi = "#7f1d1d"; }
+else if (temp >= -15 && temp <= -10) { psiText = "-10 °C až -15 °C: Mrazivé počasí. Venčení zkraťte na maximálně 15 minut."; barvaPsi = "#ef4444"; }
+else if (temp > -9 && temp <= -4) { psiText = "-4 °C až -9 °C: Nebezpečné počasí pro malá plemena psů bez oblečku."; barvaPsi = "#f97316"; }
+else if (temp >= -3 && temp <= -1) { psiText = "-1 °C až -3 °C: Zimní počasí, naháči už potřebují funkční obleček."; barvaPsi = "#eab308"; }
+else if (temp >= 0 && temp <= 10) { psiText = "0 °C až 10 °C: Ideální počasí pro psí aktivitu, běh a dlouhé procházky."; barvaPsi = "#065f46"; }
+else if (temp >= 11 && temp <= 19) { psiText = "11 °C až 19 °C: Skvělé počasí na dlouhé procházky and bezpečné venčení psů."; barvaPsi = "#10b981"; }
+else if (temp >= 20 && temp <= 23) { psiText = "20 °C až 23 °C: Pozor u starších nebo nemocných psů při venčení na přímém slunci."; barvaPsi = "#eab308"; }
+else if (temp >= 24 && temp <= 28) { psiText = "24 °C až 28 °C: Začíná být teplo. Omezte náročný trénink psů, hrozí rychlé přehřátí."; barvaPsi = "#f97316"; }
+else if (temp >= 29 && temp <= 31) { psiText = "29 °C až 31 °C: Riziko přehřátí psa, hlavně na asfaltu. Bezpečné venčení směřujte pouze do stínu na trávu."; barvaPsi = "#ef4444"; }
+else { psiText = "Nad 32 °C: Extrémní vedro! Hrozí okamžitý úpal, při nejhorším kolaps psa. Tlapky pálí o horký asfalt. Rychle vyvenčete pouze ve stínu!"; barvaPsi = "#7f1d1d"; }
+
+// HTML karta pro vložení pod aquaplaning dovnitř indexModal.innerHTML
+const psiKartaHTML = `
+        <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid ${barvaPsi};"><strong>🐕 Psí index:</strong><br><span style="font-size: 13px; color: #cbd5e1;">${psiText}</span></div>
+`;
+
+
+
+                indexModal.innerHTML = `
+            <div style="background: linear-gradient(135deg, #1e293b, #0f172a); border: 2px solid #38bdf8; border-radius: 12px; max-width: 800px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); color: #f8fafc; font-family: sans-serif;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #334155; padding-bottom: 10px;">
+                    <h2 style="margin: 0; color: #38bdf8;">📊 Přehled indexů aktivit pro město</h2>
+                    <button id="close-indexes-btn" style="background: #38bdf8; border: none; color: #0f172a; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer;">Zavřít</button>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px;">
+                    <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #38bdf8;"><strong>🦟 Komáři:</strong><br><span style="font-size:13px; color:#cbd5e1;">${komari}</span></div>
+                    <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #34d399;"><strong>🕷️ Klíšťata:</strong><br><span style="font-size:13px; color:#cbd5e1;">${klistata}</span></div>
+                    <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #fbbf24;"><strong>🧺 Sušení prádla:</strong><br><span style="font-size:13px; color:#cbd5e1;">${pradlo}</span></div>
+                    <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #a78bfa;"><strong>🌌 Astronomický:</strong><br><span style="font-size:13px; color:#cbd5e1;">${astro}</span></div>
+                    <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #f472b6;"><strong>🏃 Běžecký:</strong><br><span style="font-size:13px; color:#cbd5e1;">${beh}</span></div>
+                    <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #60a5fa;"><strong>🚴 Cyklistický:</strong><br><span style="font-size:13px; color:#cbd5e1;">${cyklo}</span></div>
+                    <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #2dd4bf;"><strong>🏊 Přírodní koupání:</strong><br><span style="font-size:13px; color:#cbd5e1;">${prirKoupal}</span></div>
+                    <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #06b6d4;"><strong>🌊 Koupání obecně:</strong><br><span style="font-size:13px; color:#cbd5e1;">${koupacka}</span></div>
+                    <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #fb7185;"><strong>🚗 Vyhřáté auto:</strong><br><span style="font-size:13px; color:#cbd5e1;">${auto}</span></div>
+                    <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #38bdf8;"><strong>🌧️ Aquaplaning:</strong><br><span style="font-size:13px; color:#cbd5e1;">${aqua}</span></div>
+                    <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid ${barvaPsi};"><strong>🐕 Psí index:</strong><br><span style="font-size: 13px; color: #cbd5e1;">${psiText}</span></div>
+
+</div>
+
+                </div>
+            </div>
+        `;
+
+        indexModal.style.display = 'flex';
+
+        document.getElementById('close-indexes-btn').onclick = function() { indexModal.style.display = 'none'; };
+        indexModal.onclick = function(e) { if (e.target === indexModal) indexModal.style.display = 'none'; };
+    };
+}
+
     // --- KÓD PRO SLEDOVÁNÍ WEBU ---
     const followBtn = document.getElementById('follow-btn');
 
