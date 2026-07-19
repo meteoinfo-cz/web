@@ -2255,7 +2255,51 @@ function zkontrolujPrichodZVystrahy() {
 
 // Nezapomeň funkci pro kontrolu notifikací taky spustit
 zkontrolujPrichodZVystrahy();
+
+// --- 5. AUTOMATICKÉ PROG-SEO: DEKÓDOVÁNÍ VIRTUÁLNÍCH ADRES MĚST A INDEXŮ ---
+window.addEventListener('DOMContentLoaded', () => {
+    const mapaIndexu = {
+        'komari': 'Aktivita komárů', 'klistata': 'Aktivita klíšťat', 'suseni-pradla': 'Sušení prádla',
+        'astronomicky': 'Astronomický index', 'bezecky': 'Běžecký index', 'cyklisticky': 'Cyklistický index',
+        'prirodni-koupani': 'Přírodní koupání', 'koupani': 'Koupání obecně', 'vyhrate-auto': 'Vyhřáté auto',
+        'aquaplaning': 'Aquaplaning', 'psi-index': 'Psí index'
+    };
+    function zbavDiakritiky(t) {
+        const m = {'á':'a','č':'c','ď':'d','é':'e','ě':'e','í':'i','ň':'n','ó':'o','ř':'r','š':'s','ť':'t','ú':'u','ů':'u','ý':'y','ž':'z','ľ':'l','ô':'o'};
+        return t.toLowerCase().split('').map(z => m[z] || z).join('').replace(/[^a-z0-9\s-]/g, '').trim().replace(/[\s-]+/g, '-');
+    }
+    const path = window.location.pathname.replace(/\/$/, '').split('/');
+    const webIdx = path.findIndex(p => p === 'web');
+    if (webIdx === -1 || path.length <= webIdx + 1) return;
+    const urlMestoSlug = path[webIdx + 1];
+    const urlIndexSlug = path[webIdx + 2] || 'vse';
     
+    fetch('mesta.json')
+        .then(res => res.json())
+        .then(mesta => {
+            const nalezeneMesto = mesta.find(m => zbavDiakritiky(m.n) === urlMestoSlug);
+            if (!nalezeneMesto) return;
+            
+            const jmenoMesta = nalezeneMesto.n;
+            const lat = nalezeneMesto.la;
+            const lon = nalezeneMesto.lo;
+            
+            if (urlIndexSlug !== 'vse' && mapaIndexu[urlIndexSlug]) {
+                const jmenoIndexu = mapaIndexu[urlIndexSlug];
+                document.title = `${jmenoIndexu} - ${jmenoMesta} | MeteoInfo`;
+                const h1 = document.querySelector('h1');
+                if (h1) h1.innerText = `${jmenoMesta} - ${jmenoIndexu}`;
+            } else {
+                document.title = `Předpověď počasí ${jmenoMesta} | MeteoInfo`;
+                const h1 = document.querySelector('h1');
+                if (h1) h1.innerText = jmenoMesta;
+            }
+            
+            if (typeof nactiMesto === 'function') nactiMesto(jmenoMesta, lat, lon, urlIndexSlug);
+            else if (typeof zmenMesto === 'function') zmenMesto(jmenoMesta, lat, lon, urlIndexSlug);
+        }).catch(err => console.error("Chyba načítání měst:", err));
+});
+
 </script>
 </body>
 </html>
