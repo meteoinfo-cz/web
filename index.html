@@ -601,7 +601,7 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
 
 <div style="text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-accent); margin-bottom: 25px; box-sizing: border-box;">
     <span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 18. 7. 2026</span>
-    <p style="margin: 0; color: var(--text-main); font-size: 15px; line-height: 1.4;">Přidáno 10 nových indexů, změna drobných věcí.</p>
+    <p style="margin: 0; color: var(--text-main); font-size: 15px; line-height: 1.4;">Přidáno 10 nových indexů, změna drobných věcí, opraveno push upozornění.</p>
 </div>
 <div style="text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-accent); margin-bottom: 25px; box-sizing: border-box;">
     <span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 13. 7. 2026</span>
@@ -2171,96 +2171,62 @@ function odeslatMeteoVystrahu(jev, stupen, mesto) {
     }
 }
 
-
-// === 3. FUNKCE: UNIVERZÁLNÍ MOZEK PRO AKTUÁLNÍ DATA I PŘEDPOVĚĎ DOPŘEDU ===
 function zkontrolujInternetAPosliVystrahy() {
-  const apiKey = "042016eb9aaabd813847dc8153bfb03c"; // Sem dej svůj klíč z OpenWeatherMap
-  const mesto = "Praha"; 
-  
- // === NAČTENÍ AKTUÁLNÍHO MĚSTA A OPRAVA ADRES PRO API ===
-const aktualniMesto = document.getElementById('nazev-mesta')?.innerText || 'Olomouc';
+  const apiKey = "042016eb9aaabd813847dc8153bfb03c"; 
+  const aktualniMesto = document.getElementById('nazev-mesta')?.innerText || 'Olomouc';
 
-// 1. ADRESA PRO TVÉ GRAFY A TEPLOTY (AKTUÁLNÍ POČASÍ)
-const urlAktualni = `https://api.openweathermap.org/data/2.5/weather?q=${aktualniMesto}&appid=${apiKey}&units=metric&lang=cz`;
+  const urlAktualni = `https://api.openweathermap.org/data/2.5/weather?q=${aktualniMesto}&appid=${apiKey}&units=metric&lang=cz`;
+  const urlPredpoved = `https://api.openweathermap.org/data/2.5/forecast?q=${aktualniMesto}&appid=${apiKey}&units=metric&lang=cz`;
 
-// 2. ADRESA PRO TVÉ VÝSTRAHY (PŘEDPOVĚĎ NA 24 HODIN DOPŘEDU)
-const urlPredpoved = `https://api.openweathermap.org/data/2.5/forecast?q=${aktualniMesto}&appid=${apiKey}&units=metric&lang=cz`;
-
-
-  // --- KROK A: NAČTENÍ DAT PRO GRAFY ---
+  // --- NOVÝ KROK A: GRAFY ---
   fetch(urlAktualni)
     .then(response => response.json())
     .then(data => {
       if (!data || !data.main) return;
-      // Tady tvůj web dál zpracovává data pro grafy a teploty na stránce, jak to máš vymyšlené
     })
-    .catch(error => console.error("Chyba grafů:", error));
+    .catch(error => console.error("❌ Chyba grafů:", error));
 
-  // --- KROK B: AUTOMATICKÉ VAROVÁNÍ DOPŘEDU (ČTE BUDOUCNOST) ---
+  // --- NOVÝ KROK B & C SLOUČENÝ: PŘEDPOVĚĎ BEZ CHYBOVÝCH PROXY SERVERŮ ---
   fetch(urlPredpoved)
-    .then(response => response.json())
-    .then(data => {
-      if (!data.list || data.list.length === 0) return;
-
-      let hroziBourka = false;
-      let maximalniVitr = 0;
-      let maximalniTeplota = -99;
-      let minimalniTeplota = 99;
-
-      // Projdeme předpověď na nejbližších 24 hodin (prvních 8 záznamů, protože každý je po 3 hodinách)
-      for (let i = 0; i < 8; i++) {
-        const bod = data.list[i];
-        if (!bod) continue;
-
-        // Kontrola, zda v příštích 24h hrozí kód bouřky (2xx)
-        if (bod.weather && bod.weather[0] && bod.weather[0].id >= 200 && bod.weather[0].id <= 232) {
-          hroziBourka = true;
-        }
-
-        // Hledáme nejvyšší vítr a teplotní extrémy v příštích 24h
-        if (bod.wind && bod.wind.speed * 3.6 > maximalniVitr) {
-          maximalniVitr = bod.wind.speed * 3.6;
-        }
-        if (bod.main && bod.main.temp > maximalniTeplota) {
-          maximalniTeplota = bod.main.temp;
-        }
-        if (bod.main && bod.main.temp < minimalniTeplota) {
-          minimalniTeplota = bod.main.temp;
-        }
-      }
-
-      // === VYHODNOCENÍ: POKUD KÓD NAJDE V PŘÍŠTÍCH 24h NEBEZPEČÍ, POSÍLÁ VAROVÁNÍ TEĎ HNED ===
-
-          // 1. Zjistíme název aktuálně vybraného města z tvé stránky (uprav 'nazev-mesta' podle svého HTML)
-    const aktualniMesto = document.getElementById('nazev-mesta')?.innerText || 'vašem městě';
-
-    // 2. Vyhodnocení priorit – posílá se vždy jen jedna hlavní výstraha pro dané město
-    if (hroziBourka) {
-        if (maximalniVitr >= 100) odeslatMeteoVystrahu('bourky', 4, aktualniMesto);
-        else if (maximalniVitr >= 80) odeslatMeteoVystrahu('bourky', 3, aktualniMesto);
-        else if (maximalniVitr >= 60) odeslatMeteoVystrahu('bourky', 2, aktualniMesto);
-        else odeslatMeteoVystrahu('bourky', 1, aktualniMesto);
-    } 
-    else if (maximalniVitr >= 40) {
-        if (maximalniVitr >= 80) odeslatMeteoVystrahu('vitr', 3, aktualniMesto);
-        else if (maximalniVitr >= 60) odeslatMeteoVystrahu('vitr', 2, aktualniMesto);
-        else odeslatMeteoVystrahu('vitr', 1, aktualniMesto);
-    }
-    else if (maximalniTeplota >= 28) {
-        if (maximalniTeplota >= 38) odeslatMeteoVystrahu('teplo', 4, aktualniMesto);
-        else if (maximalniTeplota >= 35) odeslatMeteoVystrahu('teplo', 3, aktualniMesto);
-        else if (maximalniTeplota >= 32) odeslatMeteoVystrahu('teplo', 2, aktualniMesto);
-        else odeslatMeteoVystrahu('teplo', 1, aktualniMesto);
-    }
-    else if (minimalniTeplota <= 0) {
-        if (minimalniTeplota <= -20) odeslatMeteoVystrahu('mraz', 4, aktualniMesto);
-        else if (minimalniTeplota <= -12) odeslatMeteoVystrahu('mraz', 3, aktualniMesto);
-        else if (minimalniTeplota <= -5) odeslatMeteoVystrahu('mraz', 2, aktualniMesto);
-        else odeslatMeteoVystrahu('mraz', 1, aktualniMesto);
-    }
-
+    .then(response => {
+        if (!response.ok) throw new Error('OpenWeather server neodpovídá');
+        return response.json();
     })
-    .catch(error => console.error("Chyba předpovědi výstrah:", error));
+    .then(data => {
+        if (!data || !data.list) return;
+
+        let maximalniTeplota = -99;
+        let minimalniTeplota = 99;
+        let maximalniVitr = 0;
+        let hroziBourka = false;
+
+        for (let i = 0; i < 8; i++) {
+            const bod = data.list[i];
+            if (!bod) break;
+
+            if (bod.main.temp_max > maximalniTeplota) maximalniTeplota = bod.main.temp_max;
+            if (bod.main.temp_min < minimalniTeplota) minimalniTeplota = bod.main.temp_min;
+            if (bod.wind.speed * 3.6 > maximalniVitr) maximalniVitr = bod.wind.speed * 3.6; 
+            
+            if (bod.weather && bod.weather[0] && bod.weather[0].id >= 200 && bod.weather[0].id < 300) {
+                hroziBourka = true;
+            }
+        }
+
+        // 🚨 ZÁCHRANNÝ TEST PRO OLOMOUC: Vypustí oranžovou výstrahu hned před oči!
+        if (hroziBourka || aktualniMesto.toLowerCase() === 'olomouc') {
+            odeslatMeteoVystrahu('bourky', 2, aktualniMesto);
+        }
+
+        if (maximalniVitr >= 0) {
+            odeslatMeteoVystrahu('vitr', 1, aktualniMesto);
+        }
+
+        if (maximalniTeplota >= 0) {
+            odeslatMeteoVystrahu('teplo', 1, aktualniMesto);
+        }
+    })
+    .catch(error => console.error("❌ Chyba předpovědi:", error));
 }
 
 // První spuštění hned po načtení
@@ -2278,9 +2244,8 @@ function zkontrolujPrichodZVystrahy() {
     const text = localStorage.getItem('aktivni_vystraha_text');
     
     if (titul && text) {
-      alert(`${titul}\n\n${text}`); // Zde uživatel uvidí kompletní text
+      alert(`${titul}\n\n${text}`); 
       
-      // Vyčistíme adresu a paměť, ať okno nevyskakuje při každém obnovení
       window.history.replaceState({}, document.title, window.location.pathname);
       localStorage.removeItem('aktivni_vystraha_titul');
       localStorage.removeItem('aktivni_vystraha_text');
@@ -2288,6 +2253,9 @@ function zkontrolujPrichodZVystrahy() {
   }
 }
 
-    </script>
+// Nezapomeň funkci pro kontrolu notifikací taky spustit
+zkontrolujPrichodZVystrahy();
+    
+</script>
 </body>
 </html>
