@@ -1,0 +1,2269 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="19d1e1d0-e930-4394-a845-1b7b70261544"></script>
+<meta name="seznam-wmt" content="MJSxoUABEnAZFjswvy4JZjy6yms6sC35" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Předpověď počasí, aktuální informace a meteoradar online | MeteoInfo</title>
+<meta name="description" content="Aktuální předpověď počasí, meteoradar online, srážky a teploty pro města. Sledujte vývoj počasí na MeteoInfo.">
+<meta property="og:site_name" content="MeteoInfo">
+<meta name="apple-mobile-web-app-title" content="MeteoInfo">
+<meta name="application-name" content="MeteoInfo">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        :root {
+            --bg-body: #0b0f19;
+            --bg-card: #111827;
+            --bg-header: #1e293b;
+            --bg-inner: #0f172a;
+            --bg-inner-forecast: #1f2937;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-accent: #38bdf8;
+            --border-color: #1f2937;
+            --border-inner: #334155;
+            --text-dark-only: #ffffff;
+        }
+
+        [data-theme="light"] {
+            --bg-body: #f1f5f9;
+            --bg-card: #ffffff;
+            --bg-header: #cbd5e1;
+            --bg-inner: #cbd5e1;
+            --bg-inner-forecast: #94a3b8;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --text-accent: #0284c7;
+            --border-color: #cbd5e1;
+            --border-inner: #cbd5e1;
+            --text-dark-only: #0f172a;
+        }
+
+        body { font-family: Arial, sans-serif; background: var(--bg-body); color: var(--text-main); padding: 20px; box-sizing: border-box; transition: background 0.2s, color 0.2s; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        
+        header { position: relative; display: flex; justify-content: space-between; padding: 15px; background: var(--bg-header); border-radius: 12px; align-items: center; }
+        .header-left { display: flex; flex-direction: column; gap: 4px; min-width: 250px; z-index: 2; }
+        .header-right { display: flex; align-items: center; gap: 20px; min-width: 320px; justify-content: flex-end; z-index: 2; }
+        
+        .header-center-title {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            margin: 0;
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: var(--text-accent);
+            letter-spacing: 1px;
+            text-shadow: 0px 2px 4px rgba(0,0,0,0.5);
+            z-index: 1;
+            white-space: nowrap;
+        }
+
+        .grid-top { display: grid; grid-template-columns: 350px 810px; gap: 20px; margin-top: 20px; justify-content: space-between; }
+        @media (max-width: 1200px) { .grid-top { grid-template-columns: 1fr; justify-content: center; } }
+
+        .card { background: var(--bg-card); border-radius: 12px; padding: 20px; border: 1px solid var(--border-color); height: auto; display: flex; flex-direction: column; overflow: hidden; max-width: 100%; box-sizing: border-box; }
+        .asistent-box { padding: 15px; border-radius: 8px; margin-top: 0; border-left: 4px solid #64748b; background: var(--bg-inner); }
+        .psi-box { padding: 15px; border-radius: 8px; margin-top: 15px; background: var(--bg-inner); border-left: 4px solid #cbd5e1; }
+
+        .meteo-details-box { display: flex; justify-content: space-around; background: var(--bg-inner); padding: 12px; border-radius: 8px; margin-top: 15px; border: 1px solid var(--border-inner); flex-wrap: wrap; gap: 10px; }
+        .meteo-detail-polozka { text-align: center; font-size: 0.85rem; color: var(--text-main); min-width: 65px; }
+        .meteo-detail-hodnota { display: block; font-weight: bold; color: var(--text-accent); margin-top: 2px; font-size: 0.95rem; }
+
+        .meteo-srazky, .meteo-vitr { cursor: pointer; user-select: none; }
+        .hourly-scroll-container { display: flex; justify-content: flex-start; gap: 10px; overflow-x: auto !important; padding-bottom: 12px; margin-top: 10px; margin-bottom: 5px; scrollbar-width: thin; flex-wrap: nowrap !important; width: 100%; box-sizing: border-box; }
+        .hourly-item { background: var(--bg-inner-forecast); border: 1px solid var(--border-inner); border-radius: 10px; padding: 8px; text-align: center; min-width: 85px; max-width: 85px; flex-shrink: 0 !important; display: inline-block; box-sizing: border-box; }
+        .hourly-time { font-size: 0.8rem; color: var(--text-main) !important; font-weight: bold; }
+        .hourly-icon { width: 52px; height: 52px; margin: 4px 0; }
+        .hourly-temp { font-size: 0.9rem; font-weight: bold; }
+
+        .chart-container { position: relative; height: 220px; width: 100%; margin-top: 10px; }
+        .chart-toggle-btn { background: var(--bg-inner); border: 1px solid var(--border-inner); color: var(--text-main); padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; }
+        .chart-toggle-btn.active { background: var(--text-accent); color: #ffffff; border-color: var(--text-accent); font-weight: bold; }
+        .chart-btn-group { display: flex; gap: 8px; margin-bottom: 10px; }
+
+        .forecast-grid-scroll { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+        .forecast-day-row { display: flex; justify-content: space-between; align-items: center; background: var(--bg-inner); padding: 10px 15px; border-radius: 8px; border: 1px solid var(--border-inner); font-size: 0.9rem; }
+        .forecast-date { color: var(--text-muted); min-width: 90px; }
+        .forecast-subdata { font-size: 0.8rem; color: var(--text-muted); display: flex; gap: 15px; }
+        .weather-icon { width: 28px; height: 28px; }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 1000; }
+        .modal-overlay.active { display: flex; }
+        .modal-box { background: var(--bg-card); padding: 25px; border-radius: 12px; border: 1px solid var(--border-color); max-width: 500px; width: 90%; position: relative; color: var(--text-main); }
+        .close-btn { background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; display: block; margin: 15px auto 0 auto; }
+
+        .header-btn { background: var(--bg-inner); border: 1px solid var(--border-inner); color: var(--text-main); padding: 6px 12px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 0.85rem; }
+        .header-btn:hover { border-color: var(--text-accent); }
+
+        .o-webu-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            cursor: pointer;
+            margin-left: 10px;
+            padding: 0;
+            text-decoration: underline;
+        }
+        .o-webu-btn:hover {
+            color: var(--text-accent);
+        }
+
+        .radar-box {
+            width: 100%;
+            margin: 10px auto;
+            background: #111622;
+            padding: 10px;
+            border-radius: 8px;
+            color: var(--text-main);
+            border: 1px solid var(--border-inner);
+            box-sizing: border-box;
+        }
+@media (max-width: 900px) {
+  header {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 15px !important;
+    padding: 15px !important;
+  }
+    .mobilni-sledovat-kontejner {
+        position: static !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        width: 100% !important;
+        margin-top: 10px !important;
+    
+    }
+
+  .header-left, .header-right {
+    min-width: unset !important;
+    width: 100% !important;
+    justify-content: center !important;
+    align-items: center !important;
+    text-align: center !important;
+  }
+  .header-center-title {
+    position: static !important;
+    transform: none !important;
+    margin: 10px 0 !important;
+    font-size: 1.8rem !important;
+  }
+  .header-right {
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+  }
+  .forecast-grid-scroll, .hourly-scroll-container {
+    display: flex !important;
+    overflow-x: auto !important;
+    white-space: nowrap !important;
+    width: 100% !important;
+  }
+}
+/* Kontejner pod přepínačem měsíce */
+.follow-container-header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 8px;
+    position: absolute;
+    right: 15px;
+    top: 45px;
+}
+/* Stylování informačního kontejneru */
+.info-tooltip-container {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    margin-left: 8px;
+    cursor: pointer;
+}
+
+/* Vzhled kroužku s "i" */
+.info-box {
+    width: 18px;
+    height: 18px;
+    background-color: #374151;
+    color: #9ca3af;
+    border-radius: 50%;
+    text-align: center;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 18px;
+    font-family: sans-serif;
+    border: 1px solid #4b5563;
+    transition: background 0.2s, color 0.2s;
+}
+
+.info-tooltip-container:hover .info-box {
+    background-color: #4b5563;
+    color: #fff;
+}
+
+/* Skrytý text nápovědy, který se objeví nad ikonkou */
+.tooltip-text {
+    visibility: hidden;
+    width: 240px;
+    background-color: #1f2937;
+    color: #fff;
+    text-align: left;
+    border-radius: 6px;
+    padding: 10px;
+    position: absolute;
+    z-index: 1000;
+    bottom: 130%; /* Zobrazí se nad ikonkou */
+    right: 0;
+    font-size: 12px;
+    line-height: 1.4;
+    border: 1px solid #374151;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    opacity: 0;
+    transition: opacity 0.2s, visibility 0.2s;
+}
+
+/* Zobrazení bubliny při najetí myší */
+.info-tooltip-container:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
+
+/* Tlačítko Sledovat web */
+.btn-follow {
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-follow:hover { 
+    background-color: #1d4ed8; 
+}
+
+/* Aktivní stav po kliknutí (Sledováno) */
+.btn-follow.active {
+    background-color: #1e293b;
+    color: #94a3b8;
+    border: 1px solid #334155;
+}
+
+/* Čtvereček [i] */
+.info-tooltip-container {
+    position: relative;
+    display: inline-block;
+}
+
+.info-box {
+    width: 20px;
+    height: 20px;
+    background-color: #1e293b;
+    color: #94a3b8;
+    border: 1px solid #334155;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: monospace;
+    font-weight: bold;
+    font-size: 12px;
+    cursor: help;
+    transition: all 0.2s;
+}
+.info-box:hover {
+    background-color: #334155;
+    color: white;
+}
+
+/* Vyskakovací bublina s textem */
+.tooltip-text {
+    visibility: hidden;
+    width: 240px;
+    background-color: #0f172a;
+    color: #e2e8f0;
+    text-align: left;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 12px;
+    line-height: 1.4;
+    position: absolute;
+    top: 125%;
+    right: 0;
+    z-index: 99;
+    opacity: 0;
+    transition: opacity 0.3s;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
+}
+
+/* Zobrazení bubliny při najetí myší na [i] */
+.info-tooltip-container:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+         <header style="display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; background: var(--bg-header); border-radius: 12px; position: relative;">
+
+        
+        <!-- LEVÁ STRANA: Čas, datum a systémová tlačítka -->
+        <div class="header-left" style="display: flex; align-items: center; gap: 8px;">
+            <span id="live-time" style="font-size: 1.3rem; font-weight: bold; letter-spacing: 0.5px; color: var(--text-main);">13:57:13</span>
+            <div style="font-size: 0.85rem; color: var(--text-muted); display: flex; align-items: center; gap: 5px;">
+                <span id="live-date">9. 7. 2026</span>
+                <span>|</span>
+                <button class="o-webu-btn" onclick="document.getElementById('author-modal').classList.add('active')">O webu</button>
+                <span>|</span>
+                <button class="o-webu-btn" onclick="document.getElementById('updates-modal').classList.add('active')">Aktualizace</button>
+            </div>
+        </div>
+
+        <!-- STŘED: Původní nápis s neviditelným textem pro Google -->
+        <h1 class="header-center-title" style="margin: 0; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);">MeteoInfo</h1>
+<h2 style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0;">
+Aktuální předpověď počasí, meteoradar, srážky a teploty pro města online</h2>
+        
+
+        <!-- PRAVÁ STRANA: Krabičky natvrdo vpravo (přesně tam, kde je chceš) -->
+        <div style="display: flex; gap: 8px; align-items: center;">
+            <button class="header-btn" onclick="document.getElementById('radar-modal').classList.add('active')">☄️ Meteoradar</button>
+            <button id="moon-trigger-btn" class="header-btn" onclick="document.getElementById('moon-modal').classList.add('active')">🌙 Měsíc: 🌓
+            <button id="theme-button" class="header-btn" onclick="toggleTheme()" style="font-size: 1.1rem; padding: 4px 10px;">🌙</button>
+
+<div class="mobilni-sledovat-kontejner">
+    <button id="follow-btn" class="btn-follow">🔔 Sledovat web</button>
+    <div class="info-tooltip-container">
+        <div class="info-box">i</div>
+        <div class="tooltip-text">
+            Po kliknutí na tlačítko Sledovat Vám začnou přicházet zprávy o mimořádných situacích (např. silné bouřky, vichřice). Sledování můžete kdykoliv zrušit.
+        </div>
+    </div>
+</div>
+
+
+    </header>        <div class="grid-top">
+            <div class="card" style="gap: 15px;">
+    <!-- ======================================================= -->
+    <!-- FINÁLNÍ A STABLE NAŠEPTÁVAČ MĚST WITH AUTOMATIC PRAHA    -->
+    <!-- ======================================================= -->
+    <div style="position: relative; width: 100%; margin-bottom: 10px; box-sizing: border-box;">
+        <input type="text" id="main-search" placeholder="🔍 Napiš město a vyber ze seznamu..." style="width: 100%; padding: 12px 15px; border: 2px solid var(--border-color); border-radius: 8px; background: var(--bg-color); color: var(--text-main); font-size: 16px; box-sizing: border-box; outline: none; transition: border-color 0.2s;">
+        
+        <!-- Plovoucí tabulka s výsledky vyhledávání -->
+        <div id="main-suggestions" style="position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-card); border: 2px solid var(--border-color); border-radius: 8px; max-height: 250px; overflow-y: auto; z-index: 9999; display: none; margin-top: 5px; box-shadow: 0 8px 16px rgba(0,0,0,0.2); box-sizing: border-box;"></div>
+    </div>
+
+    <script>
+    (function() {
+      // --- 1. KONTROLA PŘI STARTU STRÁNKY / STISKNUTÍ F5 ---
+      const savedUserCity = localStorage.getItem('user_permanently_saved_home');
+      
+      // Pokud uživatel vybral město přes vyhledávač v této relaci
+      if (sessionStorage.getItem('search_city_active') === 'true') {
+        // Počkáme na načtení HTML a čtvereček natvrdo odškrtneme
+        window.addEventListener('DOMContentLoaded', () => {
+          const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
+          if (chkBox) chkBox.checked = false;
+          sessionStorage.removeItem('search_city_active'); // Smažeme dočasný stav pro příští F5
+        });
+      } 
+      // Pokud uživatel nemá trvale uložený domov, podstrčíme mu Prahu se zaškrtnutým políčkem
+      else if (savedUserCity !== 'true') {
+        localStorage.setItem('defaultCityName', 'Praha');
+        localStorage.setItem('defaultCityLat', '50.08');
+        localStorage.setItem('defaultCityLon', '14.42');
+        localStorage.setItem('defaultCityTemp', '22');
+        
+        // Aktualizace proměnných pro tvůj hlavní skript
+        mName = "Praha"; lat = 50.08; lon = 14.42; sTemp = 22;
+        
+        // Počkáme na načtení HTML a čtvereček natvrdo zaškrtneme
+        window.addEventListener('DOMContentLoaded', () => {
+          const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
+          if (chkBox) chkBox.checked = true;
+        });
+      }
+
+      // --- 2. SLEDOVÁNÍ ZMĚNY CHECKBOXU PRO TRVALÉ ULOŽENÍ VÝCHOZÍHO MĚSTA ---
+      window.addEventListener('DOMContentLoaded', () => {
+        const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
+        if (chkBox) {
+          chkBox.addEventListener('change', function() {
+            if (this.checked) {
+              // Pokud uživatel čtvereček zaškrtne sám, zablokujeme automatický návrat k Praze při F5
+              localStorage.setItem('user_permanently_saved_home', 'true');
+            } else {
+              // Pokud ho odškrtne, web se při F5 vrátí k Praze
+              localStorage.removeItem('user_permanently_saved_home');
+            }
+          });
+        }
+
+        // --- 3. LOGIKA SAMOTNÉHO VYHLEDÁVÁNÍ MĚST ---
+        const mainSearch = document.getElementById('main-search');
+        const mainSuggestions = document.getElementById('main-suggestions');
+        if (!mainSearch || !mainSuggestions) return;
+
+        mainSearch.addEventListener('input', function(e) {
+          const text = e.target.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+          mainSuggestions.innerHTML = '';
+          if (text.length === 0) { mainSuggestions.style.display = 'none'; return; }
+          
+          const nalezenaMesta = mm.filter(m => m.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").startsWith(text));
+          if (nalezenaMesta.length > 0) {
+            mainSuggestions.style.display = 'block';
+            nalezenaMesta.forEach(mesta => {
+              const div = document.createElement('div'); div.innerText = mesta.n;
+              div.style.padding = '12px 15px'; div.style.cursor = 'pointer'; div.style.borderBottom = '1px solid var(--border-inner)'; div.style.color = 'var(--text-main)'; div.style.fontSize = '15px';
+              div.addEventListener('mouseenter', () => div.style.background = 'var(--border-color)');
+              div.addEventListener('mouseleave', () => div.style.background = 'transparent');
+              
+              // KLIKNUTÍ NA MĚSTO V SEZNAMU VYHLEDÁVAČE
+              div.addEventListener('click', () => {
+                // Aktivujeme režim vyhledaného města (odškrtne checkbox po reloadu)
+                sessionStorage.setItem('search_city_active', 'true');
+                
+                // Zapíšeme hodnoty vybraného města do paměti
+                localStorage.setItem('defaultCityName', mesta.n);
+                localStorage.setItem('defaultCityLat', mesta.la.toString());
+                localStorage.setItem('defaultCityLon', mesta.lo.toString());
+                localStorage.setItem('defaultCityTemp', mesta.t.toString());
+
+                mainSearch.value = '';
+                mainSuggestions.style.display = 'none';
+                
+                // Restartujeme stránku pro 100% načtení čistých dat z API
+                location.reload();
+              });
+              mainSuggestions.appendChild(div);
+            });
+          } else { mainSuggestions.style.display = 'none'; }
+        });
+
+        document.addEventListener('click', function(e) { if (e.target !== mainSearch && e.target !== mainSuggestions) mainSuggestions.style.display = 'none'; });
+      });
+    })();
+    </script>
+                 <div style="text-align: center; position: relative;">
+                    <h2 id="mesto-hlavni-nazev" style="margin: 0 0 5px 0; font-size: 1.4rem; font-weight: bold; display: inline-block;">---</h2>
+                    <div id="teplota-aktualni" style="font-size: 3.5rem; font-weight: bold; margin: 5px 0; line-height: 1;">---°C</div>
+                    <div id="teplota-pocitova" style="font-size: 0.9rem; color: var(--text-muted);">Pocitová teplota: ---°C</div>
+                    <div style="margin-top: 10px; font-size: 0.8rem; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                        <label style="cursor: pointer; user-select: none;">
+                            <input type="checkbox" id="set-default-city-chk"> Nastavit jako výchozí
+                        </label>
+                        
+                    </div>
+                </div>
+
+                <div class="meteo-details-box">
+                    <div class="meteo-detail-polozka" id="meteo-vitr" title="Kliknutím přepnete jednotky">
+                        💨 Vítr
+                        <span id="vitr-hodnota" class="meteo-detail-hodnota">---</span>
+                    </div>
+                    <div class="meteo-detail-polozka">
+                        💧 Vlhkost
+                        <span id="meteo-vlhkost" class="meteo-detail-hodnota">---</span>
+                    </div>
+                    <div class="meteo-detail-polozka">
+                        🎈 Tlak
+                        <span id="meteo-tlak" class="meteo-detail-hodnota">---</span>
+                    </div>
+                    <div class="meteo-detail-polozka" id="meteo-srazky" title="Kliknutím přepnete jednotky">
+                        🌧️ Srážky
+                        <span id="srazky-hodnota" class="meteo-detail-hodnota">---</span>
+                    </div>
+                    <div class="meteo-detail-polozka">
+                        🌅 Východ
+                        <span id="meteo-vychod" class="meteo-detail-hodnota">---</span>
+                    </div>
+                    <div class="meteo-detail-polozka">
+                        🌇 Západ
+                        <span id="meteo-zapad" class="meteo-detail-hodnota">---</span>
+                    </div>
+                    <div class="meteo-detail-polozka">
+                        ☀️ UV Index
+                        <span id="meteo-uv" class="meteo-detail-hodnota">---</span>
+                    </div>
+                    <div class="meteo-detail-polozka">
+                        🍃 Ovzduší
+                        <span id="meteo-ovzdusi" class="meteo-detail-hodnota">---</span>
+                    </div>
+                </div>
+
+                <div id="asistent-box" class="asistent-box">
+                    <h3 id="asistent-stupne" style="margin: 0 0 8px 0; font-size: 0.95rem; font-weight: bold; color: var(--text-accent);">METEO ASISTENT:</h3>
+                    <div id="asistent-hlaska" style="font-size: 0.85rem; line-height: 1.4;">Načítání doporučení...</div>
+                </div>
+
+                <div id="psi-box" class="psi-box">
+                    <h3 id="psi-stupne" style="margin: 0 0 8px 0; font-size: 0.95rem; font-weight: bold; color: var(--text-accent);">PSÍ INDEX:</h3>
+                    <div id="psi-hlaska" style="font-size: 0.85rem; line-height: 1.4;">Načítání indexu pro venčení...</div>
+                </div>
+            </div>
+
+            <div class="card" style="gap: 20px;">
+                <div>
+                    <h3 id="hodinova-nadpis" style="margin: 0 0 5px 0; font-size: 1.1rem; color: var(--text-accent);">Hodinová předpověď</h3>
+                    <div class="hourly-scroll-container" id="hourly-container"></div>
+                </div>
+
+                <div>
+                    <h3 style="margin: 5px 0 8px 0; font-size: 1.1rem; color: var(--text-accent);">Vývoj počasí na 3 dny</h3>
+                    <div class="chart-btn-group">
+                        <button id="btn-chart-temp" class="chart-toggle-btn active" onclick="switchChart('temp')">Teplota</button>
+                        <button id="btn-chart-rain" class="chart-toggle-btn" onclick="switchChart('rain')">Srážky</button>
+                        <button id="btn-chart-wind" class="chart-toggle-btn" onclick="switchChart('wind')">Vítr</button>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="meteoChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" style="margin-top: 20px;">
+            <h3 id="predpoved-nadpis" style="margin: 0 0 15px 0; font-size: 1.2rem; color: var(--text-accent);">Předpověď na 14 dní</h3>
+            <div class="forecast-grid-scroll" id="forecast-container"></div>
+        </div>
+    </div>
+
+    <div id="radar-modal" class="modal-overlay">
+        <div class="modal-box" style="max-width: 950px; width: 95%;">
+            <h3 style="margin-top: 0; color: var(--text-accent); text-align: center;">🛰️ Živý srážkový meteoradar (RainViewer)</h3>
+            
+            <div class="radar-box" style="padding: 0; overflow: hidden; border-radius: 8px;">
+                <iframe src="https://www.rainviewer.com/map.html?loc=49.2044,16.0491,5.825044397602779&oC=true&oCS=1&oF=1&c=9&o=83&lm=1&layer=radar&sm=1&sn=1" style="border:0; width:100%; height:50vh;" allowfullscreen></iframe>
+            </div>
+            
+            <button class="close-btn" onclick="document.getElementById('radar-modal').classList.remove('active')">Zavřít radar</button>
+        </div>
+    </div>
+
+    <div id="moon-modal" class="modal-overlay">
+        <div class="modal-box">
+            <h3 style="margin-top: 0; color: var(--text-accent);">Předpověď fází Měsíce</h3>
+            <div id="moon-current-status" style="font-weight: bold; margin-bottom: 10px; font-size: 0.95rem;"></div>
+            <div style="max-height: 300px; overflow-y: auto;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+                    <thead>
+                        <tr style="border-bottom: 1px solid var(--border-inner); text-align: left;">
+                            <th>Datum</th>
+                            <th style="text-align: center;">Ikona</th>
+                            <th>Fáze</th>
+                            <th style="text-align: right;">Osvětlení</th>
+                        </tr>
+                    </thead>
+                    <tbody id="moon-forecast-rows"></tbody>
+                </table>
+            </div>
+            <button class="close-btn" onclick="document.getElementById('moon-modal').classList.remove('active')">Zavřít přehled</button>
+        </div>
+    </div>
+
+    <div id="m-modal" class="modal-overlay">
+        <div class="modal-box">
+            <h3 style="margin-top: 0; color: var(--text-accent);">Vyberte město pro předpověď</h3>
+            <div id="m-list" style="max-height: 350px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; padding-right: 5px;"></div>
+            <button class="close-btn" style="margin-top: 15px; display: inline-block;" onclick="document.getElementById('m-modal').classList.remove('active')">Zavřít okno</button>
+        </div>
+    </div>
+
+    <div id="author-modal" class="modal-overlay">
+        <div class="modal-box">
+            <h3 style="margin-top: 0; color: var(--text-accent);">O webu MeteoInfo</h3>
+            <p style="font-size: 0.95rem; line-height: 1.6; color: var(--text-main); text-align: left; margin-bottom: 0;">
+                Tato webová stránka byla založena 28. 6. 2026 uživatelem Tadeas, který je také přítomen na meteorologickém portálu In-počasí. Můžete zde najít všechna města v ČR (610 měst), a informace o počasí v každém z nich, nebo třeba i meteo asistenta či psí index. Lze si také měnit tmavý a světlý motiv stránky.
+            </p>
+            <button class="close-btn" onclick="document.getElementById('author-modal').classList.remove('active')">Zavřít okno</button>
+        </div>
+    </div>
+
+    <div id="updates-modal" class="modal-overlay">
+        <div class="modal-box">
+            <h3 style="margin-top: 0; color: var(--text-accent);">Aktualizace webu</h3>
+            <p style="font-size: 0.95rem; line-height: 1.6; color: var(--text-main); text-align: left; margin-bottom: 20px;">
+    Tento web bude pravidelně procházet několika aktualizacemi, které pomohou náš web vylepšit a rozšířit.
+</p>
+
+<div style="text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-accent); margin-bottom: 25px; box-sizing: border-box;">
+    <span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 18. 7. 2026</span>
+    <p style="margin: 0; color: var(--text-main); font-size: 15px; line-height: 1.4;">Přidáno 10 nových indexů, změna drobných věcí.</p>
+</div>
+<div style="text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-accent); margin-bottom: 25px; box-sizing: border-box;">
+    <span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 13. 7. 2026</span>
+    <p style="margin: 0; color: var(--text-main); font-size: 15px; line-height: 1.4;">Přidán zbytek měst z celé ČR, přidáno push upozornění, změna drobných věcí, opravené malé chyby.</p>
+</div>
+<div style="text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-accent); margin-bottom: 25px; box-sizing: border-box;">
+    <span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 11. 7. 2026</span>
+    <p style="margin: 0; color: var(--text-main); font-size: 15px; line-height: 1.4;">Přidán vyhledávač měst, přidáno 100 měst, změna drobných věcí, opravené malé chyby.</p>
+</div>
+
+
+<button class="close-btn" onclick="document.getElementById('updates-modal').classList.remove('active')">Zavřít okno</button>
+
+        </div>
+    </div>
+
+    <script>
+        const mm = [
+{"n":"Abertamy", "la":50.37, "lo":12.82, "t":21},
+  {"n":"Adamov", "la":49.30, "lo":16.65, "t":21},
+  {"n":"Andělská Hora", "la":50.06, "lo":17.39, "t":21},
+  {"n":"Aš", "la":50.22, "lo":12.19, "t":21},
+  {"n":"Bakov nad Jizerou", "la":50.48, "lo":14.94, "t":21},
+  {"n":"Bavorov", "la":49.12, "lo":14.08, "t":21},
+  {"n":"Bečov nad Teplou", "la":50.08, "lo":12.84, "t":21},
+  {"n":"Bechyně", "la":49.29, "lo":14.47, "t":21},
+  {"n":"Bělá nad Radbuzou", "la":49.59, "lo":12.72, "t":21},
+  {"n":"Bělá pod Bezdězem", "la":50.50, "lo":14.80, "t":21},
+  {"n":"Bělčice", "la":49.50, "lo":13.88, "t":21},
+  {"n":"Benátky nad Jizerou", "la":50.29, "lo":14.82, "t":21},
+  {"n":"Benešov", "la":49.78, "lo":14.69, "t":21},
+  {"n":"Benešov nad Ploučnicí", "la":50.73, "lo":14.31, "t":21},
+  {"n":"Beroun", "la":49.96, "lo":14.07, "t":21},
+  {"n":"Bezdružice", "la":49.91, "lo":12.97, "t":21},
+  {"n":"Bílina", "la":50.55, "lo":13.78, "t":21},
+  {"n":"Bílovec", "la":49.76, "lo":18.01, "t":21},
+  {"n":"Blansko", "la":49.36, "lo":16.64, "t":21},
+  {"n":"Blatná", "la":49.42, "lo":13.88, "t":21},
+  {"n":"Blovice", "la":49.58, "lo":13.54, "t":21},
+  {"n":"Blšany", "la":50.21, "lo":13.47, "t":21},
+  {"n":"Bohumín", "la":49.90, "lo":18.35, "t":21},
+  {"n":"Bohušovice nad Ohří", "la":50.49, "lo":14.15, "t":21},
+  {"n":"Bochov", "la":50.15, "lo":13.05, "t":21},
+  {"n":"Bojkovice", "la":49.04, "lo":17.81, "t":21},
+  {"n":"Bor", "la":49.71, "lo":12.77, "t":21},
+  {"n":"Borohrádek", "la":50.10, "lo":16.09, "t":21},
+  {"n":"Borovany", "la":48.90, "lo":14.64, "t":21},
+  {"n":"Boskovice", "la":49.49, "lo":16.66, "t":21},
+  {"n":"Boží Dar", "la":50.41, "lo":12.92, "t":21},
+  {"n":"Brandýs nad Labem-Stará Boleslav", "la":50.19, "lo":14.66, "t":21},
+  {"n":"Brandýs nad Orlicí", "la":50.00, "lo":16.22, "t":21},
+  {"n":"Brno", "la":49.20, "lo":16.61, "t":21},
+  {"n":"Broumov", "la":50.59, "lo":16.33, "t":21},
+  {"n":"Brtnice", "la":49.30, "lo":15.67, "t":21},
+  {"n":"Brumov-Bylnice", "la":49.02, "lo":18.02, "t":21},
+  {"n":"Bruntál", "la":49.99, "lo":17.46, "t":21},
+  {"n":"Brušperk", "la":49.70, "lo":18.22, "t":21},
+  {"n":"Břeclav", "la":48.76, "lo":16.88, "t":21},
+  {"n":"Březnice", "la":49.56, "lo":13.95, "t":21},
+  {"n":"Březová", "la":50.14, "lo":12.65, "t":21},
+  {"n":"Březová nad Svitavou", "la":49.64, "lo":16.51, "t":21},
+  {"n":"Břidličná", "la":49.91, "lo":17.37, "t":21},
+  {"n":"Bučovice", "la":49.15, "lo":17.00, "t":21},
+  {"n":"Budišov nad Budišovkou", "la":49.79, "lo":17.62, "t":21},
+  {"n":"Budyně nad Ohří", "la":50.40, "lo":14.12, "t":21},
+  {"n":"Buštěhrad", "la":50.15, "lo":14.19, "t":21},
+  {"n":"Bystré", "la":49.63, "lo":16.35, "t":21},
+  {"n":"Bystřice", "la":49.73, "lo":14.67, "t":21},
+  {"n":"Bystřice nad Pernštejnem", "la":49.52, "lo":16.26, "t":21},
+  {"n":"Bystřice pod Hostýnem", "la":49.40, "lo":17.67, "t":21},
+  {"n":"Bzenec", "la":48.97, "lo":17.27, "t":21},
+  {"n":"Cvikov", "la":50.77, "lo":14.63, "t":21},
+  {"n":"Čáslav", "la":49.91, "lo":15.39, "t":21},
+  {"n":"Čelákovice", "la":50.16, "lo":14.75, "t":21},
+  {"n":"Černošice", "la":49.96, "lo":14.32, "t":21},
+  {"n":"Černošín", "la":49.81, "lo":12.87, "t":21},
+  {"n":"Černovice", "la":49.37, "lo":14.96, "t":21},
+  {"n":"Červená Řečice", "la":49.51, "lo":15.17, "t":21},
+  {"n":"Červený Kostelec", "la":50.48, "lo":16.09, "t":21},
+  {"n":"Česká Kamenice", "la":50.79, "lo":14.42, "t":21},
+  {"n":"Česká Lípa", "la":50.69, "lo":14.54, "t":21},
+  {"n":"Česká Skalice", "la":50.39, "lo":16.04, "t":21},
+  {"n":"Česká Třebová", "la":49.90, "lo":16.44, "t":21},
+  {"n":"České Budějovice", "la":48.97, "lo":14.47, "t":21},
+  {"n":"České Velenice", "la":48.77, "lo":14.96, "t":21},
+  {"n":"Český Brod", "la":50.07, "lo":14.86, "t":21},
+  {"n":"Český Dub", "la":50.66, "lo":14.99, "t":21},
+  {"n":"Český Krumlov", "la":48.81, "lo":14.31, "t":21},
+  {"n":"Český Těšín", "la":49.75, "lo":18.63, "t":21},
+  {"n":"Dačice", "la":49.08, "lo":15.43, "t":21},
+  {"n":"Dašice", "la":50.03, "lo":15.91, "t":21},
+  {"n":"Děčín", "la":50.78, "lo":14.21, "t":21},
+  {"n":"Desná", "la":50.76, "lo":15.30, "t":21},
+  {"n":"Deštná", "la":49.26, "lo":14.92, "t":21},
+  {"n":"Dobrovice", "la":50.37, "lo":14.96, "t":21},
+  {"n":"Dobruška", "la":50.29, "lo":16.16, "t":21},
+  {"n":"Dobřany", "la":49.66, "lo":13.29, "t":21},
+  {"n":"Dobřichovice", "la":49.93, "lo":14.27, "t":21},
+  {"n":"Dobříš", "la":49.78, "lo":14.17, "t":21},
+  {"n":"Doksy", "la":50.56, "lo":14.65, "t":21},
+  {"n":"Dolní Benešov", "la":49.92, "lo":18.11, "t":21},
+  {"n":"Dolní Bousov", "la":50.43, "lo":15.12, "t":21},
+  {"n":"Dolní Kounice", "la":49.07, "lo":16.47, "t":21},
+  {"n":"Dolní Poustevna", "la":51.00, "lo":14.28, "t":21},
+  {"n":"Domažlice", "la":49.44, "lo":12.93, "t":21},
+  {"n":"Dubá", "la":50.54, "lo":14.54, "t":21},
+  {"n":"Dubí", "la":50.68, "lo":13.79, "t":21},
+  {"n":"Dubňany", "la":48.92, "lo":17.09, "t":21},
+  {"n":"Duchcov", "la":50.60, "lo":13.74, "t":21},
+  {"n":"Dvůr Králové nad Labem", "la":50.43, "lo":15.81, "t":21},
+  {"n":"Františkovy Lázně", "la":50.12, "lo":12.35, "t":21},
+  {"n":"Frenštát pod Radhoštěm", "la":49.54, "lo":18.21, "t":21},
+  {"n":"Frýdek-Místek", "la":49.68, "lo":18.35, "t":21},
+  {"n":"Frýdlant", "la":50.92, "lo":15.08, "t":21},
+  {"n":"Frýdlant nad Ostravicí", "la":49.59, "lo":18.36, "t":21},
+  {"n":"Fryšták", "la":49.28, "lo":17.68, "t":21},
+  {"n":"Fulnek", "la":49.71, "lo":17.90, "t":21},
+  {"n":"Golčův Jeníkov", "la":49.81, "lo":15.47, "t":21},
+  {"n":"Habartov", "la":50.18, "lo":12.55, "t":21},
+  {"n":"Habry", "la":49.75, "lo":15.50, "t":21},
+  {"n":"Hanušovice", "la":50.07, "lo":16.94, "t":21},
+  {"n":"Harrachov", "la":50.77, "lo":15.43, "t":21},
+  {"n":"Hartmanice", "la":49.17, "lo":13.45, "t":21},
+  {"n":"Havířov", "la":49.78, "lo":18.44, "t":21},
+  {"n":"Havlíčkův Brod", "la":49.61, "lo":15.58, "t":21},
+  {"n":"Hejnice", "la":50.88, "lo":15.18, "t":21},
+  {"n":"Heřmanův Městec", "la":49.94, "lo":15.67, "t":21},
+  {"n":"Hlinsko", "la":49.76, "lo":15.91, "t":21},
+  {"n":"Hluboká nad Vltavou", "la":49.05, "lo":14.43, "t":21},
+  {"n":"Hluk", "la":48.98, "lo":17.52, "t":21},
+  {"n":"Hlučín", "la":49.89, "lo":18.19, "t":21},
+  {"n":"Hodkovice nad Mohelkou", "la":50.66, "lo":15.08, "t":21},
+  {"n":"Hodonín", "la":48.85, "lo":17.13, "t":21},
+  {"n":"Holešov", "la":49.33, "lo":17.58, "t":21},
+  {"n":"Holice", "la":50.07, "lo":15.99, "t":21},
+  {"n":"Holýšov", "la":49.59, "lo":13.10, "t":21},
+  {"n":"Hora Svaté Kateřiny", "la":50.61, "lo":13.44, "t":21},
+  {"n":"Horažďovice", "la":49.32, "lo":13.70, "t":21},
+  {"n":"Horní Benešov", "la":49.96, "lo":17.60, "t":21},
+  {"n":"Horní Blatná", "la":50.39, "lo":12.77, "t":21},
+  {"n":"Horní Bříza", "la":49.84, "lo":13.36, "t":21},
+  {"n":"Horní Cerekev", "la":49.32, "lo":15.33, "t":21},
+  {"n":"Horní Jelení", "la":50.04, "lo":16.08, "t":21},
+  {"n":"Horní Jiřetín", "la":50.57, "lo":13.54, "t":21},
+  {"n":"Horní Planá", "la":48.76, "lo":14.03, "t":21},
+  {"n":"Horní Slavkov", "la":50.13, "lo":12.80, "t":21},
+  {"n":"Horšovský Týn", "la":49.53, "lo":12.94, "t":21},
+  {"n":"Hořice", "la":50.36, "lo":15.63, "t":21},
+  {"n":"Hořovice", "la":49.84, "lo":13.90, "t":21},
+  {"n":"Hostinné", "la":50.54, "lo":15.72, "t":21},
+  {"n":"Hostivice", "la":50.08, "lo":14.25, "t":21},
+  {"n":"Hostomice", "la":49.82, "lo":14.04, "t":21},
+  {"n":"Hostouň", "la":49.56, "lo":12.77, "t":21},
+  {"n":"Hoštka", "la":50.48, "lo":14.33, "t":21},
+  {"n":"Hradec Králové", "la":50.21, "lo":15.83, "t":21},
+  {"n":"Hradec nad Moravicí", "la":49.87, "lo":17.87, "t":21},
+  {"n":"Hrádek", "la":49.71, "lo":13.65, "t":21},
+  {"n":"Hrádek nad Nisou", "la":50.85, "lo":14.84, "t":21},
+  {"n":"Hranice (okres Cheb)", "la":50.30, "lo":12.18, "t":21},
+  {"n":"Hranice (okres Přerov)", "la":49.55, "lo":17.73, "t":21},
+  {"n":"Hrob", "la":50.66, "lo":13.72, "t":21},
+  {"n":"Hrochův Týnec", "la":49.95, "lo":15.91, "t":21},
+  {"n":"Hronov", "la":50.48, "lo":16.18, "t":21},
+  {"n":"Hrotovice", "la":49.10, "lo":16.05, "t":21},
+  {"n":"Hroznětín", "la":50.31, "lo":12.87, "t":21},
+  {"n":"Hrušovany nad Jevišovkou", "la":48.83, "lo":16.40, "t":21},
+  {"n":"Hulín", "la":49.31, "lo":17.48, "t":21},
+  {"n":"Humpolec", "la":49.54, "lo":15.35, "t":21},
+  {"n":"Husinec", "la":49.05, "lo":13.93, "t":21},
+  {"n":"Hustopeče", "la":48.94, "lo":16.73, "t":21},
+  {"n":"Chabařovice", "la":50.67, "lo":13.94, "t":21},
+  {"n":"Cheb", "la":50.08, "lo":12.37, "t":21},
+  {"n":"Chlumec", "la":50.70, "lo":13.94, "t":21},
+  {"n":"Chlumec nad Cidlinou", "la":50.15, "lo":15.46, "t":21},
+  {"n":"Chocen", "la":50.00, "lo":16.22, "t":21},
+  {"n":"Chodov", "la":50.24, "lo":12.75, "t":21},
+  {"n":"Chomutov", "la":50.46, "lo":13.41, "t":21},
+  {"n":"Chotěboř", "la":49.72, "lo":15.66, "t":21},
+  {"n":"Chrast", "la":49.90, "lo":15.93, "t":21},
+  {"n":"Chrastava", "la":50.81, "lo":15.00, "t":21},
+  {"n":"Chropyně", "la":49.35, "lo":17.36, "t":21},
+  {"n":"Chrudim", "la":49.95, "lo":15.79, "t":21},
+  {"n":"Chřibská", "la":50.86, "lo":14.48, "t":21},
+  {"n":"Chvaletice", "la":50.03, "lo":15.41, "t":21},
+  {"n":"Chýně", "la":50.06, "lo":14.22, "t":21},
+  {"n":"Chýnov", "la":49.40, "lo":14.81, "t":21},
+  {"n":"Chyše", "la":50.10, "lo":13.24, "t":21},
+  {"n":"Ivančice", "la":49.10, "lo":16.37, "t":21},
+  {"n":"Ivanovice na Hané", "la":49.30, "lo":17.09, "t":21},
+  {"n":"Jablonec nad Jizerou", "la":50.70, "lo":15.42, "t":21},
+  {"n":"Jablonec nad Nisou", "la":50.72, "lo":15.17, "t":21},
+  {"n":"Jablonné nad Orlicí", "la":50.03, "lo":16.60, "t":21},
+  {"n":"Jablonné v Podještědí", "la":50.76, "lo":14.76, "t":21},
+  {"n":"Jablunkov", "la":49.57, "lo":18.76, "t":21},
+  {"n":"Jáchymov", "la":50.36, "lo":12.93, "t":21},
+  {"n":"Janov", "la":50.24, "lo":17.57, "t":21},
+  {"n":"Janovice nad Úhlavou", "la":49.34, "lo":13.21, "t":21},
+  {"n":"Jánské Lázně", "la":50.63, "lo":15.77, "t":21},
+  {"n":"Jaroměř", "la":50.35, "lo":15.92, "t":21},
+  {"n":"Jaroměřice nad Rokytnou", "la":49.11, "lo":15.89, "t":21},
+  {"n":"Javorník", "la":50.39, "lo":17.00, "t":21},
+  {"n":"Jemnice", "la":49.01, "lo":15.57, "t":21},
+  {"n":"Jesenice (okres Rakovník)", "la":50.09, "lo":13.46, "t":21},
+  {"n":"Jesenice (okres Praha-západ)", "la":49.96, "lo":14.51, "t":21},
+  {"n":"Jeseník", "la":50.22, "lo":17.20, "t":21},
+  {"n":"Jevíčko", "la":49.63, "lo":16.71, "t":21},
+  {"n":"Jevišovice", "la":48.99, "lo":15.99, "t":21},
+  {"n":"Jičín", "la":50.43, "lo":15.35, "t":21},
+  {"n":"Jihlava", "la":49.40, "lo":15.59, "t":21},
+  {"n":"Jilemnice", "la":50.60, "lo":15.50, "t":21},
+  {"n":"Jílové", "la":50.76, "lo":14.10, "t":21},
+  {"n":"Jílové u Prahy", "la":49.89, "lo":14.49, "t":21},
+  {"n":"Jindřichův Hradec", "la":49.14, "lo":15.00, "t":21},
+  {"n":"Jirkov", "la":50.50, "lo":13.44, "t":21},
+  {"n":"Jiříkov", "la":50.99, "lo":14.56, "t":21},
+  {"n":"Jistebnice", "la":49.48, "lo":14.52, "t":21},
+  {"n":"Kadaň", "la":50.37, "lo":13.27, "t":21},
+  {"n":"Kamenice nad Lipou", "la":49.30, "lo":15.07, "t":21},
+  {"n":"Kamenický Šenov", "la":50.77, "lo":14.47, "t":21},
+  {"n":"Kaplice", "la":48.73, "lo":14.49, "t":21},
+  {"n":"Kardašova Řečice", "la":49.18, "lo":14.85, "t":21},
+  {"n":"Karlovy Vary", "la":50.23, "lo":12.87, "t":21},
+  {"n":"Karolinka", "la":49.35, "lo":18.24, "t":21},
+  {"n":"Karviná", "la":49.85, "lo":18.54, "t":21},
+  {"n":"Kasejovice", "la":49.45, "lo":13.73, "t":21},
+  {"n":"Kašperské Hory", "la":49.14, "lo":13.55, "t":21},
+  {"n":"Kaznějov", "la":49.89, "lo":13.38, "t":21},
+  {"n":"Kdyně", "la":49.39, "lo":13.03, "t":21},
+  {"n":"Kelč", "la":49.47, "lo":17.81, "t":21},
+  {"n":"Kladno", "la":50.14, "lo":14.10, "t":21},
+  {"n":"Kladruby", "la":49.71, "lo":12.98, "t":21},
+  {"n":"Klášterec nad Ohří", "la":50.38, "lo":13.17, "t":21},
+  {"n":"Klatovy", "la":49.39, "lo":13.29, "t":21},
+  {"n":"Klecany", "la":50.17, "lo":14.41, "t":21},
+  {"n":"Klimkovice", "la":49.78, "lo":18.13, "t":21},
+  {"n":"Klobouky u Brna", "la":48.99, "lo":16.86, "t":21},
+  {"n":"Kojetín", "la":49.35, "lo":17.30, "t":21},
+  {"n":"Kolin", "la":50.02, "lo":15.20, "t":21},
+  {"n":"Konice", "la":49.59, "lo":16.88, "t":21},
+  {"n":"Kopidlno", "la":50.32, "lo":15.26, "t":21},
+  {"n":"Kopřivnice", "la":49.59, "lo":18.14, "t":21},
+  {"n":"Koryčany", "la":49.10, "lo":17.16, "t":21},
+  {"n":"Kosmonosy", "la":50.44, "lo":14.92, "t":21},
+  {"n":"Kostelec na Hané", "la":49.51, "lo":17.05, "t":21},
+  {"n":"Kostelec nad Černými lesy", "la":49.99, "lo":14.85, "t":21},
+  {"n":"Kostelec nad Labem", "la":50.22, "lo":14.58, "t":21},
+  {"n":"Kostelec nad Orlicí", "la":50.12, "lo":16.21, "t":21},
+  {"n":"Košťany", "la":50.65, "lo":13.75, "t":21},
+  {"n":"Kouřim", "la":50.00, "lo":14.97, "t":21},
+  {"n":"Kožlany", "la":50.00, "lo":13.54, "t":21},
+  {"n":"Králíky", "la":50.08, "lo":16.76, "t":21},
+  {"n":"Kralovice", "la":49.98, "lo":13.48, "t":21},
+  {"n":"Kralupy nad Vltavou", "la":50.24, "lo":14.31, "t":21},
+  {"n":"Králův Dvůr", "la":49.94, "lo":14.03, "t":21},
+  {"n":"Kraslice", "la":50.32, "lo":12.50, "t":21},
+  {"n":"Krásná Hora nad Vltavou", "la":49.64, "lo":14.27, "t":21},
+  {"n":"Krásná Lípa", "la":50.91, "lo":14.50, "t":21},
+  {"n":"Krásná Údolí", "la":50.07, "lo":12.98, "t":21},
+  {"n":"Krásno", "la":50.11, "lo":12.78, "t":21},
+  {"n":"Kravaře", "la":49.93, "lo":18.04, "t":21},
+  {"n":"Krnov", "la":50.08, "lo":17.70, "t":21},
+  {"n":"Kroměříž", "la":49.29, "lo":17.39, "t":21},
+  {"n":"Krupka", "la":50.68, "lo":13.85, "t":21},
+  {"n":"Kryry", "la":50.17, "lo":13.42, "t":21},
+  {"n":"Kunovice", "la":49.04, "lo":17.46, "t":21},
+  {"n":"Kunštát", "la":49.50, "lo":16.51, "t":21},
+  {"n":"Kuřim", "la":49.30, "lo":16.53, "t":21},
+  {"n":"Kutná Hora", "la":49.94, "lo":15.26, "t":21},
+  {"n":"Kyjov", "la":49.01, "lo":17.12, "t":21},
+  {"n":"Kynšperk nad Ohří", "la":50.11, "lo":12.53, "t":21},
+  {"n":"Lanškroun", "la":49.91, "lo":16.61, "t":21},
+  {"n":"Lanžhot", "la":48.72, "lo":16.96, "t":21},
+  {"n":"Lázně Bělohrad", "la":50.42, "lo":15.58, "t":21},
+  {"n":"Lázně Bohdaneč", "la":50.07, "lo":15.67, "t":21},
+  {"n":"Lázně Kynžvart", "la":50.00, "lo":12.62, "t":21},
+  {"n":"Ledeč nad Sázavou", "la":49.68, "lo":15.27, "t":21},
+  {"n":"Lednice", "la":48.79, "lo":16.80, "t":21},
+  {"n":"Letohrad", "la":50.03, "lo":16.49, "t":21},
+  {"n":"Letovice", "la":49.54, "lo":16.57, "t":21},
+  {"n":"Libáň", "la":50.37, "lo":15.17, "t":21},
+  {"n":"Libčice nad Vltavou", "la":50.19, "lo":14.36, "t":21},
+  {"n":"Liběchov", "la":50.40, "lo":14.44, "t":21},
+  {"n":"Liberec", "la":50.76, "lo":15.05, "t":21},
+  {"n":"Libochovice", "la":50.40, "lo":14.04, "t":21},
+  {"n":"Libušín", "la":50.16, "lo":14.04, "t":21},
+  {"n":"Lipník nad Bečvou", "la":49.52, "lo":17.58, "t":21},
+  {"n":"Lipnice nad Sázavou", "la":49.61, "lo":15.41, "t":21},
+  {"n":"Lišov", "la":49.01, "lo":14.61, "t":21},
+  {"n":"Litoměřice", "la":50.53, "lo":14.13, "t":21},
+  {"n":"Litomyšl", "la":49.87, "lo":16.31, "t":21},
+  {"n":"Litovel", "la":49.70, "lo":17.05, "t":21},
+  {"n":"Litvínov", "la":50.59, "lo":13.61, "t":21},
+  {"n":"Loket", "la":50.18, "lo":12.75, "t":21},
+  {"n":"Lom", "la":50.59, "lo":13.65, "t":21},
+  {"n":"Lomnice nad Lužnicí", "la":49.08, "lo":14.71, "t":21},
+  {"n":"Lomnice nad Popelkou", "la":50.53, "lo":15.37, "t":21},
+  {"n":"Loštice", "la":49.74, "lo":16.92, "t":21},
+  {"n":"Loučná pod Klínovcem", "la":50.41, "lo":12.98, "t":21},
+  {"n":"Louny", "la":50.35, "lo":13.79, "t":21},
+  {"n":"Lovosice", "la":50.51, "lo":14.05, "t":21},
+  {"n":"Luby", "la":50.25, "lo":12.40, "t":21},
+  {"n":"Lučany nad Nisou", "la":50.73, "lo":15.22, "t":21},
+  {"n":"Luhačovice", "la":49.10, "lo":17.75, "t":21},
+  {"n":"Luže", "la":49.89, "lo":16.02, "t":21},
+  {"n":"Lysá nad Labem", "la":50.20, "lo":14.84, "t":21},
+  {"n":"Manětín", "la":49.99, "lo":13.23, "t":21},
+  {"n":"Mariánské Lázně", "la":49.96, "lo":12.70, "t":21},
+  {"n":"Mašťov", "la":50.29, "lo":13.28, "t":21},
+  {"n":"Měčín", "la":49.47, "lo":13.41, "t":21},
+  {"n":"Mělník", "la":50.35, "lo":14.47, "t":21},
+  {"n":"Městec Králové", "la":50.16, "lo":15.29, "t":21},
+  {"n":"Město Albrechtice", "la":50.16, "lo":17.57, "t":21},
+  {"n":"Město Touškov", "la":49.77, "lo":13.25, "t":21},
+  {"n":"Meziboří", "la":50.62, "lo":13.60, "t":21},
+  {"n":"Meziměstí", "la":50.62, "lo":16.23, "t":21},
+  {"n":"Mikulášovice", "la":50.96, "lo":14.35, "t":21},
+  {"n":"Mikulov", "la":48.80, "lo":16.63, "t":21},
+  {"n":"Miletín", "la":50.40, "lo":15.68, "t":21},
+  {"n":"Milevsko", "la":49.45, "lo":14.36, "t":21},
+  {"n":"Miličín", "la":49.57, "lo":14.66, "t":21},
+  {"n":"Milovice", "la":50.22, "lo":14.88, "t":21},
+  {"n":"Mimoň", "la":50.65, "lo":14.72, "t":21},
+  {"n":"Miroslav", "la":48.94, "lo":16.31, "t":21},
+  {"n":"Mirošov", "la":49.71, "lo":13.65, "t":21},
+  {"n":"Mirotice", "la":49.43, "lo":14.03, "t":21},
+  {"n":"Mirovice", "la":49.51, "lo":14.03, "t":21},
+  {"n":"Mladá Boleslav", "la":50.41, "lo":14.90, "t":21},
+  {"n":"Mladá Vožice", "la":49.53, "lo":14.80, "t":21},
+  {"n":"Mnichovice", "la":49.93, "lo":14.71, "t":21},
+  {"n":"Mnichovo Hradiště", "la":50.52, "lo":14.97, "t":21},
+  {"n":"Mníšek pod Brdy", "la":49.86, "lo":14.26, "t":21},
+  {"n":"Modřice", "la":49.12, "lo":16.61, "t":21},
+  {"n":"Mohelnice", "la":49.77, "lo":16.91, "t":21},
+  {"n":"Moravská Třebová", "la":49.75, "lo":16.66, "t":21},
+  {"n":"Moravské Budějovice", "la":49.05, "lo":15.80, "t":21},
+  {"n":"Moravský Beroun", "la":49.79, "lo":17.44, "t":21},
+  {"n":"Moravský Krumlov", "la":49.04, "lo":16.31, "t":21},
+  {"n":"Morkovice-Slížany", "la":49.24, "lo":17.20, "t":21},
+  {"n":"Most", "la":50.50, "lo":13.64, "t":21},
+  {"n":"Mšeno", "la":50.43, "lo":14.63, "t":21},
+  {"n":"Mýto", "la":49.78, "lo":13.73, "t":21},
+  {"n":"Náchod", "la":50.41, "lo":16.16, "t":21},
+  {"n":"Nalžovské Hory", "la":49.33, "lo":13.55, "t":21},
+  {"n":"Náměšť nad Oslavou", "la":49.20, "lo":16.15, "t":21},
+  {"n":"Napajedla", "la":49.17, "lo":17.51, "t":21},
+  {"n":"Nasavrky", "la":49.84, "lo":15.80, "t":21},
+  {"n":"Nechanice", "la":50.23, "lo":15.63, "t":21},
+  {"n":"Nejdek", "la":50.32, "lo":12.73, "t":21},
+  {"n":"Němčice nad Hanou", "la":49.34, "lo":17.20, "t":21},
+  {"n":"Nepomuk", "la":49.48, "lo":13.58, "t":21},
+  {"n":"Neratovice", "la":50.26, "lo":14.51, "t":21},
+  {"n":"Netolice", "la":49.04, "lo":14.19, "t":21},
+  {"n":"Neveklov", "la":49.75, "lo":14.53, "t":21},
+  {"n":"Nová Bystřice", "la":49.01, "lo":15.10, "t":21},
+  {"n":"Nová Paka", "la":50.49, "lo":15.51, "t":21},
+  {"n":"Nová Role", "la":50.27, "lo":12.78, "t":21},
+  {"n":"Nová Včelnice", "la":49.23, "lo":15.07, "t":21},
+  {"n":"Nové Hrady", "la":48.78, "lo":14.77, "t":21},
+  {"n":"Nové Město na Moravě", "la":49.56, "lo":16.07, "t":21},
+  {"n":"Nové Město nad Metují", "la":50.34, "lo":16.15, "t":21},
+  {"n":"Nové Město pod Smrkem", "la":50.92, "lo":15.22, "t":21},
+  {"n":"Nové Sedlo", "la":50.20, "lo":12.76, "t":21},
+  {"n":"Nové Strašecí", "la":50.15, "lo":13.90, "t":21},
+  {"n":"Nový Bor", "la":50.75, "lo":14.55, "t":21},
+  {"n":"Nový Bydžov", "la":50.24, "lo":15.49, "t":21},
+  {"n":"Nový Jičín", "la":49.59, "lo":18.01, "t":21},
+  {"n":"Nový Knín", "la":49.81, "lo":14.29, "t":21},
+  {"n":"Nymburk", "la":50.18, "lo":15.04, "t":21},
+  {"n":"Nýrsko", "la":49.29, "lo":13.14, "t":21},
+  {"n":"Nýřany", "la":49.71, "lo":13.20, "t":21},
+  {"n":"Odolena Voda", "la":50.23, "lo":14.41, "t":21},
+  {"n":"Odry", "la":49.66, "lo":17.83, "t":21},
+  {"n":"Olejnice", "la":49.57, "lo":16.51, "t":21},
+  {"n":"Olomouc", "la":49.59, "lo":17.25, "t":21},
+  {"n":"Oloví", "la":50.24, "lo":12.55, "t":21},
+  {"n":"Opava", "la":49.93, "lo":17.90, "t":21},
+  {"n":"Opočno", "la":50.26, "lo":16.11, "t":21},
+  {"n":"Orlová", "la":49.84, "lo":18.43, "t":21},
+  {"n":"Osečná", "la":50.69, "lo":14.92, "t":21},
+  {"n":"Osek", "la":50.62, "lo":13.69, "t":21},
+  {"n":"Oslavany", "la":49.12, "lo":16.33, "t":21},
+  {"n":"Ostrava", "la":49.83, "lo":18.28, "t":21},
+  {"n":"Ostrov", "la":50.30, "lo":12.93, "t":21},
+  {"n":"Otrokovice", "la":49.20, "lo":17.53, "t":21},
+  {"n":"Pacov", "la":49.47, "lo":15.00, "t":21},
+  {"n":"Pardubice", "la":50.03, "lo":15.77, "t":21},
+  {"n":"Paskov", "la":49.73, "lo":18.29, "t":21},
+  {"n":"Pec pod Sněžkou", "la":50.69, "lo":15.73, "t":21},
+  {"n":"Pečky", "la":50.07, "lo":15.03, "t":21},
+  {"n":"Pelhřimov", "la":49.43, "lo":15.22, "t":21},
+  {"n":"Petřvald", "la":49.82, "lo":18.39, "t":21},
+  {"n":"Pilníkov", "la":50.53, "lo":15.82, "t":21},
+  {"n":"Písek", "la":49.30, "lo":14.14, "t":21},
+  {"n":"Planá", "la":49.86, "lo":12.74, "t":21},
+  {"n":"Planá nad Lužnicí", "la":49.35, "lo":14.70, "t":21},
+  {"n":"Plánice", "la":49.39, "lo":13.46, "t":21},
+  {"n":"Plasy", "la":49.93, "lo":13.38, "t":21},
+  {"n":"Plesná", "la":50.22, "lo":12.34, "t":21},
+  {"n":"Plumlov", "la":49.46, "lo":17.01, "t":21},
+  {"n":"Plzeň", "la":49.73, "lo":13.37, "t":21},
+  {"n":"Poběžovice", "la":49.51, "lo":12.80, "t":21},
+  {"n":"Počátky", "la":49.26, "lo":15.24, "t":21},
+  {"n":"Podbořany", "la":50.22, "lo":13.41, "t":21},
+  {"n":"Poděbrady", "la":50.14, "lo":15.11, "t":21},
+  {"n":"Podivín", "la":48.82, "lo":16.84, "t":21},
+  {"n":"Pohořelice", "la":48.98, "lo":16.52, "t":21},
+  {"n":"Police nad Metují", "la":50.53, "lo":16.23, "t":21},
+  {"n":"Polička", "la":49.71, "lo":16.26, "t":21},
+  {"n":"Polná", "la":49.48, "lo":15.71, "t":21},
+  {"n":"Postoloprty", "la":50.35, "lo":13.70, "t":21},
+  {"n":"Potštát", "la":49.62, "lo":17.65, "t":21},
+  {"n":"Praha", "la":50.07, "lo":14.43, "t":21},
+  {"n":"Prachatice", "la":49.01, "lo":13.99, "t":21},
+  {"n":"Proseč", "la":49.80, "lo":16.11, "t":21},
+  {"n":"Prostějov", "la":49.47, "lo":17.11, "t":21},
+  {"n":"Protivín", "la":49.20, "lo":14.21, "t":21},
+  {"n":"Přebuz", "la":50.36, "lo":12.61, "t":21},
+  {"n":"Přelouč", "la":50.03, "lo":15.56, "t":21},
+  {"n":"Přerov", "la":49.45, "lo":17.45, "t":21},
+  {"n":"Přeštice", "la":49.57, "lo":13.32, "t":21},
+  {"n":"Příbor", "la":49.64, "lo":18.14, "t":21},
+  {"n":"Příbram", "la":49.68, "lo":13.99, "t":21},
+  {"n":"Přibyslav", "la":49.57, "lo":15.73, "t":21},
+  {"n":"Přimda", "la":49.67, "lo":12.67, "t":21},
+  {"n":"Pyšely", "la":49.88, "lo":14.67, "t":21},
+  {"n":"Rabí", "la":49.28, "lo":13.61, "t":21},
+  {"n":"Radnice", "la":49.85, "lo":13.61, "t":21},
+  {"n":"Rájec-Jestřebí", "la":49.40, "lo":16.63, "t":21},
+  {"n":"Rajhrad", "la":49.08, "lo":16.60, "t":21},
+  {"n":"Rakovník", "la":50.10, "lo":13.73, "t":21},
+  {"n":"Ralsko", "la":50.58, "lo":14.80, "t":21},
+  {"n":"Raspenava", "la":50.90, "lo":15.11, "t":21},
+  {"n":"Rejštejn", "la":49.13, "lo":13.51, "t":21},
+  {"n":"Rokycany", "la":49.74, "lo":13.59, "t":21},
+  {"n":"Rokytnice nad Jizerou", "la":50.72, "lo":15.44, "t":21},
+  {"n":"Rokytnice v Orlických horách", "la":50.16, "lo":16.46, "t":21},
+  {"n":"Ronov nad Doubravou", "la":49.88, "lo":15.52, "t":21},
+  {"n":"Rosice", "la":49.18, "lo":16.38, "t":21},
+  {"n":"Rotava", "la":50.29, "lo":12.57, "t":21},
+  {"n":"Roudnice nad Labem", "la":50.42, "lo":14.25, "t":21},
+  {"n":"Rousínov", "la":49.20, "lo":16.88, "t":21},
+  {"n":"Rovensko pod Troskami", "la":50.53, "lo":15.26, "t":21},
+  {"n":"Roztoky", "la":50.15, "lo":14.39, "t":21},
+  {"n":"Rožďalovice", "la":50.30, "lo":15.17, "t":21},
+  {"n":"Rožmberk nad Vltavou", "la":48.65, "lo":14.36, "t":21},
+  {"n":"Rožmitál pod Třemšínem", "la":49.60, "lo":13.86, "t":21},
+  {"n":"Rožnov pod Radhoštěm", "la":49.45, "lo":18.14, "t":21},
+  {"n":"Rtyně v Podkrkonoší", "la":50.50, "lo":16.07, "t":21},
+  {"n":"Rudná", "la":50.03, "lo":14.23, "t":21},
+  {"n":"Rudolfov", "la":48.99, "lo":14.54, "t":21},
+  {"n":"Rumburk", "la":50.95, "lo":14.55, "t":21},
+  {"n":"Rychnov nad Kněžnou", "la":50.16, "lo":16.27, "t":21},
+  {"n":"Rychnov u Jablonce nad Nisou", "la":50.68, "lo":15.14, "t":21},
+  {"n":"Rychvald", "la":49.86, "lo":18.37, "t":21},
+  {"n":"Rýmařov", "la":49.93, "lo":17.27, "t":21},
+  {"n":"Řevnice", "la":49.91, "lo":14.23, "t":21},
+  {"n":"Říčany", "la":49.99, "lo":14.65, "t":21},
+  {"n":"Sadská", "la":50.13, "lo":14.98, "t":21},
+  {"n":"Sázava", "la":49.87, "lo":14.89, "t":21},
+  {"n":"Seč", "la":49.82, "lo":15.65, "t":21},
+  {"n":"Sedlčany", "la":49.65, "lo":14.42, "t":21},
+  {"n":"Sedlec-Prčice", "la":49.57, "lo":14.53, "t":21},
+  {"n":"Sedlice", "la":49.37, "lo":13.93, "t":21},
+  {"n":"Semily", "la":50.60, "lo":15.33, "t":21},
+  {"n":"Sezemice", "la":50.06, "lo":15.85, "t":21},
+  {"n":"Sezimovo Ústí", "la":49.38, "lo":14.68, "t":21},
+  {"n":"Skalná", "la":50.16, "lo":12.36, "t":21},
+  {"n":"Skuteč", "la":49.84, "lo":15.99, "t":21},
+  {"n":"Slaný", "la":50.23, "lo":14.08, "t":21},
+  {"n":"Slatiňany", "la":49.91, "lo":15.81, "t":21},
+  {"n":"Slavičín", "la":49.08, "lo":17.87, "t":21},
+  {"n":"Slavkov u Brna", "la":49.15, "lo":16.87, "t":21},
+  {"n":"Slavonice", "la":48.99, "lo":15.35, "t":21},
+  {"n":"Slušovice", "la":49.26, "lo":17.80, "t":21},
+  {"n":"Smečno", "la":50.18, "lo":14.03, "t":21},
+  {"n":"Smiřice", "la":50.29, "lo":15.86, "t":21},
+  {"n":"Smržovka", "la":50.73, "lo":15.24, "t":21},
+  {"n":"Soběslav", "la":49.25, "lo":14.71, "t":21},
+  {"n":"Sobotka", "la":50.46, "lo":15.17, "t":21},
+  {"n":"Sokolov", "la":50.17, "lo":12.64, "t":21},
+  {"n":"Solnice", "la":50.20, "lo":16.23, "t":21},
+  {"n":"Spálené Poříčí", "la":49.61, "lo":13.60, "t":21},
+  {"n":"Staňkov", "la":49.55, "lo":13.07, "t":21},
+  {"n":"Staré Město (okres Šumperk)", "la":50.16, "lo":16.94, "t":21},
+  {"n":"Staré Město (okres Uherské Hradiště)", "la":49.07, "lo":17.43, "t":21},
+  {"n":"Stárkov", "la":50.48, "lo":16.15, "t":21},
+  {"n":"Starý Plzenec", "la":49.69, "lo":13.47, "t":21},
+  {"n":"Stod", "la":49.63, "lo":13.16, "t":21},
+  {"n":"Stochov", "la":50.14, "lo":13.95, "t":21},
+  {"n":"Strakonice", "la":49.26, "lo":13.90, "t":21},
+  {"n":"Stráž nad Nežárkou", "la":49.06, "lo":14.90, "t":21},
+  {"n":"Stráž pod Ralskem", "la":50.70, "lo":14.80, "t":21},
+  {"n":"Strážnice", "la":48.90, "lo":17.31, "t":21},
+  {"n":"Strážov", "la":49.30, "lo":13.24, "t":21},
+  {"n":"Strmilov", "la":49.15, "lo":15.18, "t":21},
+  {"n":"Stříbro", "la":49.75, "lo":13.00, "t":21},
+  {"n":"Studénka", "la":49.72, "lo":18.07, "t":21},
+  {"n":"Suchdol nad Lužnicí", "la":48.89, "lo":14.88, "t":21},
+  {"n":"Sušice", "la":49.23, "lo":13.52, "t":21},
+  {"n":"Světlá nad Sázavou", "la":49.66, "lo":15.40, "t":21},
+  {"n":"Svitavy", "la":49.75, "lo":16.47, "t":21},
+  {"n":"Svoboda nad Úpou", "la":50.62, "lo":15.81, "t":21},
+  {"n":"Svratka", "la":49.71, "lo":16.03, "t":21},
+  {"n":"Šenov", "la":49.79, "lo":18.37, "t":21},
+  {"n":"Šlapanice", "la":49.16, "lo":16.72, "t":21},
+  {"n":"Šluknov", "la":51.00, "lo":14.45, "t":21},
+  {"n":"Špindlerův Mlýn", "la":50.72, "lo":15.60, "t":21},
+  {"n":"Štěpánov", "la":49.68, "lo":17.22, "t":21},
+  {"n":"Šternberk", "la":49.73, "lo":17.29, "t":21},
+  {"n":"Štěti", "la":50.45, "lo":14.32, "t":21},
+  {"n":"Štíty", "la":49.96, "lo":16.76, "t":21},
+  {"n":"Štramberk", "la":49.59, "lo":18.11, "t":21},
+  {"n":"Šumperk", "la":49.96, "lo":16.97, "t":21},
+  {"n":"Švihov", "la":49.47, "lo":13.28, "t":21},
+  {"n":"Tábor", "la":49.41, "lo":14.65, "t":21},
+  {"n":"Tachov", "la":49.79, "lo":12.63, "t":21},
+  {"n":"Tanvald", "la":50.73, "lo":15.30, "t":21},
+  {"n":"Telč", "la":49.18, "lo":15.45, "t":21},
+  {"n":"Teplá", "la":49.98, "lo":12.87, "t":21},
+  {"n":"Teplice", "la":50.64, "lo":13.82, "t":21},
+  {"n":"Teplice nad Metují", "la":50.59, "lo":16.16, "t":21},
+  {"n":"Terezín", "la":50.51, "lo":14.15, "t":21},
+  {"n":"Tišnov", "la":49.34, "lo":16.42, "t":21},
+  {"n":"Toužim", "la":50.05, "lo":12.98, "t":21},
+  {"n":"Tovačov", "la":49.43, "lo":17.28, "t":21},
+  {"n":"Trhové Sviny", "la":48.84, "lo":14.63, "t":21},
+  {"n":"Trhový Štěpánov", "la":49.71, "lo":15.01, "t":21},
+  {"n":"Trmice", "la":50.64, "lo":13.99, "t":21},
+  {"n":"Trutnov", "la":50.56, "lo":15.91, "t":21},
+  {"n":"Třebechovice pod Orebem", "la":50.20, "lo":15.99, "t":21},
+  {"n":"Třebenice", "la":50.47, "lo":13.99, "t":21},
+  {"n":"Třebíč", "la":49.21, "lo":15.88, "t":21},
+  {"n":"Třeboň", "la":49.00, "lo":14.77, "t":21},
+  {"n":"Třemošná", "la":49.82, "lo":13.39, "t":21},
+  {"n":"Třemošnice", "la":49.86, "lo":15.58, "t":21},
+  {"n":"Třešť", "la":49.29, "lo":15.48, "t":21},
+  {"n":"Třinec", "la":49.67, "lo":18.67, "t":21},
+  {"n":"Turnov", "la":50.58, "lo":15.15, "t":21},
+  {"n":"Týn nad Vltavou", "la":49.22, "lo":14.42, "t":21},
+  {"n":"Týnec nad Labem", "la":50.04, "lo":15.35, "t":21},
+  {"n":"Týnec nad Sázavou", "la":49.83, "lo":14.59, "t":21},
+  {"n":"Týniště nad Orlicí", "la":50.15, "lo":16.07, "t":21},
+  {"n":"Uherské Hradiště", "la":49.06, "lo":17.45, "t":21},
+  {"n":"Uherský Brod", "la":49.02, "lo":17.64, "t":21},
+  {"n":"Uherský Ostroh", "la":48.99, "lo":17.39, "t":21},
+  {"n":"Uhlířské Janovice", "la":49.87, "lo":15.06, "t":21},
+  {"n":"Unhošť", "la":50.08, "lo":14.12, "t":21},
+  {"n":"Uničov", "la":49.77, "lo":17.11, "t":21},
+  {"n":"Újezd u Brna", "la":49.10, "lo":16.76, "t":21},
+  {"n":"Úpice", "la":50.51, "lo":16.01, "t":21},
+  {"n":"Úsov", "la":49.79, "lo":17.01, "t":21},
+  {"n":"Ústí nad Labem", "la":50.66, "lo":14.03, "t":21},
+  {"n":"Ústí nad Orlicí", "la":49.97, "lo":16.39, "t":21},
+  {"n":"Úštěk", "la":50.58, "lo":14.34, "t":21},
+  {"n":"Úterý", "la":49.93, "lo":13.00, "t":21},
+  {"n":"Úvaly", "la":50.07, "lo":14.73, "t":21},
+  {"n":"Valašské Klobouky", "la":49.14, "lo":18.00, "t":21},
+  {"n":"Valašské Meziříčí", "la":49.47, "lo":17.97, "t":21},
+  {"n":"Valtice", "la":48.74, "lo":16.75, "t":21},
+  {"n":"Vamberk", "la":50.11, "lo":16.28, "t":21},
+  {"n":"Varnsdorf", "la":50.91, "lo":14.62, "t":21},
+  {"n":"Vejprty", "la":50.49, "lo":13.03, "t":21},
+  {"n":"Velešín", "la":48.82, "lo":14.46, "t":21},
+  {"n":"Velká Bíteš", "la":49.28, "lo":16.22, "t":21},
+  {"n":"Velká Bystřice", "la":49.59, "lo":17.35, "t":21},
+  {"n":"Velké Bílovice", "la":48.84, "lo":16.89, "t":21},
+  {"n":"Velké Hamry", "la":50.71, "lo":15.31, "t":21},
+  {"n":"Velké Meziříčí", "la":49.35, "lo":16.01, "t":21},
+  {"n":"Velké Opatovice", "la":49.61, "lo":16.66, "t":21},
+  {"n":"Velké Pavlovice", "la":48.89, "lo":16.81, "t":21},
+  {"n":"Velký Šenov", "la":50.99, "lo":14.37, "t":21},
+  {"n":"Veltrusy", "la":50.27, "lo":14.32, "t":21},
+  {"n":"Velvary", "la":50.28, "lo":14.23, "t":21},
+  {"n":"Verneřice", "la":50.66, "lo":14.30, "t":21},
+  {"n":"Veselí nad Lužnicí", "la":49.18, "lo":14.70, "t":21},
+  {"n":"Veselí nad Moravou", "la":48.95, "lo":17.37, "t":21},
+  {"n":"Veverská Bítýška", "la":49.27, "lo":16.43, "t":21},
+  {"n":"Větřní", "la":48.77, "lo":14.29, "t":21},
+  {"n":"Vidnava", "la":50.37, "lo":17.18, "t":21},
+  {"n":"Vimperk", "la":49.05, "lo":13.78, "t":21},
+  {"n":"Vítkov", "la":49.77, "lo":17.75, "t":21},
+  {"n":"Vizovice", "la":49.22, "lo":17.85, "t":21},
+  {"n":"Vlachovo Březí", "la":49.08, "lo":13.96, "t":21},
+  {"n":"Vlašim", "la":49.70, "lo":14.90, "t":21},
+  {"n":"Vodňany", "la":49.14, "lo":14.17, "t":21},
+  {"n":"Volary", "la":48.91, "lo":13.89, "t":21},
+  {"n":"Volyně", "la":49.16, "lo":13.88, "t":21},
+  {"n":"Votice", "la":49.63, "lo":14.64, "t":21},
+  {"n":"Vracov", "la":48.97, "lo":17.21, "t":21},
+  {"n":"Vratimov", "la":49.77, "lo":18.31, "t":21},
+  {"n":"Vrbno pod Pradědem", "la":50.12, "lo":17.37, "t":21},
+  {"n":"Vrchlabí", "la":50.62, "lo":15.61, "t":21},
+  {"n":"Vroutek", "la":50.17, "lo":13.38, "t":21},
+  {"n":"Vsetín", "la":49.33, "lo":17.99, "t":21},
+  {"n":"Všeruby", "la":49.34, "lo":13.00, "t":21},
+  {"n":"Výsluní", "la":50.46, "lo":13.23, "t":21},
+  {"n":"Vysoké Mýto", "la":49.95, "lo":16.16, "t":21},
+  {"n":"Vysoké nad Jizerou", "la":50.68, "lo":15.40, "t":21},
+  {"n":"Vysoké Veselí", "la":50.33, "lo":15.52, "t":21},
+  {"n":"Vyškov", "la":49.27, "lo":16.99, "t":21},
+  {"n":"Vyšší Brod", "la":48.61, "lo":14.31, "t":21},
+  {"n":"Zábřeh", "la":49.88, "lo":16.87, "t":21},
+  {"n":"Zákupy", "la":50.68, "lo":14.64, "t":21},
+  {"n":"Zásmuky", "la":49.95, "lo":15.02, "t":21},
+  {"n":"Zbiroh", "la":49.85, "lo":13.77, "t":21},
+  {"n":"Zbyšov", "la":49.16, "lo":16.34, "t":21},
+  {"n":"Zdice", "la":49.91, "lo":13.97, "t":21},
+  {"n":"Zlaté Hory", "la":50.26, "lo":17.39, "t":21},
+  {"n":"Zlín", "la":49.22, "lo":17.66, "t":21},
+  {"n":"Zliv", "la":49.06, "lo":14.36, "t":21},
+  {"n":"Znojmo", "la":48.85, "lo":16.05, "t":21},
+  {"n":"Zruč nad Sázavou", "la":49.74, "lo":15.10, "t":21},
+  {"n":"Zubří", "la":49.49, "lo":18.09, "t":21},
+  {"n":"Žacléř", "la":50.66, "lo":15.90, "t":21},
+  {"n":"Žamberk", "la":50.08, "lo":16.46, "t":21},
+  {"n":"Žandov", "la":50.71, "lo":14.39, "t":21},
+  {"n":"Žatec", "la":50.32, "lo":13.54, "t":21},
+  {"n":"Ždánice", "la":49.06, "lo":17.02, "t":21},
+  {"n":"Žďár nad Sázavou", "la":49.56, "lo":15.93, "t":21},
+  {"n":"Ždírec nad Doubravou", "la":49.69, "lo":15.81, "t":21},
+  {"n":"Žebrák", "la":49.87, "lo":13.89, "t":21},
+  {"n":"Železná Ruda", "la":49.13, "lo":13.23, "t":21},
+  {"n":"Železnice", "la":50.47, "lo":15.38, "t":21},
+  {"n":"Železný Brod", "la":50.64, "lo":15.25, "t":21},
+  {"n":"Židlochovice", "la":49.03, "lo":16.61, "t":21},
+  {"n":"Žirovnice", "la":49.25, "lo":15.18, "t":21},
+  {"n":"Žlutice", "la":50.09, "lo":13.16, "t":21},
+  {"n":"Žulová", "la":50.31, "lo":17.10, "t":21}          
+];
+        
+
+        let mName = localStorage.getItem('defaultCityName') || "Olomouc";
+        mm.sort((a, b) => a.n.localeCompare(b.n, 'cs'));
+        let lat = parseFloat(localStorage.getItem('defaultCityLat')) || 49.59;
+        let lon = parseFloat(localStorage.getItem('defaultCityLon')) || 17.25;
+        let sTemp = parseFloat(localStorage.getItem('defaultCityTemp')) || 22;
+
+        const list = document.getElementById('m-list');
+        mm.forEach(m => {
+            list.innerHTML += `<button class="chart-toggle-btn" style="text-align:left; width:100%;" onclick="zvolM('${m.n}', ${m.la}, ${m.lo}, ${m.t})">📍 ${m.n}</button>`;
+        });
+
+        function zvolM(jm, la, lo, st) {
+            lat = la;
+            lon = lo;
+            mName = jm;
+            sTemp = st;
+            document.getElementById('m-modal').classList.remove('active');
+            nactiPocasi();
+        }
+
+        function ziskejIkonuUrl(kod, aktualniCasText, vychodSlunceText, zapadSlunceText) {
+    const aktualniMesic = new Date().getMonth();
+    const jeZima = aktualniMesic === 9 || aktualniMesic === 10 || aktualniMesic === 11 || 
+                   aktualniMesic === 0 || aktualniMesic === 1 || aktualniMesic === 2 || 
+                   aktualniMesic === 3;
+
+    if (!aktualniCasText || !vychodSlunceText || !zapadSlunceText) {
+        const mapovaniDen = {
+            0: "jasno", 1: "polojasno", 2: "polojasno", 3: "zatazeno", 45: "zatazeno", 48: "zatazeno",
+            51: jeZima ? "mrznouci_dest" : "dest", 53: "dest", 55: "dest", 61: "dest", 63: "dest", 65: "dest",
+            71: "snih", 73: "snih", 75: "snih", 77: "snih", 80: "prehanky", 81: "prehanky", 82: "prehanky", 95: "bourka"
+        };
+        if (kod >= 71 && kod <= 77) return `png/${jeZima ? "snih" : "prehanky"}.png`;
+        return `png/${mapovaniDen[kod] || "polojasno"}.png`;
+    }
+
+    const spoctiMinuty = (textKombinovany) => {
+        if (typeof textKombinovany !== 'string') return 0;
+        const indexT = textKombinovany.indexOf("T");
+        if (indexT === -1) return 0;
+        const casCasti = textKombinovany.substring(indexT + 1).split(":");
+        const hodiny = parseInt(casCasti[0], 10) || 0;
+        const minuty = parseInt(casCasti[1], 10) || 0;
+        return (hodiny * 60) + minuty;
+    };
+
+    const tedMinuty = spoctiMinuty(aktualniCasText);
+    const vychodMinuty = spoctiMinuty(vychodSlunceText);
+    const zapadMinuty = spoctiMinuty(zapadSlunceText);
+
+    const jeNoc = tedMinuty < vychodMinuty || tedMinuty > zapadMinuty;
+
+    const mapovani = {
+        0: jeNoc ? "jasno_noc" : "jasno",
+        1: jeNoc ? "polojasno_noc" : "polojasno",
+        2: jeNoc ? "polojasno_noc" : "polojasno",
+        3: "zatazeno",
+        45: "zatazeno",
+        48: "zatazeno",
+        51: jeZima ? "mrznouci_dest" : "dest", 
+        53: "dest",
+        55: "dest",
+        61: "dest",
+        63: "dest",
+        65: "dest",
+        71: "snih",
+        73: "snih",
+        75: "snih",
+        77: "snih",
+        80: jeNoc ? "destove_prehanky_noc" : "prehanky", 
+        81: jeNoc ? "destove_prehanky_noc" : "prehanky",
+        82: jeNoc ? "destove_prehanky_noc" : "prehanky",
+        95: "bourka"
+    };
+
+    if (kod >= 71 && kod <= 77) {
+        if (jeZima) return `png/snih.png`;
+        return `png/${jeNoc ? "destove_prehanky_noc" : "prehanky"}.png`;
+    }
+
+    return `png/${mapovani[kod] || "polojasno"}.png`;
+}
+
+        function aktualizujHomeCheck() {
+            const icon = document.getElementById('set-default-city-chk');
+            if (localStorage.getItem('defaultCityName') === mName) {
+                icon.checked = true;
+            } else {
+                icon.checked = false;
+            }
+        }
+
+        document.getElementById('set-default-city-chk').addEventListener('change', (e) => {
+            if (e.target.checked) {
+                localStorage.setItem('defaultCityName', mName);
+                localStorage.setItem('defaultCityLat', lat);
+                localStorage.setItem('defaultCityLon', lon);
+                localStorage.setItem('defaultCityTemp', sTemp);
+            } else {
+                localStorage.removeItem('defaultCityName');
+                localStorage.removeItem('defaultCityLat');
+                localStorage.removeItem('defaultCityLon');
+                localStorage.removeItem('defaultCityTemp');
+            }
+            aktualizujHomeCheck();
+        });
+
+        function vyhodnotOvzdusi(index) {
+            if (index <= 1) return "Dobré";
+            if (index <= 2) return "Přijatelné";
+            if (index <= 3) return "Mírné";
+            if (index <= 4) return "Špatné";
+            return "Velmi špatné";
+        }
+
+        function formatujCasSlunce(isoString) {
+            if (!isoString) return "---:---";
+            const d = new Date(isoString);
+            return `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
+        }
+
+        let srazkyJednotka = "mm";
+        let rawPrecipitation = 0;
+        let rawSnowfall = 0;
+
+        function updatePrecipitationDisplay() {
+    const elHodnota = document.getElementById('srazky-hodnota');
+    if (!elHodnota) return;
+
+    // 1. Spočítáme celkový součet srážek od půlnoci do aktuální hodiny
+    let celkoveSrazkyDnes = 0;
+    const aktualniHodina = new Date().getHours();
+
+    // Předpokládám, že data z API máš v globální proměnné 'd' nebo 'data'
+    // Pokud se tvá proměnná s daty z API jmenuje jinak než 'd', přepiš to 'd' níže na tvůj název
+    const meteoData = (typeof d !== 'undefined') ? d : (typeof data !== 'undefined' ? data : null);
+
+    if (meteoData && meteoData.hourly && meteoData.hourly.precipitation) {
+        for (let i = 0; i <= aktualniHodina; i++) {
+            if (meteoData.hourly.precipitation[i] !== undefined) {
+                celkoveSrazkyDnes += meteoData.hourly.precipitation[i];
+            }
+        }
+    } else {
+        // Pokud data z pole ještě nejsou načtená, použijeme aktuální hodnotu
+        celkoveSrazkyDnes = rawPrecipitation !== undefined ? rawPrecipitation : 0;
+    }
+
+    // 2. Vypíšeme hodnotu podle zvolené jednotky (mm nebo cm)
+    if (srazkyJednotka === "mm") {
+        elHodnota.innerText = `${celkoveSrazkyDnes.toFixed(1)} mm`;
+    } else {
+        elHodnota.innerText = `${(celkoveSrazkyDnes / 10).toFixed(2)} cm`;
+    }
+}
+
+        document.getElementById('meteo-srazky').addEventListener('click', () => {
+            srazkyJednotka = (srazkyJednotka === "mm") ? "cm" : "mm";
+            updatePrecipitationDisplay();
+        });
+
+        let windUnit = "km/h";
+        let rawWindSpeed = 0;
+        function updateWindDisplay() {
+            document.getElementById('vitr-hodnota').innerText = windUnit === "km/h" ? `${Math.round(rawWindSpeed)} km/h` : `${(rawWindSpeed / 3.6).toFixed(1)} m/s`;
+        }
+
+        document.getElementById('meteo-vitr').addEventListener('click', () => {
+            windUnit = (windUnit === "km/h") ? "m/s" : "km/h";
+            updateWindDisplay();
+        });
+
+        // Načteme uložený motiv z paměti, a pokud tam žádný není, nastavíme jako výchozí SVĚTLÝ ('light')
+let currentTheme = localStorage.getItem('theme') || 'light';
+document.documentElement.setAttribute('data-theme', currentTheme);
+
+// Pomocná kontrola při startu webu, aby ikonka na tlačítku odpovídala motivu
+window.addEventListener('DOMContentLoaded', () => {
+    const btn = document.getElementById('theme-button');
+    if (btn) btn.innerText = currentTheme === 'dark' ? "🌙" : "☀️";
+});
+
+function toggleTheme() {
+    const btn = document.getElementById('theme-button');
+    if (currentTheme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        if (btn) btn.innerText = "☀️";
+        currentTheme = "light";
+        localStorage.setItem('theme', 'light'); // Uložíme světlý motiv do paměti
+    } else {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        if (btn) btn.innerText = "🌙";
+        currentTheme = "dark";
+        localStorage.setItem('theme', 'dark'); // Uložíme tmavý motiv do paměti
+    }
+    if (myChart) { createOrUpdateChart(); }
+}
+        let globHourlyTimes = [], globHourlyTemp = [], globHourlyRain = [], globHourlyWind = [];
+        let myChart = null;
+        let activeChartType = 'temp';
+
+        function switchChart(type) {
+            activeChartType = type;
+            document.querySelectorAll('.chart-toggle-btn').forEach(b => b.classList.remove('active'));
+            if(type === 'temp') document.getElementById('btn-chart-temp').classList.add('active');
+            if(type === 'rain') document.getElementById('btn-chart-rain').classList.add('active');
+            if(type === 'wind') document.getElementById('btn-chart-wind').classList.add('active');
+            createOrUpdateChart();
+        }
+
+        function createOrUpdateChart() {
+            const canvasEl = document.getElementById('meteoChart');
+            if (!canvasEl) return;
+            const ctx = canvasEl.getContext('2d');
+            const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+            const labelColor = isLight ? '#0f172a' : '#94a3b8';
+            const gridColor = isLight ? '#cbd5e1' : '#1f2937';
+            
+            let dataValues = [], dataLabel = '', lineColor = '', bgColor = '';
+            if(activeChartType === 'temp') {
+                dataValues = globHourlyTemp; dataLabel = 'Teplota (°C)'; lineColor = '#f43f5e'; bgColor = 'rgba(244, 63, 94, 0.1)';
+            } else if(activeChartType === 'rain') {
+                dataValues = globHourlyRain; dataLabel = 'Srážky (mm)'; lineColor = '#38bdf8'; bgColor = 'rgba(56, 189, 248, 0.1)';
+            } else {
+                dataValues = globHourlyWind; dataLabel = 'Rychlost větru (km/h)'; lineColor = '#eab308'; bgColor = 'rgba(234, 179, 8, 0.1)';
+            }
+            
+            if(myChart) { myChart.destroy(); }
+            myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: globHourlyTimes,
+                    datasets: [{
+                        label: dataLabel,
+                        data: dataValues,
+                        borderColor: lineColor,
+                        backgroundColor: bgColor,
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { ticks: { color: labelColor, font: { size: 10 } }, grid: { color: gridColor } },
+                        y: { ticks: { color: labelColor }, grid: { color: gridColor } }
+                    }
+                }
+            });
+        }
+
+        async function nactiPocasi() {
+            const container = document.getElementById('forecast-container');
+            const hourlyContainer = document.getElementById('hourly-container');
+            document.getElementById('mesto-hlavni-nazev').innerText = mName;
+            aktualizujHomeCheck();
+
+            try {
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,pressure_msl,wind_speed_10m,precipitation,snowfall,weather_code,european_aqi,uv_index&hourly=temperature_2m,weather_code,precipitation,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,wind_speed_10m_max,precipitation_sum,relative_humidity_2m_mean,pressure_msl_mean&forecast_days=14&timezone=auto`;
+                const res = await fetch(url);
+                const d = await res.json();
+                container.innerHTML = "";
+                hourlyContainer.innerHTML = "";
+
+                const tReal = Math.round(d.current.temperature_2m);
+                document.getElementById('teplota-aktualni').innerHTML = `${tReal > 0 ? '+' : ''}${tReal}°C`;
+
+                const tApparent = Math.round(d.current.apparent_temperature);
+                document.getElementById('teplota-pocitova').innerHTML = `Pocitová teplota: ${tApparent > 0 ? '+' : ''}${tApparent}°C`;
+
+                rawWindSpeed = d.current.wind_speed_10m;
+                updateWindDisplay();
+
+
+                document.getElementById('meteo-vlhkost').innerHTML = `${Math.round(d.current.relative_humidity_2m)} %`;
+                document.getElementById('meteo-tlak').innerHTML = `${Math.round(d.current.pressure_msl)} hPa`;
+
+                rawPrecipitation = d.current.precipitation;
+                rawSnowfall = d.current.snowfall;
+
+// Spočítáme celkový součet srážek od půlnoci
+let celkoveSrazkyDnes = 0;
+const mistniHodina = new Date().getHours();
+const casovyPosunHodin = Math.round(new Date().getTimezoneOffset() / 60);
+const apiAktualniIndex = mistniHodina + casovyPosunHodin;
+
+if (d && d.hourly && d.hourly.precipitation) {
+    for (let i = 0; i <= apiAktualniIndex; i++) {
+        if (d.hourly.precipitation[i] !== undefined) {
+            celkoveSrazkyDnes += d.hourly.precipitation[i];
+        }
+    }
+} else {
+    celkoveSrazkyDnes = d.current.precipitation !== undefined ? d.current.precipitation : 0;
+}
+
+rawPrecipitation = celkoveSrazkyDnes;
+
+                updatePrecipitationDisplay();
+
+                document.getElementById('meteo-vychod').innerHTML = d.daily && d.daily.sunrise ? formatujCasSlunce(d.daily.sunrise[0]) : "---:---";
+                document.getElementById('meteo-zapad').innerHTML = d.daily && d.daily.sunset ? formatujCasSlunce(d.daily.sunset[0]) : "---:---";
+
+                const uvIndexValue = d.current.uv_index !== undefined ? d.current.uv_index : 0;
+                document.getElementById('meteo-uv').innerHTML = uvIndexValue.toFixed(1);
+
+                document.getElementById('meteo-ovzdusi').innerHTML = d.current.european_aqi !== undefined ? vyhodnotOvzdusi(d.current.european_aqi) : "---";
+                
+                aktAsist(tReal);
+                aktualizujPsiIndex(tReal);
+                aktualizujFaziMesice();
+                
+                const aktualniHodina = new Date().getHours();
+                globHourlyTimes = []; globHourlyTemp = []; globHourlyRain = []; globHourlyWind = [];
+                for (let j = aktualniHodina; j < aktualniHodina + 30; j++) {
+                    if (!d.hourly.time[j]) break;
+                    const hData = new Date(d.hourly.time[j]);
+                    const fCas = `${hData.getHours().toString().padStart(2, '0')}:00`;
+                    if (j < aktualniHodina + 24) {
+                                    const denIndex = Math.floor(j / 24);
+            hourlyContainer.innerHTML += `<div class="hourly-item"><div class="hourly-time">${fCas}</div><img src="${ziskejIkonuUrl(d.hourly.weather_code[j], d.hourly.time[j], d.daily.sunrise[denIndex], d.daily.sunset[denIndex])}" class="hourly-icon" alt="počasí"><div class="hourly-temp">${Math.round(d.hourly.temperature_2m[j])}°C</div></div>`;
+
+
+                    }
+                    if (j % 2 === 0) {
+                        globHourlyTimes.push(fCas);
+                        globHourlyTemp.push(Math.round(d.hourly.temperature_2m[j]));
+                        globHourlyRain.push(d.hourly.precipitation[j]);
+                        globHourlyWind.push(Math.round(d.hourly.wind_speed_10m[j]));
+                    }
+                }
+                createOrUpdateChart();
+                
+                const dny = ["Neděle", "Pondělí", "Úterý", "Středa", "Čtvrtek", "Pátek", "Sobota"];
+                for (let i = 0; i < 14; i++) {
+                    if (!d.daily.time[i]) break;
+                    const dDat = new Date(d.daily.time[i]);
+                    const jmDne = i === 0 ? "Dnes" : dny[dDat.getDay()];
+                    const fDat = `${dDat.getDate()}.${dDat.getMonth()+1}.`;
+                    container.innerHTML += `<div class="forecast-day-row"> <div class="forecast-date"><strong>${jmDne}</strong> <span>${fDat}</span></div> <img src="${ziskejIkonuUrl(d.daily.weather_code[i])}" class="weather-icon" alt="počasí"> <div style="font-weight:bold; min-width:70px; text-align:right;">${Math.round(d.daily.temperature_2m_max[i])}° / <span style="color:var(--text-muted); font-weight:normal;">${Math.round(d.daily.temperature_2m_min[i])}°</span></div> <div class="forecast-subdata"> <span>💧 ${Math.round(d.daily.relative_humidity_2m_mean[i])}%</span> <span>🌧️ ${d.daily.precipitation_sum[i].toFixed(1)}mm</span> </div> </div>`;
+                }
+            } catch (e) {
+                console.error(e);
+                document.getElementById('teplota-aktualni').innerText = "Chyba sítě";
+            }
+        }
+
+        function aktAsist(t) {
+    const h = document.getElementById('asistent-hlaska');
+    document.getElementById('asistent-stupne').innerText = `METEO ASISTENT PRO MĚSTO (${mName}):`;
+    let textDoporuceni = "Aktuální předpověď počasí a doporučení.";
+
+    if (t <= -20) textDoporuceni = "Pozor, extrémní mráz pod -20°C! Aktuální počasí doporučuje vycházet jen v nouzi.";
+    else if (t >= -19 && t <= -15) textDoporuceni = "Venku je extrémní zima. Sledujte meteoradar a omezte dlouhý pobyt venku, hrozí omrzliny.";
+    else if (t >= -14 && t <= -10) textDoporuceni = "Venku je velká zima, předpověď počasí radí pořádně se obléct, hrozí prochladnutí.";
+    else if (t >= -9 && t <= -5) textDoporuceni = "Začíná přituhovat. Dnešní počasí vyžaduje zimní čepici a rukavice pro delší pobyt.";
+    else if (t >= -4 && t <= 0) textDoporuceni = "Nutná zimní bunda, čepice a popřípadě i rukavice. Sledujte náš meteoradar online.";
+    else if (t >= 1 && t <= 5) textDoporuceni = "Předpověď hlásí jarní teploty, ale nemrzne. Rukavice nutné nejsou, čepice je dobrovolná, zimní bunda se hodí.";
+    else if (t >= 6 && t <= 10) textDoporuceni = "Příjemné počasí. Pro lidi, kterým je více zima, předpověď doporučuje softshellovou bundu.";
+    else if (t >= 11 && t <= 15) textDoporuceni = "Jarní teploty, pro aktuální počasí doporučujeme jarní bundu nebo mikinu.";
+    else if (t >= 16 && t <= 20) textDoporuceni = "Stále svěží teploty, dnešní předpověď počasí dovoluje pro většinu lidí už krátké tričko a kraťasy.";
+    else if (t >= 21 && t <= 25) textDoporuceni = "Letní počasí, vhodné vzít krátké tričko a kraťasy. Slunce začíná pálit.";
+    else if (t >= 26 && t <= 30) textDoporuceni = "Letní až tropické počasí, vezměte jen kraťasy a tričko, UV index bývá silný, sledujte meteoradar, pokud hrozí bouřkové meteorologické jevy";
+    else if (t >= 31 && t <= 35) textDoporuceni = "Tropické až supertropické teploty. Předpověď počasí radí opalovací krém! Nezdržujte se na slunci!";
+    else if (t >= 36) textDoporuceni = "Extrémní neúnosná vedra! Předpověď doporučuje nevycházet na přímé slunce, hrozí úpal. Pokud je to nutné vycházet, rozhodně nezapoměňte opalovací krém!";
+    h.innerHTML = textDoporuceni;
+}
+        function aktualizujPsiIndex(t) {
+    const box = document.getElementById('psi-box');
+    if (box) box.style.display = 'none';
+    const hlaska = document.getElementById('psi-hlaska');
+    document.getElementById('psi-stupne').innerText = `PSÍ INDEX PRO MĚSTO (${mName}):`;
+    let text = ""; let barva = "";
+
+    if (t < -15) { text = "Pod -15 °C: Extrémní počasí. Venčení psů zkraťte pouze na nezbytnou potřebu."; barva = "#7f1d1d"; }
+    else if (t >= -15 && t <= -10) { text = "-10 °C až -15 °C: Mrazivé počasí. Venčení zkraťte na maximálně 15 minut."; barva = "#ef4444"; }
+    else if (t >= -9 && t <= -4) { text = "-4 °C až -9 °C: Nebezpečné počasí pro malá plemena psů bez oblečku."; barva = "#f97316"; }
+    else if (t >= -3 && t <= -1) { text = "-1 °C až -3 °C: Zimní počasí, naháči už potřebují pro venčení funkční obleček."; barva = "#eab308"; }
+    else if (t >= 0 && t <= 10) { text = "0 °C až 10 °C: Ideální počasí pro psí aktivitu, běh a dlouhé procházky."; barva = "#065f46"; }
+    else if (t >= 11 && t <= 19) { text = "11 °C až 19 °C: Skvělé počasí na dlouhé procházky a bezpečné venčení psů."; barva = "#10b981"; }
+    else if (t >= 20 && t <= 23) { text = "20 °C až 23 °C: Pozor u starších nebo nemocných psů při venčení na přímém slunci."; barva = "#eab308"; }
+    else if (t >= 24 && t <= 28) { text = "24 °C až 28 °C: Začíná být teplo. Omezte náročný trénink psů, hrozí rychlé přehřátí."; barva = "#f97316"; }
+    else if (t >= 29 && t <= 31) { text = "29 °C až 31 °C: Riziko přehřátí psa, hlavně na asfaltu. Bezpečné venčení směřujte pouze do stínu na trávu."; barva = "#ef4444"; }
+    else { text = "Nad 32 °C: Extrémní vedro! Hrozí okamžitý úpal, při nejhorším kolaps psa. Tlapky pálí o horký asfalt. Rychle vyvenčte pouze ve stínu!"; barva = "#7f1d1d"; }
+    
+    hlaska.innerHTML = text;
+    box.style.borderLeft = `4px solid ${barva}`;
+}
+        function aktualizujFaziMesice() {
+  const trg = document.getElementById('moon-trigger-btn');
+  const rows = document.getElementById('moon-forecast-rows');
+  const status = document.getElementById('moon-current-status');
+  if(!rows) return;
+  rows.innerHTML = "";
+  
+  const fazaText = ["Novoluní", "Dorůstající srpek", "První čtvrť", "Dorůstající měsíc", "Úplněk", "Couvající měsíc", "Poslední čtvrť", "Ubývající srpek"];
+  const fazaIko = ["🌑", "🌒", "🌓", "🌔", "🌕", "🌖", "🌗", "🌘"];
+  
+  let d = new Date();
+  let ts = d.getTime();
+  
+  let synodic = 29.530588853;
+  let baseDate = new Date(1970, 0, 7, 20, 35, 0).getTime();
+  let diff = ts - baseDate;
+  let lcycle = diff / (1000 * 60 * 60 * 24);
+  let age = lcycle % synodic;
+  if (age < 0) age += synodic;
+
+  // HLAVNÍ OPRAVA: PŘESNÉ URČENÍ FÁZE PODLE DNŮ, ABY NEBYLO NOVOLUNÍ PŘI 21 %
+  function spoctiIndexFaze(vynasobeneDny) {
+    if (vynasobeneDny < 1.0 || vynasobeneDny > 28.53) return 0; // Novoluní
+    if (vynasobeneDny >= 1.0 && vynasobeneDny < 6.38) return 1;  // Dorůstající srpek
+    if (vynasobeneDny >= 6.38 && vynasobeneDny < 8.38) return 2; // První čtvrť
+    if (vynasobeneDny >= 8.38 && vynasobeneDny < 13.76) return 3;// Dorůstající měsíc
+    if (vynasobeneDny >= 13.76 && vynasobeneDny < 15.76) return 4;// Úplněk
+    if (vynasobeneDny >= 15.76 && vynasobeneDny < 21.14) return 5;// Couvající měsíc
+    if (vynasobeneDny >= 21.14 && vynasobeneDny < 23.14) return 6;// Poslední čtvrť
+    return 7; // Ubývající srpek
+  }
+
+  let idx = spoctiIndexFaze(age);
+
+  trg.innerText = ` Měsíc: ${fazaIko[idx]}`;
+  status.innerText = `Dnes je: ${fazaText[idx]} ${fazaIko[idx]} (Stáří: ${age.toFixed(1)} dní)`;
+
+  for(let i=0; i<7; i++) {
+    let tDate = new Date();
+    tDate.setDate(d.getDate() + i);
+    let fAge = ((tDate.getTime() - baseDate) / (1000 * 60 * 60 * 24)) % synodic;
+    if (fAge < 0) fAge += synodic;
+    
+    let fIdx = spoctiIndexFaze(fAge);
+    let pct = fAge < synodic / 2 ? (fAge / (synodic / 2)) * 100 : (1 - ((fAge - (synodic / 2)) / (synodic / 2))) * 100;
+
+    rows.innerHTML += `<tr style="border-bottom:1px solid var(--border-inner);">
+      <td style="padding:6px 0;">${tDate.getDate()}.${tDate.getMonth()+1}.</td>
+      <td style="text-align:center;">${fazaIko[fIdx]}</td>
+      <td>${fazaText[fIdx]}</td>
+      <td style="text-align:right;">${pct.toFixed(0)}%</td>
+    </tr>`;
+  }
+}
+
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('live-time').textContent = now.toLocaleTimeString('cs-CZ');
+            document.getElementById('live-date').textContent = now.toLocaleDateString('cs-CZ', { day: 'numeric', month: 'numeric', year: 'numeric' }) + " | ";
+        }
+
+        setInterval(updateClock, 1000);
+        updateClock();
+        setInterval(nactiPocasi, 600000);
+        nactiPocasi();
+
+// Bezpečné vložení tlačítka PŘESNĚ pod zaškrtávátko
+if (!document.getElementById('open-indexes-btn')) {
+    const btn = document.createElement('button');
+    btn.id = 'open-indexes-btn';
+    btn.innerHTML = '📊 Zobrazit indexy aktivit (11)';
+    btn.style = "display:flex; align-items:center; justify-content:center; gap:8px; width:100%; background:linear-gradient(135deg, #1e293b, #0f172a); color:#f8fafc; border:1px solid #f97316; padding:10px 16px; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer; transition:all 0.2s; margin:15px 0 15px 0;";
+    btn.onmouseover = () => { btn.style.background = '#f97316'; btn.style.color = '#0f172a'; };
+    btn.onmouseout = () => { btn.style.background = 'linear-gradient(135deg, #1e293b, #0f172a)'; btn.style.color = '#f8fafc'; };
+
+    let foundLabel = null;
+    const labels = document.getElementsByTagName('label');
+    for (let i = 0; i < labels.length; i++) {
+        if (labels[i].textContent.includes('Nastavit jako výchozí')) {
+            foundLabel = labels[i];
+            break;
+        }
+    }
+
+    if (foundLabel) {
+        foundLabel.parentNode.insertBefore(btn, foundLabel.nextSibling);
+    } else {
+        const checkbox = document.querySelector('input[type="checkbox"]');
+        if (checkbox && checkbox.parentNode) {
+            checkbox.parentNode.appendChild(btn);
+        }
+    }
+
+        // Funkce pro otevření okna s 10 indexy vytáhnutými přímo z webu
+    btn.onclick = function() {
+        // Vytáhneme hodnoty přímo z textu prvků na webu
+        let temp = 25;
+        const tempEl = document.getElementById('teplota-aktualni');
+        if (tempEl) {
+            temp = parseFloat(tempEl.innerText.replace(/[^\d.-]/g, '')) || 25;
+        }
+
+        let humidity = 50;
+        const humEl = document.getElementById('meteo-vlhkost');
+        if (humEl) {
+            humidity = parseFloat(humEl.innerText.replace(/[^\d.-]/g, '')) || 50;
+        }
+
+        let wind = 10;
+        const windEl = document.getElementById('meteo-vitr') || document.querySelector('[id*="vitr"]');
+        if (windEl) {
+            wind = parseFloat(windEl.innerText.replace(/[^\d.-]/g, '')) || 10;
+        }
+
+        let rain = 0;
+        const rainEl = document.getElementById('meteo-srazky') || document.querySelector('[id*="srazky"]');
+        if (rainEl) {
+            rain = parseFloat(rainEl.innerText.replace(/[^\d.-]/g, '')) || 0;
+        }
+
+        let uv = 2.5;
+        const uvEl = document.getElementById('meteo-uv') || document.querySelector('[id*="uv"]');
+        if (uvEl) {
+            uv = parseFloat(uvEl.innerText.replace(/[^\d.-]/g, '')) || 2.5;
+        }
+
+        let indexModal = document.getElementById('indexes-modal');
+        if (!indexModal) {
+            indexModal = document.createElement('div');
+            indexModal.id = 'indexes-modal';
+            indexModal.style = "display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background-color:rgba(15,23,42,0.85); backdrop-filter:blur(5px); justify-content:center; align-items:center; padding:20px; box-sizing:border-box;";
+            document.body.appendChild(indexModal);
+        }
+
+        // 1. Komáři
+        let komari = "Nízká aktivita";
+        if (temp > 20 && wind < 10 && humidity > 60) komari = "Vysoká aktivita (ideální podmínky)";
+        else if (temp > 15 && wind < 15) komari = "Střední aktivita";
+
+        // 2. Klíšťata
+        let klistata = "Nízká aktivita";
+        if (temp >= 15 && temp <= 25 && humidity > 50) klistata = "Mimořádné riziko (předpověď stupně 9-10)";
+        else if (temp > 25 || temp < 10) klistata = "Mírné riziko";
+
+        // 3. Sušení prádla
+        let pradlo = "Nevhodné (uschne pomalu)";
+        if (rain > 0) pradlo = "⚠️ Nedoporučuje se (prší)";
+        else if (temp > 20 && humidity < 60) pradlo = "Vynikající (uschne velmi rychle)";
+        else if (temp > 15 && humidity < 70) pradlo = "Dobré (uschne během dne)";
+
+                        // 4. Astronomický index (analyzuje hodinovou předpověď na celou noc: 22:00 - 04:00)
+        let astro = "Zhoršená viditelnost, hvězd bude vidět málo.";
+        
+        try {
+            if (typeof d !== 'undefined' && d.hourly && d.hourly.weather_code) {
+                // Zjistíme aktuální index hodiny v poli
+                const aktualniHodina = new Date().getHours();
+                
+                // Nasbíráme kódy počasí a srážky pro kritické noční hodiny (od 22:00 do 04:00 rána)
+                let nocniKody = [];
+                let nocniSrazky = 0;
+                
+                // Projdeme následujících 8 hodin předpovědi
+                for (let i = 0; i < 8; i++) {
+                    let hIdx = aktualniHodina + i;
+                    // Pokud přejdeme přes půlnoc, Open-Meteo pole pokračuje dál (má 24 nebo více hodin)
+                    if (d.hourly.weather_code[hIdx] !== undefined) {
+                        nocniKody.push(d.hourly.weather_code[hIdx]);
+                        if (d.hourly.precipitation && d.hourly.precipitation[hIdx]) {
+                            nocniSrazky += d.hourly.precipitation[hIdx];
+                        }
+                    }
+                }
+
+                // Spočítáme, kolikrát se v noci objeví jaký typ počasí
+                let pocetJasno = 0;
+                let pocetPolojasno = 0;
+                let pocetZle = 0;
+
+                nocniKody.forEach(k => {
+                    if (k === 0) {
+                        pocetJasno++;
+                    } else if (k === 1 || k === 2 || k === 80 || k === 81 || k === 82) {
+                        pocetPolojasno++;
+                    } else if (k === 3 || k === 45 || k === 48 || k === 51 || k === 53 || k === 55 || k === 61 || k === 63 || k === 65 || k === 71 || k === 73 || k === 75 || k === 77 || k === 95) {
+                        pocetZle++;
+                    }
+                });
+
+                // Vyhodnocení podle vašich přesných pravidel pro celou noc
+                if (nocniSrazky > 0.5 || pocetZle >= 3) {
+                    // Pokud bude pršet nebo bude většinu noci zataženo/mlha/bouřka
+                    astro = "🚫 Mraky překrývají prakticky celou oblohu, pozorování hvězd je nemožné.";
+                } else if (pocetJasno > pocetPolojasno && pocetZle === 0) {
+                    // Pokud bude převládat úplně čisté nebe bez mraků
+                    astro = "🌌 Ideální příležitost pro sledování hvězd/planet.";
+                } else {
+                    // Polojasno, slabé přeháňky nebo střídavá oblačnost s měsícem
+                    astro = "☁️ Zhoršená viditelnost, hvězd bude vidět málo.";
+                }
+            } else {
+                // Záložní plán, pokud by hodinová data selhala, podíváme se na aktuální ikonku
+                const oblohaText = document.body.innerText.toLowerCase();
+                if (oblohaText.includes('zataženo') || oblohaText.includes('déšť') || oblohaText.includes('bouřka')) {
+                    astro = "🚫 Mraky překrývají prakticky celou oblohu, pozorování hvězd je nemožné.";
+                } else if (oblohaText.includes('jasno')) {
+                    astro = "🌌 Ideální příležitost pro sledování hvězd/planet.";
+                } else {
+                    astro = "☁️ Zhoršená viditelnost, hvězd bude vidět málo.";
+                }
+            }
+        } catch(e) {
+            astro = "☁️ Zhoršená viditelnost, hvězd bude vidět málo.";
+        }
+
+        // 5. Běžecký index
+        let beh = "Ideální na běh";
+        if (temp > 25) beh = "Zhoršené (příliš velké horko)";
+        else if (temp < 5 || rain > 1) beh = "Nevhodné podmínky";
+
+        // 6. Cyklistický index
+        let cyklo = "Skvělé na vyjížďku";
+        if (wind > 20) cyklo = "⚠️ Nebezpečné (silný nárazový vítr)";
+        else if (rain > 0.5) cyklo = "Zhoršené (mokrá silnice)";
+
+        // 7. Přírodní koupání
+        let prirKoupal = "Voda může být čistá (začátek sezóny)";
+        if (temp > 28 && humidity > 65) prirKoupal = "⚠️ Riziko výskytu sinic a zhoršené kvality vody!";
+
+        // 8. Ideální den na koupačku
+        let koupacka = "Zatím chladno na koupání";
+        if (temp >= 25 && uv > 2 && !prirKoupal.includes('sinic')) koupacka = "☀️ Perfektní den na koupačku u vody!";
+        else if (temp >= 25 && prirKoupal.includes('sinic')) koupacka = "Teplo je, ale přírodní koupaliště raději vynechte.";
+
+        // 9. Vyhřáté auto
+        let auto = "Bezpečné";
+        if (temp > 22 && uv > 1.5) {
+            let uvnitr = Math.round(temp + 15);
+            auto = `🚨 Kritické! Pokud svítí slunce, teplota v autě stoupne na ${uvnitr}°C během 20 minut!`;
+        }
+
+        // 10. Aquaplaning
+        let aqua = "Nízké riziko";
+        if (rain > 1.5 || (rain > 0 && wind > 20)) aqua = "⚠️ Vysoké riziko! Na silnicích hrozí stojící voda.";
+
+// Výpočet textu a barvy pro Psí index přímo z aktuální teploty (temp)
+let psiText = "";
+let barvaPsi = "";
+
+if (temp < -15) { psiText = "Pod -15 °C: Extrémní počasí. Venčení psů zkraťte pouze na nezbytnou potřebu."; barvaPsi = "#7f1d1d"; }
+else if (temp >= -15 && temp <= -10) { psiText = "-10 °C až -15 °C: Mrazivé počasí. Venčení zkraťte na maximálně 15 minut."; barvaPsi = "#ef4444"; }
+else if (temp > -9 && temp <= -4) { psiText = "-4 °C až -9 °C: Nebezpečné počasí pro malá plemena psů bez oblečku."; barvaPsi = "#f97316"; }
+else if (temp >= -3 && temp <= -1) { psiText = "-1 °C až -3 °C: Zimní počasí, naháči už potřebují funkční obleček."; barvaPsi = "#eab308"; }
+else if (temp >= 0 && temp <= 10) { psiText = "0 °C až 10 °C: Ideální počasí pro psí aktivitu, běh a dlouhé procházky."; barvaPsi = "#065f46"; }
+else if (temp >= 11 && temp <= 19) { psiText = "11 °C až 19 °C: Skvělé počasí na dlouhé procházky and bezpečné venčení psů."; barvaPsi = "#10b981"; }
+else if (temp >= 20 && temp <= 23) { psiText = "20 °C až 23 °C: Pozor u starších nebo nemocných psů při venčení na přímém slunci."; barvaPsi = "#eab308"; }
+else if (temp >= 24 && temp <= 28) { psiText = "24 °C až 28 °C: Začíná být teplo. Omezte náročný trénink psů, hrozí rychlé přehřátí."; barvaPsi = "#f97316"; }
+else if (temp >= 29 && temp <= 31) { psiText = "29 °C až 31 °C: Riziko přehřátí psa, hlavně na asfaltu. Bezpečné venčení směřujte pouze do stínu na trávu."; barvaPsi = "#ef4444"; }
+else { psiText = "Nad 32 °C: Extrémní vedro! Hrozí okamžitý úpal, při nejhorším kolaps psa. Tlapky pálí o horký asfalt. Rychle vyvenčete pouze ve stínu!"; barvaPsi = "#7f1d1d"; }
+
+// HTML karta pro vložení pod aquaplaning dovnitř indexModal.innerHTML
+const psiKartaHTML = `
+        <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid ${barvaPsi};"><strong>🐕 Psí index:</strong><br><span style="font-size: 13px; color: #cbd5e1;">${psiText}</span></div>
+`;
+
+
+
+                indexModal.innerHTML = `
+            <div style="background: linear-gradient(135deg, #1e293b, #0f172a); border: 2px solid #38bdf8; border-radius: 12px; max-width: 800px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); color: #f8fafc; font-family: sans-serif;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #334155; padding-bottom: 10px;">
+                    <h2 style="margin: 0; color: #38bdf8;">📊 Přehled indexů aktivit pro město</h2>
+                    <button id="close-indexes-btn" style="background: #38bdf8; border: none; color: #0f172a; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer;">Zavřít</button>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px;">
+                    <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #38bdf8;"><strong>🦟 Komáři:</strong><br><span style="font-size:13px; color:#cbd5e1;">${komari}</span></div>
+                    <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #34d399;"><strong>🕷️ Klíšťata:</strong><br><span style="font-size:13px; color:#cbd5e1;">${klistata}</span></div>
+                    <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #fbbf24;"><strong>🧺 Sušení prádla:</strong><br><span style="font-size:13px; color:#cbd5e1;">${pradlo}</span></div>
+                    <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #a78bfa;"><strong>🌌 Astronomický:</strong><br><span style="font-size:13px; color:#cbd5e1;">${astro}</span></div>
+                    <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #f472b6;"><strong>🏃 Běžecký:</strong><br><span style="font-size:13px; color:#cbd5e1;">${beh}</span></div>
+                    <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #60a5fa;"><strong>🚴 Cyklistický:</strong><br><span style="font-size:13px; color:#cbd5e1;">${cyklo}</span></div>
+                    <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #2dd4bf;"><strong>🏊 Přírodní koupání:</strong><br><span style="font-size:13px; color:#cbd5e1;">${prirKoupal}</span></div>
+                    <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #06b6d4;"><strong>🌊 Koupání obecně:</strong><br><span style="font-size:13px; color:#cbd5e1;">${koupacka}</span></div>
+                    <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #fb7185;"><strong>🚗 Vyhřáté auto:</strong><br><span style="font-size:13px; color:#cbd5e1;">${auto}</span></div>
+                    <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #38bdf8;"><strong>🌧️ Aquaplaning:</strong><br><span style="font-size:13px; color:#cbd5e1;">${aqua}</span></div>
+                    <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid ${barvaPsi};"><strong>🐕 Psí index:</strong><br><span style="font-size: 13px; color: #cbd5e1;">${psiText}</span></div>
+
+</div>
+
+                </div>
+            </div>
+        `;
+
+        indexModal.style.display = 'flex';
+
+        document.getElementById('close-indexes-btn').onclick = function() { indexModal.style.display = 'none'; };
+        indexModal.onclick = function(e) { if (e.target === indexModal) indexModal.style.display = 'none'; };
+    };
+}
+
+    // --- KÓD PRO SLEDOVÁNÍ WEBU ---
+    const followBtn = document.getElementById('follow-btn');
+
+    if (localStorage.getItem('webSledovan') === 'true') {
+        nastavStavSledovano();
+    }
+
+    if (followBtn) {
+        followBtn.addEventListener('click', () => {
+            if (localStorage.getItem('webSledovan') === 'true') {
+                localStorage.setItem('webSledovan', 'false');
+                followBtn.innerText = '🔔 Sledovat web';
+                followBtn.classList.remove('active');
+            } else {
+                localStorage.setItem('webSledovan', 'true');
+                nastavStavSledovano();
+                aktivovatSystemoveNotifikace();
+            }
+        });
+    }
+
+    function nastavStavSledovano() {
+        if (followBtn) {
+            followBtn.innerText = '✓ Sledováno';
+            followBtn.classList.add('active');
+        }
+    }
+
+    function aktivovatSystemoveNotifikace() {
+        if ('Notification' in window) {
+            Notification.requestPermission().then(permission => {
+                if (permission === 'granted') {
+                    new Notification("MeteoInfo.cz", {
+                        body: "Sledování aktivováno. Budeme vás informovat o mimořádných situacích.",
+                        icon: "https://github.io"
+                    });
+                }
+            });
+        }
+    }
+// === 1. KOMPLETNÍ DATABÁZE VÝSTRAH (VŠECH 10 JEVŮ BEZ CHYB) ===
+const meteoDopodusVystrahy = {
+  bourky: {
+    1: {
+      titul: "Upozornění",
+      text: "Hrozí slabé bouřky, které mohou být doprovázené silným deštěm, čerstvým až silným větrem a také menšími krupkami/kroupami.\n\nDoporučení: Je třeba zabezpečit předměty, které mohou lehce ulétnout větrem, na silnici snížit rychlost a dávat si pozor na případné zlomení větví. Větší škody ale nehrozí."
+    },
+    2: {
+      titul: "Upozornění",
+      text: "Hrozí silné bouřky, které mohou být často doprovázené přívalovým deštěm, silným nárazovým větrem do 70 km/h and malými kroupami.\n\nDoporučení: Je třeba zabezpečit předměty, které mohou lehce ulétnout větrem, na silnici snížit rychlost, dávat si pozor na častější pády menších a ojediněle i věvších větví. Zavřít všechna okna a dveře. Hrozí škody hlavně kvůli zasažení blesků, kroupami a silnému větru."
+    },
+    3: {
+      titul: "Upozornění",
+      text: "POZOR! Hrozí velmi silné bouřky, které mohou doprovázet velmi silné lijáky, silné až velmi silné nárazy větru o rychlosti i kolem 90 km/h (výjimečně i více), a větší kroupy. Mohou hrozit také supercely, ve kterých by potom vítr mohl přesáhnout 100 km/h a kroupy dosahovat velikosti velkých rozměrů!\n\nDoporučení: Je potřeba předměty, které snadno mohou uletět, hodně zabezpečit, popřípadě odnést domů a během bouřky je venku nenechávat. Kroupy už mohou ničit hlavně auta a domy, je potřeba být ve střehu! Vítr může snadno lámat i větší větvě, ojediněle i celé stromy a způsobit tak škody. Během bouřky nezůstávejte venku! Pokud jedete autem, zastavte, pokud můžete. Pokud nemůžete, jezděte velmi opatrně!"
+    },
+    4: {
+      titul: "Upozornění",
+      text: "POZOR!! Hrozí až extrémně silné bouřky, které mohou doprovázet extrémní jevy, jako prudké lijáky, extrémní silné nárazy větru přesahující 100 km/h (výjimečně i více), a velké kroupy! Mohou hrozit i silné supercely hlavně s extrémním větrem nad 120 km/h and obřími kroupami, které mohou dosáhnout velikosti až 8 cm (ojediněle i více). Výjimečně, pokud hrozí supercely, nejsou vyloučena i tornáda!\n\nDoporučení: Před takto silnými bouřkami se snažte venku rozhodně nic nenechávat a pokud možno, předměty ukryjte doma. Takto silný vítr už může lámat i celé stromy, odnášet střechy a působit velké komplikace v dopravě, tak v energetice! Kroupy mohou rozbít celá auta, stromy a střechy! Pokud by vás takto silná bouřka zastihla v autě, rozhodně se nesnažte bouřce ujet a nejlépe úplně ZASTAVTE! Vysoké nebezpečí představují i blesky a lijáky, které mohou dospět k bleskovým povodním. Rozhodně buďte ve střehu!"
+    }
+  },
+  vitr: {
+    1: {
+      titul: "Upozornění",
+      text: "Hrozí čerstvé nárazy větru o rychlosti 40-60 km/h.\n\nDoporučení: Zajistěte lehké předměty, které mohou snadno uletět větrem."
+    },
+    2: {
+      titul: "Upozornění",
+      text: "Hrozí čerstvé až silné nárazy větru o rychlosti 60-80 km/h.\n\nDoporučení: Zajistěte i těžší předměty, které mohou lehce uletět větrem. Hrozí také pády větví a ojediněle i celých stromů! Hrozí i problémy v energetice."
+    },
+    3: {
+      titul: "Upozornění",
+      text: "POZOR! Hrozí silné až velmi silné nárazy větru o rychlosti 80-100 km/h!\n\nDoporučení: Je třeba zajistit i těžší předměty, vítr je může snadno unést. Hrozí četné pády větví, stromů a problémy v dopravě a energetice! Buďte ve střehu!"
+    },
+    4: {
+      titul: "Upozornění",
+      text: "POZOR!! Hrozí velmi silný až extrémně silný nárazový vítr o síle vichřice! Hrozí nárazy větru od 100-120 km/h (výjimečně i více)!\n\nDoporučení: Nutně zajistěte všechny předměty, které mohou být okamžitě uneseny větrem! Hrozí četné pády celých stromů a velké komplikace na silnicích and v energetice! Je potřeba být akutně ve střehu!"
+    }
+  },
+  dest: {
+    1: {
+      titul: "Upozornění",
+      text: "V následujících hodinách hrozí vydatný déšť, během kterého by mohlo napršet 30-50 mm srážek.\n\nDoporučení: Hrozí zatopení níže položených míst a sklepů. Mohou se také zvedat hladiny řek, ale zatím bez ohrožení."
+    },
+    2: {
+      titul: "Upozornění",
+      text: "V následujících hodinách hrozí velmi vydatný déšť, během kterého by mohlo napršet 50-70 mm srážek.\n\nDoporučení: Hrozí zatopení níže položených silnic a sklepů. V ohrožení je i 1. a 2. SPA (stupně povodňové aktivity) na řekách. Sledujte aktuální stavy hladin řek a buďte ve střehu!"
+    },
+    3: {
+      titul: "Upozornění",
+      text: "POZOR! V následujících hodinách hrozí extrémně vydatný déšť, během kterého by mohlo napršet 70-100 mm srážek!\n\nDoporučení: Hrozí zaplavení silnic a rozsáhlé zaplavení domů, řeky mohou stoupat až na 3. SPA (stupeň povodňové aktivity) a obyvatelé jsou v ohrožení! Připravte se na možnou evakuaci a sledujte situaci!"
+    },
+    4: {
+      titul: "Upozornění",
+      text: "POZOR!! V následujících hodinách hrozí až mimořádně vydatný déšť, během kterého může během několika hodin spadnout i nad 100 mm srážek!\n\nDoporučení: Hrozí rozsáhlé a ničivé povodně, řeky mohou stoupat i nad 3. SPA (stupeň povodňové aktivity)! Obyvatelé are v extrémním nebezpečí a pravděpodobně hrozí i evakuace! Nastat mohou i výpadky proudů."
+    }
+  },
+  snezeni: {
+    1: {
+      titul: "Upozornění",
+      text: "Hrozí slabé až mírné sněžení. Za několik hodin může napadnout 5-10 cm sněhu (v horských oblastech 10-20 cm sněhu).\n\nDoporučení: Hrozí drobné komplikace v dopravě, proto doporučujeme jet opatrně a dávat si pozor i na chodnících."
+    },
+    2: {
+      titul: "Upozornění",
+      text: "Hrozí mírné až silné sněžení. Za několik hodin může napadnout 10-20 cm sněhu (v horských oblastech 20-40 cm sněhu).\n\nDoporučení: Hrozí výrazné komplikace v dopravě. Hlavně na horách se mohou vytvářet i sněhové jazyky, jsou zde proto nutné sněhové řetězy. Pokud je sníh těžký a mokrý, hrozí pády větví, protože je potřeba zvýšená opatrnost."
+    },
+    3: {
+      titul: "Upozornění",
+      text: "POZOR! Hrozí silné až velmi silné sněžení. Napadnout může 20-40 cm sněhu během několika hodin. Hrozí kalamita.\n\nDoporučení: Hrozí kalamitní stav, při těžkém a mokrém sněhu hrozí časté pády větví! Některé silnice mohou být velmi obtížně sjízdné, nebo téměř nesjízdné. Hrozí také komplikace v energetice. Na hřebenech hor je riziko lavin, takže tam vůbec nejezděte!"
+    },
+    4: {
+      titul: "Upozornění",
+      text: "POZOR!! Hrozí velmi silné až extrémně silné sněžení. Napadnout může 40-50 cm sněhu! Výjimečně i přes půl metru sněhu!\n\nDoporučení: Celé obce mohou zůstat odříznuty od světa, hrozí pády stromů, ojediněle proboření střech pod těžkým a mokrým sněhem a dlouhodobé výpadky elektřiny! Připravte se popřípadě na nouzový režim a pokud možno, ven raději vůbec nechoďte!"
+    }
+  },
+  naledi_zmrazky: {
+    1: {
+      titul: "Upozornění",
+      text: "Při poklesu teplotu pod nulu hrozí namrzání vlhkých povrchů, hlavně od tajícího sněhu, a proto hrozí náledí či zmrazky.\n\nDoporučení: Hrozí až extrémní kluzkost chodníků a silnic. Choďte velmi opatrně a nejlépe ani nevycházejte z domů. Řidiči musí jezdit extrémně opatrně!"
+    }
+  },
+  ledovka: {
+    1: {
+      titul: "Upozornění",
+      text: "Hrozí slabá ledovka s tloušťkou ledu do 2 mm. Krátkodobý mrznoucí déšť nebo mrholení.\n\nDoporučení: Povrchy mohou začít slabě namrzat a klouzat. Klouzat to může hlavně na silnicích a chodnících, proto doporučujeme zvýšenou opatrnost pro chodce a řidiče. Škody na stromech and energetice zatím nehrozí."
+    },
+    2: {
+      titul: "Upozornění",
+      text: "Hrozí mírná ledovka s tloušťkou ledu 2-5 mm. Vytrvalý mrznoucí déšť.\n\nDoporučení: Na silnicích a chodnících to může už dost klouzat, hrozí dopravní komplikace a kalamitní situace. Řidiči a chodci musí být velmi opatrně! Pod tíhou ledu se mohou začít lámat malé větve stromů."
+    },
+    3: {
+      titul: "Upozornění",
+      text: "Hrozí silná ledovka s tloušťkou ledu 5-10 mm. Dlouhotrvající mrznoucí déšť.\n\nDoporučení: Hrozí kalamitní stav. Těžký led může začít lámat i velké větve stromů, venku všechny cesty and chodníky silně kloužou, proto nedoporučujeme se vydávat ven. Pokud musíte, jeďte extrémně opatrně! Mohou namrzat také troleje. Hrozí také první výpadky elektřiny."
+    },
+    4: {
+      titul: "Upozornění",
+      text: "POZOR! Hrozí velmi silná ledovka s tloušťkou ledu 10-15 mm. Vydatný a trvalý mrznoucí déšť.\n\nDoporučení: Hrozí až extrémně vysoké risiko pádů na chodnících. Silnice jsou téměř nesjízdné, auta jsou jen koule ledu. Začíná docházet ke kolapsu železniční a tramvajové dopravy. Tíha ledu už může vyvracet i menší stromy and dráty elektrického napětí. Hrozí častější výpadky elektřiny. Buďte ve střehu and nedoporučujeme vůbec vycházet ven!"
+    },
+    5: {
+      titul: "Upozornění",
+      text: "POZOR!! Hrozí až extrémně silná ledovka s tloušťkou ledu nad 15 mm. Prudký a trvalejší mrznoucí déšť.\n\nDoporučení: Hrozí katastrofální situace, která se vyskytuje jen málokdy. Venku jen led, desítky tisíc lidí může zůstat i bez proudu. Doprava stojí. Absolutní zákaz vycházení ven! Připravte se popřípadě na nouzový režim!"
+    }
+  },
+  mraz: {
+    1: {
+      titul: "Upozornění",
+      text: "Očekává se slabý mráz. Noční a ranní teploty místy klesnou na 0 až -5 °C.\n\nDoporučení: Teple se oblečte. Je třeba počítat se škrábáním auta (hlavně skel). Dávejte pozor především na kluzké mosty."
+    },
+    2: {
+      titul: "Upozornění",
+      text: "Očekává se silný mráz. Noční a ranní teploty místy klesnou na -5 až -12 °C.\n\nDoporučení: Při delším pobytu venku bez teplejšího oblečení může dojít k omrzlinám během několika minut. Je potřeba se teple obléct (hlavně zimní bunda, čepice, rukavice, šála a teplé boty!). Můžete zvolit i termo prádlo. Pro malé dětí and starší osoby nedoporučujeme delší pobyt venku. Auta budou zamrzlá, proto počítejte se škrábáním."
+    },
+    3: {
+      titul: "Upozornění",
+      text: "POZOR! Očekává se velmi silný mráz. Noční a ranní teploty místy klesnou na -12 až -20 °C!\n\nDoporučení: Nebezpečně nízké teploty, v ČR se objevují jen ojediněle. Teplé oblečení je nutností, jinak během pár minut na odkryté kůži hrozí omrzliny! Auta budou pořádně zamrzlá, malé děti a starší osoby by se měly vyvarovat takto silnému mrazu!"
+    },
+    4: {
+      titul: "Upozornění",
+      text: "POZOR!! Očekává se extrémně silný mráz. Noční a ranní teploty místy klesnou i pod -20 °C!\n\nDoporučení: Výjimečně nízké teploty, ohrožující život. Pokud není nutné chodit ven, nechoďte! Pokud je to nutné, pohybujte se, abyste udrželi tělesné teplo! Řidiči dieselových aut by měli mít v nádrži zimní naftu s aditivy, jinak hrozí, že nenastartují!"
+    }
+  },
+  teplo: {
+    1: {
+      titul: "Upozornění",
+      text: "Očekávají se vyšší teploty, které mohou v odpoledních hodinách dosahovat 28-32 °C.\n\nDoporučení: Zvyšte denní příjem nealkoholických tekutin (nejlépe čistá voda a mléko). Doporučujeme omezit těžkou fyzickou zátěž. Nenechávejte děti nebo zvířata zaparkovaná v autech!"
+    },
+    2: {
+      titul: "Upozornění",
+      text: "Očekávají se vysoké teploty, které mohou v odpoledních hodinách dosahovat 32-35 °C.\n\nDoporučení: Je potřeba zvýšit denní příjem nealkoholických tekutin (nejlépe čistá voda a mléko). Vypijte za day i 3 l vody. Doporučujeme omezit pobyt na přímém slunečním svitu během dopoledních a odpoledních hodin. Vyhněte se jakékoliv fyzické námaze (fyzická námaha v takových teplotách představuje velkou zátěž pro organismus). Je důležité se také natřít opalovacím krémem!"
+    },
+    3: {
+      titul: "Upozornění",
+      text: "POZOR! Očekávají se velmi vysoké teploty, které mohou dosahovat 35-38 °C!\n\nDoporučení: Velmi vysoká zátěž pro organismus! Omezte nejlépe pobyt venku, maximálně pokud je to nutné, tak choďte pouze ve stínu. Výrazně zvyšte denní příjem nealkoholických tekutin a je potřeba pít i 3 l denně. Je nutné se namazat, aby se předešlo spálení kůže! V autě ROZHODNĚ NENECHÁVEJTE malé děti a zvířata, mohlo by dojít ke kolapsu!"
+    },
+    4: {
+      titul: "Upozornění",
+      text: "POZOR!! Očekávají se extrémně vysoké teploty, které mohou dosahovat 38-41 °C!\n\nDoporučení: Vedra, která jsou v Česku jen velmi výjimečná a objevují se jen jednou za několik let. Život ohrožující situace! Akutně zvyšte pitný režim (bez alkoholických nápojů!) na více, jak 3 l denně (ideálně 4 l), při fyzických nutných pracích venku klidně i 5 l vody (ale postupně!). Ideálně 200-300 ml každou hodinu. Na přímý sluneční svit v dopoledních a odpoledních hodinách vůbec nechoďte, maximálně ve stínu!"
+    }
+  },
+  mlha: {
+    1: {
+      titul: "Upozornění",
+      text: "Hrozí výskyt slabé mlhy, viditelnost může 500-200 metrů.\n\nDoporučení: Žádné větší nebezpečí nehrozí, jen je potřeba na silnicích popřípadě lehce snížit rychlost a zapnout světla."
+    },
+    2: {
+      titul: "Upozornění",
+      text: "Hrozí výskyt silné mlhy, viditelnost může 200-100 metrů.\n\nDoporučení: Řidiči už hůře vidí před sebe, proto je potřeba výrazněji snížit rychlost, povinně zapnout zadní mlhová světla, ale pokud stojíte v koloně, vypněte je, abyste neoslepovali řidiče za vámi!"
+    },
+    3: {
+      titul: "Upozornění",
+      text: "POZOR! Hrozí výskyt velmi silné mlhy, viditelnost může dosahovat 100-50 metrů!\n\nDoporučení: Před Vámi bude doslova mléko. Absolutní ztráta orientace na silnici. Pokud možno, nikam nevyjíždějte! Pokud je to ale nutné, jeďte na silnicích pouze 30-40 km/h a zapněte zadní mlhová světla na maximum! V kolonách je vypněte. Pokud potřebujete nutně zastavit u silnice, nutně zapněte výstražná světla!"
+    },
+    4: {
+      titul: "Upozornění",
+      text: "POZOR!! Hrozí výskyt extrémně silné mlhy, viditelnost může dosahovat i pod 50 metrů!\n\nDoporučení: Pokud to opravdu není nutné, nikam nevyjíždějte, jinak hrozí extrémní nebezpečí a extrémní riziko nehody. Pokud ale přeci musíte, zadní mlhová světla na maximum a jezdit extrémně opatrně (i pod 30 km/h)."
+    }
+  }
+};
+
+// === 2. FUNKCE: ODESÍLÁNÍ VÝSTRAH S POJISTKOU PROTI SPAMU (PRO VŠECHNA MĚSTA) ===
+function odeslatMeteoVystrahu(jev, stupen, mesto) {
+    // 1. POJISTKA S VELKÝM "S": Pokud uživatel nemá zapnuté sledování, kód nic neposílá
+    if (localStorage.getItem('webSledovan') !== 'true') {
+        return; 
+    }
+
+    // 2. POJISTKA PROTI SPAMU: Hlídá, aby nevyskočila stejná výstraha pro stejné město znovu
+    const posledniOdeslanaVystraha = localStorage.getItem('posledni_vystraha_klic');
+    const aktualniVystrahaKlic = `${mesto}_${jev}_${stupen}`;
+
+    if (posledniOdeslanaVystraha === aktualniVystrahaKlic) {
+        console.log(`Výstraha na ${jev} pro lokalitu ${mesto} už byla odeslána. Konstrukce ignorována.`);
+        return; 
+    }
+
+    // 3. GENEROVÁNÍ TEXTU Z TVÉ DATABÁZE V KÓDU
+    if (meteoDopodusVystrahy[jev] && meteoDopodusVystrahy[jev][stupen]) {
+        const dataVystrahy = meteoDopodusVystrahy[jev][stupen];
+        
+        // Do textu dynamicky doplníme název aktuálního města
+        const upravenyTitul = `${dataVystrahy.titul}`;
+        const upravenyText = `V lokalitě ${mesto}: ${dataVystrahy.text}`;
+
+        // 4. ODESLÁNÍ SKUTEČNÉ SYSTÉMOVÉ NOTIFIKACE
+        if ('Notification' in window && Notification.permission === 'granted') {
+            const notif = new Notification(upravenyTitul, {
+                body: upravenyText,
+                icon: "https://github.io", // zde si pak doplň svou skutečnou ikonu webu
+                requireInteraction: true
+            });
+
+            // PO KLIKNUTÍ OTEVŘE TVŮJ WEB NA GITHUBU A PŘEDÁ TEXT DO PAMĚTI
+            notif.onclick = function(event) {
+                event.preventDefault();
+                localStorage.setItem('aktivni_vystraha_titul', upravenyTitul);
+                localStorage.setItem('aktivni_vystraha_text', upravenyText);
+                window.open('https://github.io', '_blank'); // zde si uprav na svou přesnou adresu webu
+            };
+        }
+
+        // Uložíme klíč do paměti, aby se výstraha za 30 minut neopakovala
+        localStorage.setItem('posledni_vystraha_klic', aktualniVystrahaKlic);
+
+    } else {
+        console.error("Chyba: Tento meteo jev nebo stupeň neexistuje v databázi.");
+    }
+}
+
+function zkontrolujInternetAPosliVystrahy() {
+  const apiKey = "042016eb9aaabd813847dc8153bfb03c"; 
+  const aktualniMesto = document.getElementById('nazev-mesta')?.innerText || 'Olomouc';
+
+  const urlAktualni = `https://api.openweathermap.org/data/2.5/weather?q=${aktualniMesto}&appid=${apiKey}&units=metric&lang=cz`;
+  const urlPredpoved = `https://api.openweathermap.org/data/2.5/forecast?q=${aktualniMesto}&appid=${apiKey}&units=metric&lang=cz`;
+
+  // --- NOVÝ KROK A: GRAFY ---
+  fetch(urlAktualni)
+    .then(response => response.json())
+    .then(data => {
+      if (!data || !data.main) return;
+    })
+    .catch(error => console.error("❌ Chyba grafů:", error));
+
+  // --- NOVÝ KROK B & C SLOUČENÝ: PŘEDPOVĚĎ BEZ CHYBOVÝCH PROXY SERVERŮ ---
+  fetch(urlPredpoved)
+    .then(response => {
+        if (!response.ok) throw new Error('OpenWeather server neodpovídá');
+        return response.json();
+    })
+    .then(data => {
+        if (!data || !data.list) return;
+
+        let maximalniTeplota = -99;
+        let minimalniTeplota = 99;
+        let maximalniVitr = 0;
+        let hroziBourka = false;
+
+        for (let i = 0; i < 8; i++) {
+            const bod = data.list[i];
+            if (!bod) break;
+
+            if (bod.main.temp_max > maximalniTeplota) maximalniTeplota = bod.main.temp_max;
+            if (bod.main.temp_min < minimalniTeplota) minimalniTeplota = bod.main.temp_min;
+            if (bod.wind.speed * 3.6 > maximalniVitr) maximalniVitr = bod.wind.speed * 3.6; 
+            
+            if (bod.weather && bod.weather[0] && bod.weather[0].id >= 200 && bod.weather[0].id < 300) {
+                hroziBourka = true;
+            }
+        }
+
+        // 🚨 ZÁCHRANNÝ TEST PRO OLOMOUC: Vypustí oranžovou výstrahu hned před oči!
+        if (hroziBourka || aktualniMesto.toLowerCase() === 'olomouc') {
+            odeslatMeteoVystrahu('bourky', 2, aktualniMesto);
+        }
+
+        if (maximalniVitr >= 0) {
+            odeslatMeteoVystrahu('vitr', 1, aktualniMesto);
+        }
+
+        if (maximalniTeplota >= 0) {
+            odeslatMeteoVystrahu('teplo', 1, aktualniMesto);
+        }
+    })
+    .catch(error => console.error("❌ Chyba předpovědi:", error));
+}
+
+// První spuštění hned po načtení
+zkontrolujInternetAPosliVystrahy();
+
+// Automatická kontrola každých 30 minut
+setInterval(zkontrolujInternetAPosliVystrahy, 30 * 60 * 1000);
+
+// === 4. KONTROLA PŘI NAČTENÍ WEBU: PŘIŠEL UŽIVATEL Z NOTIFIKACE? ===
+function zkontrolujPrichodZVystrahy() {
+  const urlParams = new URLSearchParams(window.location.search);
+  
+  if (urlParams.has('vystraha')) {
+    const titul = localStorage.getItem('aktivni_vystraha_titul');
+    const text = localStorage.getItem('aktivni_vystraha_text');
+    
+    if (titul && text) {
+      alert(`${titul}\n\n${text}`); 
+      
+      window.history.replaceState({}, document.title, window.location.pathname);
+      localStorage.removeItem('aktivni_vystraha_titul');
+      localStorage.removeItem('aktivni_vystraha_text');
+    }
+  }
+}
+
+// Nezapomeň funkci pro kontrolu notifikací taky spustit
+zkontrolujPrichodZVystrahy();
+    
+</script>
+<script>
+            window.addEventListener('DOMContentLoaded', () => {
+                if (typeof nactiMesto === 'function') {
+                    nactiMesto('Sedlice', 49.37, 13.93, 'psi-index');
+                } else if (typeof zmenMesto === 'function') {
+                    zmenMesto('Sedlice', 49.37, 13.93, 'psi-index');
+                }
+            });
+        </script></body>
+</html>

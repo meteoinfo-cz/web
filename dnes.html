@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dnes v ČR - MeteoInfo</title>
+    <style>
+        body { margin: 0; font-family: sans-serif; background-color: #0b0f19; color: #f8fafc; }
+        .header { display: flex; align-items: center; justify-content: space-between; height: 70px; background: #1e293b; padding: 0 20px; position: relative; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .o-webu-btn { background: none; border: none; font-size: 1.1rem; font-weight: bold; color: #f8fafc; cursor: pointer; text-decoration: none; }
+        .karta { background: #1f2937; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: 1px solid #334155; text-align: center; }
+        .mesto-nazev { color: #38bdf8; font-size: 22px; font-weight: bold; margin: 10px 0; min-height: 26px; }
+        .hodnota { font-size: 28px; font-weight: 800; color: #f8fafc; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-left" style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 1.3rem; font-weight: bold; color: #f8fafc;">Dnes v ČR</span>
+            <a href="index.html" class="o-webu-btn">Zpět na úvod</a>
+        </div>
+        <div class="header-center"><h2 style="margin: 0; font-size: 1.8rem; color: #38bdf8;">MeteoInfo</h2></div>
+        <div class="header-right" style="width: 200px;"></div>
+    </header>
+
+    <div style="padding: 50px 20px; max-width: 1200px; margin: 0 auto;">
+        <h2 style="font-size: 26px; font-weight: bold; color: #f8fafc; margin-bottom: 50px; text-align: center;">
+            Dnes v České republice (Živý přehled)
+        </h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 50px;">
+            <div class="karta">
+                <div style="color: #ef4444; font-weight: bold; font-size: 14px;">🔥 NEJTEPLEJI</div>
+                <div id="nejtepleji-mesto" class="mesto-nazev">Načítání...</div>
+                <div id="nejtepleji-hodnota" class="hodnota">-- °C</div>
+            </div>
+            <div class="karta">
+                <div style="color: #38bdf8; font-weight: bold; font-size: 14px;">❄️ NEJCHLADNĚJI</div>
+                <div id="nejchladneji-mesto" class="mesto-nazev">Načítání...</div>
+                <div id="nejchladneji-hodnota" class="hodnota">-- °C</div>
+            </div>
+            <div class="karta">
+                <div style="color: #34d399; font-weight: bold; font-size: 14px;">💨 NEJSILNĚJŠÍ VÍTR</div>
+                <div id="nejvyssi-vitr-mesto" class="mesto-nazev">Načítání...</div>
+                <div id="nejvyssi-vitr-hodnota" class="hodnota">-- km/h</div>
+            </div>
+            <div class="karta">
+                <div style="color: #94a3b8; font-weight: bold; font-size: 14px;">📈 NEJVYŠŠÍ TLAK</div>
+                <div id="nejvyssi-tlak-mesto" class="mesto-nazev">Načítání...</div>
+                <div id="nejvyssi-tlak-hodnota" class="hodnota">-- hPa</div>
+            </div>
+            <div class="karta">
+                <div style="color: #0ea5e9; font-weight: bold; font-size: 14px;">🌧️ NEJVÍCE SRÁŽEK</div>
+                <div id="nejvice-srazek-mesto" class="mesto-nazev">Načítání...</div>
+                <div id="nejvice-srazek-hodnota" class="hodnota">-- mm</div>
+            </div>
+            <div class="karta">
+                <div style="color: #e2e8f0; font-weight: bold; font-size: 14px;">🏔️ NEJVÍCE SNĚHU</div>
+                <div id="nejvice-snehu-mesto" class="mesto-nazev">Načítání...</div>
+                <div id="nejvice-snehu-hodnota" class="hodnota">-- cm</div>
+            </div>
+            <div class="karta">
+                <div style="color: #f59e0b; font-weight: bold; font-size: 14px;">☀️ NEJVYŠŠÍ UV INDEX</div>
+                <div id="nejuv-mesto" class="mesto-nazev">Načítání...</div>
+                <div id="nejuv-hodnota" class="hodnota">--</div>
+            </div>
+        </div>
+    </div>
+
+<script>
+async function nactiAktualniExtremy() {
+    try {
+        const response = await fetch('mesta.json?b=' + new Date().getTime());
+        if (!response.ok) return;
+        let mesta = await response.json();
+
+        if (!mesta || mesta.length === 0) return;
+
+        let maxT = -999, nejteplejiMesto = "";
+        let minT = 999, nejchladnejiMesto = "";
+        let maxV = -1, nejsilnejsiVitrMesto = "";
+        let maxP = -1, nejvyssiTlakMesto = "";
+        let maxS = -1, nejviceSrazekMesto = "";
+        let maxSn = -1, nejviceSnehuMesto = "";
+        let maxUv = -1, nejvyssiUvMesto = "";
+
+        mesta.forEach(mesto => {
+            if (!mesto || !mesto.n) return;
+
+            if (mesto.t !== undefined) {
+                let val = parseFloat(mesto.t);
+                if (val > maxT) { maxT = val; nejteplejiMesto = mesto.n; }
+                if (val < minT) { minT = val; nejchladnejiMesto = mesto.n; }
+            }
+            if (mesto.v !== undefined) {
+                let val = parseFloat(mesto.v);
+                if (val > maxV) { maxV = val; nejsilnejsiVitrMesto = mesto.n; }
+            }
+            if (mesto.p !== undefined) {
+                let val = parseFloat(mesto.p);
+                if (val > maxP) { maxP = val; nejvyssiTlakMesto = mesto.n; }
+            }
+            if (mesto.s !== undefined) {
+                let val = parseFloat(mesto.s);
+                if (val > maxS) { maxS = val; nejviceSrazekMesto = mesto.n; }
+            }
+            if (mesto.sn !== undefined) {
+                let val = parseFloat(mesto.sn);
+                if (val > maxSn) { maxSn = val; nejviceSnehuMesto = mesto.n; }
+            }
+            if (mesto.uv !== undefined) {
+                let val = parseFloat(mesto.uv);
+                if (val > maxUv) { maxUv = val; nejvyssiUvMesto = mesto.n; }
+            }
+        });
+
+        const sluguj = (text) => text.toLowerCase().replace(/á/g,'a').replace(/č/g,'c').replace(/ď/g,'d').replace(/é/g,'e').replace(/ě/g,'e').replace(/í/g,'i').replace(/ň/g,'n').replace(/ó/g,'o').replace(/ř/g,'r').replace(/š/g,'s').replace(/ť/g,'t').replace(/ú/g,'u').replace(/ů/g,'u').replace(/ý/g,'y').replace(/ž/g,'z').replace(/ /g, '-').replace(/[^a-z0-9-]/g, '');
+
+        document.getElementById('nejtepleji-mesto').innerHTML = `<a href="${sluguj(nejteplejiMesto)}/" style="color: #38bdf8; text-decoration: none;">${nejteplejiMesto}</a>`;
+        document.getElementById('nejtepleji-hodnota').innerText = (maxT > 0 ? '+' : '') + maxT + ' °C';
+
+        document.getElementById('nejchladneji-mesto').innerHTML = `<a href="${sluguj(nejchladnejiMesto)}/" style="color: #38bdf8; text-decoration: none;">${nejchladnejiMesto}</a>`;
+        document.getElementById('nejchladneji-hodnota').innerText = (minT > 0 ? '+' : '') + minT + ' °C';
+
+        document.getElementById('nejvyssi-vitr-mesto').innerHTML = `<a href="${sluguj(nejsilnejsiVitrMesto)}/" style="color: #38bdf8; text-decoration: none;">${nejsilnejsiVitrMesto}</a>`;
+        document.getElementById('nejvyssi-vitr-hodnota').innerText = maxV + ' km/h';
+
+        document.getElementById('nejvyssi-tlak-mesto').innerHTML = `<a href="${sluguj(nejvyssiTlakMesto)}/" style="color: #38bdf8; text-decoration: none;">${nejvyssiTlakMesto}</a>`;
+        document.getElementById('nejvyssi-tlak-hodnota').innerText = maxP + ' hPa';
+
+        document.getElementById('nejvice-srazek-mesto').innerHTML = maxS > 0 ? `<a href="${sluguj(nejviceSrazekMesto)}/" style="color: #38bdf8; text-decoration: none;">${nejviceSrazekMesto}</a>` : 'Žádné';
+        document.getElementById('nejvice-srazek-hodnota').innerText = maxS + ' mm';
+
+        document.getElementById('nejvice-snehu-mesto').innerHTML = maxSn > 0 ? `<a href="${sluguj(nejviceSnehuMesto)}/" style="color: #38bdf8; text-decoration: none;">${nejviceSnehuMesto}</a>` : 'Žádný';
+        document.getElementById('nejvice-snehu-hodnota').innerText = maxSn + ' cm';
+
+        document.getElementById('nejuv-mesto').innerHTML = `<a href="${sluguj(nejvyssiUvMesto)}/" style="color: #38bdf8; text-decoration: none;">${nejvyssiUvMesto}</a>`;
+        document.getElementById('nejuv-hodnota').innerText = maxUv;
+
+    } catch (error) {
+        console.error(error);
+    }
+}
+nactiAktualniExtremy();
+</script>
+</body>
+</html>
