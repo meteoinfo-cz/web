@@ -2317,17 +2317,17 @@ function zkontrolujInternetAPosliVystrahy() {
             return bod.weather && bod.weather[0] && bod.weather[0].id >= 600 && bod.weather[0].id <= 622;
         });
 
-        if (hroziJakejkoliSnezeni) {
-            if (maxSnihMms >= 40) {
-                odeslatMeteoVystrahu('snezeni', 4, aktualniMesto);
-            } else if (maxSnihMms >= 20 && maxSnihMms < 40) {
-                odeslatMeteoVystrahu('snezeni', 3, aktualniMesto);
-            } else if (maxSnihMms >= 10 && maxSnihMms < 20) {
-                odeslatMeteoVystrahu('snezeni', 2, aktualniMesto);
-            } else {
-                odeslatMeteoVystrahu('snezeni', 1, aktualniMesto);
-            }
-        }
+        	if (hroziJakejkolivSnezeni) {
+		if (maxSnihMms >= 40) {
+			odeslatMeteoVystrahu('snezeni', 4, aktualniMesto);
+		} else if (maxSnihMms >= 20 && maxSnihMms < 40) {
+			odeslatMeteoVystrahu('snezeni', 3, aktualniMesto);
+		} else if (maxSnihMms >= 10 && maxSnihMms < 20) {
+			odeslatMeteoVystrahu('snezeni', 2, aktualniMesto);
+		} else if (maxSnihMms >= 5) { // Tady uprav ten poslední řádek
+			odeslatMeteoVystrahu('snezeni', 1, aktualniMesto);
+		}
+	}
 
         // 6. VÝSTRAHA NA VYDATNÝ DEŠŤ (Klíč 'dest', stupně 1 až 4)
         let maxDestMms = 0;
@@ -2343,17 +2343,17 @@ function zkontrolujInternetAPosliVystrahy() {
             return bod.weather && bod.weather[0] && ((bod.weather[0].id >= 500 && bod.weather[0].id <= 531) || (bod.weather[0].id >= 300 && bod.weather[0].id <= 321));
         });
 
-        if (hroziJakejkoliDest && !hroziMrznouciDest) {
-            if (maxDestMms >= 100) {
-                odeslatMeteoVystrahu('dest', 4, aktualniMesto);
-            } else if (maxDestMms >= 70 && maxDestMms < 100) {
-                odeslatMeteoVystrahu('dest', 3, aktualniMesto);
-            } else if (maxDestMms >= 50 && maxDestMms < 70) {
-                odeslatMeteoVystrahu('dest', 2, aktualniMesto);
-            } else {
-                odeslatMeteoVystrahu('dest', 1, aktualniMesto);
-            }
-        }
+        	if (hroziJakejkolivDest && !hroziMrznouciDest) {
+		if (maxDestMms >= 100) {
+			odeslatMeteoVystrahu('dest', 4, aktualniMesto);
+		} else if (maxDestMms >= 70 && maxDestMms < 100) {
+			odeslatMeteoVystrahu('dest', 3, aktualniMesto);
+		} else if (maxDestMms >= 50 && maxDestMms < 70) {
+			odeslatMeteoVystrahu('dest', 2, aktualniMesto);
+		} else if (maxDestMms >= 20) { // OPRAVA TADY: Výstraha 1. stupně vyskočí až od 20 mm srážek
+			odeslatMeteoVystrahu('dest', 1, aktualniMesto);
+		}
+	}
 
         // 7. VÝSTRAHA NA MLHU (Klíč 'mlha', stupně 1 až 4)
         let maxStupenMlhy = 0;
