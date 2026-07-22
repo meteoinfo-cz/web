@@ -312,6 +312,80 @@
     visibility: visible;
     opacity: 1;
 }
+
+/* =======================================================
+   FINÁLNÍ OPRAVA PRO ČERNÝ (TMAVÝ) MOTIV METEO DENÍKU
+   ======================================================= */
+
+/* 1. TEXTY V PRAVÉM SLOUPCI A HLAVNÍ NADPISY ZBĚLAJÍ */
+[data-theme="dark"] #okno-denik h2,
+[data-theme="dark"] #okno-denik h3,
+[data-theme="dark"] #okno-denik header,
+[data-theme="dark"] #okno-denik .modal-title,
+[data-theme="dark"] #denik-text-jevu,
+[data-theme="dark"] #denik-text-jevu p,
+[data-theme="dark"] #denik-text-jevu strong,
+[data-theme="dark"] #denik-vychozi-text p,
+.dark-mode #okno-denik h2,
+.dark-mode #okno-denik h3,
+.dark-mode #okno-denik header,
+.dark-mode #okno-denik .modal-title,
+.dark-mode #denik-text-jevu,
+.dark-mode #denik-text-jevu p,
+.dark-mode #okno-denik p,
+.dark-mode #denik-text-jevu strong,
+.dark-mode #denik-vychozi-text p,
+.dark #okno-denik h2,
+.dark #okno-denik h3,
+.dark #okno-denik header,
+.dark #okno-denik .modal-title,
+.dark #denik-text-jevu,
+.dark #denik-text-jevu p,
+.dark #denik-text-jevu strong,
+.dark #denik-vychozi-text p {
+    color: #ffffff !important;
+}
+
+/* 2. TLAČÍTKA V LEVÉM SLOUPCI ZČERNAJÍ A DOSTANOU BÍLÉ PÍSMO */
+[data-theme="dark"] #okno-denik .denik-kat-btn,
+.dark-mode #okno-denik .denik-kat-btn,
+.dark #okno-denik .denik-kat-btn {
+    color: #ffffff !important;
+    background-color: #1f2937 !important; /* Tmavě šedé/černé pozadí */
+    border: 1px solid #374151 !important; /* Tmavý okraj */
+}
+
+/* 3. ZAVÍRACÍ KŘÍŽEK BUDE BÍLÝ A VIDITELNÝ */
+[data-theme="dark"] #okno-denik button[onclick*="classList.remove"],
+[data-theme="dark"] #okno-denik .close-btn,
+.dark-mode #okno-denik button[onclick*="classList.remove"],
+.dark-mode #okno-denik .close-btn,
+.dark #okno-denik button[onclick*="classList.remove"],
+.dark #okno-denik .close-btn {
+    color: #ffffff !important;
+    opacity: 1 !important;
+}
+
+/* 4. HOVER EFEKT PRO TLAČÍTKA (Při najetí myší v tmavém motivu text lehce zešedne) */
+[data-theme="dark"] #okno-denik .denik-kat-btn:hover,
+.dark-mode #okno-denik .denik-kat-btn:hover,
+.dark #okno-denik .denik-kat-btn:hover {
+    background-color: #374151 !important;
+    color: #d1d5db !important; /* V tmavém motivu text zešedne */
+}
+
+/* 5. HOVER EFEKT PRO KŘÍŽEK (Při najetí myší zčervená) */
+[data-theme="dark"] #okno-denik button[onclick*="classList.remove"]:hover,
+.dark-mode #okno-denik button[onclick*="classList.remove"]:hover,
+.dark #okno-denik button[onclick*="classList.remove"]:hover {
+    color: #dc3545 !important;
+}
+
+/* 6. HOVER EFEKT PRO BÍLÝ MOTIV (Aby černý text při najetí myší také lehce zešednul) */
+#okno-denik .denik-kat-btn:hover {
+    color: #6b7280 !important; /* V bílém motivu text zešedne */
+    background-color: #f3f4f6 !important; /* Lehce zešedne i pozadí bílého tlačítka */
+}
     </style>
 </head>
 <body>
@@ -328,8 +402,10 @@
                 <button class="o-webu-btn" onclick="document.getElementById('author-modal').classList.add('active')">O webu</button>
                 <span>|</span>
                 <button class="o-webu-btn" onclick="document.getElementById('updates-modal').classList.add('active')">Aktualizace</button>
-            </div>
-        </div>
+<span>|</span>
+        <button class="o-webu-btn" id="btn-otevrit-denik" style="font-weight: bold; color: #007bff;" onclick="document.getElementById('okno-denik').classList.add('active')">📖 Meteo deník</button>
+    </div>
+</div>
 
         <!-- STŘED: Původní nápis s neviditelným textem pro Google -->
         <h1 class="header-center-title" style="margin: 0; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);">MeteoInfo</h1>
@@ -342,6 +418,7 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
             <button class="header-btn" onclick="document.getElementById('radar-modal').classList.add('active')">☄️ Meteoradar</button>
             <button id="moon-trigger-btn" class="header-btn" onclick="document.getElementById('moon-modal').classList.add('active')">🌙 Měsíc: 🌓
             <button id="theme-button" class="header-btn" onclick="toggleTheme()" style="font-size: 1.1rem; padding: 4px 10px;">🌙</button>
+
 
 <div class="mobilni-sledovat-kontejner">
     <button id="follow-btn" class="btn-follow">🔔 Sledovat web</button>
@@ -599,6 +676,10 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
     Tento web bude pravidelně procházet několika aktualizacemi, které pomohou náš web vylepšit a rozšířit.
 </p>
 
+<div style="text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-accent); margin-bottom: 25px; box-sizing: border-box;">
+	<span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 22. 7. 2026</span>
+	<p style="margin: 0; color: var(--text-main); font-size: 15px; line-height: 1.4;">Přidán meteorologický deník, opravené malé chyby.</p>
+</div>
 <div style="text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-accent); margin-bottom: 25px; box-sizing: border-box;">
     <span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 18. 7. 2026</span>
     <p style="margin: 0; color: var(--text-main); font-size: 15px; line-height: 1.4;">Přidáno 10 nových indexů, změna drobných věcí.</p>
@@ -2124,6 +2205,8 @@ const meteoDopodusVystrahy = {
 
 // === 2. FUNKCE: ODESÍLÁNÍ VÝSTRAH S POJISTKOU PROTI SPAMU (PRO VŠECHNA MĚSTA) ===
 function odeslatMeteoVystrahu(jev, stupen, mesto) {
+document.querySelectorAll('.vystraha-notifikace').forEach(el => el.remove());
+
     // 1. POJISTKA S VELKÝM "S": Pokud uživatel nemá zapnuté sledování, kód nic neposílá
     if (localStorage.getItem('webSledovan') !== 'true') {
         return; 
@@ -2213,18 +2296,101 @@ function zkontrolujInternetAPosliVystrahy() {
             }
         }
 
-        // 🚨 ZÁCHRANNÝ TEST PRO OLOMOUC: Vypustí oranžovou výstrahu hned před oči!
-        if (hroziBourka || aktualniMesto.toLowerCase() === 'olomouc') {
+        if (hroziBourka) {
             odeslatMeteoVystrahu('bourky', 2, aktualniMesto);
         }
 
-        if (maximalniVitr >= 0) {
+        if (maximalniVitr >= 60) {
             odeslatMeteoVystrahu('vitr', 1, aktualniMesto);
         }
 
-        if (maximalniTeplota >= 0) {
+        if (maximalniTeplota >= 30) {
             odeslatMeteoVystrahu('teplo', 1, aktualniMesto);
         }
+        
+// 5. VÝSTRAHA NA SNĚŽENÍ (Klíč 'snezeni', stupně 1 až 4)
+        let maxSnihMms = 0;
+        const hroziJakejkoliSnezeni = data.list.slice(0, 8).some(bod => {
+            if (bod.snow && bod.snow['3h']) {
+                if (bod.snow['3h'] > maxSnihMms) maxSnihMms = bod.snow['3h'];
+            }
+            return bod.weather && bod.weather[0] && bod.weather[0].id >= 600 && bod.weather[0].id <= 622;
+        });
+
+        if (hroziJakejkoliSnezeni) {
+            if (maxSnihMms >= 40) {
+                odeslatMeteoVystrahu('snezeni', 4, aktualniMesto);
+            } else if (maxSnihMms >= 20 && maxSnihMms < 40) {
+                odeslatMeteoVystrahu('snezeni', 3, aktualniMesto);
+            } else if (maxSnihMms >= 10 && maxSnihMms < 20) {
+                odeslatMeteoVystrahu('snezeni', 2, aktualniMesto);
+            } else {
+                odeslatMeteoVystrahu('snezeni', 1, aktualniMesto);
+            }
+        }
+
+        // 6. VÝSTRAHA NA VYDATNÝ DEŠŤ (Klíč 'dest', stupně 1 až 4)
+        let maxDestMms = 0;
+        let hroziMrznouciDest = false; 
+        
+        const hroziJakejkoliDest = data.list.slice(0, 8).some(bod => {
+            if (bod.rain && bod.rain['3h']) {
+                if (bod.rain['3h'] > maxDestMms) maxDestMms = bod.rain['3h'];
+            }
+            if (bod.weather && bod.weather[0] && bod.weather[0].id === 511) {
+                hroziMrznouciDest = true;
+            }
+            return bod.weather && bod.weather[0] && ((bod.weather[0].id >= 500 && bod.weather[0].id <= 531) || (bod.weather[0].id >= 300 && bod.weather[0].id <= 321));
+        });
+
+        if (hroziJakejkoliDest && !hroziMrznouciDest) {
+            if (maxDestMms >= 100) {
+                odeslatMeteoVystrahu('dest', 4, aktualniMesto);
+            } else if (maxDestMms >= 70 && maxDestMms < 100) {
+                odeslatMeteoVystrahu('dest', 3, aktualniMesto);
+            } else if (maxDestMms >= 50 && maxDestMms < 70) {
+                odeslatMeteoVystrahu('dest', 2, aktualniMesto);
+            } else {
+                odeslatMeteoVystrahu('dest', 1, aktualniMesto);
+            }
+        }
+
+        // 7. VÝSTRAHA NA MLHU (Klíč 'mlha', stupně 1 až 4)
+        let maxStupenMlhy = 0;
+        const hroziMlha = data.list.slice(0, 8).some(bod => {
+            if (bod.weather && bod.weather[0]) {
+                const id = bod.weather[0].id;
+                if (id === 741) { maxStupenMlhy = 3; return true; } 
+                if (id === 701 || id === 711 || id === 721) { if (maxStupenMlhy < 1) maxStupenMlhy = 1; return true; }
+            }
+            return false;
+        });
+
+        if (hroziMlha && maxStupenMlhy > 0) {
+            odeslatMeteoVystrahu('mlha', maxStupenMlhy, aktualniMesto);
+        }
+
+        // 8. SKUTEČNÁ LEDOVKA (Klíč 'ledovka', stupně 1 až 5)
+        if (hroziMrznouciDest) {
+            if (maxDestMms >= 15) {
+                odeslatMeteoVystrahu('ledovka', 5, aktualniMesto);
+            } else if (maxDestMms >= 10 && maxDestMms < 15) {
+                odeslatMeteoVystrahu('ledovka', 4, aktualniMesto);
+            } else if (maxDestMms >= 5 && maxDestMms < 10) {
+                odeslatMeteoVystrahu('ledovka', 3, aktualniMesto);
+            } else if (maxDestMms >= 2 && maxDestMms < 5) {
+                odeslatMeteoVystrahu('ledovka', 2, aktualniMesto);
+            } else {
+                odeslatMeteoVystrahu('ledovka', 1, aktualniMesto);
+            }
+        }
+
+        // 9. NÁLEDÍ / ZMRAZKY (Klíč 'naledi_zmrazky', stupeň 1)
+        const hroziNaledi = (minimalniTeplota <= 1.5 && (hroziJakejkoliDest || hroziJakejkoliSnezeni)) && !hroziMrznouciDest;
+        if (hroziNaledi) {
+            odeslatMeteoVystrahu('naledi_zmrazky', 1, aktualniMesto);
+        }
+
     })
     .catch(error => console.error("❌ Chyba předpovědi:", error));
 }
@@ -2255,51 +2421,535 @@ function zkontrolujPrichodZVystrahy() {
 
 // Nezapomeň funkci pro kontrolu notifikací taky spustit
 zkontrolujPrichodZVystrahy();
-
-// --- 5. AUTOMATICKÉ PROG-SEO: DEKÓDOVÁNÍ VIRTUÁLNÍCH ADRES MĚST A INDEXŮ ---
-window.addEventListener('DOMContentLoaded', () => {
-    const mapaIndexu = {
-        'komari': 'Aktivita komárů', 'klistata': 'Aktivita klíšťat', 'suseni-pradla': 'Sušení prádla',
-        'astronomicky': 'Astronomický index', 'bezecky': 'Běžecký index', 'cyklisticky': 'Cyklistický index',
-        'prirodni-koupani': 'Přírodní koupání', 'koupani': 'Koupání obecně', 'vyhrate-auto': 'Vyhřáté auto',
-        'aquaplaning': 'Aquaplaning', 'psi-index': 'Psí index'
-    };
-    function zbavDiakritiky(t) {
-        const m = {'á':'a','č':'c','ď':'d','é':'e','ě':'e','í':'i','ň':'n','ó':'o','ř':'r','š':'s','ť':'t','ú':'u','ů':'u','ý':'y','ž':'z','ľ':'l','ô':'o'};
-        return t.toLowerCase().split('').map(z => m[z] || z).join('').replace(/[^a-z0-9\s-]/g, '').trim().replace(/[\s-]+/g, '-');
-    }
-    const path = window.location.pathname.replace(/\/$/, '').split('/');
-    const webIdx = path.findIndex(p => p === 'web');
-    if (webIdx === -1 || path.length <= webIdx + 1) return;
-    const urlMestoSlug = path[webIdx + 1];
-    const urlIndexSlug = path[webIdx + 2] || 'vse';
     
-    fetch('mesta.json')
-        .then(res => res.json())
-        .then(mesta => {
-            const nalezeneMesto = mesta.find(m => zbavDiakritiky(m.n) === urlMestoSlug);
-            if (!nalezeneMesto) return;
-            
-            const jmenoMesta = nalezeneMesto.n;
-            const lat = nalezeneMesto.la;
-            const lon = nalezeneMesto.lo;
-            
-            if (urlIndexSlug !== 'vse' && mapaIndexu[urlIndexSlug]) {
-                const jmenoIndexu = mapaIndexu[urlIndexSlug];
-                document.title = `${jmenoIndexu} - ${jmenoMesta} | MeteoInfo`;
-                const h1 = document.querySelector('h1');
-                if (h1) h1.innerText = `${jmenoMesta} - ${jmenoIndexu}`;
-            } else {
-                document.title = `Předpověď počasí ${jmenoMesta} | MeteoInfo`;
-                const h1 = document.querySelector('h1');
-                if (h1) h1.innerText = jmenoMesta;
-            }
-            
-            if (typeof nactiMesto === 'function') nactiMesto(jmenoMesta, lat, lon, urlIndexSlug);
-            else if (typeof zmenMesto === 'function') zmenMesto(jmenoMesta, lat, lon, urlIndexSlug);
-        }).catch(err => console.error("Chyba načítání měst:", err));
-});
-
 </script>
+
+<!-- VELKÉ OKNO METEO DENÍKU S ČISTOU TABULKOU -->
+<script>
+// ==========================================
+// DATABÁZE TEXTŮ A FUNKCE PRO METEO DENÍK
+// ==========================================
+
+const databazeTextu = {
+    bourky: {
+        nadpis: "Bouřky a blesky",
+        text: `<div style='font-size: 0.95rem; text-align: justify; padding-right: 20px; line-height: 1.6;'>
+            <p>Bouřky jsou atmosférické jevy doprovázené blesky a hřměním, které se tvoří v mohutných bouřkových oblacích zvaných cumulonimbus. Vznikají rychlým výstupem teplého, vlhkého vzduchu do vyšších vrstev atmosféry, kde se uvolňuje obrovské množství energie. Kromě elektrických výbojů přinášejí prudký déšť, nárazový vítr a často i krupobití.</p>
+            <strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Jak bouřky vznikají?</strong>
+            <p>Bouřky vznikají pomocí ohřevu vzduchu - Slunce ohřeje povrch země, od kterého se ohřeje teplý a vlhký vzduch, ten potom stoupá velmi rychle nahoru do chladnějších vrstev atmosféry. Poté se vodní pára stoupajícím vzduchem ochladí, kondenzuje a začíná vznikat mrak typu cumulonimbus (tzv. 'bouřkový oblak').</p>
+            <p>Uvnitř tohoto mraku se nachází ledové krystalky a dešťové kapky, které do sebe narážejí a vzniká statická elektřina. Pokud je napětí až moc vysoké, dojde k výboji (blesku). Doprovodné jevy bouřek: Bouřky často doprovází 3 hlavní jevy, a to přívalový déšť, krupobití a nárazy větru. Tyto projevy mohou být až velmi silné a doprovázet i rozsáhlé škody. Výjimečně může vzniknout i supercela.</p>
+            <strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Co je to supercela?</strong>
+            <p>Supercela je nejnebezpečnější typ bouřky (tzv. 'královna bouřek').</p>
+            <strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Jak supercela vzniká?</strong>
+            <p>Supercela vzniká pomocí tří podmínek, a to střihu větru, vlhkosti a nestability vzduchu. V atmosféře existuje vertikální střih větru - vítr u země fouká jiným směrem a nižší rychlostí než ve vyšších výškách. Tento rozdíl vytvoří neviditelný rotující válec, který leží horizontálně nad zemí.</p>
+            <p>Díky vysokým letním teplotám a vlhkosti začne od země proudit teplý stoupavý proud vzduchu nahoru (konvekce), čímž se začne tvořit klasický bouřkový oblak cumulonimbus. Jak tento silný stoupavý proud letí obrovskou rychlostí vzhůru, narazí na ležící rotující válec vzduchu. Stoupavý proud ho vertikálně překlopí. V tom okamžiku se celý stoupavý proud bouře začne točit jako obří vír. Takto vzniká rotující jádro bouře - mezocyklóna.</p>
+            <p>Existují také dva typy proudů, kterou určí životnost supercely, a to stoupavý a sestupný proud. Stoupavý proud nasává teplý vzduch. Sestupný proud způsobuje, že déšť a kroupy padají k zemi na jiném místě mraku.</p>
+            <strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Jak spočítat vzdálenost bouřky?</strong>
+            <p>Vzdálenost bouřky můžete určit velmi snadno. Stačí určit rozdíl mezi zábleskem a hromem. Po záblesku začněte okamžitě počítat sekundy do doby, dokud nezahřmí. Získaný čas v sekundách poté vydělte třemi. Vznikne vám přibližná vzdálenost bouřky v kilometrech. Příklad: Blýskne se, začnete počítat, napočítáte do 12 sekund a zahřmí. 12 sekund vydělíte třemi = bouřka je vzdálená 4 kilometry.</p>
+            <p>Tak si pojďme říct, jak vzniká blesk v bouřce. Blesk vzniká uvnitř bouřkového mraku (cumulonimbus), kde dochází k silnému proudění. Ledové krystalky a vodní kapky zde narážejí do sebe a tím vzniká kladný a záporný elektrický náboj. Záporný náboj se nachází v horní části mraku. Jakmile je rozdíl nábojů až moc veliký, vzduch neudrží izolaci a dojde k bleskovému výboji (záblesku). Existují 3 typy blesků:</p>
+            <p><strong>Mrak-země (CG - Cloud-To-Ground)</strong> - nejnebezpečnější typ blesků pro lidstvo. Výboj míří z mraku do země a zasahuje tak objekty na zemi.</p>
+            <p>Poté blesk uvnitř mraku <strong>(IC - Intra-Cloud)</strong> - nejčastější typ blesku, při kterém dochází k výboji pouze v mracích - buď v jednom a nebo mezi dvěma mraky. Na zem blesk vůbec nedosáhne.</p>
+            <p>A poslední blesk mezi mraky <strong>(CC - Cloud-To-Cloud)</strong> - výboj přeskočí z jednoho mraku do druhého.</p>
+            <strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Zajímavosti o blescích:</strong>
+            <p>Teplota uvnitř kanálu blesku dosahuje až 30 000 °C, což je zhruba 5x více než teplota povrchu Slunce! Blesk se pohybuje rychlostí kolem 100 000 km/s - třetinou rychlosti světla.</p>
+        </div>`
+    },
+    kroupy: {
+        nadpis: "Krupobití",
+        text: `<div style='font-size: 0.95rem; text-align: justify; padding-right: 20px; line-height: 1.6;'>
+            <p>Kroupy jsou srážky tvořené kusy ledu, které se tvoří v silných bouřkových mracích (cumulonimbus). Mají kulovitý či nepravidelný tvar a mohou dosahovat velikosti od pár milimetrů po několik centimetrů.</p>
+            <strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Jak kroupy vznikají?</strong>
+            <p>Pro vznik krup se musí splnit 4 podmínky:</p>
+            <p><strong>1. Vynesení kapek nahoru</strong> – silný stoupavý proud musí vynést dešťové kapky do horních vrstev mraku, kde mohou panovat teploty -20 až -40 °C.</p>
+            <p><strong>2. Zmrznutí a nabalování</strong> – Při takové teplotě dešťové kapky hned zmrznou. Když potom padají, narážejí do podchlazených kapek vody, které na nich namrzají a obalují se. Poté vznikne ledová kulička.</p>
+            <p><strong>3. Cesta jako na kolotoči</strong> – Stoupavý proud dokáže kuličku znovu vymrštit nahoru, kde na ni namrzne další vrstva ledu. Tento proces se může dít i několikrát za sebou.</p>
+            <p><strong>4. Pád k zemi</strong> – Kroupa potom spadne v době, kdy ji stoupavý proud už nedokáže udržet, nebo když stoupavý proud zeslábne.</p>
+            <strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Velikosti krup a škody</strong>
+            <p>Kroupy do 2 cm jsou ještě malé a většinou nezpůsobují škody, problémy ale už mohou nastat v zemědělství (poničená úroda). Kroupy nad 2 cm už začínají být větší a mohou poškodit hlavně auta a skla. Kroupy nad 5 cm a více už se řadí mezi velké až obrovské kroupy a tyto kroupy už nejsou nebezpečné jenom pro předměty, ale i pro lidi a mohou dokonce být i smrtelné. Tyto kroupy se ale velmi často tvoří hlavně v supercelách, kde se nachází extrémně silné stoupavé proudy.</p>
+            <strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Zajímavosti o kroupách</strong>
+            <p>Největší kroupa na světě měřila 18–23 cm. Spadla v Argentině ve městě Villa Carlos Paz v únoru 2018. Jde ale o neoficiální světový rekord. Oficiální světový rekord ale padl v Jižní Dakotě v USA v městečku Vivian. Kroupa zde měřila až 20,3 cm vážící 879 gramů! Taková velikost už se řadí mezi velikosti volejbalového míče. Takto extrémně obrovská kroupa způsobila kráter do země hluboký 25 cm.</p>
+            <p>Řekneme si také o světovém rekordu, který drží Bangladéš, a to rekord v nejtěžší kroupě na světě. V dubnu roku 1986 během extrémní bouřky spadla kroupa vážící přes 1 kilogram! (přesněji 1,02 kilogramů). Tato bouře si bohužel vyžádala 92 obětí.</p>
+        </div>`
+    },
+    tornado: {
+        nadpis: "Tornáda a tromby",
+        text: `<div style='font-size: 0.95rem; text-align: justify; padding-right: 20px; line-height: 1.6;'>
+            <p>Tornáda a tromby jsou silné rotující vzdušné víry, které mají přibližně svislou osu rotace. Ačkoliv tornádo a tromba vypadají stejně, je tu jeden zásadní rozdíl. A to, zda vír visí ve vzduchu (tromba), a nebo se dotkne země (tornádo).</p>
+            
+            <strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Jak vzniká tromba?</strong>
+            <p>Tromba vzniká velmi podobně jako tornádo, ale s jedním zásadním rozdílem. Rotujícímu víru chybí dostatek energie nebo správné podmínky u země, aby se spustil dolů. Celý proces vzniku tromby se skládá ze tří hlavních kroků:</p>
+            <p><strong>1. Roztočení vzduchu mraku</strong> – Uvnitř bouřkového mraku se nacházejí dva různé vzdušné proudy. Pomocí střihu větru (vítr v různých výškách fouká jinou rychlostí a směrem) se stoupající vzduch začne točit dokola a vznikne tak rotující vzdušný vír přímo uvnitř mraku.</p>
+            <p><strong>2. Pokles tlaku a kondenzace</strong> – Ve středu rotujícího víru začne prudce klesat atmosférický tlak. Kvůli nízkému tlaku se vzduch ve víru ochladí a vodní pára v něm začne okamžitě kondenzovat (měnit se na kapičky vody). Tím se rotace, která byla doposud neviditelná, stane viditelnou a zespodu mraku se začne vysouvat ledový nebo vodní chobot (odborně nazývaný funnel cloud).</p>
+            <p><strong>3. Zůstává ve výšce</strong> – Tromba vzniká tehdy, když tento rotující chobot zůstává viset, ale nedokáže se spojit se zemským povrchem. Vír visící nad zemí pak po několika minutách obvykle zmizí a vtáhne se zpět do mraku.</p>
+            
+            <strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Co je to tornádo?</strong>
+            <p>Tornádo je silně rotující vír vzduchu, který se na rozdíl od tromby dotýká zemského povrchu a zespodu nasává hlínu, prach a trosky. Má tvar nálevky, chobotu nebo tlustého sloupu, který visí z bouřkového mraku cumulonimbus. Aby oficiálně vzniklo tornádo, musí být vír spojen s bouřkovým mrakem a musí prokazatelně dosáhnout až na zem, což se pozná hlavně podle rotujícího prachu a trosek u země.</p>
+            
+            <strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Jak tornádo vzniká?</strong>
+            <p>Tornádo vzniká ve chvíli, kdy se rotující vír visící z mraku dotkne zemského povrchu. Vznik se dělí do čtyř fází:</p>
+            <p><strong>1. Rotace v supercele</strong> – Uvnitř supercelární bouře rotuje obrovský stoupavý proud (mezocyklóna).</p>
+            <p><strong>2. Sestupný proud</strong> – Studený vzduch ze srážkového pásma bouře začne klesat k zemi a stlačuje rotaci z mraku směrem dolů.</p>
+            <p><strong>3. Zúžení a zrychlení</strong> – Jak se rotující vzduch tlačí k zemi a zužuje se, začne se točit stále rychleji.</p>
+            <p><strong>4. Dotknutí se země</strong> – Jakmile se vír spojí se zemí, začne ničit vše, co mu stojí v cestě.</p>
+            <p>Tornáda se také dělí na supercelární tornáda a nesupercelární tornáda. Supercelární tornáda vznikají v těch nejsilnějších bouřkách (supercelách), mají dlouhou životnost a jsou až extrémně ničivá. Nesupercelární tornáda vznikají v běžných bouřkách nebo na liniích přeháněk, bývají slabší a mají životnost jen několik minut.</p>
+            
+            <strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Fujitova stupnice (EF stupnice)</strong>
+            <p>Měří se také síla tornád pomocí Fujitovy stupnice. Existuje také modernizovaná verze rozšířené Fujitovy stupnice (označované jako EF). Síla tornád se neurčuje podle velikosti, ale podle způsobených škod na budovách a vegetaci:</p>
+            <p><strong>F/EF0 – Slabé tornádo:</strong> Rychlost větru cca 105–137 km/h, škody jsou jen lehké. Trhá střešní tašky, láme malé větve stromů.</p>
+            <p><strong>F/EF1 – Mírné tornádo:</strong> Rychlost větru cca 138–177 km/h, škody jsou střední. Strhává střešní krytiny, posouvá nebo převrací karavany a maringotky, láme kmeny stromů a vytlačuje auta ze silnice.</p>
+            <p><strong>F/EF2 – Silné tornádo:</strong> Rychlost větru cca 178–253 km/h. Škody jsou značné. Strhává celé střechy z běžných zděných domů, velká auta a dodávky převrací nebo posouvá, vyvrací i vzrostlé velké stromy a ničí dřevostavby.</p>
+            <p><strong>F/EF3 – Velmi silné tornádo:</strong> Rychlost větru cca 254–332 km/h, škody jsou vážné. Boří vnější zdi dobře postavených domů, odtrhává střechy i stropy, převrací vlakové vagóny a zvedá těžká auta ze země.</p>
+            <p><strong>F/EF4 – Ničivé tornádo:</strong> Rychlost větru cca 333–418 km/h, škody jsou katastrofální. Srovnává se zemí i dobře postavené zděné domy a odnáší jejich trosky daleko pryč. Auta létají vzduchem jako projektily a z velkých budov zbývají jen základy (bohužel takto silné tornádo se v červnu 2021 prohnalo jižní Moravou v České republice).</p>
+            <p><strong>F/EF5 – Zpustošující tornádo:</strong> Rychlost větru cca 419–512 km/h, škody jsou nepředstavitelné. Silné zděné a železobetonové domy jsou kompletně vytrženy ze základů a rozmetány. Auta létají na vzdálenost stovek metrů. Dochází k úplnému oloupání kůry ze stojících zbytků stromů a tornádo dokáže vytrhat zemi i s asfaltem z dálnice. Vyskytují se téměř výhradně v USA.</p>
+        </div>`
+    },    downburst: {
+        nadpis: "Downburst, microburst, macroburst",
+        text: `<div style='font-size: 0.95rem; text-align: justify; padding-right: 20px; line-height: 1.6;'>
+            <p>Downburst je extrémně silný sestupný proud vzduchu, který se během bouřky svalí z mraku k zemi a po dopadu na zem se rozlije do všech stran. Na zemi se to projeví velmi silným a náhlým nárazem větru, který může dosáhnout síly orkánu (většinou přes 120 km/h, výjimečně až 250 km/h). Lidé si ho často pletou s tornádem, ale je v tom zásadní rozdíl – tornádo vzduch nasává a točí ho dokola (škody jsou zkroucené), zatímco downburst vzduch bije k zemi a rozfoukává ho rovně (škody jsou v jednom směru).</p>
+            
+            <strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Jak downburst vzniká?</strong>
+            <p><strong>1. Nahromadění těžkého vzduchu</strong> – v horních patrech bouřky se nachází obrovské množství ledových krup a podchlazené vody.</p>
+            <p><strong>2. Ochlazení a ztěžknutí</strong> – Když tyto kroupy a kapky začnou padat dolů, v teplejším vzduchu pod mrakem se začnou odpařovat a led začne tát. Tím se okolní vzduch extrémně ochladí. Studený vzduch je mnohem těžší než teplý, takže začne prudce klesat.</p>
+            <p><strong>3. Pád k zemi</strong> – padající srážky s sebou tento ledový a těžký vzduch strhnou dolů. Vznikne obří neviditelný píst, který padá k zemi obrovskou rychlostí.</p>
+            <p><strong>4. Náraz a rozlití</strong> – jakmile tento sloupec vzduchu narazí do zemského povrchu, nemá kam dál klesat. Explozivně se proto rozletí horizontálně do stran.</p>
+            
+            <strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Jaké škody způsobuje downburst?</strong>
+            <p>Downburst způsobuje totální devastaci lesních porostů, ničí infrastrukturu a představuje smrtelné nebezpečí pro letadla během startu či přistání. Klesavý proud větru láme stromy a sráží stroje k zemi.</p>
+            
+            <strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Co je to microburst?</strong>
+            <p>Microburst je malý, ale extrémně intenzivní sestupný proud vzduchu, který se během bouřky zřítí z mraku k zemi a rozletí se do stran. Je to v podstatě menší a prudší bratr downburstu.</p>
+            
+            <strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Jak microburst vzniká?</strong>
+            <p><strong>1. Ztěžknutí vzduchu</strong> – uvnitř mraku začnou padat kroupy a déšť do vrstvy suchého vzduchu, kde se začnou odpařovat.</p>
+            <p><strong>2. Prudké ochlazení</strong> – odpařováním se vzduch drasticky ochladí. Protože je studený vzduch těžký, začne padat dolů.</p>
+            <p><strong>3. Pád a náraz</strong> – tento ledový vzduchový píst se v úzkém sloupci (do 4 km) zřítí k zemi rychlostí až přes 200 km/h.</p>
+            
+            <strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Jaké škody způsobuje microburst?</strong>
+            <p>Microburst způsobuje rozsáhlé škody na budovách, kde trhá střechy a láme elektrické sloupy, a v přírodě během pár minut vyvrací menší lesy či parky v jednom směru. Kvůli extrémní síle klesavého větru je také smrtelnou hrozbou pro letadla, která může při startu či přistání bleskově srazit k zemi.</p>
+            
+            <strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Co je to macroburst?</strong>
+            <p>Macroburst je obří a ničivý sestupný proud vzduchu z bouřkového mraku, který po nárazu do země pustoší rozsáhlé území s průměrem větším než 4 kilometry. Trvá obvykle 5 až 20 minut.</p>
+            
+            <strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Jak macroburst vzniká?</strong>
+            <p><strong>1. Hromadění chladu</strong> – pod bouřkovým mrakem se kvůli odpařování srážek prudce ochladí vzduch.</p>
+            <p><strong>2. Pád obřího sloupce</strong> – tento ledový vzduch je velmi těžký a v obrovském, širokém sloupci se zřítí k zemi.</p>
+            <p><strong>3. Ničivý rozliv</strong> – po nárazu do země se rozletí do stran a vytvoří přímý vítr o síle orkánu (přes 130 km/h).</p>
+            
+            <strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Jaké škody způsobuje macroburst?</strong>
+            <p>Macroburst působí plošnou zkázu, když větrem o síle orkánu likviduje celé lesy, přičemž stromy kácí v jednom směru. Současně strhává střechy z desítek domů, ničí elektrické vedení a popadanými troskami okamžitě blokuje silniční i železniční dopravu v širokém okolí.</p>
+        </div>`
+    },    hulava: {
+        nadpis: "Húlava (Squall line)",
+        text: `<div style='font-size: 0.95rem; text-align: justify; padding-right: 20px; line-height: 1.6;'>
+            <p>Húlava (v angličtině squall line) je dlouhá a souvislá linie bouřek uspořádaná do jednoho pásu, který může měřit desítky až stovky kilometrů. Jde tedy o celý bouřkový systém postupující krajinou jako valící se stěna. Na jejím čele se objevuje dramatický mrak v podobě límce (shelf cloud) a prudké ničivé poryvy větru.</p>
+            
+            <strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Jak húlava vzniká?</strong>
+            <p><strong>1. Studená fronta</strong> – nejčastěji vzniká na čele postupující studené fronty.</p>
+            <p><strong>2. Nucené stoupání</strong> – těžší studený vzduch se podsekává pod lehký teplý vzduch a bleskově ho vytlačuje obrovskou rychlostí nahoru.</p>
+            <p><strong>3. Slévání bouřek</strong> – tímto způsobem vznikne obrovské množství bouřkových buněk vedle sebe, které se spojí do jedné dlouhé, organizované linie.</p>
+            <p><strong>4. Vytvoření větrného čela</strong> – studený vzduch s deštěm padá z mraků dolů a u země vytvoří ledový polštář, který se valí kupředu před samotnou linií bouřek a zvedá další teplý vzduch.</p>
+            
+            <strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Jaké nebezpečí přináší a jaké škody způsobuje?</strong>
+            <p>Hlavním rizikem jsou ničivé poryvy větru na čele bouře, které skokově dosahují rychlosti orkánu, plošně strhávají střechy, vyvracejí stromy a trhají elektrické vedení. Tento systém představuje vážné nebezpečí pro lodě a letectví kvůli bleskovému převrácení plavidel a extrémním turbulencím. Rychlý postup bouřek v řadě za sebou způsobuje bleskové povodně z přívalových srážek, přičemž nejintenzivnější části linie mohou doprovázet velké kroupy nebo i krátkodobá tornáda.</p>
+        </div>`
+    },
+    vichrice: {
+        nadpis: "Vichřice a orkány",
+        text: `<div style='font-size: 0.95rem; text-align: justify; padding-right: 20px; line-height: 1.6;'>
+            <p>Vichřice a orkán jsou nejvyšší stupně síly větru měřené podle Beaufortovy stupnice. Na rozdíl od tornád zasahují obrovská území celých států a vznikají kvůli extrémním rozdílům tlaku vzduchu mezi tlakovou níží a výší.</p>
+            
+            <strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Co je to vichřice a jak vzniká?</strong>
+            <p>Vichřice odpovídá 9. až 11. stupni Beaufortovy stupnice a průměrná rychlost větru se pohybuje většinou od 75 do 117 km/h. Vzniká tehdy, když se hluboká tlaková níže bleskově přesouvá nad pevninu a příroda se snaží vyrovnat obrovský rozdíl v tlacích vzduchu masivním prouděním.</p>
+            
+            <strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Jaké škody způsobuje vichřice?</strong>
+            <p>Vichřice odnáší střešní krytiny, láme větve a vyvrací jednotlivé stromy. Způsobuje lokální výpadky proudu a komplikace v dopravě kvůli popadaným větvím na silnicích a železnicích.</p>
+            
+            <strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Co je to orkán a jak vzniká?</strong>
+            <p>Orkán představuje 12. nejvyšší stupeň Beaufortovy stupnice. Průměrná rychlost stabilního větru přesahuje 118 km/h, přičemž v nárazech běžně dosahuje přes 150 až 200 km/h. Vzniká při přechodu mimořádně hlubokých cyklón (větrných bouří), kdy je tlakový rozdíl na malém území tak gigantický, že vzduch proudí extrémní, ničivou rychlostí.</p>
+            
+            <strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Jaké škody způsobuje orkán?</strong>
+            <p>Orkán způsobuje plošné pustošení a masivní lesní kalamity, kdy padají celé lesy. Strhává celé střechy z domů, láme sloupy vysokého napětí, což vede k rozsáhlým blackoutům, a letící předměty přímo ohrožují lidské životy.</p>
+        </div>`
+    },    rarasek: {
+        nadpis: "Prachový vír (Rarášek)",
+        text: `<div style='font-size: 0.95rem; text-align: justify; padding-right: 20px; line-height: 1.6;'>
+            <p>Prachový vír (lidově řečeno rarášek) je rotující sloup vzduchu, který s sebou nese hodně prachu a písku. Na rozdíl od tornáda, které vzniká z bouřkového mraku, se tento vír vyskytuje za pěkného slunečného počasí a směr jeho vývoje je opačný – postupuje ze země směrem do nebe.</p>
+            
+            <strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Jak rarášek vzniká?</strong>
+            <p>Celý proces vzniku raráška se skládá ze čtyř hlavních kroků:</p>
+            <p><strong>1. Silný ohřev země</strong> – Slunce během letního horkého dne intenzivně rozpálí zemský povrch (například parkoviště, louku, pole nebo pláž).</p>
+            <p><strong>2. Stoupání horkého vzduchu</strong> – Těsně nad zemí se vytvoří vrstva extrémně horkého vzduchu, která začne v úzkém sloupci prudce stoupat nahoru skrz chladnější vzduch nad ním.</p>
+            <p><strong>3. Roztočení víru</strong> – Stačí, aby do tohoto stoupajícího proudu fouknul slabý boční vítr, který stoupající vzduch okamžitě roztočí dokola.</p>
+            <p><strong>4. Zviditelnění</strong> – Jakmile vír zesílí, začne ze země nasávat prach, písek, listí nebo posekanou trávu, čímž se stane pro lidské oko viditelným.</p>
+            
+            <strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Jakou má sílu a jaké škody způsobuje?</strong>
+            <p>Rarášci mají většinou jen slabou sílu, vysoký jsou většinou několik metrů (výjimečně mohou mít i pár desítek metrů) a často vydrží jen několik sekund až pár minut. Škody jsou minimální – rarášci dokážou maximálně rozfoukat posekané seno na poli, zvednout do vzduchu deky na pláži nebo vířit prach na cestě.</p>
+            <p>Ojediněle však může nastat i nebezpečí, kdy rarášek vyroste do extrémní výšky (až stovky metrů) a rychlost větru uvnitř víru přesáhne 100 km/h. V takovém případě může například převrátit trampolínu nebo shodit uvolněné střešní tašky.</p>
+        </div>`
+    },    blizzard: {
+        nadpis: "Blizzard / Sněhová bouře",
+        text: `<div style='font-size: 0.95rem; text-align: justify; padding-right: 20px; line-height: 1.6;'>
+            <p>Blizzard neboli sněhová bouře je extrémní zimní meteorologický jev, který se vyznačuje silným větrem, hustým sněžením a velmi nízkými teplotami. Hlavním rysem blizzardu je drastické snížení viditelnosti a tvorba obřích sněhových závějí. Vyskytuje se nejčastěji v Severní Americe, Rusku (Sibiř) a v polárních oblastech.</p>
+            
+            <strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Jak sněhová bouře vzniká?</strong>
+            <p>Celý proces vzniku se dělí do tří hlavních kroků:</p>
+            <p><strong>1. Střet vzduchových hmot</strong> – vzniká při postupu hluboké tlakové níže, kdy se potká ledový arktický vzduch z polárních oblastí s teplým a vlhkým vzduchem z nižších zeměpisných šířek.</p>
+            <p><strong>2. Brutální zesílení větru</strong> – velký rozdíl tlaků vyvolá dlouhotrvající vítr o rychlosti přes 56 km/h.</p>
+            <p><strong>3. Bílý zážeh (Whiteout)</strong> – při silném větru se buď strhává hustě padající sníh, nebo se zvedá již napadlý prachový sníh z cest. Tím vzniká jev zvaný whiteout, kdy člověk kvůli zvířenému sněhu nevidí skoro ani na krok a zcela ztrácí orientaci.</p>
+            
+            <strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Jaké nebezpečí přináší a jaké škody způsobuje?</strong>
+            <p>Blizzard zcela ochromuje dopravu, protože silný vítr vytváří neprůjezdné závěje a snižuje viditelnost téměř na nulu, což vede k uzavření letišť a hromadným nehodám. Námraza spolu s větrem navíc láme stromy a shazuje elektrické vedení, což způsobuje masivní výpadky proudu a tepla.</p>
+            <p>Kvůli extrémnímu poklesu pocitové teploty navíc lidem uvízlým venku hrozí během několika málo minut vážné omrzliny a smrtelné podchlazení.</p>
+        </div>`
+    },    povodone: {
+        nadpis: "Přívalové povodně",
+        text: `<div style='font-size: 0.95rem; text-align: justify; padding-right: 20px; line-height: 1.6;'>
+            <p>Přívalová povodeň (blesková povodeň, anglicky flash flood) je rychlé a nečekané zaplavení území, které vzniká během několika desítek minut nebo hodin po extrémně prudkém dešti. Na rozdíl od běžných povodní nezasahuje jen okolí velkých řek, ale může se objevit kdekoliv, klidně i na suchých místech a v kopcích.</p>
+            
+            <strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Jak přívalová povodeň vzniká?</strong>
+            <p>Celý proces vzniku se dělí do tří hlavních fází:</p>
+            <p><strong>1. Extrémní srážky</strong> – nejobvyklejší příčinou je statická nebo pomalu se pohybující supercela či húlava, která na jedno malé území vychrlí desítky milimetrů vody během chvíle.</p>
+            <p><strong>2. Neschopnost půdy vsakovat</strong> – pokud je půda po suchu tvrdá jako beton, nebo naopak po dlouhých deštích zcela nasáklá, nedokáže vodu pobrat. Voda pak bleskově stéká po povrchu dolů.</p>
+            <p><strong>3. Koncentrace v korytech</strong> – voda stékající z okolních strání a polí se bleskově slije do nejbližšího potoka, údolí nebo městské ulice, ze kterých vytvoří dravou řeku.</p>
+            
+            <strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Jaké škody způsobuje?</strong>
+            <p>Přívalové povodně s sebou strhávají bahno, kamení, kmeny a auta, což vytváří dravou vlnu, která boří ploty, mosty a základy domů. Voda zaplavuje sklepy, domy a podzemní prostory tak rychle, že lidé nestíhají zachránit svůj majetek.</p>
+            <p>Kvůli přetížené kanalizaci okamžitě mizí pod vodou městské silnice a podchody, přičemž extrémní rychlost celého nástupu bez varování bezprostředně ohrožuje lidské životy.</p>
+        </div>`
+    },    ledovka: {
+        nadpis: "Mrznoucí déšť a ledovka",
+        text: `<div style='font-size: 0.95rem; text-align: justify; padding-right: 20px; line-height: 1.6;'>
+            <p>Mrznoucí déšť a ledovka tvoří v zimě extrémně nebezpečnou kombinaci. Zatímco mrznoucí déšť je samotný padající tekutý déšť, ledovka je hladká a průhledná vrstva ledu, která z něj vzniká okamžitě po dopadu na zem.</p>
+            
+            <strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Jak mrznoucí déšť a ledovka vzniká?</strong>
+            <p>Celý proces se skládá ze čtyř hlavních fází:</p>
+            <p><strong>1. Teplotní inverze</strong> – tento jev nastává nejčastěji při příchodu teplé fronty po delším období mrazů. Nad vrstvu těžkého a ledového vzduchu u země se nasune lehčí a teplejší vzduch.</p>
+            <p><strong>2. Tání vloček</strong> – sněhové vločky padající z horních vrstev atmosféry proletí tímto teplým mezipatrem a roztají na běžné dešťové kapky.</p>
+            <p><strong>3. Přechlazení kapek</strong> – kapky pak padají dál dolů a těsně nad zemí opět vletí do vrstvy s teplotou pod nulou. Voda se extrémně podchladí, ale nestihne znovu zmrznout ve sníh.</p>
+            <p><strong>4. Náraz na zmrzlou zem</strong> – jakmile kapalná kapka dopadne na promrzlou silnici, chodník, auta nebo větve stromů, vteřinově zmrzne a obalí povrch čirým ledem.</p>
+
+            <strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Jaké přináší nebezpečí a jaké škody způsobuje?</strong>
+            <p>Ledovka vytváří na silnicích neviditelné kluziště, kvůli kterému jsou auta neovladatelná, což vede k hromadným nehodám a uzavírkám dálnic. Obrovská hmotnost ledu masivně láme větve i stromy na silnice a železnice, a navíc trhá dráty vysokého napětí, což způsobuje rozsáhlé blackouty pro desetitisíce domácností. Absolutně neschůdné chodníky pak plní nemocnice tisíci lidmi s těžkými zlomeninami a otřesy mozku.</p>
+        </div>`
+    },
+        jazky: {
+        nadpis: "Sněhové jazyky",
+        text: `<div style='font-size: 0.95rem; text-align: justify; padding-right: 20px; line-height: 1.6;'>
+            <p>Sněhové jazyky jsou podlouhlé, úzké pruhy navátého sněhu na silnicích, které tvoří silný vítr z již napadaného nebo právě padajícího prachového sněhu. Na rozdíl od sněhových závějí pokrývají vozovku jen částečně (v šířce do 2 metrů a výšce do 25 centimetrů), ale vznikají velmi rychle a nečekaně.</p>
+            
+            <strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Jak sněhové jazyky vznikají?</strong>
+            <p>Celý proces vzniku se dělí do tří fází:</p>
+            <p><strong>1. Suchý a lehký sníh</strong> – Na zemi musí ležet vrstva prachového, nezmrzlého sněhu při teplotách pod nulou.</p>
+            <p><strong>2. Čerstvý vítr</strong> – Vítr o rychlosti nad 30 km/h začne tento lehký sníh ze země zvedat a unášet ho těsně nad povrchem.</p>
+            <p><strong>3. Překážka nebo závětří</strong> – Jakmile vír se sněhem narazí na silnici, která je v zářezu terénu, v zatáčce nebo za nevhodným plotem, proudění vzduchu se zpomalí. Vítr v daném místě ztratí sílu a sníh se tam jednoduše vysype v podobě podlouhlého „jazyku“.</p>
+            
+            <strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Jaké přináší nebezpečí?</strong>
+            <p>Sněhové jazyky způsobují nečekané smyky a nehody, když řidič v rychlosti najede ze suché vozovky do pruhu navátého sněhu, pod kterým se navíc často skrývá čistý a kluzký led. Velkým rizikem je také rychlost jejich vzniku, protože silný vítr dokáže čerstvě odklizené úseky silnic znovu kompletně zavát během pouhých 10 minut.</p>
+        </div>`
+    },
+krupice: {
+        nadpis: "Sněhová krupice",
+        text: `<div style='font-size: 0.95rem; text-align: justify; padding-right: 20px; line-height: 1.6;'>
+            <p>Sněhová krupice (odborně sněhové krupky) jsou malé, bílé a neprůhledné kuličky ledu, které mají průměr obvykle mezi 2 až 5 milimetry. Na rozdíl od klasických krup jsou křehké, při dopadu na tvrdý povrch se snadno drtí a odrážejí se jako miniaturní polystyrenové kuličky.</p>
+            
+            <strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Jak sněhová krupice vzniká?</strong>
+            <p>Vzniká v chladném období roku (nejčastěji na jaře nebo na podzim při přeháňkách). Když sněhová vločka padá z mraku dolů, proletí vrstvou, kde jsou podchlazené kapičky vody. Tyto kapičky na vločce okamžitě namrznou a obalí ji ledovou krustou, čímž vznikne malá neprůhledná kulička.</p>
+            
+            <strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Přináší nějaké nebezpečí?</strong>
+            <p>Sněhová krupice nepředstavuje vážné nebezpečí a nezpůsobuje škody na majetku. Jediným rizikem je krátkodobé zhoršení sjízdnosti silnic, protože při intenzivní přeháňce dokáže krupice během chvíle vytvořit na asfaltu velmi kluzkou vrstvu, která připomíná led.</p>
+        </div>`
+    },
+sucho: {
+        nadpis: "Sucho a vlny veder",
+        text: `<div style='font-size: 0.95rem; text-align: justify; padding-right: 20px; line-height: 1.6;'>
+            <p>Sucho a vlny veder jsou extrémní letní jevy, které se kvůli klimatickým změnám objevují stále častěji a trvají déle. Vlna veder je období několika po sobě jdoucích dnů s mimořádně vysokými teplotami (často nad 30 °C až 35 °C, výjimečně až 40 °C), které v kombinaci s nedostatkem srážek vede k rychlému rozvoji sucha.</p>
+            
+            <strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Jak sucho a vlny veder vznikají?</strong>
+            <p>Celý proces vzniku se skládá ze tří hlavních fází:</p>
+            <p><strong>1. Stabilní tlaková výše</strong> – Nad určitým územím se usadí mohutná a nehybná tlaková výše (blokující anticyklóna), která k nám nepustí žádné bouřky ani srážky.</p>
+            <p><strong>2. Příliv horkého vzduchu</strong> – Do této oblasti začne proudit žhavý vzduch z tropických oblastí (například do Evropy ze Sahary).</p>
+            <p><strong>3. Vysušování krajiny</strong> – Slunce bez mraků intenzivně pálí do země. Vysoké teploty dramaticky zvýší odpar vody z půdy, řek i rostlin, čímž se bleskově vyčerpávají zásoby podzemních i povrchových vod.</p>
+            
+            <strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Jaké přináší nebezpečí a jaké škody způsobují?</strong>
+            <p>Sucho a vlny veder způsobují vážné přehřátí organismu, dehydrataci a infarkty, přičemž nejvíce ohrožují seniory a malé děti. Nedostatek vláhy v půdě drasticky ničí zemědělské plodiny, zatímco hladiny řek klesají na minima, což ohrožuje ekosystémy a lodní dopravu.</p>
+            <p>Extrémně vysušená vegetace navíc vede k bleskovému šíření ničivých lesních požárů a masivní užívání klimatizací spolu s horkou vodou v tokách kriticky přetěžuje elektrickou síť i chlazení elektráren.</p>
+        </div>`
+
+    },
+    mlha: {
+        nadpis: "Mlha a smog",
+        text: `<div style='font-size: 0.95rem; text-align: justify; padding-right: 20px; line-height: 1.6;'>
+            <p>Mlha a smog jsou dva odlišné jevy, které výrazně snižují viditelnost a kvalitu ovzduší. Zatímco mlha je čistě přírodní jev tvořený vodní párou, smog je nebezpečná směs znečišťujících látek vytvořená lidskou činností.</p>
+            
+            <strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Jak mlha a smog vznikají?</strong>
+            <p><strong>1. Mlha</strong> – Vzniká, když se vlhký vzduch nad zemí ochladí pod takzvaný rosný bod. Vodní pára v něm začne kondenzovat do miliard drobných vodních kapiček, které zůstanou viset ve vzduchu jako mrak těsně nad zemí.</p>
+            <p><strong>2. Smog</strong> – Vzniká nejčastěji při zimní teplotní inverzi, kdy těžký chladný vzduch zůstane uvězněný v údolích a městech pod pokličkou teplého vzduchu. Do tohoto uvězněného vzduchu lidé dál vypouštějí emise z aut, továren a domácích kotlů, které se nemají jak rozptýlit.</p>
+            
+            <strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Jaké nebezpečí a škody přináší?</strong>
+            <p>Hustá mlha v kombinaci se smogem výrazně snižuje viditelnost, což komplikuje silniční i leteckou dopravu a vyžaduje zvýšenou opatrnost řidičů. Zvýšená koncentrace prachových částic v ovzduší může dráždit dýchací cesty, obzvláště u astmatiků, dětí či starších osob. Dlouhotrvající nepříznivé ovzduší navíc zatěžuje okolní přírodu a může negativně ovlivňovat citlivější vegetaci.</p>
+        </div>`
+    },
+
+inverze: {
+		nadpis: "Teplotní inverze",
+		text: `<div style='font-size: 0.95rem; text-align: justify; padding-right: 20px; line-height: 1.6;'>
+		<p>Teplotní inverze je stav v atmosféře, kdy teplota vzduchu s rostoucí výškou stoupá místo toho, aby klesala. Za normálních okolností je u země nejtepleji a směrem nahoru se ochlazuje. Při inverzi se ale pořadí obrátí, což má zásadní vliv na počasí i kvalitu ovzduší.</p>
+		
+		<strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Jak teplotní inverze vzniká?</strong>
+		<p><strong>1. Rychlé prochladnutí země</strong> – Během jasných nocí (nejčastěji od podzimu do jara) zemský povrch rychle vyzařuje teplo do vesmíru a prudce se ochladí.</p>
+		<p><strong>2. Uvěznění studeného vzduchu</strong> – Od studené země se ochladí i přízemní vrstva vzduchu. Protože je studený vzduch těžší než teplý, stéká do údolí, kotlin a nížin, kde zůstane ležet.</p>
+		<p><strong>3. Vytvoření teplé pokličky (Zablokování cirkulace)</strong> – Teplý vzduch je lehčí, takže zůstává nahoře. Vznikne stabilní rozhraní, které funguje jako neviditelná poklička. Ta kompletně zastaví vertikální proudění vzduchu a uzamkne vše pod sebou.</p>
+		
+		<strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Jaké nebezpečí přináší a jaké škody způsobuje?</strong>
+		<p>Inverzní počasí způsobuje zvýšené znečištění ovzduší kyselým smogem a jemným prachem, což může vést (hlavně u citlivých osob) k dýchacím potížím a či únavu nedostatku světla. Zároveň vzniká kolaps dopravy kvůli nulové viditelnosti a námraze, zatímco toxické usazeniny poškozují lesy a způsobují korozi staveb.</p>
+		
+		<strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Zajímavost: Kouzlo inverze na horách</strong>
+		<p>Zatímco v údolích vládne sychravé, mrazivé a šedivé počasí, na horách vás zalije slunce a nečekané teplo s teplotami často vyššími než v nížinách. Nabízí se odtud fascinující pohled na takzvané „moře mlhy“, kdy hustá oblačnost leží hluboko pod vámi a z ní vyčnívají pouze horské vrcholky jako ostrovy. Díky suchému vzduchu navíc na hřebenech mizí atmosférický zákal, což umožňuje extrémní dohlednost na vzdálenost stovek kilometrů.</p>
+		</div>`
+	},
+	
+duha: {
+		nadpis: "Duha",
+		text: `<div style='font-size: 0.95rem; text-align: justify; padding-right: 20px; line-height: 1.6;'>
+		<p>Duha je jedním z nejkrásnějších optických a meteorologických úkazů na naší obloze. Vzniká tak, že se obyčejné sluneční světlo rozloží na kapkách vody v atmosféře. Fascinující je, že ji na nebi spatříme vždy na přesně opačné straně, než na které zrovna svítí slunce.</p>
+		
+		<strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Jak duha vzniká?</strong>
+		<p>Celé to kouzlo se odehrává uvnitř padajících dešťových kapek a skládá se ze tří kroků:</p>
+		<p><strong>1. Průnik do kapky</strong> – Sluneční paprsek vstoupí do dešťové kapky, kde se poprvé zlomí. Právě v tento moment se bílé světlo začne rozpadat na své jednotlivé barevné složky.</p>
+		<p><strong>2. Odraz od stěny</strong> – Světlo putuje kapkou dál, až narazí na její vnitřní zadní stěnu. Od ní se odrazí čistě jako od miniaturního zrcadla.</p>
+		<p><strong>3. Výstup a ohyb</strong> – Při opuštění kapky se paprsky zlomí podruhé a zamíří přímo do oka pozorovatele pod magickým úhlem zhruba 42 stupňů.</p>
+		
+		<strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Základní vlastnosti duhy</strong>
+		<p><strong>Pořadí barev</strong> – Barvy v duhovém oblouku mají pevný řád, který se nikdy nemění. Jdou vždy za sebou od vnější červené, přes oranžovou, žlutou, zelenou a modrou až po vnitřní fialovou.</p>
+		<p><strong>Podmínka viditelnosti</strong> – Abyste duhu vůbec mohli spatřit, musíte splnit jednoduché pravidlo geometrie: mít slunce přesně v zádech a dešťovou stěnu (nebo vodní tříšť z vodopádu či zahradní hadice) přímo před sebou.</p>
+		<p><strong>Kruhový tvar</strong> – Duha není jen pouhý oblouk, ve skutečnosti je to dokonalý kruh. Jeho spodní polovinu nám ale na zemi schovává obzor. Celý kruhový tvar duhy můžete spatřit například při pohledu z letadla nebo z vrcholku vysokých hor.</p>
+		</div>`
+	},
+halo: {
+		nadpis: "Halové jevy",
+		text: `<div style='font-size: 0.95rem; text-align: justify; padding-right: 20px; line-height: 1.6;'>
+		<p>Halové jevy jsou optické úkazy v atmosféře, které vznikají lomem a odrazem slunečního nebo měsíčního světla na drobných ledových krystalech. Na rozdíl od duhy, která vyžaduje tekuté dešťové kapky, halové jevy vznikají v mrazivém vzduchu, nejčastěji na tenkých řasových oblacích typu Cirrostratus ve výškách 5 až 10 kilometrů.</p>
+		
+		<strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Jak halové jevy vznikají?</strong>
+		<p><strong>1. Přítomnost ledových krystalků:</strong> V atmosféře se musí nacházet krystalky ledu ve tvaru šestibokých destiček nebo hranolů.</p>
+		<p><strong>2. Lom a odraz světla:</strong> Jakmile světelný paprsek vstoupí do ledového krystalu, zlomí se (během toho se může rozložit na duhové barvy). Odrazí se od vnitřních stěn a vystoupí ven pod přesným úhlem.</p>
+		<p><strong>3. Uspořádání krystalů:</strong> Pokud krystaly padají chaoticky, vzniká kruhové halo, pokud ale padají uspořádaně, vznikají další tipy halových jevů (například skvrny nebo oblouky – často barevné, záleží na přítomnosti počtu ledových krystalů).</p>
+		
+		<strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Na co se halové jevy dělí?</strong>
+		<p><strong>Malé halo (22° halo):</strong> Nejběžnější typ, vzniká světelný kruh kolem Slunce (i Měsíce) o poloměru 22 stupňů.</p>
+		<p><strong>Vedlejší slunce (parhelia):</strong> Na levém a pravém kraji od Slunce ve stejné výšce vznikají velmi jasné a někdy i výrazně barevné skvrny.</p>
+		<p><strong>Halový (světelný) sloup:</strong> Vzniká nejčastěji při východu nebo západu Slunce (i Měsíce), jedná se o světelný pruh, který stoupá směrem nahoru od Slunce nebo Měsíce.</p>
+		<p><strong>Cirkumzenitální oblouk:</strong> Nádherně barevný oblouk vysoko na obloze, který vypadá jako obrácená duha.</p>
+		<p><strong>Velké halo (46° halo):</strong> Je to prakticky stejné jako malé halo, akorát kruh kolem Slunce nebo Měsíce je větší a slabší.</p>
+		
+		<strong style='color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;'>Jak lze halové jevy pozorovat?</strong>
+		<p><strong>1. Hledejte závojovou oblačnost:</strong> Ideální čas je, když oblohu zatáhne jemná bílá pavučina mraků (Cirrostratus), přes kterou Slunce stále prosvítá.</p>
+		<p><strong>2. Zakryjte si Slunce:</strong> Dávejte si pozor na silný sluneční svit, aby vám nevypálil oči – nejlepší je si Slunce zakrýt nataženou rukou, budovou nebo stromem.</p>
+		<p><strong>3. Noste sluneční brýle:</strong> Polarizační sluneční brýle pomohou zvýraznit barvy a kontrast slabších halových jevů.</p>
+		<p><strong>4. Sledujte zimní krajinu:</strong> V zimě panují také podmínky na pozorování halových jevů v přízemních vrstvách atmosféry. Hlavně v silných mrazech mohou ledové krystaly poletovat nízko nad zemí, díky tomu pak halové jevy vznikají přímo kolem pouličních lamp.</p>
+		</div>`
+	},
+
+zare: {
+		nadpis: "Polární záře",
+		text: `<div style="font-size: 0.95rem; text-align: justify; padding-right: 28px; line-height: 1.6;">
+		<p>Polární záře (aurora borealis na severu, aurora australis na jihu) je velkolepý světelný úkaz na noční obloze, který vzniká střetem slunečního větru s magnetosférou Země. Tento jev se nejčastěji objevuje v polárních oblastech, ale při silných slunečních erupcích je viditelný i z území České republiky.</p>
+		
+		<strong style="color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;">Jak polární záře vzniká?</strong>
+		<p><strong>1. Sluneční erupce:</strong> Aby se polární záře objevila, je nutné, aby naše hvězda Slunce vyprodukovala erupci a vyvrhla do vesmíru oblak nabitých částic (elektrony a protony), kterému říkáme sluneční vítr.</p>
+		<p><strong>2. Zachycení magnetickým polem:</strong> Mrak nabitých částic musí putovat směrem k Zemi, jinak by ji minul a putoval by dále ve vesmíru. Pokud ale tento mrak dorazí k Zemi, magnetické pole naší planety ho navede podél siločar směrem k magnetickým pólům (severnímu a jižnímu).</p>
+		<p><strong>3. Srážka v atmosféře:</strong> V ionosféře (ve výškách 80 až 500 km) se tyto sluneční částice srazí s molekulami plynů zemské atmosféry.</p>
+		<p><strong>4. Rozsvícení oblohy:</strong> Při srážce se předá energie, atomy plynů se vybudí a následně tuto energii vyzáří ve formě viditelného světla.</p>
+		
+		<strong style="color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;">Co určuje barvy polární záře?</strong>
+		<p><strong>Zelená barva:</strong> Nejčastější odstín, který způsobují srážky s atomy kyslíku v nižších výškách (kolem 100 km).</p>
+		<p><strong>Červená barva:</strong> Vzniká při srážkách s kyslíkem ve velkých výškách (nad 200 km – proto je také slaběji viditelná). Tato barva bývá nejčastěji viditelná při pozorování ze středních a nižších zeměpisných šířek.</p>
+		<p><strong>Modrá a fialová barva:</strong> Vznikají vzácněji při reakci s molekulami dusíku v nižších vrstvách atmosféry.</p>
+		
+		<strong style="color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;">Jak pozorovat polární záři ve středních a nižších zeměpisných šířkách?</strong>
+		<p><strong>1. Sledujte aktuální data a předpovědi:</strong> Index Kp - Sledujte globální geomagnetický index Kp. Pro viditelnost ve středních šířkách musí hodnota dosáhnout Kp 7 až Kp 8, pro nižší šířky je nutný extrémní stav Kp 9 (například v Česku je nutné Kp 7-9). Záporná hodnota Bz - Klíčová je orientace meziplanetárního magnetického pole. Pokud hodnota Bz klesne hluboko do záporných čísel (např. -15 nT a méně), geomagnetická bouře snáze pronikne k rovníku. Výstražné aplikace - Využívejte globální monitory kosmického počasí (např. <a href="https://spaceweatherlive.com" target="_blank" style="color: #007bff; text-decoration: underline;">SpaceWeatherLive</a> nebo <a href="https://auroraalerts.com" target="_blank" style="color: #007bff; text-decoration: underline;">Aurora Alerts</a>), které posílají okamžitá varování při dosažení kritických hodnot.</p>
+		<p><strong>2. Výběr správného místa:</strong> Oči potřebují čas - Lidskému oku trvá zhruba 20 minut, než se plně přizpůsobí tmě. Během pozorování se nedívejte do rozsvíceného mobilu, jinak záři přehlédnete. Hledejte červenou záři - Na rozdíl od polárních oblastí dominuje v nižších šířkách vysoká vrstva záře, která má typicky červenou až narůžovělou barvu. Zkuste udělat fotografický test - Lidské oko vnímá slabé světlo v noci černobíle, takže záři můžete zpočátku zaměnit za světelný smog nebo světlý mrak. Vyfoťte obzor mobilem v nočním režimu (expozice 3–5 sekund) – snímač barvy okamžitě odhalí a potvrdí, zda jde o polární záři.</p>
+		</div>`
+	},
+		fata_morgana: {
+		nadpis: "Fata morgána",
+		text: `<div style="font-size: 0.95rem; text-align: justify; padding-right: 28px; line-height: 1.6;">
+		<p>Fata morgána je vzácný a složitý typ teplotní inverze v atmosféře, který vytváří optický klam. Způsobuje, že vzdálené objekty (lodě, ostrovy, hory nebo pobřeží) vidíme zkreslené, zvětšené, levitující ve vzduchu nebo obrácené vzhůru nohama. Název pochodí z italštiny a odkazuje na mytickou čarodějnici Morganu, která prý svými kouzly vytvářela vzdušné zámky.</p>
+		
+		<strong style="color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;">Jak fata morgána vzniká?</strong>
+		<p><strong>1. Střídání vrstev vzduchu:</strong> Vzniká při specifické inverzi, kdy se nad sebou střídají vrstvy intenzivně zahřátého a velmi chladného vzduchu.</p>
+		<p><strong>2. Lom světelných paprsků:</strong> Světlo neprochází atmosférou rovně, ale při průchodu vrstvami o různé teplotě a hustotě se ohýbá podél zemského povrchu.</p>
+		<p><strong>3. Oklamání mozku:</strong> Lidský mozek předpokládá, že světlo se šíří přímočaře. Tento obraz objektu promítne tam, odkud paprsky zdánlivě přicházejí – tedy vysoko do vzduchu nebo do úplně jiného úhlu.</p>
+		
+		<strong style="color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;">Kde ji lze nejčastěji pozorovat?</strong>
+		<p><strong>Polární oblasti:</strong> Nad chladným ledovým povrchem, nad kterým leží teplejší vzduch (vytváří dojem obřích levitujících ledovců).</p>
+		<p><strong>Pouště:</strong> Nad rozpáleným pískem, nad kterým se drží tenká vrstva extrémně horkého vzduchu (vytváří iluzi vodní hladiny).</p>
+		<p><strong>Moře a velká jezera:</strong> Zejména na jaře, kdy se nad chladnou vodní hladinu nasune teplý vzduch z pevniny.</p>
+		</div>`
+	},
+	jinovatka: {
+		nadpis: "Jinovatka a rosa",
+		text: `<div style="font-size: 0.95rem; text-align: justify; padding-right: 28px; line-height: 1.6;">
+		<strong style="color: #007bff; display: block; margin-top: 10px; margin-bottom: 8px; font-size: 1.15rem;">Rosa: Jak vzniká?</strong>
+		<p>Rosa vzniká v noci za jasného počasí a bezvětří, kdy zemský povrch, tráva a listy rychle chladnou. Vzduch těsně nad zemí se ochladí natolik, že už v sobě neudrží vlhkost. Ta pak zkondenzuje a promění se v kapičky vody přímo na chladných předmětech.</p>
+		
+		<strong style="color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;">Co způsobuje?</strong>
+		<p>Rosa poskytuje životodárnou vláhu rostlinám a hmyzu během suchých letních období. Zároveň ale v zemědělství zvyšuje vlhkost v porostu, co podpoří šíření plísní a houbových chorob rostlin.</p>
+		
+		<strong style="color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;">Jinovatka: Jak vzniká?</strong>
+		<p>Jinovatka (někdy zaměňovaná s mrazem nebo ledovkou) vzniká za mrazivého počasí při teplotách pod 0 °C. Vodní pára obsažená ve vzduchu se při kontaktu s podchlazeným povrchem (větve, ploty, tráva) rovnou mění na ledové krystalky, bez předchozího kapalného stavu.</p>
+		
+		<strong style="color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;">Co způsobuje?</strong>
+		<p>Na stromech a drátech elektrického vedení vytváří nádhernou bílou vrstvu krystalů, což je vyhledávaný motiv pro fotografy. Pokud je však vrstva příliš silná, extrémní váha ledu způsobuje lámání větví stromů a může potrhat elektrické vedení.</p>
+		</div>`
+	},
+
+	prumyslove_snezeni: {
+		nadpis: "Průmyslové sněžení",
+		text: `<div style="font-size: 0.95rem; text-align: justify; padding-right: 28px; line-height: 1.6;">
+		<p>Průmyslové sněžení je lokální, uměle vyvolané sněžení, které nevzniká z běžných srážkových mraků, ale kvůli lidské činnosti. Jde o meteorologickou kuriozitu, která se objevuje nečekaně, lokálně a radary ji často vůbec nedokážou zachytit.</p>
+		
+		<strong style="color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;">Jak průmyslové sněžení vzniká?</strong>
+		<p><strong>1. Silná teplotní inverze:</strong> Nad zemí leží vrstva ledového vzduchu a nízká oblačnost nebo hustá mlha, která se kvůli bezvětří nehýbe.</p>
+		<p><strong>2. Teploty pod nulou:</strong> Teplota v přízemní vrstvě se stabilně pohybuje kolem -5 °C až -7 °C.</p>
+		<p><strong>3. Zdroj vodní páry:</strong> Průmyslové podniky, elektrárny nebo chladicí věže vypouštějí do mrazivého vzduchu teplou vodní páru.</p>
+		<p><strong>4. Kondenzační jádra:</strong> Komíny továren zároveň produkují mikročástice (aerosoly, prach, zplodiny).</p>
+		<p><strong>5. Umělá krystalizace:</strong> Teplá pára stoupá k nízké oblačnosti, kde narazí na inverzní strop. Začne se promíchávat s ledovým okolím a vlhkost okamžitě namrzá na poletující mikročástice zplodiny. Tím odstartuje rychlá tvorba ledových krystalků, které v podobě sněhu padají k zemi.</p>
+		
+		<strong style="color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;">Jak se liší od běžného sněžení?</strong>
+		<p><strong>Tvar vloček:</strong> Průmyslový sníh nemá tvar klasických šestičetných hvězdiček. Jsou to drobné, ostře zašpičatělé ledové jehličky nebo malé destičky.</p>
+		<p><strong>Mikrolokální výskyt:</strong> Sníh padá v úzkém pásu (často jen několik stovek metrů) ve směru slabého větru od továrny. V centru města tak může napadnout i několik centimetrů sněhu, zatímco o kilometr dál na předměstí suché silnice nejeví po sněhu ani stopu.</p>
+		
+		<strong style="color: #007bff; display: block; margin-top: 20px; margin-bottom: 8px; font-size: 1.15rem;">Jaká nebezpečí a škody způsobuje?</strong>
+		<p><strong>Šok pro řidiče:</strong> Jelikož klasické předpovědi počasí a radary toto sněžení nehlásí, řidiči bývají zaskočeni náhlou, lokální vrstvou sněhu a kluzkou vozovkou.</p>
+		<p><strong>Znečištěný sníh:</strong> Vločky vznikají kolem částic průmyslových emisí, takže v sobě koncentrují chemii, prach a těžké kovy z komínů. Tento sníh rozhodně není čistý a experti doporučují na něj nesahat.</p>
+		<p><strong>Zemědělské dopady:</strong> Chemické složení takto vzniklého sněhu může při tání lokálně kontaminovat půdu a negativně ovlivňovat ozimé plodiny.</p>
+		</div>`
+	}
+
+};
+
+
+
+// Počkáme, až prohlížeč kompletně načte celou stránku a všechna tlačítka
+document.addEventListener('DOMContentLoaded', () => {
+
+    // ZAJIŠTĚNÍ DAT PRO VŠECHNY NOVÉ JEVY (A OPRAVA PŘEKLEPŮ)
+    if (typeof databazeTextu !== 'undefined') {
+        // Opravy starších chyb a překlepů
+    
+        databazeTextu['povodne'] = databazeTextu['povodone'];
+    
+
+        // Kompletní aktivace nových tlačítek, která ti teď nešla
+        databazeTextu['sucho'] = databazeTextu['sucho'] || { nadpis: "Sucho a vlny veder", text: "<p>Zde brzy doplníš svůj vlastní text...</p>" };
+        databazeTextu['mlha'] = databazeTextu['mlha'] || { nadpis: "Mlha a smog", text: "<p>Zde brzy doplníš svůj vlastní text...</p>" };
+        databazeTextu['inverze'] = databazeTextu['inverze'] || { nadpis: "Teplotní inverze", text: "<p>Zde brzy doplníš svůj vlastní text...</p>" };
+        databazeTextu['duha'] = databazeTextu['duha'] || { nadpis: "Duha", text: "<p>Zde brzy doplníš svůj vlastní text...</p>" };
+        databazeTextu['halo'] = databazeTextu['halo'] || { nadpis: "Halové jevy", text: "<p>Zde brzy doplníš svůj vlastní text...</p>" };
+        databazeTextu['aurora'] = databazeTextu['zare'] || { nadpis: "Polární záře", text: "<p>Zde brzy doplníš svůj vlastní text...</p>" };
+        databazeTextu['zare'] = databazeTextu['zare'] || { nadpis: "Polární záře", text: "<p>Zde brzy doplníš svůj vlastní text...</p>" };
+        databazeTextu['morgana'] = databazeTextu['fata_morgana'] || { nadpis: "Fata morgána", text: "<p>Zde brzy doplníš svůj vlastní text...</p>" };
+        databazeTextu['fata_morgana'] = databazeTextu['fata_morgana'] || { nadpis: "Fata morgána", text: "<p>Zde brzy doplníš svůj vlastní text...</p>" };
+        databazeTextu['jinovatka'] = databazeTextu['jinovatka'] || { nadpis: "Jinovatka a rosa", text: "<p>Zde brzy doplníš svůj vlastní text...</p>" };
+        databazeTextu['prumyslove'] = databazeTextu['prumyslove_snezeni'] || { nadpis: "Průmyslové sněžení", text: "<p>Zde brzy doplníš svůj vlastní text...</p>" };
+        databazeTextu['prumyslove_snezeni'] = databazeTextu['prumyslove_snezeni'] || { nadpis: "Průmyslové sněžení", text: "<p>Zde brzy doplníš svůj vlastní text...</p>" };
+    }
+
+    // Vyhledání a aktivace ÚPLNĚ VŠECH tlačítek s třídou .denik-kat-btn na webu
+    document.querySelectorAll('.denik-kat-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            const klic = button.getAttribute('data-jev');
+            if (!klic || typeof databazeTextu === 'undefined') return;
+
+            const data = databazeTextu[klic];
+
+            if (data) {
+                const vychozi = document.getElementById('denik-vychozi-text');
+                const obsah = document.getElementById('denik-obsah-text');
+                const nadpis = document.getElementById('denik-nadpis-jevu');
+                const text = document.getElementById('denik-text-jevu');
+
+                if (vychozi) vychozi.style.display = 'none';
+                if (obsah) obsah.style.display = 'block';
+                if (nadpis) nadpis.innerText = data.nadpis;
+                if (text) text.innerHTML = data.text;
+            } else {
+                console.error('V databazeTextu nebyl nalezen klíč:', klic);
+            }
+        });
+    });
+});
+</script>
+
+
+<div id="okno-denik" class="updates-modal-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center;">
+  <div style="background: var(--bg-card, #ffffff); color: var(--text-color, #000000); width: 95%; max-width: 950px; height: 85vh; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; box-shadow: 0 8px 30px rgba(0,0,0,0.3);">
+    
+    <!-- Hlavička okna se zavíracím křížkem -->
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ccc; padding-bottom: 10px;">
+      <h2 style="margin: 0; font-size: 1.5rem;">Meteorologický deník jevů</h2>
+      <button style="background: none; border: none; font-size: 28px; cursor: pointer; color: inherit;" onclick="document.getElementById('okno-denik').classList.remove('active')">&times;</button>
+    </div>
+    
+    <div style="display: flex; flex: 1; gap: 20px; margin-top: 15px; overflow: hidden;">
+      
+      <!-- Levý sloupec (Tabulka s kompletními tlačítky jevů bez emoji) -->
+      <div style="flex: 1.2; display: flex; flex-direction: column; gap: 6px; overflow-y: auto; border-right: 1px solid #ccc; padding-right: 15px;">
+        <div style="font-size: 0.8rem; font-weight: bold; color: #888; text-transform: uppercase; margin-bottom: 4px;">Bouřkové jevy</div>
+        <button class="denik-kat-btn" data-jev="bourky" style="width: 100%; padding: 10px; text-align: left; background: rgba(0,0,0,0.03); border: 1px solid #ccc; border-radius: 6px; cursor: pointer; font-weight: bold; color: inherit;">Bouřky a blesky</button>
+        <button class="denik-kat-btn" data-jev="kroupy" style="width: 100%; padding: 10px; text-align: left; background: rgba(0,0,0,0.03); border: 1px solid #ccc; border-radius: 6px; cursor: pointer; font-weight: bold; color: inherit;">Krupobití</button>
+        <button class="denik-kat-btn" data-jev="tornado" style="width: 100%; padding: 10px; text-align: left; background: rgba(0,0,0,0.03); border: 1px solid #ccc; border-radius: 6px; cursor: pointer; font-weight: bold; color: inherit;">Tornáda a tromby</button>
+        <button class="denik-kat-btn" data-jev="downburst" style="width: 100%; padding: 10px; text-align: left; background: rgba(0,0,0,0.03); border: 1px solid #ccc; border-radius: 6px; cursor: pointer; font-weight: bold; color: inherit;">Downburst, microburst, macroburst</button>
+        <button class="denik-kat-btn" data-jev="hulava" style="width: 100%; padding: 10px; text-align: left; background: rgba(0,0,0,0.03); border: 1px solid #ccc; border-radius: 6px; cursor: pointer; font-weight: bold; color: inherit;">Húlava (Squall line)</button>
+        
+        <div style="font-size: 0.8rem; font-weight: bold; color: #888; text-transform: uppercase; margin: 10px 0 4px 0;">Vítr a tlak</div>
+        <button class="denik-kat-btn" data-jev="vichrice" style="width: 100%; padding: 10px; text-align: left; background: rgba(0,0,0,0.03); border: 1px solid #ccc; border-radius: 6px; cursor: pointer; font-weight: bold; color: inherit;">Vichřice a orkány</button>
+        <button class="denik-kat-btn" data-jev="rarasek" style="width: 100%; padding: 10px; text-align: left; background: rgba(0,0,0,0.03); border: 1px solid #ccc; border-radius: 6px; cursor: pointer; font-weight: bold; color: inherit;">Prachový vír (Rarášek)</button>
+        <button class="denik-kat-btn" data-jev="blizzard" style="width: 100%; padding: 10px; text-align: left; background: rgba(0,0,0,0.03); border: 1px solid #ccc; border-radius: 6px; cursor: pointer; font-weight: bold; color: inherit;">Blizzard / Sněhová bouře</button>
+        
+        <div style="font-size: 0.8rem; font-weight: bold; color: #888; text-transform: uppercase; margin: 10px 0 4px 0;">Srážky a sucho</div>
+        <button class="denik-kat-btn" data-jev="povodone" style="width: 100%; padding: 10px; text-align: left; background: rgba(0,0,0,0.03); border: 1px solid #ccc; border-radius: 6px; cursor: pointer; font-weight: bold; color: inherit;">Přívalové povodně</button>
+        <button class="denik-kat-btn" data-jev="ledovka" style="width: 100%; padding: 10px; text-align: left; background: rgba(0,0,0,0.03); border: 1px solid #ccc; border-radius: 6px; cursor: pointer; font-weight: bold; color: inherit;">Mrznoucí déšť a ledovka</button>
+        <button class="denik-kat-btn" data-jev="jazky" style="width: 100%; padding: 10px; text-align: left; background: rgba(0,0,0,0.03); border: 1px solid #ccc; border-radius: 6px; cursor: pointer; font-weight: bold; color: inherit;">Sněhové jazyky</button>
+        <button class="denik-kat-btn" data-jev="krupice" style="width: 100%; padding: 10px; text-align: left; background: rgba(0,0,0,0.03); border: 1px solid #ccc; border-radius: 6px; cursor: pointer; font-weight: bold; color: inherit;">Sněhová krupice</button>
+        <button class="denik-kat-btn" data-jev="sucho" style="width: 100%; padding: 10px; text-align: left; background: rgba(0,0,0,0.03); border: 1px solid #ccc; border-radius: 6px; cursor: pointer; font-weight: bold; color: inherit;">Sucho a vlny veder</button>
+        
+        <div style="font-size: 0.8rem; font-weight: bold; color: #888; text-transform: uppercase; margin: 10px 0 4px 0;">Optika a atmosféra</div>
+        <button class="denik-kat-btn" data-jev="mlha" style="width: 100%; padding: 10px; text-align: left; background: rgba(0,0,0,0.03); border: 1px solid #ccc; border-radius: 6px; cursor: pointer; font-weight: bold; color: inherit;">Mlha a smog</button>
+        <button class="denik-kat-btn" data-jev="inverze" style="width: 100%; padding: 10px; text-align: left; background: rgba(0,0,0,0.03); border: 1px solid #ccc; border-radius: 6px; cursor: pointer; font-weight: bold; color: inherit;">Teplotní inverze</button>
+        <button class="denik-kat-btn" data-jev="duha" style="width: 100%; padding: 10px; text-align: left; background: rgba(0,0,0,0.03); border: 1px solid #ccc; border-radius: 6px; cursor: pointer; font-weight: bold; color: inherit;">Duha</button>
+        <button class="denik-kat-btn" data-jev="halo" style="width: 100%; padding: 10px; text-align: left; background: rgba(0,0,0,0.03); border: 1px solid #ccc; border-radius: 6px; cursor: pointer; font-weight: bold; color: inherit;">Halové jevy</button>
+        <button class="denik-kat-btn" data-jev="zare" style="width: 100%; padding: 10px; text-align: left; background: rgba(0,0,0,0.03); border: 1px solid #ccc; border-radius: 6px; cursor: pointer; font-weight: bold; color: inherit;">Polární záře</button>
+        <button class="denik-kat-btn" data-jev="fata_morgana" style="width: 100%; padding: 10px; text-align: left; background: rgba(0,0,0,0.03); border: 1px solid #ccc; border-radius: 6px; cursor: pointer; font-weight: bold; color: inherit;">Fata morgána</button>
+        
+        <div style="font-size: 0.8rem; font-weight: bold; color: #888; text-transform: uppercase; margin: 10px 0 4px 0;">Přízemní jevy</div>
+        <button class="denik-kat-btn" data-jev="jinovatka" style="width: 100%; padding: 10px; text-align: left; background: rgba(0,0,0,0.03); border: 1px solid #ccc; border-radius: 6px; cursor: pointer; font-weight: bold; color: inherit;">Jinovatka a rosa</button>
+        <button class="denik-kat-btn" data-jev="prumyslove_snezeni" style="width: 100%; padding: 10px; text-align: left; background: rgba(0,0,0,0.03); border: 1px solid #ccc; border-radius: 6px; cursor: pointer; font-weight: bold; color: inherit;">Průmyslové sněžení</button>
+      </div>
+      
+      <!-- Pravý sloupec (Zobrazovaný text) -->
+      <div style="flex: 2; overflow-y: auto; padding-left: 10px; line-height: 1.6;">
+        <div id="denik-vychozi-text">
+          <p style="font-size: 1.1rem; color: #555;">← Kliknutím na meteorologický jev v tabulce nalevo zobrazíš podrobnosti.</p>
+        </div>
+        <div id="denik-obsah-text" style="display: none;">
+          <h3 id="denik-nadpis-jevu" style="margin-top: 0; color: #007bff; font-size: 1.6rem; border-bottom: 2px solid #007bff; padding-bottom: 5px;"></h3>
+          <div id="denik-text-jevu" style="font-size: 1.05rem;"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<style>
+    /* Správné vynucení zobrazení okna deníku při aktivaci */
+    .updates-modal-overlay.active {
+        display: flex !important;
+    }
+</style>
+
+
 </body>
 </html>
