@@ -408,7 +408,9 @@
 </div>
 
         <!-- STŘED: Původní nápis s neviditelným textem pro Google -->
-        <h1 class="header-center-title" style="margin: 0; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);"><a href="https://meteoinfo-cz.github.io/web/" style="color: inherit; text-decoration: none;">MeteoInfo</a></h1>
+        <h1 class="header-center-title" style="margin: 0; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 100; pointer-events: auto;">
+  <a href="https://meteoinfo-cz.github.io/web/" style="color: inherit; text-decoration: none;">MeteoInfo</a>
+</h1>
 <h2 style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0;">
 Aktuální předpověď počasí, meteoradar, srážky a teploty pro města online</h2>
         
@@ -458,21 +460,38 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
         });
       } 
       // Pokud uživatel nemá trvale uložený domov, vezmeme město ze stránky (nebo záložní Prahu)
-else if (savedUserCity !== 'true') {
     let strankaMesto = document.getElementById('nazev-mesta')?.innerText;
-    
-    // Pokud jsme na podstránce města, použije se to město. Pokud na hlavní stránce, tak Praha.
-    mName = strankaMesto || "Praha";
-    
-    localStorage.setItem('defaultCityName', mName);
-    
-    // Pokud je to Praha na hlavní stránce, zaškrtneme čtvereček
-    if (!strankaMesto) {
-        window.addEventListener('DOMContentLoaded', () => {
-            const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
-            if (chkBox) chkBox.checked = true;
-        });
-    }
+
+// 1. Nastavení správného města
+if (strankaMesto) {
+    // Na podstránce města (např. /brno/) VŽDY načteme toto město
+    mName = strankaMesto;
+} else if (localStorage.getItem('savedUserCity') === 'true') {
+    // Na hlavní stránce načteme uložení uživatele
+    mName = localStorage.getItem('defaultCityName') || "Praha";
+} else {
+    // Výchozí záloha pro hlavní stránku
+    mName = "Praha";
+}
+
+// 2. Obsluha zaškrtávátka domova (pouze pro hlavní stránku)
+if (!strankaMesto) {
+    window.addEventListener('DOMContentLoaded', () => {
+        const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
+        if (chkBox) {
+            chkBox.checked = (localStorage.getItem('savedUserCity') === 'true');
+            
+            chkBox.addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    localStorage.setItem('defaultCityName', mName);
+                    localStorage.setItem('savedUserCity', 'true');
+                } else {
+                    localStorage.removeItem('savedUserCity');
+                    localStorage.removeItem('defaultCityName');
+                }
+            });
+        }
+    });
 }
       // --- 2. SLEDOVÁNÍ ZMĚNY CHECKBOXU PRO TRVALÉ ULOŽENÍ VÝCHOZÍHO MĚSTA ---
       window.addEventListener('DOMContentLoaded', () => {
