@@ -1408,12 +1408,13 @@ if (!strankaMesto) {
         95: "bourka"
     };
 
-    if (kod >= 71 && kod <= 77) {
-        if (jeZima) return '/web/png/snih.png';
-        return '/web/png/${jeNoc ? "destove_prehanky_noc" : "prehanky"}.png';
+if (kod >= 71 && kod <= 77) {
+        if (jeZima) return 'png/snih.png';
+        return jeNoc ? 'png/destove_prehanky_noc.png' : 'png/prehanky.png';
     }
 
-    return '/web/png/${mapovani[kod] || "polojasno"}.png';
+    const nazevObrazku = mapovani[kod] || 'polojasno';
+    return `png/${nazevObrazku}.png`;
 }
 
         function aktualizujHomeCheck() {
