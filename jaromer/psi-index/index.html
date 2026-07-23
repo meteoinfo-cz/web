@@ -2352,7 +2352,7 @@ function zkontrolujInternetAPosliVystrahy() {
         let maxDestMms = 0;
         let hroziMrznouciDest = false; 
         
-        const hroziJakejkoliDest = data.list.slice(0, 8).some(bod => {
+        const hroziJakejkolivDest = data.list.slice(0, 8).some(bod => {
             if (bod.rain && bod.rain['3h']) {
                 if (bod.rain['3h'] > maxDestMms) maxDestMms = bod.rain['3h'];
             }
