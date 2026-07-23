@@ -486,15 +486,14 @@ if (cestyCasti.length > 0) {
     }
 }
 
-// STROM PRIORIT: URL adresa MÁ NEJVYŠŠÍ PRIORITU!
+// Nekompromisní prioritizace URL
 if (mestoZUrl) {
+    // Pokud jsme na podstránce (např. Brno), IGNORUJEME uloženou domovskou Prahu
     mName = mestoZUrl.charAt(0).toUpperCase() + mestoZUrl.slice(1);
 } else if (mestoZQuery) {
     mName = mestoZQuery;
-} else if (sessionStorage.getItem('searchedCity')) {
-    mName = sessionStorage.getItem('searchedCity');
-} else if (localStorage.getItem('savedUserCity') === 'true') {
-    mName = localStorage.getItem('defaultCityName') || "Bělčice";
+} else if (localStorage.getItem('savedUserCity') === 'true' && localStorage.getItem('defaultCityName')) {
+    mName = localStorage.getItem('defaultCityName');
 } else {
     mName = "Bělčice";
 }
