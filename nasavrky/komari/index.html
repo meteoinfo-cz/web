@@ -408,7 +408,7 @@
 </div>
 
         <!-- STŘED: Původní nápis s neviditelným textem pro Google -->
-        <h1 class="header-center-title" style="margin: 0; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);">MeteoInfo</h1>
+        <h1 class="header-center-title" style="margin: 0; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);"><a href="https://meteoinfo-cz.github.io/web/" style="color: inherit; text-decoration: none;">MeteoInfo</a></h1>
 <h2 style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0;">
 Aktuální předpověď počasí, meteoradar, srážky a teploty pro města online</h2>
         
@@ -457,23 +457,23 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
           sessionStorage.removeItem('search_city_active'); // Smažeme dočasný stav pro příští F5
         });
       } 
-      // Pokud uživatel nemá trvale uložený domov, podstrčíme mu Prahu se zaškrtnutým políčkem
-      else if (savedUserCity !== 'true') {
-        localStorage.setItem('defaultCityName', 'Praha');
-        localStorage.setItem('defaultCityLat', '50.08');
-        localStorage.setItem('defaultCityLon', '14.42');
-        localStorage.setItem('defaultCityTemp', '22');
-        
-        // Aktualizace proměnných pro tvůj hlavní skript
-        mName = "Praha"; lat = 50.08; lon = 14.42; sTemp = 22;
-        
-        // Počkáme na načtení HTML a čtvereček natvrdo zaškrtneme
+      // Pokud uživatel nemá trvale uložený domov, vezmeme město ze stránky (nebo záložní Prahu)
+else if (savedUserCity !== 'true') {
+    let strankaMesto = document.getElementById('nazev-mesta')?.innerText;
+    
+    // Pokud jsme na podstránce města, použije se to město. Pokud na hlavní stránce, tak Praha.
+    mName = strankaMesto || "Praha";
+    
+    localStorage.setItem('defaultCityName', mName);
+    
+    // Pokud je to Praha na hlavní stránce, zaškrtneme čtvereček
+    if (!strankaMesto) {
         window.addEventListener('DOMContentLoaded', () => {
-          const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
-          if (chkBox) chkBox.checked = true;
+            const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
+            if (chkBox) chkBox.checked = true;
         });
-      }
-
+    }
+}
       // --- 2. SLEDOVÁNÍ ZMĚNY CHECKBOXU PRO TRVALÉ ULOŽENÍ VÝCHOZÍHO MĚSTA ---
       window.addEventListener('DOMContentLoaded', () => {
         const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
