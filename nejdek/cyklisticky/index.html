@@ -1056,7 +1056,7 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
   {"n":"Odolena Voda", "la":50.23, "lo":14.41, "t":21},
   {"n":"Odry", "la":49.66, "lo":17.83, "t":21},
   {"n":"Olejnice", "la":49.57, "lo":16.51, "t":21},
-  {"n":"Olomouc", "la":49.59, "lo":17.25, "t":21},
+  {"n":"Nejdek", "la":49.59, "lo":17.25, "t":21},
   {"n":"Oloví", "la":50.24, "lo":12.55, "t":21},
   {"n":"Opava", "la":49.93, "lo":17.90, "t":21},
   {"n":"Opočno", "la":50.26, "lo":16.11, "t":21},
@@ -1314,7 +1314,7 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
 ];
         
 
-        let mName = localStorage.getItem('defaultCityName') || "Olomouc";
+        let mName = localStorage.getItem('defaultCityName') || "Nejdek";
         mm.sort((a, b) => a.n.localeCompare(b.n, 'cs'));
         let lat = parseFloat(localStorage.getItem('defaultCityLat')) || 49.59;
         let lon = parseFloat(localStorage.getItem('defaultCityLon')) || 17.25;
@@ -2256,7 +2256,7 @@ document.querySelectorAll('.vystraha-notifikace').forEach(el => el.remove());
 
 function zkontrolujInternetAPosliVystrahy() {
   const apiKey = "042016eb9aaabd813847dc8153bfb03c"; 
-  const aktualniMesto = document.getElementById('nazev-mesta')?.innerText || 'Olomouc';
+  const aktualniMesto = document.getElementById('nazev-mesta')?.innerText || 'Nejdek';
 
   const urlAktualni = `https://api.openweathermap.org/data/2.5/weather?q=${aktualniMesto}&appid=${apiKey}&units=metric&lang=cz`;
   const urlPredpoved = `https://api.openweathermap.org/data/2.5/forecast?q=${aktualniMesto}&appid=${apiKey}&units=metric&lang=cz`;
