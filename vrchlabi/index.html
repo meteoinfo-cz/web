@@ -2874,6 +2874,55 @@ zare: {
 // Počkáme, až prohlížeč kompletně načte celou stránku a všechna tlačítka
 document.addEventListener('DOMContentLoaded', () => {
 
+    // 1. NEJDŘÍVE URČÍME MĚSTO Z URL A VYMAŽEME SIK
+    let mName = "Vrchlabí";
+    const cestaSlozky = window.location.pathname.split('/').filter(Boolean);
+    let zisteneMesto = cestaSlozky[cestaSlozky.length - 1];
+
+    const indexy = ["komari", "klistata", "suseni-pradla", "astronomicky", "bezecky", "cyklisticky", "prirodni-koupani", "koupani", "vyhrate-auto", "aquaplaning", "psi-index"];
+
+    if (indexy.includes(zisteneMesto) && cestaSlozky.length > 1) {
+        zisteneMesto = cestaSlozky[cestaSlozky.length - 2];
+    } else if (zisteneMesto && (zisteneMesto.endsWith('.html') || zisteneMesto === 'index.html')) {
+        zisteneMesto = cestaSlozky[cestaSlozky.length - 2];
+    }
+
+    if (zisteneMesto && zisteneMesto !== 'web' && zisteneMesto !== 'meteoinfo-cz.github.io') {
+        let cisteMesto = decodeURIComponent(zisteneMesto);
+        mName = cisteMesto.charAt(0).toUpperCase() + cisteMesto.slice(1);
+        localStorage.removeItem('savedUserCity');
+    } else {
+        if (localStorage.getItem('savedUserCity') === 'true' && localStorage.getItem('defaultCityName')) {
+            mName = localStorage.getItem('defaultCityName');
+        } else {
+            mName = "Vrchlabí";
+        }
+    }
+
+// Získáme souřadnice (lat, lon) pro vybrané město ze seznamu
+if (typeof mestaData !== 'undefined' && mestaData[mName]) {
+    lat = mestaData[mName].lat;
+    lon = mestaData[mName].lon;
+} else if (typeof mesta !== 'undefined' && mesta[mName]) {
+    lat = mesta[mName].lat;
+    lon = mesta[mName].lon;
+}
+
+nactiPocasi();
+
+    const elNazevMesta = document.getElementById('nazev-mesta');
+    if (elNazevMesta) {
+        elNazevMesta.innerText = mName;
+    }
+
+    // 2. AŽ TEĎ ZAVOLÁME NAČTENÍ DAT PRO TOTO MĚSTO
+    nactiPocasi(mName); // (případně tvůj název funkce pro načtení API)
+
+
+    // 3. A DÁLE POKRAČUJE TVŮJ PŮVODNÍ KÓD ZE SNÍMKU:
+    if (typeof databazeTextu !== 'undefined') {
+        // ... tvoje databáze textů ...
+
     // ZAJIŠTĚNÍ DAT PRO VŠECHNY NOVÉ JEVY (A OPRAVA PŘEKLEPŮ)
     if (typeof databazeTextu !== 'undefined') {
         // Opravy starších chyb a překlepů
