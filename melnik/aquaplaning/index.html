@@ -462,10 +462,17 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
       // Pokud uživatel nemá trvale uložený domov, vezmeme město ze stránky (nebo záložní Prahu)
     let strankaMesto = document.getElementById('nazev-mesta')?.innerText;
 
+// Načteme město z URL adresy (např. ?mesto=brno)
+const urlParams = new URLSearchParams(window.location.search);
+const mestoZUrl = urlParams.get('mesto');
+
 // 1. Nastavení správného města
 if (sessionStorage.getItem('searchedCity')) {
     // Pokud uživatel klikl ve vyhledávači na nové město
     mName = sessionStorage.getItem('searchedCity');
+} else if (mestoZUrl) {
+    // Pokud je město zadáno v URL adrese (?mesto=brno)
+    mName = mestoZUrl;
 } else if (strankaMesto) {
     // Jinak načteme město podle podstránky
     mName = strankaMesto;
