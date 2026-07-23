@@ -1409,11 +1409,11 @@ if (!strankaMesto) {
     };
 
     if (kod >= 71 && kod <= 77) {
-        if (jeZima) return `png/snih.png`;
-        return `png/${jeNoc ? "destove_prehanky_noc" : "prehanky"}.png`;
+        if (jeZima) return '/web/png/snih.png';
+        return '/web/png/${jeNoc ? "destove_prehanky_noc" : "prehanky"}.png';
     }
 
-    return `png/${mapovani[kod] || "polojasno"}.png`;
+    return '/web/png/${mapovani[kod] || "polojasno"}.png';
 }
 
         function aktualizujHomeCheck() {
