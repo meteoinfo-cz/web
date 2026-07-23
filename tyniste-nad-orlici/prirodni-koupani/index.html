@@ -463,14 +463,15 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
     let strankaMesto = document.getElementById('nazev-mesta')?.innerText;
 
 // 1. Nastavení správného města
-if (strankaMesto) {
-    // Na podstránce města (např. /brno/) VŽDY načteme toto město
+if (sessionStorage.getItem('searchedCity')) {
+    // Pokud uživatel klikl ve vyhledávači na nové město
+    mName = sessionStorage.getItem('searchedCity');
+} else if (strankaMesto) {
+    // Jinak načteme město podle podstránky
     mName = strankaMesto;
 } else if (localStorage.getItem('savedUserCity') === 'true') {
-    // Na hlavní stránce načteme uložení uživatele
     mName = localStorage.getItem('defaultCityName') || "Praha";
 } else {
-    // Výchozí záloha pro hlavní stránku
     mName = "Praha";
 }
 
@@ -531,6 +532,7 @@ if (!strankaMesto) {
               div.addEventListener('click', () => {
                 // Aktivujeme režim vyhledaného města (odškrtne checkbox po reloadu)
                 sessionStorage.setItem('search_city_active', 'true');
+                sessionStorage.setItem('searchedCity', mesta.n);
                 
                 // Zapíšeme hodnoty vybraného města do paměti
                 localStorage.setItem('defaultCityName', mesta.n);
@@ -1365,8 +1367,8 @@ if (!strankaMesto) {
             51: jeZima ? "mrznouci_dest" : "dest", 53: "dest", 55: "dest", 61: "dest", 63: "dest", 65: "dest",
             71: "snih", 73: "snih", 75: "snih", 77: "snih", 80: "prehanky", 81: "prehanky", 82: "prehanky", 95: "bourka"
         };
-        if (kod >= 71 && kod <= 77) return `/web/png/${jeZima ? "snih" : "prehanky"}.png`;
-        return `/web/png/${mapovaniDen[kod] || "polojasno"}.png`;
+        if (kod >= 71 && kod <= 77) return `png/${jeZima ? "snih" : "prehanky"}.png`;
+        return `png/${mapovaniDen[kod] || "polojasno"}.png`;
     }
 
     const spoctiMinuty = (textKombinovany) => {
