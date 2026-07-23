@@ -2329,7 +2329,7 @@ function zkontrolujInternetAPosliVystrahy() {
         
 // 5. VÝSTRAHA NA SNĚŽENÍ (Klíč 'snezeni', stupně 1 až 4)
         let maxSnihMms = 0;
-        const hroziJakejkoliSnezeni = data.list.slice(0, 8).some(bod => {
+        const hroziJakejkolivSnezeni = data.list.slice(0, 8).some(bod => {
             if (bod.snow && bod.snow['3h']) {
                 if (bod.snow['3h'] > maxSnihMms) maxSnihMms = bod.snow['3h'];
             }
