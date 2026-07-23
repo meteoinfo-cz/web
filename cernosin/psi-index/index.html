@@ -466,16 +466,21 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
 const urlParams = new URLSearchParams(window.location.search);
 const mestoZUrl = urlParams.get('mesto');
 
-// 1. Nastavení správného města
+// Zjistíme název složky z URL (např. z "/web/brno/" dostaneme "brno")
+const cestaCasti = window.location.pathname.split('/').filter(Boolean);
+const mestoZCesty = cestaCasti.length > 1 ? cestaCasti[cestaCasti.length - 1] : null;
+
+// Načteme i případný parametr za otazníkem (pojistka)
+const urlParams = new URLSearchParams(window.location.search);
+const mestoZQuery = urlParams.get('mesto');
+
+// 1. Nastavení správného města (PŘEDNOST MÁ URL ADRESA!)
 if (sessionStorage.getItem('searchedCity')) {
-    // Pokud uživatel klikl ve vyhledávači na nové město
     mName = sessionStorage.getItem('searchedCity');
-} else if (mestoZUrl) {
-    // Pokud je město zadáno v URL adrese (?mesto=brno)
-    mName = mestoZUrl;
-} else if (strankaMesto) {
-    // Jinak načteme město podle podstránky
-    mName = strankaMesto;
+} else if (mestoZQuery) {
+    mName = mestoZQuery;
+} else if (mestoZCesty && mestoZCesty !== 'web') {
+    mName = mestoZCesty.charAt(0).toUpperCase() + mestoZCesty.slice(1);
 } else if (localStorage.getItem('savedUserCity') === 'true') {
     mName = localStorage.getItem('defaultCityName') || "Praha";
 } else {
