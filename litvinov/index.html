@@ -466,36 +466,31 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
 const urlParams = new URLSearchParams(window.location.search);
 const mestoZQuery = urlParams.get('mesto');
 
-// 1. Nastavení správného města (PŘEDNOST MÁ OPRAVDU URL ADRESA!)
+// 1. Zjistíme složku z URL adresy
+const cestaSlozky = window.location.pathname.split('/').filter(Boolean);
+let zisteneMesto = cestaSlozky[cestaSlozky.length - 1];
 
-// Zjistíme města z cesty (ošetří i podstránky jako /brno/komari/)
-const cestyCasti = window.location.pathname.split('/').filter(Boolean);
-let mestoZUrl = null;
+// Pokud URL končí na podstránku indexu (např. /brno/komari nebo /brno/index.html)
+const indexy = ["komari", "klistata", "suseni-pradla", "astronomicky", "bezecky", "cyklisticky", "prirodni-koupani", "koupani", "vyhrate-auto", "aquaplaning", "psi-index"];
 
-if (cestyCasti.length > 0) {
-    let posledni = cestyCasti[cestyCasti.length - 1];
-    let predposledni = cestyCasti.length > 1 ? cestyCasti[cestyCasti.length - 2] : null;
-
-    // Seznam indexů, které nejsou městem
-    const indexy = ["komari", "klistata", "suseni-pradla", "astronomicky", "bezecky", "cyklisticky", "prirodni-koupani", "koupani", "vyhrate-auto", "aquaplaning", "psi-index"];
-
-    if (indexy.includes(posledni) && predposledni && predposledni !== 'web') {
-        mestoZUrl = predposledni; // Pokud jsme v /brno/komari, město je "brno"
-    } else if (posledni !== 'web' && posledni !== 'index.html' && !posledni.endsWith('.html')) {
-        mestoZUrl = posledni; // Pokud jsme v /brno/, město je "brno"
-    }
+if (indexy.includes(zisteneMesto) && cestaSlozky.length > 1) {
+    zisteneMesto = cestaSlozky[cestaSlozky.length - 2];
+} else if (zisteneMesto && (zisteneMesto.endsWith('.html') || zisteneMesto === 'index.html')) {
+    zisteneMesto = cestaSlozky[cestaSlozky.length - 2];
 }
 
-// Nekompromisní prioritizace URL
-if (mestoZUrl) {
-    // Pokud jsme na podstránce (např. Brno), IGNORUJEME uloženou domovskou Prahu
-    mName = mestoZUrl.charAt(0).toUpperCase() + mestoZUrl.slice(1);
-} else if (mestoZQuery) {
-    mName = mestoZQuery;
-} else if (localStorage.getItem('savedUserCity') === 'true' && localStorage.getItem('defaultCityName')) {
-    mName = localStorage.getItem('defaultCityName');
+// 2. Nastavení názvu města s absolutní prioritou pro URL
+if (zisteneMesto && zisteneMesto !== 'web' && zisteneMesto !== 'meteoinfo-cz.github.io') {
+    // Jsme na podstránce města -> VŽDY načteme toto město z URL!
+    let cisteMesto = decodeURIComponent(zisteneMesto);
+    mName = cisteMesto.charAt(0).toUpperCase() + cisteMesto.slice(1);
 } else {
-    mName = "Litvínov";
+    // Jsme na hlavní stránce -> načteme uložený domov nebo Prahu
+    if (localStorage.getItem('savedUserCity') === 'true' && localStorage.getItem('defaultCityName')) {
+        mName = localStorage.getItem('defaultCityName');
+    } else {
+        mName = "Litvínov";
+    }
 }
 
 // 2. Obsluha zaškrtávátka domova (pouze pro hlavní stránku)
