@@ -494,9 +494,9 @@ if (mestoZUrl) {
 } else if (sessionStorage.getItem('searchedCity')) {
     mName = sessionStorage.getItem('searchedCity');
 } else if (localStorage.getItem('savedUserCity') === 'true') {
-    mName = localStorage.getItem('defaultCityName') || "Praha";
+    mName = localStorage.getItem('defaultCityName') || "Velké Meziříčí";
 } else {
-    mName = "Praha";
+    mName = "Velké Meziříčí";
 }
 
 // 2. Obsluha zaškrtávátka domova (pouze pro hlavní stránku)
@@ -1139,7 +1139,7 @@ if (!strankaMesto) {
   {"n":"Polná", "la":49.48, "lo":15.71, "t":21},
   {"n":"Postoloprty", "la":50.35, "lo":13.70, "t":21},
   {"n":"Potštát", "la":49.62, "lo":17.65, "t":21},
-  {"n":"Praha", "la":50.07, "lo":14.43, "t":21},
+  {"n":"Velké Meziříčí", "la":50.07, "lo":14.43, "t":21},
   {"n":"Prachatice", "la":49.01, "lo":13.99, "t":21},
   {"n":"Proseč", "la":49.80, "lo":16.11, "t":21},
   {"n":"Prostějov", "la":49.47, "lo":17.11, "t":21},
@@ -2998,12 +2998,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 <script>
-        window.addEventListener('DOMContentLoaded', () => {
-            if (typeof nactiMesto === 'function') {
-                nactiMesto('Velké Meziříčí', 49.35, 16.01, 'vse');
-            } else if (typeof zmenMesto === 'function') {
-                zmenMesto('Velké Meziříčí', 49.35, 16.01, 'vse');
-            }
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                if (typeof nactiMesto === 'function') {
+                    nactiMesto('Velké Meziříčí', 49.35, 16.01, 'vse');
+                } else if (typeof zmenMesto === 'function') {
+                    zmenMesto('Velké Meziříčí', 49.35, 16.01, 'vse');
+                }
+            }, 100);
         });
     </script></body>
 </html>

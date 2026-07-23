@@ -2998,12 +2998,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 <script>
-        window.addEventListener('DOMContentLoaded', () => {
-            if (typeof nactiMesto === 'function') {
-                nactiMesto('Praha', 50.07, 14.43, 'vse');
-            } else if (typeof zmenMesto === 'function') {
-                zmenMesto('Praha', 50.07, 14.43, 'vse');
-            }
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                if (typeof nactiMesto === 'function') {
+                    nactiMesto('Praha', 50.07, 14.43, 'vse');
+                } else if (typeof zmenMesto === 'function') {
+                    zmenMesto('Praha', 50.07, 14.43, 'vse');
+                }
+            }, 100);
         });
     </script></body>
 </html>
