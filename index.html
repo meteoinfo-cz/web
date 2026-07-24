@@ -2865,6 +2865,11 @@ zare: {
 // Počkáme, až prohlížeč kompletně načte celou stránku a všechna tlačítka
 document.addEventListener('DOMContentLoaded', () => {
 
+// 1. Zabezpečí načtení města, když uživatel změní URL nebo klikne Zpět/Vpřed
+    window.addEventListener('popstate', () => {
+        location.reload();
+    });
+
 function bezDiakritiky(str) {
     if (!str) return '';
     return str.toString().toLowerCase()
@@ -2925,6 +2930,12 @@ function bezDiakritiky(str) {
     const elNazevMesta = document.getElementById('nazev-mesta');
     if (elNazevMesta) {
         elNazevMesta.innerText = mName;
+    }
+
+// Aktualizuje URL v adresním řádku bez přenačtení celé stránky
+    if (window.location.search !== `?mesto=${encodeURIComponent(mName)}`) {
+        const noveUrl = `${window.location.pathname}?mesto=${encodeURIComponent(mName)}`;
+        window.history.pushState({ path: noveUrl }, '', noveUrl);
     }
 
     // 2. NAČTEME DATA PRO TOTO MĚSTO
