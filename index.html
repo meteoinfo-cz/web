@@ -2932,8 +2932,6 @@ function bezDiakritiky(str) {
     // 2. NAČTEME DATA PRO TOTO MĚSTO
     nactiPocasi(mName);
 
-});
-
 
     // 3. A DÁLE POKRAČUJE TVŮJ PŮVODNÍ KÓD ZE SNÍMKU:
     if (typeof databazeTextu !== 'undefined') {
@@ -2979,12 +2977,11 @@ function bezDiakritiky(str) {
                 if (obsah) obsah.style.display = 'block';
                 if (nadpis) nadpis.innerText = data.nadpis;
                 if (text) text.innerHTML = data.text;
-            } else {
-                console.error('V databazeTextu nebyl nalezen klíč:', klic);
-            }
-          }
-        });
-    });
+        } else {
+            console.error('V databazeTextu nebyl nalezen klíč:', klic);
+        }
+    }
+});
 </script>
 
 
