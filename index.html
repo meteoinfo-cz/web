@@ -2931,14 +2931,14 @@ document.addEventListener('DOMContentLoaded', () => {
         nactiPocasi(mName);
     }
 
-    // 4. DATABÁZE TEXTŮ A DENÍK
+    // 4. DATABÁZE TEXTŮ A METEOROLOGICKÝ DENÍK
     if (typeof databazeTextu !== 'undefined') {
         if (databazeTextu['povodone']) {
             databazeTextu['povodne'] = databazeTextu['povodone'];
         }
 
-        const klic = urlParams.get('jevy') || urlParams.get('jev');
-        if (klic) {
+        // Funkce pro zobrazení detailu jevu
+        function zobrazJev(klic) {
             const data = databazeTextu[klic];
             if (data) {
                 const vychozi = document.getElementById('denik-vychozi-text');
@@ -2950,14 +2950,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (obsah) obsah.style.display = 'block';
                 if (nadpis) nadpis.innerText = data.nadpis;
                 if (text) text.innerHTML = data.text;
-            } else {
-                console.error('V databazeTextu nebyl nalezen klíč:', klic);
             }
         }
-    }
 
-});
-    
+        // A) Načtení z URL při prvním otevření (?jev=bourky)
+        const klicZUrl = urlParams.get('jevy') || urlParams.get('jev');
+        if (klicZUrl) {
+            zobrazJev(klicZUrl);
+        }
+
+        // B) PŘIDÁNÍ KLIKÁNÍ NA TLAČÍTKA V SEZNAMU
+        // Projde všechna tlačítka v deníku a při kliknutí zobrazí příslušný text
+        const tlacitkaJevuv = document.querySelectorAll('#okno-denik [data-jev], #okno-denik button, #okno-denik .list-group-item');
+        tlacitkaJevuv.forEach(tlacitko => {
+            tlacitko.addEventListener('click', (e) => {
+                // Získá klíč jevu z atributu data-jev nebo podle textu / ID
+                const klic = tlacitko.getAttribute('data-jev') || tlacitko.id;
+                if (klic) {
+                    zobrazJev(klic);
+                }
+            });
+        });
+    }    
 
         // Kompletní aktivace nových tlačítek, která ti teď nešla
         databazeTextu['sucho'] = databazeTextu['sucho'] || { nadpis: "Sucho a vlny veder", text: "<p>Zde brzy doplníš svůj vlastní text...</p>" };
