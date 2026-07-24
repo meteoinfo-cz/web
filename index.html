@@ -2865,17 +2865,44 @@ zare: {
 // Počkáme, až prohlížeč kompletně načte celou stránku a všechna tlačítka
 document.addEventListener('DOMContentLoaded', () => {
 
-    // 1. NEJDŘÍVE URČÍME MĚSTO Z URL (?mesto=brno)
-    let mName = "Praha";
+    // Funkce pro odstranění diakritiky a mezer
+    function bezDiakritiky(str) {
+        if (!str) return '';
+        return str.toString().toLowerCase()
+            .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+            .replace(/[^a-z0-9]/g, '');
+    }
 
+    // 1. NEJDŘÍVE URČÍME MĚSTO Z URL (?mesto=ostrava)
+    let mName = "Praha";
     const urlParams = new URLSearchParams(window.location.search);
     let zisteneMesto = urlParams.get('mesto');
 
-    // Pokud v URL parametr ?mesto je, použijeme ho
     if (zisteneMesto) {
         let cisteMesto = decodeURIComponent(zisteneMesto);
-        // Zabezpečíme, aby první písmeno bylo velké (brno -> Brno)
-        mName = cisteMesto.charAt(0).toUpperCase() + cisteMesto.slice(1);
+        let slugZUrl = bezDiakritiky(cisteMesto);
+
+        // Zjistíme, kde máme seznam měst (v mestaData, nebo mesta)
+        let nalezeneKlic = null;
+
+        if (typeof mestaData !== 'undefined' && Array.isArray(mestaData)) {
+            // Pokud je mestaData pole objektů [{"n": "Ostrava", ...}]
+            let mObj = mestaData.find(m => bezDiakritiky(m.n) === slugZUrl);
+            if (mObj) nalezeneKlic = mObj.n;
+        } else if (typeof mestaData !== 'undefined' && typeof mestaData === 'object') {
+            // Pokud je mestaData objekt {"Ostrava": {...}}
+            nalezeneKlic = Object.keys(mestaData).find(klic => bezDiakritiky(klic) === slugZUrl);
+        } else if (typeof mesta !== 'undefined' && typeof mesta === 'object') {
+            // Pokud existuje objekt mesta
+            nalezeneKlic = Object.keys(mesta).find(klic => bezDiakritiky(klic) === slugZUrl);
+        }
+
+        if (nalezeneKlic) {
+            mName = nalezeneKlic; // Najde např. "Ostrava" podle "ostrava"
+        } else {
+            mName = cisteMesto.charAt(0).toUpperCase() + cisteMesto.slice(1);
+        }
+
         localStorage.removeItem('savedUserCity');
     } else {
         // Pokud parametr v URL není, zkusíme uložené město uživatele, nebo dáme Prahu
