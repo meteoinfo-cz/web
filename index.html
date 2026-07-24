@@ -2865,13 +2865,12 @@ zare: {
 // Počkáme, až prohlížeč kompletně načte celou stránku a všechna tlačítka
 document.addEventListener('DOMContentLoaded', () => {
 
-    // Funkce pro odstranění diakritiky a mezer
-    function bezDiakritiky(str) {
-        if (!str) return '';
-        return str.toString().toLowerCase()
-            .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-            .replace(/[^a-z0-9]/g, '');
-    }
+function bezDiakritiky(str) {
+    if (!str) return '';
+    return str.toString().toLowerCase()
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]/g, '');
+}
 
     // 1. NEJDŘÍVE URČÍME MĚSTO Z URL (?mesto=ostrava)
     let mName = "Praha";
@@ -2880,7 +2879,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (zisteneMesto) {
         let cisteMesto = decodeURIComponent(zisteneMesto);
-        let slugZUrl = bezDiakritiky(cisteMesto);
+        let slugZUrl = bezDiakritiky(cisteMesto).toLowerCase();
 
         // Zjistíme, kde máme seznam měst (v mestaData, nebo mesta)
         let nalezeneKlic = null;
