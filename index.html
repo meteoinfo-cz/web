@@ -2877,39 +2877,30 @@ function bezDiakritiky(str) {
         .replace(/[^a-z0-9]/g, '');
 }
 
-    // 1. NEJDŘÍVE URČÍME MĚSTO Z URL (?mesto=ostrava)
+// 1. NEJDŘÍVE URČÍME MĚSTO Z URL (?mesto=ostrava)
     let mName = "Praha";
     const urlParams = new URLSearchParams(window.location.search);
     let zisteneMesto = urlParams.get('mesto');
 
-    if (zisteneMesto) {
+    if (zisteneMesto && zisteneMesto.trim() !== "") {
+        // Pokud je v URL parametr, natvrdo ho použijeme a IGNORUJEME localStorage
         let cisteMesto = decodeURIComponent(zisteneMesto);
-        let slugZUrl = bezDiakritiky(cisteMesto).toLowerCase();
+        let slugZUrl = bezDiakritiky(cisteMesto);
 
-        // Zjistíme, kde máme seznam měst (v mestaData, nebo mesta)
         let nalezeneKlic = null;
 
         if (typeof mestaData !== 'undefined' && Array.isArray(mestaData)) {
-            // Pokud je mestaData pole objektů [{"n": "Ostrava", ...}]
             let mObj = mestaData.find(m => bezDiakritiky(m.n) === slugZUrl);
             if (mObj) nalezeneKlic = mObj.n;
         } else if (typeof mestaData !== 'undefined' && typeof mestaData === 'object') {
-            // Pokud je mestaData objekt {"Ostrava": {...}}
             nalezeneKlic = Object.keys(mestaData).find(klic => bezDiakritiky(klic) === slugZUrl);
         } else if (typeof mesta !== 'undefined' && typeof mesta === 'object') {
-            // Pokud existuje objekt mesta
             nalezeneKlic = Object.keys(mesta).find(klic => bezDiakritiky(klic) === slugZUrl);
         }
 
-        if (nalezeneKlic) {
-            mName = nalezeneKlic; // Najde např. "Ostrava" podle "ostrava"
-        } else {
-            mName = cisteMesto.charAt(0).toUpperCase() + cisteMesto.slice(1);
-        }
-
-        localStorage.removeItem('savedUserCity');
+        mName = nalezeneKlic ? nalezeneKlic : (cisteMesto.charAt(0).toUpperCase() + cisteMesto.slice(1));
     } else {
-        // Pokud parametr v URL není, zkusíme uložené město uživatele, nebo dáme Prahu
+        // Parametr v URL NENÍ -> použijeme uložené město nebo Prahu
         if (localStorage.getItem('savedUserCity') === 'true' && localStorage.getItem('defaultCityName')) {
             mName = localStorage.getItem('defaultCityName');
         } else {
