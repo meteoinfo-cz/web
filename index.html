@@ -2865,28 +2865,26 @@ zare: {
 // Počkáme, až prohlížeč kompletně načte celou stránku a všechna tlačítka
 document.addEventListener('DOMContentLoaded', () => {
 
-// 1. Zabezpečí načtení města, když uživatel změní URL nebo klikne Zpět/Vpřed
+    // 1. Zabezpečí načtení města, když uživatel změní URL nebo klikne Zpět/Vpřed
     window.addEventListener('popstate', () => {
         location.reload();
     });
 
-function bezDiakritiky(str) {
-    if (!str) return '';
-    return str.toString().toLowerCase()
-        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-        .replace(/[^a-z0-9]/g, '');
-}
+    function bezDiakritiky(str) {
+        if (!str) return '';
+        return str.toString().toLowerCase()
+            .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+            .replace(/[^a-z0-9]/g, '');
+    }
 
-// 1. NEJDŘÍVE URČÍME MĚSTO Z URL (?mesto=ostrava)
+    // 2. URČÍME MĚSTO Z URL (?mesto=ostrava)
     let mName = "Praha";
     const urlParams = new URLSearchParams(window.location.search);
     let zisteneMesto = urlParams.get('mesto');
 
     if (zisteneMesto && zisteneMesto.trim() !== "") {
-        // Pokud je v URL parametr, natvrdo ho použijeme a IGNORUJEME localStorage
         let cisteMesto = decodeURIComponent(zisteneMesto);
         let slugZUrl = bezDiakritiky(cisteMesto);
-
         let nalezeneKlic = null;
 
         if (typeof mestaData !== 'undefined' && Array.isArray(mestaData)) {
@@ -2900,7 +2898,6 @@ function bezDiakritiky(str) {
 
         mName = nalezeneKlic ? nalezeneKlic : (cisteMesto.charAt(0).toUpperCase() + cisteMesto.slice(1));
     } else {
-        // Parametr v URL NENÍ -> použijeme uložené město nebo Prahu
         if (localStorage.getItem('savedUserCity') === 'true' && localStorage.getItem('defaultCityName')) {
             mName = localStorage.getItem('defaultCityName');
         } else {
@@ -2908,7 +2905,7 @@ function bezDiakritiky(str) {
         }
     }
 
-    // Získáme souřadnice (lat, lon) pro vybrané město ze seznamu
+    // Získáme souřadnice pro vybrané město
     if (typeof mestaData !== 'undefined' && mestaData[mName]) {
         lat = mestaData[mName].lat;
         lon = mestaData[mName].lon;
@@ -2917,31 +2914,49 @@ function bezDiakritiky(str) {
         lon = mesta[mName].lon;
     }
 
-    // Nastavíme název města do nadpisu v HTML (pokud na stránce existuje)
+    // Nastavíme název města do nadpisu v HTML
     const elNazevMesta = document.getElementById('nazev-mesta');
     if (elNazevMesta) {
         elNazevMesta.innerText = mName;
     }
 
-// Aktualizuje URL v adresním řádku bez přenačtení celé stránky
+    // Aktualizuje URL bez přenačtení
     if (window.location.search !== `?mesto=${encodeURIComponent(mName)}`) {
         const noveUrl = `${window.location.pathname}?mesto=${encodeURIComponent(mName)}`;
         window.history.pushState({ path: noveUrl }, '', noveUrl);
     }
 
-    // 2. NAČTEME DATA PRO TOTO MĚSTO
-    nactiPocasi(mName);
+    // 3. NAČTEME DATA PRO MĚSTO
+    if (typeof nactiPocasi === 'function') {
+        nactiPocasi(mName);
+    }
 
-
-    // 3. A DÁLE POKRAČUJE TVŮJ PŮVODNÍ KÓD ZE SNÍMKU:
+    // 4. DATABÁZE TEXTŮ A DENÍK
     if (typeof databazeTextu !== 'undefined') {
-        // ... tvoje databáze textů ...
+        if (databazeTextu['povodone']) {
+            databazeTextu['povodne'] = databazeTextu['povodone'];
+        }
 
-    // ZAJIŠTĚNÍ DAT PRO VŠECHNY NOVÉ JEVY (A OPRAVA PŘEKLEPŮ)
-    if (typeof databazeTextu !== 'undefined') {
-        // Opravy starších chyb a překlepů
-    
-        databazeTextu['povodne'] = databazeTextu['povodone'];
+        const klic = urlParams.get('jevy') || urlParams.get('jev');
+        if (klic) {
+            const data = databazeTextu[klic];
+            if (data) {
+                const vychozi = document.getElementById('denik-vychozi-text');
+                const obsah = document.getElementById('denik-obsah-text');
+                const nadpis = document.getElementById('denik-nadpis-jevu');
+                const text = document.getElementById('denik-text-jevu');
+
+                if (vychozi) vychozi.style.display = 'none';
+                if (obsah) obsah.style.display = 'block';
+                if (nadpis) nadpis.innerText = data.nadpis;
+                if (text) text.innerHTML = data.text;
+            } else {
+                console.error('V databazeTextu nebyl nalezen klíč:', klic);
+            }
+        }
+    }
+
+});
     
 
         // Kompletní aktivace nových tlačítek, která ti teď nešla
