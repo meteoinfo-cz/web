@@ -408,7 +408,9 @@
 </div>
 
         <!-- STŘED: Původní nápis s neviditelným textem pro Google -->
-        <h1 class="header-center-title" style="margin: 0; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);">MeteoInfo</h1>
+        <h1 class="header-center-title" style="margin: 0; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 100; pointer-events: auto;">
+  <a href="https://meteoinfo-cz.github.io/web/" style="color: inherit; text-decoration: none;">MeteoInfo</a>
+</h1>
 <h2 style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0;">
 Aktuální předpověď počasí, meteoradar, srážky a teploty pro města online</h2>
         
@@ -457,23 +459,50 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
           sessionStorage.removeItem('search_city_active'); // Smažeme dočasný stav pro příští F5
         });
       } 
-      // Pokud uživatel nemá trvale uložený domov, podstrčíme mu Prahu se zaškrtnutým políčkem
-      else if (savedUserCity !== 'true') {
-        localStorage.setItem('defaultCityName', 'Praha');
-        localStorage.setItem('defaultCityLat', '50.08');
-        localStorage.setItem('defaultCityLon', '14.42');
-        localStorage.setItem('defaultCityTemp', '22');
-        
-        // Aktualizace proměnných pro tvůj hlavní skript
-        mName = "Praha"; lat = 50.08; lon = 14.42; sTemp = 22;
-        
-        // Počkáme na načtení HTML a čtvereček natvrdo zaškrtneme
-        window.addEventListener('DOMContentLoaded', () => {
-          const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
-          if (chkBox) chkBox.checked = true;
-        });
-      }
+      // Pokud uživatel nemá trvale uložený domov, vezmeme město ze stránky (nebo záložní Prahu)
+    let strankaMesto = document.getElementById('nazev-mesta')?.innerText;
 
+// 1. Zjistíme město z parametru za otazníkem (?mesto=brno)
+const urlParams = new URLSearchParams(window.location.search);
+const mestoZQuery = urlParams.get('mesto');
+
+let mName = "Praha"; // Výchozí město
+
+if (mestoZQuery) {
+    // Pokud je město v URL (?mesto=brno)
+    let cisteMesto = decodeURIComponent(mestoZQuery);
+    mName = cisteMesto.charAt(0).toUpperCase() + cisteMesto.slice(1);
+    localStorage.removeItem('savedUserCity');
+} else if (localStorage.getItem('savedUserCity') === 'true' && localStorage.getItem('defaultCityName')) {
+    // Pokud parametr v URL není, použijeme uložený domov uživatele
+    mName = localStorage.getItem('defaultCityName');
+} else if (strankaMesto) {
+    // Pokud není nic z toho, zkusíme vzít město přímo ze stránky
+    mName = strankaMesto;
+} else {
+    // Záložní Praha
+    mName = "Praha";
+}
+
+// 2. Obsluha zaškrtávátka domova (pouze pro hlavní stránku)
+if (!strankaMesto) {
+    window.addEventListener('DOMContentLoaded', () => {
+        const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
+        if (chkBox) {
+            chkBox.checked = (localStorage.getItem('savedUserCity') === 'true');
+            
+            chkBox.addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    localStorage.setItem('defaultCityName', mName);
+                    localStorage.setItem('savedUserCity', 'true');
+                } else {
+                    localStorage.removeItem('savedUserCity');
+                    localStorage.removeItem('defaultCityName');
+                }
+            });
+        }
+    });
+}
       // --- 2. SLEDOVÁNÍ ZMĚNY CHECKBOXU PRO TRVALÉ ULOŽENÍ VÝCHOZÍHO MĚSTA ---
       window.addEventListener('DOMContentLoaded', () => {
         const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
@@ -512,6 +541,7 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
               div.addEventListener('click', () => {
                 // Aktivujeme režim vyhledaného města (odškrtne checkbox po reloadu)
                 sessionStorage.setItem('search_city_active', 'true');
+                sessionStorage.setItem('searchedCity', mesta.n);
                 
                 // Zapíšeme hodnoty vybraného města do paměti
                 localStorage.setItem('defaultCityName', mesta.n);
@@ -522,9 +552,9 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
                 mainSearch.value = '';
                 mainSuggestions.style.display = 'none';
                 
-                // Restartujeme stránku pro 100% načtení čistých dat z API
-                location.reload();
-              });
+                // Přesměrujeme na stránku s novým parametrem města
+    window.location.href = `?mesto=${encodeURIComponent(mesta.n)}`;
+});
               mainSuggestions.appendChild(div);
             });
           } else { mainSuggestions.style.display = 'none'; }
@@ -1389,12 +1419,13 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
         95: "bourka"
     };
 
-    if (kod >= 71 && kod <= 77) {
-        if (jeZima) return `png/snih.png`;
-        return `png/${jeNoc ? "destove_prehanky_noc" : "prehanky"}.png`;
+if (kod >= 71 && kod <= 77) {
+        if (jeZima) return 'png/snih.png';
+        return jeNoc ? 'png/destove_prehanky_noc.png' : 'png/prehanky.png';
     }
 
-    return `png/${mapovani[kod] || "polojasno"}.png`;
+    const nazevObrazku = mapovani[kod] || 'polojasno';
+    return `png/${nazevObrazku}.png`;
 }
 
         function aktualizujHomeCheck() {
@@ -2310,7 +2341,7 @@ function zkontrolujInternetAPosliVystrahy() {
         
 // 5. VÝSTRAHA NA SNĚŽENÍ (Klíč 'snezeni', stupně 1 až 4)
         let maxSnihMms = 0;
-        const hroziJakejkoliSnezeni = data.list.slice(0, 8).some(bod => {
+        const hroziJakejkolivSnezeni = data.list.slice(0, 8).some(bod => {
             if (bod.snow && bod.snow['3h']) {
                 if (bod.snow['3h'] > maxSnihMms) maxSnihMms = bod.snow['3h'];
             }
@@ -2333,7 +2364,7 @@ function zkontrolujInternetAPosliVystrahy() {
         let maxDestMms = 0;
         let hroziMrznouciDest = false; 
         
-        const hroziJakejkoliDest = data.list.slice(0, 8).some(bod => {
+        const hroziJakejkolivDest = data.list.slice(0, 8).some(bod => {
             if (bod.rain && bod.rain['3h']) {
                 if (bod.rain['3h'] > maxDestMms) maxDestMms = bod.rain['3h'];
             }
@@ -2833,6 +2864,52 @@ zare: {
 
 // Počkáme, až prohlížeč kompletně načte celou stránku a všechna tlačítka
 document.addEventListener('DOMContentLoaded', () => {
+
+    // 1. NEJDŘÍVE URČÍME MĚSTO Z URL (?mesto=brno)
+    let mName = "Praha";
+
+    const urlParams = new URLSearchParams(window.location.search);
+    let zisteneMesto = urlParams.get('mesto');
+
+    // Pokud v URL parametr ?mesto je, použijeme ho
+    if (zisteneMesto) {
+        let cisteMesto = decodeURIComponent(zisteneMesto);
+        // Zabezpečíme, aby první písmeno bylo velké (brno -> Brno)
+        mName = cisteMesto.charAt(0).toUpperCase() + cisteMesto.slice(1);
+        localStorage.removeItem('savedUserCity');
+    } else {
+        // Pokud parametr v URL není, zkusíme uložené město uživatele, nebo dáme Prahu
+        if (localStorage.getItem('savedUserCity') === 'true' && localStorage.getItem('defaultCityName')) {
+            mName = localStorage.getItem('defaultCityName');
+        } else {
+            mName = "Praha";
+        }
+    }
+
+    // Získáme souřadnice (lat, lon) pro vybrané město ze seznamu
+    if (typeof mestaData !== 'undefined' && mestaData[mName]) {
+        lat = mestaData[mName].lat;
+        lon = mestaData[mName].lon;
+    } else if (typeof mesta !== 'undefined' && mesta[mName]) {
+        lat = mesta[mName].lat;
+        lon = mesta[mName].lon;
+    }
+
+    // Nastavíme název města do nadpisu v HTML (pokud na stránce existuje)
+    const elNazevMesta = document.getElementById('nazev-mesta');
+    if (elNazevMesta) {
+        elNazevMesta.innerText = mName;
+    }
+
+    // 2. NAČTEME DATA PRO TOTO MĚSTO
+    nactiPocasi(mName);
+
+});
+
+
+    // 3. A DÁLE POKRAČUJE TVŮJ PŮVODNÍ KÓD ZE SNÍMKU:
+    if (typeof databazeTextu !== 'undefined') {
+        // ... tvoje databáze textů ...
 
     // ZAJIŠTĚNÍ DAT PRO VŠECHNY NOVÉ JEVY (A OPRAVA PŘEKLEPŮ)
     if (typeof databazeTextu !== 'undefined') {
