@@ -2320,31 +2320,31 @@ if (hroziJakejkoliSnezeni) {
     }
 }
 
-        // 6. VÝSTRAHA NA VYDATNÝ DEŠŤ (Klíč 'dest', stupně 1 až 4)
-        let maxDestMms = 0;
-        let hroziMrznouciDest = false; 
-        
-        const hroziJakejkoliDest = data.list.slice(0, 8).some(bod => {
-            if (bod.rain && bod.rain['3h']) {
-                if (bod.rain['3h'] > maxDestMms) maxDestMms = bod.rain['3h'];
-            }
-            if (bod.weather && bod.weather[0] && bod.weather[0].id === 511) {
-                hroziMrznouciDest = true;
-            }
-            return bod.weather && bod.weather[0] && ((bod.weather[0].id >= 500 && bod.weather[0].id <= 531) || (bod.weather[0].id >= 300 && bod.weather[0].id <= 321));
-        });
+// 6. VÝSTRAHA NA VYDATNÝ DĚŠŤ (Klíč 'dest', stupně 1 až 4)
+let maxDestMms = 0;
+let hroziMrznouciDest = false;
 
-        	if (hroziJakejkolivDest && !hroziMrznouciDest) {
-		if (maxDestMms >= 100) {
-			odeslatMeteoVystrahu('dest', 4, aktualniMesto);
-		} else if (maxDestMms >= 70 && maxDestMms < 100) {
-			odeslatMeteoVystrahu('dest', 3, aktualniMesto);
-		} else if (maxDestMms >= 50 && maxDestMms < 70) {
-			odeslatMeteoVystrahu('dest', 2, aktualniMesto);
-		} else if (maxDestMms >= 20) { // OPRAVA TADY: Výstraha 1. stupně vyskočí až od 20 mm srážek
-			odeslatMeteoVystrahu('dest', 1, aktualniMesto);
-		}
-	}
+const hroziJakejkoliDest = data.list.slice(0, 8).some(bod => {
+    if (bod.rain && bod.rain['3h']) {
+        if (bod.rain['3h'] > maxDestMms) maxDestMms = bod.rain['3h'];
+    }
+    if (bod.weather && bod.weather[0] && bod.weather[0].id === 511) {
+        hroziMrznouciDest = true;
+    }
+    return bod.weather && bod.weather[0] && ((bod.weather[0].id >= 500 && bod.weather[0].id <= 531) || (bod.weather[0].id >= 300 && bod.weather[0].id <= 321));
+});
+
+if (hroziJakejkoliDest && !hroziMrznouciDest) {
+    if (maxDestMms >= 100) {
+        odeslatMeteoVystrahu('dest', 4, aktualniMesto);
+    } else if (maxDestMms >= 70 && maxDestMms < 100) {
+        odeslatMeteoVystrahu('dest', 3, aktualniMesto);
+    } else if (maxDestMms >= 50 && maxDestMms < 70) {
+        odeslatMeteoVystrahu('dest', 2, aktualniMesto);
+    } else if (maxDestMms >= 20) { // OPRAVA TADY: Výstraha 1. stupně vyskočí až od 20 mm srážek
+        odeslatMeteoVystrahu('dest', 1, aktualniMesto);
+    }
+}
 
         // 7. VÝSTRAHA NA MLHU (Klíč 'mlha', stupně 1 až 4)
         let maxStupenMlhy = 0;
@@ -2361,26 +2361,26 @@ if (hroziJakejkoliSnezeni) {
             odeslatMeteoVystrahu('mlha', maxStupenMlhy, aktualniMesto);
         }
 
-        // 8. SKUTEČNÁ LEDOVKA (Klíč 'ledovka', stupně 1 až 5)
-        if (hroziMrznouciDest) {
-            if (maxDestMms >= 15) {
-                odeslatMeteoVystrahu('ledovka', 5, aktualniMesto);
-            } else if (maxDestMms >= 10 && maxDestMms < 15) {
-                odeslatMeteoVystrahu('ledovka', 4, aktualniMesto);
-            } else if (maxDestMms >= 5 && maxDestMms < 10) {
-                odeslatMeteoVystrahu('ledovka', 3, aktualniMesto);
-            } else if (maxDestMms >= 2 && maxDestMms < 5) {
-                odeslatMeteoVystrahu('ledovka', 2, aktualniMesto);
-            } else {
-                odeslatMeteoVystrahu('ledovka', 1, aktualniMesto);
-            }
-        }
+// 8. SKUTEČNÁ LEDOVKA (Klíč 'ledovka', stupně 1 až 5)
+if (hroziMrznouciDest) {
+    if (maxDestMms >= 15) {
+        odeslatMeteoVystrahu('ledovka', 5, aktualniMesto);
+    } else if (maxDestMms >= 10 && maxDestMms < 15) {
+        odeslatMeteoVystrahu('ledovka', 4, aktualniMesto);
+    } else if (maxDestMms >= 5 && maxDestMms < 10) {
+        odeslatMeteoVystrahu('ledovka', 3, aktualniMesto);
+    } else if (maxDestMms >= 2 && maxDestMms < 5) {
+        odeslatMeteoVystrahu('ledovka', 2, aktualniMesto);
+    } else {
+        odeslatMeteoVystrahu('ledovka', 1, aktualniMesto);
+    }
+}
 
-        // 9. NÁLEDÍ / ZMRAZKY (Klíč 'naledi_zmrazky', stupeň 1)
-        const hroziNaledi = (minimalniTeplota <= 1.5 && (hroziJakejkoliDest || hroziJakejkoliSnezeni)) && !hroziMrznouciDest;
-        if (hroziNaledi) {
-            odeslatMeteoVystrahu('naledi_zmrazky', 1, aktualniMesto);
-        }
+// 9. NÁLEDÍ / ZMRAZKY (Klíč 'naledi_zmrazky', stupeň 1)
+const hroziNaledi = (minimalniTeplota <= 1.5 && (hroziJakejkoliDest || hroziJakejkoliSnezeni)) && !hroziMrznouciDest;
+if (hroziNaledi) {
+    odeslatMeteoVystrahu('naledi_zmrazky', 1, aktualniMesto);
+}
 
     })
     .catch(error => console.error("❌ Chyba předpovědi:", error));
