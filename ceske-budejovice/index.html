@@ -445,67 +445,67 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
     <div id="main-suggestions" style="position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-card); border: 2px solid var(--border-color); border-radius: 8px; max-height: 250px; overflow-y: auto; z-index: 9999; display: none; margin-top: 5px; box-shadow: 0 8px 16px rgba(0,0,0,0.2); box-sizing: border-box;"></div>
 </div>
 
+<div style="position: relative; width: 100%; margin-bottom: 10px; box-sizing: border-box;">
+    <input type="text" id="main-search" placeholder="🔍 Napiš město a vyber ze seznamu..." style="width: 100%; padding: 12px 15px; border: 2px solid var(--border-color); border-radius: 8px; background: var(--bg-color); color: var(--text-main); font-size: 16px; box-sizing: border-box; outline: none; transition: border-color 0.2s;">
+    
+    <div id="main-suggestions" style="position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-card); border: 2px solid var(--border-color); border-radius: 8px; max-height: 250px; overflow-y: auto; z-index: 9999; display: none; margin-top: 5px; box-shadow: 0 8px 16px rgba(0,0,0,0.2); box-sizing: border-box;"></div>
+</div>
+
 <script>
 (function() {
-  // Funkce, která smaže diakritiku A HLAVNĚ ZMĚNÍ POMLČKY NA MEZERY
+  // Pomocná funkce na odstranění diakritiky, mezer A POMLČEK z URL
   function ocastiText(txt) {
     return txt 
-      ? String(txt)
-          .toLowerCase()
-          .normalize("NFD")
-          .replace(/[\u0300-\u036f]/g, "") // Odstraní háčky a čárky
-          .replace(/-/g, " ")             // 🎯 Změní pomlčky z URL na mezery
-          .replace(/\s+/g, " ")           // Sloučí vícenásobné mezery
-          .trim() 
+      ? txt.toLowerCase()
+           .normalize("NFD")
+           .replace(/[\u0300-\u036f]/g, "")
+           .replace(/-/g, " ") // nahradí pomlčky z URL za mezery pro dvouslovná města
+           .trim() 
       : "";
   }
 
-  // === 1. NAČTENÍ MĚSTA Z URL A VEPSÁNÍ DO VYHLEDÁVAČE ===
-  function nactiMestoZUrl() {
-    const pathSegments = window.location.pathname.split('/').filter(p => p && p !== 'web' && p !== 'index.html');
-    let urlMesto = pathSegments.length > 0 ? pathSegments[0] : null;
+  // === 1. PARSOVÁNÍ A NAČTENÍ MĚSTA Z URL ===
+  const pathSegments = window.location.pathname.split('/').filter(p => p && p !== 'web' && p !== 'index.html');
+  let urlMesto = pathSegments.length > 0 ? pathSegments[0] : null;
 
-    if (!urlMesto) {
-      urlMesto = new URLSearchParams(window.location.search).get('mesto');
-    }
-
-    if (typeof mm !== 'undefined' && mm.length > 0) {
-      // Teď už se "rokytnice-nad-jizerou" i "odolena-voda" správně spojí!
-      const nasleMesto = urlMesto 
-        ? mm.find(m => ocastiText(m.n) === ocastiText(urlMesto))
-        : mm[0];
-
-      if (nasleMesto) {
-        if (typeof mName !== 'undefined') mName = nasleMesto.n;
-        if (typeof lat !== 'undefined') lat = nasleMesto.la;
-        if (typeof lon !== 'undefined') lon = nasleMesto.lo;
-
-        // Vepíše název města rovnou do políčka vyhledávače
-        const searchInput = document.getElementById('main-search');
-        if (searchInput) {
-          searchInput.value = nasleMesto.n;
-        }
-
-        const cityEl = document.querySelector('h1') || document.getElementById('city-name');
-        if (cityEl) cityEl.textContent = nasleMesto.n;
-
-        if (typeof nactiPocasi === 'function') {
-          nactiPocasi(nasleMesto.la, nasleMesto.lo, nasleMesto.n);
-        }
-      }
-    }
+  if (!urlMesto) {
+    const urlParams = new URLSearchParams(window.location.search);
+    urlMesto = urlParams.get('mesto');
   }
 
-  // === 2. NAŠEPTÁVAČ PŘI PSANÍ (ZAČÍNAJÍCÍ PÍSMENA + SEŘAZENÍ) ===
-  function inicializujNaseptavac() {
+  if (urlMesto) {
+    window.addEventListener('DOMContentLoaded', () => {
+      if (typeof mm !== 'undefined') {
+        const nasleMesto = mm.find(m => ocastiText(m.n) === ocastiText(urlMesto));
+
+        if (nasleMesto) {
+          if (typeof mName !== 'undefined') mName = nasleMesto.n;
+          if (typeof lat !== 'undefined') lat = nasleMesto.la;
+          if (typeof lon !== 'undefined') lon = nasleMesto.lo;
+          if (typeof sTemp !== 'undefined') sTemp = nasleMesto.t;
+
+          const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
+          if (chkBox) chkBox.checked = false;
+
+          if (typeof nactiPocasi === 'function') {
+            nactiPocasi(nasleMesto.la, nasleMesto.lo, nasleMesto.n);
+          } else if (typeof updateUI === 'function') {
+            updateUI();
+          } else {
+            const cityEl = document.querySelector('h1') || document.getElementById('city-name');
+            if (cityEl) cityEl.textContent = nasleMesto.n;
+          }
+        }
+      }
+    });
+  }
+
+  // === 2. FUNKČNOST VYHLEDÁVAČE / NAŠEPTÁVAČE ===
+  window.addEventListener('DOMContentLoaded', () => {
     const input = document.getElementById('main-search');
     const box = document.getElementById('main-suggestions');
 
     if (!input || !box) return;
-
-    input.addEventListener('focus', function() {
-      this.select();
-    });
 
     input.addEventListener('input', function() {
       const dotaz = ocastiText(this.value);
@@ -516,6 +516,7 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
         return;
       }
 
+      // Hledáme města začínající na zadaný text
       const vysledky = mm
         .filter(m => ocastiText(m.n).startsWith(dotaz))
         .sort((a, b) => a.n.localeCompare(b.n, 'cs'))
@@ -534,6 +535,7 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
         div.style.borderBottom = '1px solid var(--border-color)';
         div.style.color = 'var(--text-main)';
 
+        // Po kliknutí přesměrujeme na URL složku města
         div.addEventListener('click', () => {
           const urlSlug = ocastiText(m.n).replace(/\s+/g, '-');
           window.location.href = `/web/${urlSlug}/`;
@@ -545,22 +547,13 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
       box.style.display = 'block';
     });
 
+    // Zavření našeptávače při kliknutí mimo
     document.addEventListener('click', (e) => {
       if (!input.contains(e.target) && !box.contains(e.target)) {
         box.style.display = 'none';
       }
     });
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      nactiMestoZUrl();
-      inicializujNaseptavac();
-    });
-  } else {
-    nactiMestoZUrl();
-    inicializujNaseptavac();
-  }
+  });
 })();
 </script>
                  <div style="text-align: center; position: relative;">
