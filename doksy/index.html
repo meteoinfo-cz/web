@@ -5,9 +5,8 @@
 <meta name="seznam-wmt" content="MJSxoUABEnAZFjswvy4JZjy6yms6sC35" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Předpověď počasí a aktuální data  pro Doksy | MeteoInfo</title>
-<meta name="description" content="Aktuální předpověď počasí, meteoradar online, srážky a teploty pro město Doksy. Sledujte vývoj počasí na MeteoInfo.">
-<link rel="canonical" href="https://meteoinfo-cz.github.io/web/doksy/" />
+        <title>Předpověď počasí, aktuální informace a meteoradar online | MeteoInfo</title>
+<meta name="description" content="Aktuální předpověď počasí, meteoradar online, srážky a teploty pro města. Sledujte vývoj počasí na MeteoInfo.">
 <meta property="og:site_name" content="MeteoInfo">
 <meta name="apple-mobile-web-app-title" content="MeteoInfo">
 <meta name="application-name" content="MeteoInfo">
@@ -409,9 +408,7 @@
 </div>
 
         <!-- STŘED: Původní nápis s neviditelným textem pro Google -->
-        <a href="/web/" style="text-decoration: none; color: inherit; cursor: pointer; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);">
-  <h1 class="header-center-title" style="margin: 0;">MeteoInfo</h1>
-</a>
+        <h1 class="header-center-title" style="margin: 0; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);">MeteoInfo</h1>
 <h2 style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0;">
 Aktuální předpověď počasí, meteoradar, srážky a teploty pro města online</h2>
         
@@ -446,85 +443,123 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
         <div id="main-suggestions" style="position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-card); border: 2px solid var(--border-color); border-radius: 8px; max-height: 250px; overflow-y: auto; z-index: 9999; display: none; margin-top: 5px; box-shadow: 0 8px 16px rgba(0,0,0,0.2); box-sizing: border-box;"></div>
     </div>
 
-  <script>
+      <script>
 (function() {
-  // === 1. PARSOVÁNÍ MĚSTA Z URL (?mesto=Olomouc nebo /olomouc) ===
+  // === 1. NAČTENÍ MĚSTA Z URL ADRESY (?mesto=Olomouc nebo /olomouc/) ===
   const urlParams = new URLSearchParams(window.location.search);
   let urlMesto = urlParams.get('mesto');
 
+  // Pokud není v otazníku (?mesto=...), zkusíme zjistit, zda není v cestě URL (např. /web/olomouc/)
   if (!urlMesto) {
     const pathSegments = window.location.pathname.split('/').filter(p => p && p !== 'web' && p !== 'index.html');
     if (pathSegments.length > 0) {
-      urlMesto = pathSegments[0];
+      urlMesto = pathSegments[0]; // Vezme složku za /web/
     }
   }
 
-  // === 2. POKUD JE MĚSTO V URL, NASTAVÍME HO ===
+  // Pokud jsme v URL našli název města
   if (urlMesto) {
     urlMesto = urlMesto.charAt(0).toUpperCase() + urlMesto.slice(1).toLowerCase();
 
-    window.addEventListener('DOMContentLoaded', () => {
-      if (typeof mm !== 'undefined') {
-        // Najdeme město v poli mm (ignorujeme diakritiku)
-        const nasleMesto = mm.find(m => 
-          m.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === 
-          urlMesto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-        );
-
-        if (nasleMesto) {
-          // Uložíme do localStorage
-          localStorage.setItem('defaultCityName', nasleMesto.n);
-          localStorage.setItem('defaultCityLat', nasleMesto.la.toString());
-          localStorage.setItem('defaultCityLon', nasleMesto.lo.toString());
-          localStorage.setItem('defaultCityTemp', nasleMesto.t.toString());
-
-          // Přepíšeme globální proměnné
-          if (typeof mName !== 'undefined') mName = nasleMesto.n;
-          if (typeof lat !== 'undefined') lat = nasleMesto.la;
-          if (typeof lon !== 'undefined') lon = nasleMesto.lo;
-          if (typeof sTemp !== 'undefined') sTemp = nasleMesto.t;
-
-          // Odškrtneme výchozí město, protože jde o náhled přes URL
-          const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
-          if (chkBox) chkBox.checked = false;
-
-          // Pokud na stránce existuje funkce pro načtení/překreslení počasí, zavoláme ji
-          if (typeof nactiPocasi === 'function') {
-            nactiPocasi(nasleMesto.la, nasleMesto.lo, nasleMesto.n);
-          } else if (typeof updateUI === 'function') {
-            updateUI();
-          } else {
-            // Pokud žádná funkce neexistuje, obnovíme název v HTML nadpisu přímo
-            const cityEl = document.querySelector('h1') || document.getElementById('city-name');
-            if (cityEl) cityEl.textContent = nasleMesto.n;
-          }
-        }
-      }
-    });
-  } 
-  // === 3. POKUD V URL NIC NENÍ A UŽIVATEL NEMÁ ULOŽENO, DÁME PRAHU ===
-  else {
-    const savedUserCity = localStorage.getItem('user_permanently_saved_home');
-    if (sessionStorage.getItem('search_city_active') === 'true') {
-      window.addEventListener('DOMContentLoaded', () => {
-        const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
-        if (chkBox) chkBox.checked = false;
-        sessionStorage.removeItem('search_city_active');
-      });
-    } else if (savedUserCity !== 'true') {
-      localStorage.setItem('defaultCityName', 'Praha');
-      localStorage.setItem('defaultCityLat', '50.08');
-      localStorage.setItem('defaultCityLon', '14.42');
-      localStorage.setItem('defaultCityTemp', '22');
+    // Najdeme město v databázi 'mm' podle názvu
+    if (typeof mm !== 'undefined') {
+      const nasleMesto = mm.find(m => m.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === urlMesto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""));
       
-      window.addEventListener('DOMContentLoaded', () => {
-        const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
-        if (chkBox) chkBox.checked = true;
-      });
+      if (nasleMesto) {
+        localStorage.setItem('defaultCityName', nasleMesto.n);
+        localStorage.setItem('defaultCityLat', nasleMesto.la.toString());
+        localStorage.setItem('defaultCityLon', nasleMesto.lo.toString());
+        localStorage.setItem('defaultCityTemp', nasleMesto.t.toString());
+        mName = nasleMesto.n; lat = nasleMesto.la; lon = nasleMesto.lo; sTemp = nasleMesto.t;
+      }
     }
   }
-})();
-</script>
+
+  // --- KONTROLA PŘI STARTU STRÁNKY ---
+  const savedUserCity = localStorage.getItem('user_permanently_saved_home');
+  
+  if (sessionStorage.getItem('search_city_active') === 'true') {
+    window.addEventListener('DOMContentLoaded', () => {
+      const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
+      if (chkBox) chkBox.checked = false;
+      sessionStorage.removeItem('search_city_active');
+    });
+  } 
+  // Pokud NENÍ město zadané v URL a uživatel nemá uloženo vlastní, načte se Praha
+  else if (!urlMesto && savedUserCity !== 'true') {
+    localStorage.setItem('defaultCityName', 'Praha');
+    localStorage.setItem('defaultCityLat', '50.08');
+    localStorage.setItem('defaultCityLon', '14.42');
+    localStorage.setItem('defaultCityTemp', '22');
+    
+    mName = "Praha"; lat = 50.08; lon = 14.42; sTemp = 22;
+    
+    window.addEventListener('DOMContentLoaded', () => {
+      const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
+      if (chkBox) chkBox.checked = true;
+    });
+  }
+
+      // --- 2. SLEDOVÁNÍ ZMĚNY CHECKBOXU PRO TRVALÉ ULOŽENÍ VÝCHOZÍHO MĚSTA ---
+      window.addEventListener('DOMContentLoaded', () => {
+        const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
+        if (chkBox) {
+          chkBox.addEventListener('change', function() {
+            if (this.checked) {
+              // Pokud uživatel čtvereček zaškrtne sám, zablokujeme automatický návrat k Praze při F5
+              localStorage.setItem('user_permanently_saved_home', 'true');
+            } else {
+              // Pokud ho odškrtne, web se při F5 vrátí k Praze
+              localStorage.removeItem('user_permanently_saved_home');
+            }
+          });
+        }
+
+        // --- 3. LOGIKA SAMOTNÉHO VYHLEDÁVÁNÍ MĚST ---
+        const mainSearch = document.getElementById('main-search');
+        const mainSuggestions = document.getElementById('main-suggestions');
+        if (!mainSearch || !mainSuggestions) return;
+
+        mainSearch.addEventListener('input', function(e) {
+          const text = e.target.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+          mainSuggestions.innerHTML = '';
+          if (text.length === 0) { mainSuggestions.style.display = 'none'; return; }
+          
+          const nalezenaMesta = mm.filter(m => m.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").startsWith(text));
+          if (nalezenaMesta.length > 0) {
+            mainSuggestions.style.display = 'block';
+            nalezenaMesta.forEach(mesta => {
+              const div = document.createElement('div'); div.innerText = mesta.n;
+              div.style.padding = '12px 15px'; div.style.cursor = 'pointer'; div.style.borderBottom = '1px solid var(--border-inner)'; div.style.color = 'var(--text-main)'; div.style.fontSize = '15px';
+              div.addEventListener('mouseenter', () => div.style.background = 'var(--border-color)');
+              div.addEventListener('mouseleave', () => div.style.background = 'transparent');
+              
+              // KLIKNUTÍ NA MĚSTO V SEZNAMU VYHLEDÁVAČE
+              div.addEventListener('click', () => {
+                // Aktivujeme režim vyhledaného města (odškrtne checkbox po reloadu)
+                sessionStorage.setItem('search_city_active', 'true');
+                
+                // Zapíšeme hodnoty vybraného města do paměti
+                localStorage.setItem('defaultCityName', mesta.n);
+                localStorage.setItem('defaultCityLat', mesta.la.toString());
+                localStorage.setItem('defaultCityLon', mesta.lo.toString());
+                localStorage.setItem('defaultCityTemp', mesta.t.toString());
+
+                mainSearch.value = '';
+                mainSuggestions.style.display = 'none';
+                
+                // Restartujeme stránku pro 100% načtení čistých dat z API
+                location.reload();
+              });
+              mainSuggestions.appendChild(div);
+            });
+          } else { mainSuggestions.style.display = 'none'; }
+        });
+
+        document.addEventListener('click', function(e) { if (e.target !== mainSearch && e.target !== mainSuggestions) mainSuggestions.style.display = 'none'; });
+      });
+    })();
+    </script>
                  <div style="text-align: center; position: relative;">
                     <h2 id="mesto-hlavni-nazev" style="margin: 0 0 5px 0; font-size: 1.4rem; font-weight: bold; display: inline-block;">---</h2>
                     <div id="teplota-aktualni" style="font-size: 3.5rem; font-weight: bold; margin: 5px 0; line-height: 1;">---°C</div>
@@ -1337,8 +1372,8 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
             51: jeZima ? "mrznouci_dest" : "dest", 53: "dest", 55: "dest", 61: "dest", 63: "dest", 65: "dest",
             71: "snih", 73: "snih", 75: "snih", 77: "snih", 80: "prehanky", 81: "prehanky", 82: "prehanky", 95: "bourka"
         };
-        if (kod >= 71 && kod <= 77) return `/web/png/${jeZima ? "snih" : "prehanky"}.png`;
-return `/web/png/${mapovaniDen[kod] || "polojasno"}.png`;
+        if (kod >= 71 && kod <= 77) return `png/${jeZima ? "snih" : "prehanky"}.png`;
+        return `png/${mapovaniDen[kod] || "polojasno"}.png`;
     }
 
     const spoctiMinuty = (textKombinovany) => {
@@ -1381,11 +1416,11 @@ return `/web/png/${mapovaniDen[kod] || "polojasno"}.png`;
     };
 
     if (kod >= 71 && kod <= 77) {
-    if (jeZima) return `/web/png/snih.png`;
-    return `/web/png/${jeNoc ? "destove_prehanky_noc" : "prehanky"}.png`;
-}
+        if (jeZima) return `png/snih.png`;
+        return `png/${jeNoc ? "destove_prehanky_noc" : "prehanky"}.png`;
+    }
 
-return `/web/png/${mapovani[kod] || "polojasno"}.png`;
+    return `png/${mapovani[kod] || "polojasno"}.png`;
 }
 
         function aktualizujHomeCheck() {
