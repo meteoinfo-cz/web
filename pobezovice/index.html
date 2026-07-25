@@ -447,7 +447,12 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
 
 <script>
 (function() {
-  // === 1. ZJISTÍME MĚSTO Z URL ===
+  // Pomocná funkce na odstranění diakritiky a mezer pro URL
+  function ocastiText(txt) {
+    return txt ? txt.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() : "";
+  }
+
+  // === 1. PARSOVÁNÍ A NAČTENÍ MĚSTA Z URL ===
   const pathSegments = window.location.pathname.split('/').filter(p => p && p !== 'web' && p !== 'index.html');
   let urlMesto = pathSegments.length > 0 ? pathSegments[0] : null;
 
@@ -456,14 +461,10 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
     urlMesto = urlParams.get('mesto');
   }
 
-  // === 2. NAČTENÍ DAT PODLE URL BEZ PŘEPISOVÁNÍ LOCALSTORAGE ===
   if (urlMesto) {
     window.addEventListener('DOMContentLoaded', () => {
       if (typeof mm !== 'undefined') {
-        const nasleMesto = mm.find(m => 
-          m.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === 
-          urlMesto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-        );
+        const nasleMesto = mm.find(m => ocastiText(m.n) === ocastiText(urlMesto));
 
         if (nasleMesto) {
           if (typeof mName !== 'undefined') mName = nasleMesto.n;
@@ -486,6 +487,58 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
       }
     });
   }
+
+  // === 2. FUNKČNOST VYHLEDÁVAČE / NAŠEPTÁVAČE ===
+  window.addEventListener('DOMContentLoaded', () => {
+    const input = document.getElementById('main-search');
+    const box = document.getElementById('main-suggestions');
+
+    if (!input || !box) return;
+
+    input.addEventListener('input', function() {
+      const dotaz = ocastiText(this.value);
+      box.innerHTML = '';
+
+      if (dotaz.length < 1 || typeof mm === 'undefined') {
+        box.style.display = 'none';
+        return;
+      }
+
+      // Najdeme až 10 odpovídajících měst
+      const vysledky = mm.filter(m => ocastiText(m.n).includes(dotaz)).slice(0, 10);
+
+      if (vysledky.length === 0) {
+        box.style.display = 'none';
+        return;
+      }
+
+      vysledky.forEach(m => {
+        const div = document.createElement('div');
+        div.textContent = m.n;
+        div.style.padding = '10px 15px';
+        div.style.cursor = 'pointer';
+        div.style.borderBottom = '1px solid var(--border-color)';
+        div.style.color = 'var(--text-main)';
+
+        // Po kliknutí přesměrujeme na URL složku města
+        div.addEventListener('click', () => {
+          const urlSlug = ocastiText(m.n).replace(/\s+/g, '-');
+          window.location.href = `/web/${urlSlug}/`;
+        });
+
+        box.appendChild(div);
+      });
+
+      box.style.display = 'block';
+    });
+
+    // Zavření našeptávače při kliknutí mimo
+    document.addEventListener('click', (e) => {
+      if (!input.contains(e.target) && !box.contains(e.target)) {
+        box.style.display = 'none';
+      }
+    });
+  });
 })();
 </script>
                  <div style="text-align: center; position: relative;">
