@@ -439,7 +439,7 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
     <!-- ======================================================= -->
     <!-- FINÁLNÍ A STABLE NAŠEPTÁVAČ MĚST WITH AUTOMATIC PRAHA    -->
     <!-- ======================================================= -->
-    <div style="position: relative; width: 100%; margin-bottom: 10px; box-sizing: border-box;">
+<div style="position: relative; width: 100%; margin-bottom: 10px; box-sizing: border-box;">
     <input type="text" id="main-search" placeholder="🔍 Napiš město a vyber ze seznamu..." style="width: 100%; padding: 12px 15px; border: 2px solid var(--border-color); border-radius: 8px; background: var(--bg-color); color: var(--text-main); font-size: 16px; box-sizing: border-box; outline: none; transition: border-color 0.2s;">
     
     <div id="main-suggestions" style="position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-card); border: 2px solid var(--border-color); border-radius: 8px; max-height: 250px; overflow-y: auto; z-index: 9999; display: none; margin-top: 5px; box-shadow: 0 8px 16px rgba(0,0,0,0.2); box-sizing: border-box;"></div>
@@ -447,53 +447,54 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
 
 <script>
 (function() {
-  // Pomocná funkce na odstranění diakritiky a mezer pro URL
+  // Pomocná funkce na očistu textu od diakritiky a mezer
   function ocastiText(txt) {
-    return txt ? txt.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() : "";
+    return txt ? String(txt).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() : "";
   }
 
-  // === 1. PARSOVÁNÍ A NAČTENÍ MĚSTA Z URL ===
-  const pathSegments = window.location.pathname.split('/').filter(p => p && p !== 'web' && p !== 'index.html');
-  let urlMesto = pathSegments.length > 0 ? pathSegments[0] : null;
+  // 1. NAČTENÍ DAT PODLE URL ADRESY
+  function nactiDataZUrl() {
+    const pathSegments = window.location.pathname.split('/').filter(p => p && p !== 'web' && p !== 'index.html');
+    let urlMesto = pathSegments.length > 0 ? pathSegments[0] : null;
 
-  if (!urlMesto) {
-    const urlParams = new URLSearchParams(window.location.search);
-    urlMesto = urlParams.get('mesto');
-  }
+    if (!urlMesto) {
+      urlMesto = new URLSearchParams(window.location.search).get('mesto');
+    }
 
-  if (urlMesto) {
-    window.addEventListener('DOMContentLoaded', () => {
-      if (typeof mm !== 'undefined') {
-        const nasleMesto = mm.find(m => ocastiText(m.n) === ocastiText(urlMesto));
+    if (urlMesto && typeof mm !== 'undefined') {
+      const nasleMesto = mm.find(m => ocastiText(m.n) === ocastiText(urlMesto));
 
-        if (nasleMesto) {
-          if (typeof mName !== 'undefined') mName = nasleMesto.n;
-          if (typeof lat !== 'undefined') lat = nasleMesto.la;
-          if (typeof lon !== 'undefined') lon = nasleMesto.lo;
-          if (typeof sTemp !== 'undefined') sTemp = nasleMesto.t;
+      if (nasleMesto) {
+        if (typeof mName !== 'undefined') mName = nasleMesto.n;
+        if (typeof lat !== 'undefined') lat = nasleMesto.la;
+        if (typeof lon !== 'undefined') lon = nasleMesto.lo;
+        if (typeof sTemp !== 'undefined') sTemp = nasleMesto.t;
 
-          const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
-          if (chkBox) chkBox.checked = false;
+        const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
+        if (chkBox) chkBox.checked = false;
 
-          if (typeof nactiPocasi === 'function') {
-            nactiPocasi(nasleMesto.la, nasleMesto.lo, nasleMesto.n);
-          } else if (typeof updateUI === 'function') {
-            updateUI();
-          } else {
-            const cityEl = document.querySelector('h1') || document.getElementById('city-name');
-            if (cityEl) cityEl.textContent = nasleMesto.n;
-          }
+        if (typeof nactiPocasi === 'function') {
+          nactiPocasi(nasleMesto.la, nasleMesto.lo, nasleMesto.n);
+        } else if (typeof updateUI === 'function') {
+          updateUI();
+        } else {
+          const cityEl = document.querySelector('h1') || document.getElementById('city-name');
+          if (cityEl) cityEl.textContent = nasleMesto.n;
         }
       }
-    });
+    }
   }
 
-  // === 2. FUNKČNOST VYHLEDÁVAČE / NAŠEPTÁVAČE ===
-  window.addEventListener('DOMContentLoaded', () => {
+  // 2. INICIALIZACE VYHLEDÁVAČE
+  function initVyhledavac() {
     const input = document.getElementById('main-search');
     const box = document.getElementById('main-suggestions');
 
     if (!input || !box) return;
+
+    // Zabránění duplicitním posluchačům
+    if (input.dataset.aktivni === "true") return;
+    input.dataset.aktivni = "true";
 
     input.addEventListener('input', function() {
       const dotaz = ocastiText(this.value);
@@ -504,7 +505,6 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
         return;
       }
 
-      // Najdeme až 10 odpovídajících měst
       const vysledky = mm.filter(m => ocastiText(m.n).includes(dotaz)).slice(0, 10);
 
       if (vysledky.length === 0) {
@@ -520,7 +520,6 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
         div.style.borderBottom = '1px solid var(--border-color)';
         div.style.color = 'var(--text-main)';
 
-        // Po kliknutí přesměrujeme na URL složku města
         div.addEventListener('click', () => {
           const urlSlug = ocastiText(m.n).replace(/\s+/g, '-');
           window.location.href = `/web/${urlSlug}/`;
@@ -532,13 +531,23 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
       box.style.display = 'block';
     });
 
-    // Zavření našeptávače při kliknutí mimo
     document.addEventListener('click', (e) => {
       if (!input.contains(e.target) && !box.contains(e.target)) {
         box.style.display = 'none';
       }
     });
-  });
+  }
+
+  // Spuštění bez ohledu na to, v jaké fázi načítání se stránka nachází
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      nactiDataZUrl();
+      initVyhledavac();
+    });
+  } else {
+    nactiDataZUrl();
+    initVyhledavac();
+  }
 })();
 </script>
                  <div style="text-align: center; position: relative;">
