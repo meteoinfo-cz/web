@@ -2300,25 +2300,25 @@ function zkontrolujInternetAPosliVystrahy() {
         }
         
 // 5. VÝSTRAHA NA SNĚŽENÍ (Klíč 'snezeni', stupně 1 až 4)
-        let maxSnihMms = 0;
-        const hroziJakejkoliSnezeni = data.list.slice(0, 8).some(bod => {
-            if (bod.snow && bod.snow['3h']) {
-                if (bod.snow['3h'] > maxSnihMms) maxSnihMms = bod.snow['3h'];
-            }
-            return bod.weather && bod.weather[0] && bod.weather[0].id >= 600 && bod.weather[0].id <= 622;
-        });
+let maxSnihMms = 0;
+const hroziJakejkoliSnezeni = data.list.slice(0, 8).some(bod => {
+    if (bod.snow && bod.snow['3h']) {
+        if (bod.snow['3h'] > maxSnihMms) maxSnihMms = bod.snow['3h'];
+    }
+    return bod.weather && bod.weather[0] && bod.weather[0].id >= 600 && bod.weather[0].id <= 622;
+});
 
-        	if (hroziJakejkolivSnezeni) {
-		if (maxSnihMms >= 40) {
-			odeslatMeteoVystrahu('snezeni', 4, aktualniMesto);
-		} else if (maxSnihMms >= 20 && maxSnihMms < 40) {
-			odeslatMeteoVystrahu('snezeni', 3, aktualniMesto);
-		} else if (maxSnihMms >= 10 && maxSnihMms < 20) {
-			odeslatMeteoVystrahu('snezeni', 2, aktualniMesto);
-		} else if (maxSnihMms >= 5) { // Tady uprav ten poslední řádek
-			odeslatMeteoVystrahu('snezeni', 1, aktualniMesto);
-		}
-	}
+if (hroziJakejkoliSnezeni) {
+    if (maxSnihMms >= 40) {
+        odeslatMeteoVystrahu('snezeni', 4, aktualniMesto);
+    } else if (maxSnihMms >= 20 && maxSnihMms < 40) {
+        odeslatMeteoVystrahu('snezeni', 3, aktualniMesto);
+    } else if (maxSnihMms >= 10 && maxSnihMms < 20) {
+        odeslatMeteoVystrahu('snezeni', 2, aktualniMesto);
+    } else if (maxSnihMms >= 5) { // Tady uprav ten poslední řádek
+        odeslatMeteoVystrahu('snezeni', 1, aktualniMesto);
+    }
+}
 
         // 6. VÝSTRAHA NA VYDATNÝ DEŠŤ (Klíč 'dest', stupně 1 až 4)
         let maxDestMms = 0;
