@@ -505,7 +505,13 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
         return;
       }
 
-      const vysledky = mm.filter(m => ocastiText(m.n).includes(dotaz)).slice(0, 10);
+      // 1. Najdeme JEN města, která ZAČÍNAJÍ na zadaný text (.startsWith)
+      // 2. Seřadíme je abecedně (.sort)
+      // 3. Vezmeme prvních 10 výsledků (.slice)
+      const vysledky = mm
+        .filter(m => ocastiText(m.n).startsWith(dotaz))
+        .sort((a, b) => a.n.localeCompare(b.n, 'cs'))
+        .slice(0, 10);
 
       if (vysledky.length === 0) {
         box.style.display = 'none';
