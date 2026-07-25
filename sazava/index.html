@@ -5,8 +5,9 @@
 <meta name="seznam-wmt" content="MJSxoUABEnAZFjswvy4JZjy6yms6sC35" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Předpověď počasí, aktuální informace a meteoradar online | MeteoInfo</title>
-<meta name="description" content="Aktuální předpověď počasí, meteoradar online, srážky a teploty pro města. Sledujte vývoj počasí na MeteoInfo.">
+        <title>Předpověď počasí Sázava | MeteoInfo</title>
+<meta name="description" content="Aktuální předpověď počasí, meteoradar online, srážky a teploty pro město Sázava. Sledujte vývoj počasí na MeteoInfo.">
+<link rel="canonical" href="https://meteoinfo-cz.github.io/web/sazava/" />
 <meta property="og:site_name" content="MeteoInfo">
 <meta name="apple-mobile-web-app-title" content="MeteoInfo">
 <meta name="application-name" content="MeteoInfo">
@@ -408,9 +409,9 @@
 </div>
 
         <!-- STŘED: Původní nápis s neviditelným textem pro Google -->
-        <h1 class="header-center-title" style="margin: 0; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 100; pointer-events: auto;">
-  <a href="https://meteoinfo-cz.github.io/web/" style="color: inherit; text-decoration: none;">MeteoInfo</a>
-</h1>
+        <a href="/web/" style="text-decoration: none; color: inherit; cursor: pointer; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);">
+  <h1 class="header-center-title" style="margin: 0;">MeteoInfo</h1>
+</a>
 <h2 style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0;">
 Aktuální předpověď počasí, meteoradar, srážky a teploty pro města online</h2>
         
@@ -445,134 +446,85 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
         <div id="main-suggestions" style="position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-card); border: 2px solid var(--border-color); border-radius: 8px; max-height: 250px; overflow-y: auto; z-index: 9999; display: none; margin-top: 5px; box-shadow: 0 8px 16px rgba(0,0,0,0.2); box-sizing: border-box;"></div>
     </div>
 
-    <script>
-    (function() {
-      // --- 1. KONTROLA PŘI STARTU STRÁNKY / STISKNUTÍ F5 ---
-      const savedUserCity = localStorage.getItem('user_permanently_saved_home');
-      
-      // Pokud uživatel vybral město přes vyhledávač v této relaci
-      if (sessionStorage.getItem('search_city_active') === 'true') {
-        // Počkáme na načtení HTML a čtvereček natvrdo odškrtneme
-        window.addEventListener('DOMContentLoaded', () => {
+  <script>
+(function() {
+  // === 1. PARSOVÁNÍ MĚSTA Z URL (?mesto=Olomouc nebo /olomouc) ===
+  const urlParams = new URLSearchParams(window.location.search);
+  let urlMesto = urlParams.get('mesto');
+
+  if (!urlMesto) {
+    const pathSegments = window.location.pathname.split('/').filter(p => p && p !== 'web' && p !== 'index.html');
+    if (pathSegments.length > 0) {
+      urlMesto = pathSegments[0];
+    }
+  }
+
+  // === 2. POKUD JE MĚSTO V URL, NASTAVÍME HO ===
+  if (urlMesto) {
+    urlMesto = urlMesto.charAt(0).toUpperCase() + urlMesto.slice(1).toLowerCase();
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (typeof mm !== 'undefined') {
+        // Najdeme město v poli mm (ignorujeme diakritiku)
+        const nasleMesto = mm.find(m => 
+          m.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === 
+          urlMesto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        );
+
+        if (nasleMesto) {
+          // Uložíme do localStorage
+          localStorage.setItem('defaultCityName', nasleMesto.n);
+          localStorage.setItem('defaultCityLat', nasleMesto.la.toString());
+          localStorage.setItem('defaultCityLon', nasleMesto.lo.toString());
+          localStorage.setItem('defaultCityTemp', nasleMesto.t.toString());
+
+          // Přepíšeme globální proměnné
+          if (typeof mName !== 'undefined') mName = nasleMesto.n;
+          if (typeof lat !== 'undefined') lat = nasleMesto.la;
+          if (typeof lon !== 'undefined') lon = nasleMesto.lo;
+          if (typeof sTemp !== 'undefined') sTemp = nasleMesto.t;
+
+          // Odškrtneme výchozí město, protože jde o náhled přes URL
           const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
           if (chkBox) chkBox.checked = false;
-          sessionStorage.removeItem('search_city_active'); // Smažeme dočasný stav pro příští F5
-        });
-      } 
-      // Pokud uživatel nemá trvale uložený domov, vezmeme město ze stránky (nebo záložní Prahu)
-    let strankaMesto = document.getElementById('nazev-mesta')?.innerText;
 
-// Načteme případný parametr za otazníkem (?mesto=brno)
-const urlParams = new URLSearchParams(window.location.search);
-const mestoZQuery = urlParams.get('mesto');
-
-// 1. Zjistíme složku z URL adresy
-const cestaSlozky = window.location.pathname.split('/').filter(Boolean);
-let zisteneMesto = cestaSlozky[cestaSlozky.length - 1];
-
-// Pokud URL končí na podstránku indexu (např. /brno/komari nebo /brno/index.html)
-const indexy = ["komari", "klistata", "suseni-pradla", "astronomicky", "bezecky", "cyklisticky", "prirodni-koupani", "koupani", "vyhrate-auto", "aquaplaning", "psi-index"];
-
-if (indexy.includes(zisteneMesto) && cestaSlozky.length > 1) {
-    zisteneMesto = cestaSlozky[cestaSlozky.length - 2];
-} else if (zisteneMesto && (zisteneMesto.endsWith('.html') || zisteneMesto === 'index.html')) {
-    zisteneMesto = cestaSlozky[cestaSlozky.length - 2];
-}
-
-// 2. Nastavení názvu města s absolutní prioritou pro URL
-if (zisteneMesto && zisteneMesto !== 'web' && zisteneMesto !== 'meteoinfo-cz.github.io') {
-    // Jsme na podstránce města -> VŽDY načteme toto město z URL!
-    let cisteMesto = decodeURIComponent(zisteneMesto);
-    mName = cisteMesto.charAt(0).toUpperCase() + cisteMesto.slice(1);
-} else {
-    // Jsme na hlavní stránce -> načteme uložený domov nebo Prahu
-    if (localStorage.getItem('savedUserCity') === 'true' && localStorage.getItem('defaultCityName')) {
-        mName = localStorage.getItem('defaultCityName');
-    } else {
-        mName = "Sázava";
-    }
-}
-
-// 2. Obsluha zaškrtávátka domova (pouze pro hlavní stránku)
-if (!strankaMesto) {
-    window.addEventListener('DOMContentLoaded', () => {
-        const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
-        if (chkBox) {
-            chkBox.checked = (localStorage.getItem('savedUserCity') === 'true');
-            
-            chkBox.addEventListener('change', (e) => {
-                if (e.target.checked) {
-                    localStorage.setItem('defaultCityName', mName);
-                    localStorage.setItem('savedUserCity', 'true');
-                } else {
-                    localStorage.removeItem('savedUserCity');
-                    localStorage.removeItem('defaultCityName');
-                }
-            });
+          // Pokud na stránce existuje funkce pro načtení/překreslení počasí, zavoláme ji
+          if (typeof nactiPocasi === 'function') {
+            nactiPocasi(nasleMesto.la, nasleMesto.lo, nasleMesto.n);
+          } else if (typeof updateUI === 'function') {
+            updateUI();
+          } else {
+            // Pokud žádná funkce neexistuje, obnovíme název v HTML nadpisu přímo
+            const cityEl = document.querySelector('h1') || document.getElementById('city-name');
+            if (cityEl) cityEl.textContent = nasleMesto.n;
+          }
         }
+      }
     });
-}
-      // --- 2. SLEDOVÁNÍ ZMĚNY CHECKBOXU PRO TRVALÉ ULOŽENÍ VÝCHOZÍHO MĚSTA ---
+  } 
+  // === 3. POKUD V URL NIC NENÍ A UŽIVATEL NEMÁ ULOŽENO, DÁME PRAHU ===
+  else {
+    const savedUserCity = localStorage.getItem('user_permanently_saved_home');
+    if (sessionStorage.getItem('search_city_active') === 'true') {
       window.addEventListener('DOMContentLoaded', () => {
         const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
-        if (chkBox) {
-          chkBox.addEventListener('change', function() {
-            if (this.checked) {
-              // Pokud uživatel čtvereček zaškrtne sám, zablokujeme automatický návrat k Praze při F5
-              localStorage.setItem('user_permanently_saved_home', 'true');
-            } else {
-              // Pokud ho odškrtne, web se při F5 vrátí k Praze
-              localStorage.removeItem('user_permanently_saved_home');
-            }
-          });
-        }
-
-        // --- 3. LOGIKA SAMOTNÉHO VYHLEDÁVÁNÍ MĚST ---
-        const mainSearch = document.getElementById('main-search');
-        const mainSuggestions = document.getElementById('main-suggestions');
-        if (!mainSearch || !mainSuggestions) return;
-
-        mainSearch.addEventListener('input', function(e) {
-          const text = e.target.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
-          mainSuggestions.innerHTML = '';
-          if (text.length === 0) { mainSuggestions.style.display = 'none'; return; }
-          
-          const nalezenaMesta = mm.filter(m => m.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").startsWith(text));
-          if (nalezenaMesta.length > 0) {
-            mainSuggestions.style.display = 'block';
-            nalezenaMesta.forEach(mesta => {
-              const div = document.createElement('div'); div.innerText = mesta.n;
-              div.style.padding = '12px 15px'; div.style.cursor = 'pointer'; div.style.borderBottom = '1px solid var(--border-inner)'; div.style.color = 'var(--text-main)'; div.style.fontSize = '15px';
-              div.addEventListener('mouseenter', () => div.style.background = 'var(--border-color)');
-              div.addEventListener('mouseleave', () => div.style.background = 'transparent');
-              
-              // KLIKNUTÍ NA MĚSTO V SEZNAMU VYHLEDÁVAČE
-              div.addEventListener('click', () => {
-                // Aktivujeme režim vyhledaného města (odškrtne checkbox po reloadu)
-                sessionStorage.setItem('search_city_active', 'true');
-                sessionStorage.setItem('searchedCity', mesta.n);
-                
-                // Zapíšeme hodnoty vybraného města do paměti
-                localStorage.setItem('defaultCityName', mesta.n);
-                localStorage.setItem('defaultCityLat', mesta.la.toString());
-                localStorage.setItem('defaultCityLon', mesta.lo.toString());
-                localStorage.setItem('defaultCityTemp', mesta.t.toString());
-
-                mainSearch.value = '';
-                mainSuggestions.style.display = 'none';
-                
-                // Restartujeme stránku pro 100% načtení čistých dat z API
-                location.reload();
-              });
-              mainSuggestions.appendChild(div);
-            });
-          } else { mainSuggestions.style.display = 'none'; }
-        });
-
-        document.addEventListener('click', function(e) { if (e.target !== mainSearch && e.target !== mainSuggestions) mainSuggestions.style.display = 'none'; });
+        if (chkBox) chkBox.checked = false;
+        sessionStorage.removeItem('search_city_active');
       });
-    })();
-    </script>
+    } else if (savedUserCity !== 'true') {
+      localStorage.setItem('defaultCityName', 'Praha');
+      localStorage.setItem('defaultCityLat', '50.08');
+      localStorage.setItem('defaultCityLon', '14.42');
+      localStorage.setItem('defaultCityTemp', '22');
+      
+      window.addEventListener('DOMContentLoaded', () => {
+        const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
+        if (chkBox) chkBox.checked = true;
+      });
+    }
+  }
+})();
+</script>
                  <div style="text-align: center; position: relative;">
                     <h2 id="mesto-hlavni-nazev" style="margin: 0 0 5px 0; font-size: 1.4rem; font-weight: bold; display: inline-block;">---</h2>
                     <div id="teplota-aktualni" style="font-size: 3.5rem; font-weight: bold; margin: 5px 0; line-height: 1;">---°C</div>
@@ -1095,7 +1047,7 @@ if (!strankaMesto) {
   {"n":"Odolena Voda", "la":50.23, "lo":14.41, "t":21},
   {"n":"Odry", "la":49.66, "lo":17.83, "t":21},
   {"n":"Olejnice", "la":49.57, "lo":16.51, "t":21},
-  {"n":"Sázava", "la":49.59, "lo":17.25, "t":21},
+  {"n":"Olomouc", "la":49.59, "lo":17.25, "t":21},
   {"n":"Oloví", "la":50.24, "lo":12.55, "t":21},
   {"n":"Opava", "la":49.93, "lo":17.90, "t":21},
   {"n":"Opočno", "la":50.26, "lo":16.11, "t":21},
@@ -1133,7 +1085,7 @@ if (!strankaMesto) {
   {"n":"Polná", "la":49.48, "lo":15.71, "t":21},
   {"n":"Postoloprty", "la":50.35, "lo":13.70, "t":21},
   {"n":"Potštát", "la":49.62, "lo":17.65, "t":21},
-  {"n":"Sázava", "la":50.07, "lo":14.43, "t":21},
+  {"n":"Praha", "la":50.07, "lo":14.43, "t":21},
   {"n":"Prachatice", "la":49.01, "lo":13.99, "t":21},
   {"n":"Proseč", "la":49.80, "lo":16.11, "t":21},
   {"n":"Prostějov", "la":49.47, "lo":17.11, "t":21},
@@ -1353,7 +1305,7 @@ if (!strankaMesto) {
 ];
         
 
-        let mName = localStorage.getItem('defaultCityName') || "Sázava";
+        let mName = localStorage.getItem('defaultCityName') || "Olomouc";
         mm.sort((a, b) => a.n.localeCompare(b.n, 'cs'));
         let lat = parseFloat(localStorage.getItem('defaultCityLat')) || 49.59;
         let lon = parseFloat(localStorage.getItem('defaultCityLon')) || 17.25;
@@ -1428,13 +1380,12 @@ if (!strankaMesto) {
         95: "bourka"
     };
 
-if (kod >= 71 && kod <= 77) {
-        if (jeZima) return 'png/snih.png';
-        return jeNoc ? 'png/destove_prehanky_noc.png' : 'png/prehanky.png';
+    if (kod >= 71 && kod <= 77) {
+        if (jeZima) return `png/snih.png`;
+        return `png/${jeNoc ? "destove_prehanky_noc" : "prehanky"}.png`;
     }
 
-    const nazevObrazku = mapovani[kod] || 'polojasno';
-    return `png/${nazevObrazku}.png`;
+    return `png/${mapovani[kod] || "polojasno"}.png`;
 }
 
         function aktualizujHomeCheck() {
@@ -2296,7 +2247,7 @@ document.querySelectorAll('.vystraha-notifikace').forEach(el => el.remove());
 
 function zkontrolujInternetAPosliVystrahy() {
   const apiKey = "042016eb9aaabd813847dc8153bfb03c"; 
-  const aktualniMesto = document.getElementById('nazev-mesta')?.innerText || 'Sázava';
+  const aktualniMesto = document.getElementById('nazev-mesta')?.innerText || 'Olomouc';
 
   const urlAktualni = `https://api.openweathermap.org/data/2.5/weather?q=${aktualniMesto}&appid=${apiKey}&units=metric&lang=cz`;
   const urlPredpoved = `https://api.openweathermap.org/data/2.5/forecast?q=${aktualniMesto}&appid=${apiKey}&units=metric&lang=cz`;
@@ -2350,7 +2301,7 @@ function zkontrolujInternetAPosliVystrahy() {
         
 // 5. VÝSTRAHA NA SNĚŽENÍ (Klíč 'snezeni', stupně 1 až 4)
         let maxSnihMms = 0;
-        const hroziJakejkolivSnezeni = data.list.slice(0, 8).some(bod => {
+        const hroziJakejkoliSnezeni = data.list.slice(0, 8).some(bod => {
             if (bod.snow && bod.snow['3h']) {
                 if (bod.snow['3h'] > maxSnihMms) maxSnihMms = bod.snow['3h'];
             }
@@ -2373,7 +2324,7 @@ function zkontrolujInternetAPosliVystrahy() {
         let maxDestMms = 0;
         let hroziMrznouciDest = false; 
         
-        const hroziJakejkolivDest = data.list.slice(0, 8).some(bod => {
+        const hroziJakejkoliDest = data.list.slice(0, 8).some(bod => {
             if (bod.rain && bod.rain['3h']) {
                 if (bod.rain['3h'] > maxDestMms) maxDestMms = bod.rain['3h'];
             }
@@ -2874,55 +2825,6 @@ zare: {
 // Počkáme, až prohlížeč kompletně načte celou stránku a všechna tlačítka
 document.addEventListener('DOMContentLoaded', () => {
 
-    // 1. NEJDŘÍVE URČÍME MĚSTO Z URL A VYMAŽEME SIK
-    let mName = "Sázava";
-    const cestaSlozky = window.location.pathname.split('/').filter(Boolean);
-    let zisteneMesto = cestaSlozky[cestaSlozky.length - 1];
-
-    const indexy = ["komari", "klistata", "suseni-pradla", "astronomicky", "bezecky", "cyklisticky", "prirodni-koupani", "koupani", "vyhrate-auto", "aquaplaning", "psi-index"];
-
-    if (indexy.includes(zisteneMesto) && cestaSlozky.length > 1) {
-        zisteneMesto = cestaSlozky[cestaSlozky.length - 2];
-    } else if (zisteneMesto && (zisteneMesto.endsWith('.html') || zisteneMesto === 'index.html')) {
-        zisteneMesto = cestaSlozky[cestaSlozky.length - 2];
-    }
-
-    if (zisteneMesto && zisteneMesto !== 'web' && zisteneMesto !== 'meteoinfo-cz.github.io') {
-        let cisteMesto = decodeURIComponent(zisteneMesto);
-        mName = cisteMesto.charAt(0).toUpperCase() + cisteMesto.slice(1);
-        localStorage.removeItem('savedUserCity');
-    } else {
-        if (localStorage.getItem('savedUserCity') === 'true' && localStorage.getItem('defaultCityName')) {
-            mName = localStorage.getItem('defaultCityName');
-        } else {
-            mName = "Sázava";
-        }
-    }
-
-// Získáme souřadnice (lat, lon) pro vybrané město ze seznamu
-if (typeof mestaData !== 'undefined' && mestaData[mName]) {
-    lat = mestaData[mName].lat;
-    lon = mestaData[mName].lon;
-} else if (typeof mesta !== 'undefined' && mesta[mName]) {
-    lat = mesta[mName].lat;
-    lon = mesta[mName].lon;
-}
-
-nactiPocasi();
-
-    const elNazevMesta = document.getElementById('nazev-mesta');
-    if (elNazevMesta) {
-        elNazevMesta.innerText = mName;
-    }
-
-    // 2. AŽ TEĎ ZAVOLÁME NAČTENÍ DAT PRO TOTO MĚSTO
-    nactiPocasi(mName); // (případně tvůj název funkce pro načtení API)
-
-
-    // 3. A DÁLE POKRAČUJE TVŮJ PŮVODNÍ KÓD ZE SNÍMKU:
-    if (typeof databazeTextu !== 'undefined') {
-        // ... tvoje databáze textů ...
-
     // ZAJIŠTĚNÍ DAT PRO VŠECHNY NOVÉ JEVY (A OPRAVA PŘEKLEPŮ)
     if (typeof databazeTextu !== 'undefined') {
         // Opravy starších chyb a překlepů
@@ -3040,15 +2942,5 @@ nactiPocasi();
 </style>
 
 
-<script>
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                if (typeof nactiMesto === 'function') {
-                    nactiMesto('Sázava', 49.87, 14.89, 'vse');
-                } else if (typeof zmenMesto === 'function') {
-                    zmenMesto('Sázava', 49.87, 14.89, 'vse');
-                }
-            }, 100);
-        });
-    </script></body>
+</body>
 </html>
