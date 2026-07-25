@@ -447,13 +447,21 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
 
 <script>
 (function() {
-  // Pomocná funkce na očistu textu od diakritiky a mezer
+  // Funkce, která smaže diakritiku A HLAVNĚ ZMĚNÍ POMLČKY NA MEZERY
   function ocastiText(txt) {
-    return txt ? String(txt).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() : "";
+    return txt 
+      ? String(txt)
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "") // Odstraní háčky a čárky
+          .replace(/-/g, " ")             // 🎯 Změní pomlčky z URL na mezery
+          .replace(/\s+/g, " ")           // Sloučí vícenásobné mezery
+          .trim() 
+      : "";
   }
 
-  // 1. NAČTENÍ DAT PODLE URL ADRESY
-  function nactiDataZUrl() {
+  // === 1. NAČTENÍ MĚSTA Z URL A VEPSÁNÍ DO VYHLEDÁVAČE ===
+  function nactiMestoZUrl() {
     const pathSegments = window.location.pathname.split('/').filter(p => p && p !== 'web' && p !== 'index.html');
     let urlMesto = pathSegments.length > 0 ? pathSegments[0] : null;
 
@@ -461,40 +469,43 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
       urlMesto = new URLSearchParams(window.location.search).get('mesto');
     }
 
-    if (urlMesto && typeof mm !== 'undefined') {
-      const nasleMesto = mm.find(m => ocastiText(m.n) === ocastiText(urlMesto));
+    if (typeof mm !== 'undefined' && mm.length > 0) {
+      // Teď už se "rokytnice-nad-jizerou" i "odolena-voda" správně spojí!
+      const nasleMesto = urlMesto 
+        ? mm.find(m => ocastiText(m.n) === ocastiText(urlMesto))
+        : mm[0];
 
       if (nasleMesto) {
         if (typeof mName !== 'undefined') mName = nasleMesto.n;
         if (typeof lat !== 'undefined') lat = nasleMesto.la;
         if (typeof lon !== 'undefined') lon = nasleMesto.lo;
-        if (typeof sTemp !== 'undefined') sTemp = nasleMesto.t;
 
-        const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
-        if (chkBox) chkBox.checked = false;
+        // Vepíše název města rovnou do políčka vyhledávače
+        const searchInput = document.getElementById('main-search');
+        if (searchInput) {
+          searchInput.value = nasleMesto.n;
+        }
+
+        const cityEl = document.querySelector('h1') || document.getElementById('city-name');
+        if (cityEl) cityEl.textContent = nasleMesto.n;
 
         if (typeof nactiPocasi === 'function') {
           nactiPocasi(nasleMesto.la, nasleMesto.lo, nasleMesto.n);
-        } else if (typeof updateUI === 'function') {
-          updateUI();
-        } else {
-          const cityEl = document.querySelector('h1') || document.getElementById('city-name');
-          if (cityEl) cityEl.textContent = nasleMesto.n;
         }
       }
     }
   }
 
-  // 2. INICIALIZACE VYHLEDÁVAČE
-  function initVyhledavac() {
+  // === 2. NAŠEPTÁVAČ PŘI PSANÍ (ZAČÍNAJÍCÍ PÍSMENA + SEŘAZENÍ) ===
+  function inicializujNaseptavac() {
     const input = document.getElementById('main-search');
     const box = document.getElementById('main-suggestions');
 
     if (!input || !box) return;
 
-    // Zabránění duplicitním posluchačům
-    if (input.dataset.aktivni === "true") return;
-    input.dataset.aktivni = "true";
+    input.addEventListener('focus', function() {
+      this.select();
+    });
 
     input.addEventListener('input', function() {
       const dotaz = ocastiText(this.value);
@@ -505,9 +516,6 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
         return;
       }
 
-      // 1. Najdeme JEN města, která ZAČÍNAJÍ na zadaný text (.startsWith)
-      // 2. Seřadíme je abecedně (.sort)
-      // 3. Vezmeme prvních 10 výsledků (.slice)
       const vysledky = mm
         .filter(m => ocastiText(m.n).startsWith(dotaz))
         .sort((a, b) => a.n.localeCompare(b.n, 'cs'))
@@ -544,15 +552,14 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
     });
   }
 
-  // Spuštění bez ohledu na to, v jaké fázi načítání se stránka nachází
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
-      nactiDataZUrl();
-      initVyhledavac();
+      nactiMestoZUrl();
+      inicializujNaseptavac();
     });
   } else {
-    nactiDataZUrl();
-    initVyhledavac();
+    nactiMestoZUrl();
+    inicializujNaseptavac();
   }
 })();
 </script>
