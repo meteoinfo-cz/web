@@ -436,7 +436,17 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
 
     </header>        <div class="grid-top">
             <div class="card" style="gap: 15px;">
-<script>
+    <!-- ======================================================= -->
+    <!-- FINÁLNÍ A STABLE NAŠEPTÁVAČ MĚST WITH AUTOMATIC PRAHA    -->
+    <!-- ======================================================= -->
+    <div style="position: relative; width: 100%; margin-bottom: 10px; box-sizing: border-box;">
+        <input type="text" id="main-search" placeholder="🔍 Napiš město a vyber ze seznamu..." style="width: 100%; padding: 12px 15px; border: 2px solid var(--border-color); border-radius: 8px; background: var(--bg-color); color: var(--text-main); font-size: 16px; box-sizing: border-box; outline: none; transition: border-color 0.2s;">
+        
+        <!-- Plovoucí tabulka s výsledky vyhledávání -->
+        <div id="main-suggestions" style="position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-card); border: 2px solid var(--border-color); border-radius: 8px; max-height: 250px; overflow-y: auto; z-index: 9999; display: none; margin-top: 5px; box-shadow: 0 8px 16px rgba(0,0,0,0.2); box-sizing: border-box;"></div>
+    </div>
+
+  <script>
 (function() {
   // === 1. PARSOVÁNÍ MĚSTA Z URL (?mesto=Olomouc nebo /olomouc) ===
   const urlParams = new URLSearchParams(window.location.search);
@@ -449,38 +459,42 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
     }
   }
 
-  // Funkce pro odstranění diakritiky (pro snadné vyhledávání)
-  function bezDiakritiky(text) {
-    return text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-  }
-
   // === 2. POKUD JE MĚSTO V URL, NASTAVÍME HO ===
   if (urlMesto) {
     urlMesto = urlMesto.charAt(0).toUpperCase() + urlMesto.slice(1).toLowerCase();
 
     window.addEventListener('DOMContentLoaded', () => {
       if (typeof mm !== 'undefined') {
-        const nasleMesto = mm.find(m => bezDiakritiky(m.n) === bezDiakritiky(urlMesto));
+        // Najdeme město v poli mm (ignorujeme diakritiku)
+        const nasleMesto = mm.find(m => 
+          m.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === 
+          urlMesto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        );
 
         if (nasleMesto) {
+          // Uložíme do localStorage
           localStorage.setItem('defaultCityName', nasleMesto.n);
           localStorage.setItem('defaultCityLat', nasleMesto.la.toString());
           localStorage.setItem('defaultCityLon', nasleMesto.lo.toString());
           localStorage.setItem('defaultCityTemp', nasleMesto.t.toString());
 
+          // Přepíšeme globální proměnné
           if (typeof mName !== 'undefined') mName = nasleMesto.n;
           if (typeof lat !== 'undefined') lat = nasleMesto.la;
           if (typeof lon !== 'undefined') lon = nasleMesto.lo;
           if (typeof sTemp !== 'undefined') sTemp = nasleMesto.t;
 
+          // Odškrtneme výchozí město, protože jde o náhled přes URL
           const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
           if (chkBox) chkBox.checked = false;
 
+          // Pokud na stránce existuje funkce pro načtení/překreslení počasí, zavoláme ji
           if (typeof nactiPocasi === 'function') {
             nactiPocasi(nasleMesto.la, nasleMesto.lo, nasleMesto.n);
           } else if (typeof updateUI === 'function') {
             updateUI();
           } else {
+            // Pokud žádná funkce neexistuje, obnovíme název v HTML nadpisu přímo
             const cityEl = document.querySelector('h1') || document.getElementById('city-name');
             if (cityEl) cityEl.textContent = nasleMesto.n;
           }
@@ -488,6 +502,7 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
       }
     });
   } 
+  // === 3. POKUD V URL NIC NENÍ A UŽIVATEL NEMÁ ULOŽENO, DÁME PRAHU ===
   else {
     const savedUserCity = localStorage.getItem('user_permanently_saved_home');
     if (sessionStorage.getItem('search_city_active') === 'true') {
@@ -508,63 +523,6 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
       });
     }
   }
-
-  // === 3. OBSLUHA NAŠEPTÁVAČE (PSANÍ DO VYHLEDÁVÁNÍ) ===
-  window.addEventListener('DOMContentLoaded', () => {
-    const searchInput = document.getElementById('main-search');
-    const suggestionsBox = document.getElementById('main-suggestions');
-
-    if (!searchInput || !suggestionsBox) return;
-
-    searchInput.addEventListener('input', function() {
-      const dotaz = bezDiakritiky(this.value.trim());
-      suggestionsBox.innerHTML = '';
-
-      if (dotaz.length < 1 || typeof mm === 'undefined') {
-        suggestionsBox.style.display = 'none';
-        return;
-      }
-
-      // Vyfiltrujeme až 10 odpovídajících měst
-      const nalezenaMesta = mm.filter(m => bezDiakritiky(m.n).includes(dotaz)).slice(0, 10);
-
-      if (nalezenaMesta.length === 0) {
-        suggestionsBox.style.display = 'none';
-        return;
-      }
-
-      // Vykreslení položek do nabídky
-      nalezenaMesta.forEach(m => {
-        const div = document.createElement('div');
-        div.style.padding = '10px 15px';
-        div.style.cursor = 'pointer';
-        div.style.borderBottom = '1px solid var(--border-color)';
-        div.textContent = m.n;
-
-        div.addEventListener('click', () => {
-          searchInput.value = m.n;
-          suggestionsBox.style.display = 'none';
-          sessionStorage.setItem('search_city_active', 'true');
-          
-          // Přesměrování na podstránku města nebo načtení
-          const urlName = bezDiakritiky(m.n);
-          window.location.href = `/web/${urlName}`;
-        });
-
-        suggestionsBox.appendChild(div);
-      });
-
-      suggestionsBox.style.display = 'block';
-    });
-
-    // Skrytí nabídky při kliknutí mimo
-    document.addEventListener('click', function(e) {
-      if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
-        suggestionsBox.style.display = 'none';
-      }
-    });
-  });
-
 })();
 </script>
                  <div style="text-align: center; position: relative;">
