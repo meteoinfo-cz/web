@@ -12,6 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="MeteoInfo">
 <meta name="application-name" content="MeteoInfo">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.9.0/suncalc.min.js"></script>
     
     <style>
         :root {
@@ -208,28 +209,30 @@
     color: #fff;
 }
 
-/* Skrytý text nápovědy, který se objeví nad ikonkou */
+.info-tooltip-container {
+    position: relative; /* Zajistí správné ukotvení */
+}
+
 .tooltip-text {
     visibility: hidden;
-    width: 240px;
-    background-color: #1f2937;
-    color: #fff;
+    width: 260px;
+    background-color: #000000 !important;
+    color: #ffffff !important;
     text-align: left;
-    border-radius: 6px;
-    padding: 10px;
+    border-radius: 8px;
+    padding: 12px;
     position: absolute;
-    z-index: 1000;
-    bottom: 130%; /* Zobrazí se nad ikonkou */
+    z-index: 2147483647 !important; /* Maximální možný z-index v prohlížeči */
+    top: 100% !important;           /* Zkusíme ji dát dolů pod ikonku, ať neutíká pod hlavičku */
     right: 0;
     font-size: 12px;
     line-height: 1.4;
-    border: 1px solid #374151;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    border: 2px solid #ffffff !important;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.9) !important;
     opacity: 0;
     transition: opacity 0.2s, visibility 0.2s;
 }
 
-/* Zobrazení bubliny při najetí myší */
 .info-tooltip-container:hover .tooltip-text {
     visibility: visible;
     opacity: 1;
@@ -409,9 +412,7 @@
 </div>
 
         <!-- STŘED: Původní nápis s neviditelným textem pro Google -->
-        <h1 class="header-center-title" style="margin: 0; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);">
-    <a href="https://meteoinfo-cz.github.io/web/" style="color: inherit; text-decoration: none;">MeteoInfo</a>
-</h1>
+        <h1 class="header-center-title" style="margin: 0; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);">MeteoInfo</h1>
 <h2 style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0;">
 Aktuální předpověď počasí, meteoradar, srážky a teploty pro města online</h2>
         
@@ -662,6 +663,9 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
                     </thead>
                     <tbody id="moon-forecast-rows"></tbody>
                 </table>
+<div id="moon-times-box" style="margin-top: 15px; padding-top: 10px; border-top: 1px solid var(--border-inner); text-align: center; font-size: 14px;">
+    🌙 Východ Měsíce: <strong id="modal-moon-rise">--:--</strong> | 🌑 Západ Měsíce: <strong id="modal-moon-set">--:--</strong>
+</div>
             </div>
             <button class="close-btn" onclick="document.getElementById('moon-modal').classList.remove('active')">Zavřít přehled</button>
         </div>
@@ -692,6 +696,10 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
     Tento web bude pravidelně procházet několika aktualizacemi, které pomohou náš web vylepšit a rozšířit.
 </p>
 
+<div style="text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-accent); margin-bottom: 25px; box-sizing: border-box;">
+    <span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 29. 7. 2026</span>
+    <p style="margin: 0; color: var(--text-main); font-size: 15px; line-height: 1.4;">Přidán východ a západ Měsíce, opravené malé chyby.</p>
+</div>
 <div style="text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-accent); margin-bottom: 25px; box-sizing: border-box;">
 	<span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 22. 7. 2026</span>
 	<p style="margin: 0; color: var(--text-main); font-size: 15px; line-height: 1.4;">Přidán meteorologický deník, opravené malé chyby.</p>
@@ -1362,8 +1370,8 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
             51: jeZima ? "mrznouci_dest" : "dest", 53: "dest", 55: "dest", 61: "dest", 63: "dest", 65: "dest",
             71: "snih", 73: "snih", 75: "snih", 77: "snih", 80: "prehanky", 81: "prehanky", 82: "prehanky", 95: "bourka"
         };
-        if (kod >= 71 && kod <= 77) return `/web/png/${jeZima ? "snih" : "prehanky"}.png`;
-return `/web/png/${mapovaniDen[kod] || "polojasno"}.png`;
+        if (kod >= 71 && kod <= 77) return `png/${jeZima ? "snih" : "prehanky"}.png`;
+        return `png/${mapovaniDen[kod] || "polojasno"}.png`;
     }
 
     const spoctiMinuty = (textKombinovany) => {
@@ -1406,11 +1414,11 @@ return `/web/png/${mapovaniDen[kod] || "polojasno"}.png`;
     };
 
     if (kod >= 71 && kod <= 77) {
-    if (jeZima) return `/web/png/snih.png`;
-    return `/web/png/${jeNoc ? "destove_prehanky_noc" : "prehanky"}.png`;
-}
+        if (jeZima) return `png/snih.png`;
+        return `png/${jeNoc ? "destove_prehanky_noc" : "prehanky"}.png`;
+    }
 
-return `/web/png/${mapovani[kod] || "polojasno"}.png`;
+    return `png/${mapovani[kod] || "polojasno"}.png`;
 }
 
         function aktualizujHomeCheck() {
@@ -1775,6 +1783,25 @@ rawPrecipitation = celkoveSrazkyDnes;
       <td style="text-align:right;">${pct.toFixed(0)}%</td>
     </tr>`;
   }
+
+setTimeout(() => {
+    let now = new Date();
+    // Použijeme proměnné se souřadnicemi, které máš na webu (zkontroluj si, jestli se jmenují lat a lon, případně přepiš)
+    let currentLat = typeof lat !== 'undefined' ? lat : 50.0755; 
+    let currentLon = typeof lon !== 'undefined' ? lon : 14.4378;
+
+    let moonTimes = typeof SunCalc !== 'undefined' ? SunCalc.getMoonTimes(now, currentLat, currentLon) : {};
+    
+    let mRise = moonTimes.rise ? moonTimes.rise.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Nelze určit";
+    let mSet = moonTimes.set ? moonTimes.set.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Nelze určit";
+
+    let riseEl = document.getElementById('modal-moon-rise');
+    let setEl = document.getElementById('modal-moon-set');
+    
+    if (riseEl) riseEl.innerText = mRise;
+    if (setEl) setEl.innerText = mSet;
+}, 50);
+
 }
 
         function updateClock() {
