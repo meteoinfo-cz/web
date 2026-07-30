@@ -204,11 +204,6 @@
     transition: background 0.2s, color 0.2s;
 }
 
-.info-tooltip-container:hover .info-box {
-    background-color: #4b5563;
-    color: #fff;
-}
-
 .info-tooltip-container {
     position: relative; /* Zajistí správné ukotvení */
 }
@@ -412,7 +407,9 @@
 </div>
 
         <!-- STŘED: Původní nápis s neviditelným textem pro Google -->
-        <h1 class="header-center-title" style="margin: 0; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);">MeteoInfo</h1>
+        <h1 class="header-center-title" style="margin: 0; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);">
+    <a href="https://meteoinfo-cz.github.io/web/" style="color: inherit; text-decoration: none;">MeteoInfo</a>
+</h1>
 <h2 style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0;">
 Aktuální předpověď počasí, meteoradar, srážky a teploty pro města online</h2>
         
@@ -1370,8 +1367,8 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
             51: jeZima ? "mrznouci_dest" : "dest", 53: "dest", 55: "dest", 61: "dest", 63: "dest", 65: "dest",
             71: "snih", 73: "snih", 75: "snih", 77: "snih", 80: "prehanky", 81: "prehanky", 82: "prehanky", 95: "bourka"
         };
-        if (kod >= 71 && kod <= 77) return `png/${jeZima ? "snih" : "prehanky"}.png`;
-        return `png/${mapovaniDen[kod] || "polojasno"}.png`;
+        if (kod >= 71 && kod <= 77) return `/web/png/${jeZima ? "snih" : "prehanky"}.png`;
+return `/web/png/${mapovaniDen[kod] || "polojasno"}.png`;
     }
 
     const spoctiMinuty = (textKombinovany) => {
@@ -1414,11 +1411,11 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
     };
 
     if (kod >= 71 && kod <= 77) {
-        if (jeZima) return `png/snih.png`;
-        return `png/${jeNoc ? "destove_prehanky_noc" : "prehanky"}.png`;
-    }
+    if (jeZima) return `/web/png/snih.png`;
+    return `/web/png/${jeNoc ? "destove_prehanky_noc" : "prehanky"}.png`;
+}
 
-    return `png/${mapovani[kod] || "polojasno"}.png`;
+return `/web/png/${mapovani[kod] || "polojasno"}.png`;
 }
 
         function aktualizujHomeCheck() {
