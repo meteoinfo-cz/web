@@ -16,7 +16,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-<link rel="manifest" href="site.webmanifest">
+<link rel="manifest" href="/manifest.json">
 <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -114,9 +114,9 @@ header { position: relative; display: flex; justify-content: space-between; padd
 .header-btn { background: var(--bg-inner); border: 1px solid var(--border-inner); color: var(--text-main); padding: 6px 12px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 0.85rem; }
 .header-btn:hover { border-color: var(--text-accent); }
 
-/* --- ROZSEKÁNÍ KLIKATEK DO MŘÍŽKY 2x2 --- */
+/* --- FINÁLNÍ ÚPRAVA PRO MOBIL --- */
 @media (max-width: 900px) {
-  /* Vytvoříme nahoře velký prostor pro nadpis */
+  /* Vytvoříme nahoře prostor pro nadpis */
   header {
     position: relative !important;
     padding-top: 80px !important; 
@@ -126,15 +126,13 @@ header { position: relative; display: flex; justify-content: space-between; padd
   }
   
   /* Nadpis natvrdo přibijeme úplně nahoru */
-.header-center-title {
-  position: static !important;
-  transform: none !important;
-  display: block !important;
-  
-  /* TYTO DVA ŘÁDKY VYSTŘELÍ NADPIS NAHORU V JAKÉMKOLIV BLOKU */
-  order: -9999 !important; 
-  margin: 10px 0 20px 0 !important;
-}
+  .header-center-title {
+    position: static !important;
+    transform: none !important;
+    display: block !important;
+    order: -9999 !important; 
+    margin: 10px 0 20px 0 !important;
+  }
 
   /* Čas a odkazy zůstanou uprostřed */
   .header-left {
@@ -145,26 +143,26 @@ header { position: relative; display: flex; justify-content: space-between; padd
     margin-bottom: 20px !important;
   }
 
-  /* Jdeme přímo po obalu tlačítek bez ohledu na název třídy */
+  /* Obal pro mřížku tlačítek - upravíme na flexbox, aby se vedle sebe vešly tlačítko a ikonka */
   header > div:last-of-type,
   header .header-right,
   header > flex {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important; /* Natvrdo 2 sloupce */
-    gap: 12px !important;                       /* Mezery mezi boxy */
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 10px !important;
     width: 100% !important;
     max-width: 420px !important;
     margin: 15px auto 0 auto !important;
   }
 
-  /* CÍLENÍ NA VŠECHNA TLAČÍTKA A ODKAZY UVNITŘ - vynutí mřížku 2x2 */
+  /* Běžná tlačítka v mřížce */
   header a[class*="-btn"], 
   header button, 
   header .header-btn,
   header > div:last-of-type > *,
   header .header-right > * {
-    grid-column: auto !important; /* Zakáže jim roztahovat se přes celou šířku */
-    width: 100% !important;
     box-sizing: border-box !important;
     display: flex !important;
     justify-content: center !important;
@@ -173,10 +171,40 @@ header { position: relative; display: flex; justify-content: space-between; padd
     margin: 0 !important;
   }
 
-html, body {
-    /* Zmenší celou stránku na 90 % její velikosti (můžeš změnit na 0.85 pro 85 %) */
-    zoom: 0.90 !important;
+  /* --- DISCORD TLAČÍTKO NAHORU --- */
+  header a[href*="discord"],
+  header .discord-btn {
+    width: 100% !important;
+    margin-top: 0 !important;
+  }
 
+  /* --- ZELENÉ TLAČÍTKO STÁHNOUT + VEDLEJŠÍ IKONA (ROZTAŽENÍ DO TVARU ČTVEREČKU/ OBDÉLNÍKU) --- */
+  header a[href*="download"],
+  header a[href*="stahnout"],
+  header .btn-stahnout,
+  header a:first-child,
+  header > div:last-of-type > *:nth-child(2),
+  header .header-right > *:nth-child(2) {
+    position: relative !important;
+    margin-top: -10px !important;    /* Posune je ještě o kousek výše */
+    min-height: 35px !important;     /* Sjednotí výšku s tlačítkem Sledovat web */
+    display: flex !important;
+    width: 44px !important; height: 44px !important;
+    transform: translateY(6px) !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+
+  /* Konkrétně pro tu malou ikonku vedle Stáhnout, aby vypadala jako blok */
+  header > div:last-of-type > *:nth-child(2),
+  header .header-right > *:nth-child(2) {
+    min-width: 44px !important;
+    background-color: rgba(0, 0, 0, 0.0); /* Jemné podbarvení pro tvar čtverečku */
+    border-radius: 8px !important;
+  }
+
+  html, body {
+    zoom: 0.90 !important;
   }
 }
 
@@ -489,6 +517,41 @@ html, body {
   transform: scale(1.08);
 }
 
+CSS
+
+#install-btn + span {
+    position: relative;
+}
+
+#install-btn + span:hover::after {
+    content: "Pokud tuto webovou stránku máte rádi a často jí sledujete, doporučujeme si jí stáhnout. Po kliknutí na tlačítko Stáhnout, se Vám stáhne \"aplikace\" na plochu mobilu, počítače a jiných zařízení. Takže jestli rychle spěcháte, stáhnutí je dobrá volba. Upozorňujeme, že to lze stáhnout na všech prohlížečích (Chrome, Microsoft Edge, atd.), ale na Firefoxu Vám to z důvodu chybějící podpory desktopových PWA aplikací nepůjde.";
+    white-space: pre-line;
+    position: absolute;
+    top: 45%;
+    left: 90px;
+    width: 270px;
+    background-color: #000000;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 12px;
+    font-weight: normal;
+    text-align: left;
+    z-index: 9999;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    opacity: 0;
+    visibility: hidden;
+    animation: fadeInTooltip 0.2s ease forwards;
+}
+
+@keyframes fadeInTooltip {
+    to {
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
     </style>
 </head>
 <body>
@@ -496,27 +559,44 @@ html, body {
          <header style="display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; background: var(--bg-header); border-radius: 12px; position: relative;">
 
         
-        <!-- LEVÁ STRANA: Čas, datum a systémová tlačítka -->
-<div class="header-left" style="display: flex; align-items: center; gap: 8px; position: relative; padding-top: 5px; padding-bottom: 5px;">
-
-    <!-- Discord tlačítko s tvým funkčním odkazem -->
-<a href="https://discord.gg/kHfT6GkKM" target="_blank" class="discord-absolute-btn" rel="noopener noreferrer" title="Přidej se na náš Discord Server">
-  <svg viewBox="0 0 127.14 96.36" style="width: 16px; height: 16px; fill: #ffffff;">
-    <path d="M107.7,8.07A105.15,105.15,0,0,0,77.26,0a77.19,77.19,0,0,0-3.3,6.83A96.67,96.67,0,0,0,53.22,6.83,77.19,77.19,0,0,0,49.88,0,105.15,105.15,0,0,0,19.44,8.07C3.66,31.58-1.95,54.65,1,77.53A105.73,105.73,0,0,0,32,96.36a74.37,74.37,0,0,0,6.73-11,68.21,68.21,0,0,1-10.57-5c1,.74,2,1.51,3,2.26a74.12,74.12,0,0,0,64.78,0c1-.75,2-1.52,3-2.26a68.21,68.21,0,0,1-10.57,5,74.37,74.37,0,0,0,6.73,11,105.73,105.73,0,0,0,31.06-18.83C129.85,50.7,123.32,27.87,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53S36.18,40.36,42.45,40.36,53.83,46,53.83,53,48.72,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.24,60,73.24,53S78.41,40.36,84.69,40.36,96.07,46,96.07,53,91,65.69,84.69,65.69Z"/>
-  </svg>
-</a>
-
-    <!-- Tvůj původní čistý řádek s časem, datem a tlačítky -->
-    <span id="live-time" style="font-size: 1.3rem; font-weight: bold; letter-spacing: 0.5px; color: var(--text-main);">13:57:13</span>
+        <!-- LEVÁ STRANA -->
+<div class="header-left" style="display: flex; flex-direction: column; gap: 4px; position: relative;">
     
-    <div style="font-size: 0.85rem; color: var(--text-muted); display: flex; align-items: center; gap: 5px;">
-        <span id="live-date">9. 7. 2026</span>
-        <span>|</span>
-        <button class="o-webu-btn" onclick="document.getElementById('author-modal').classList.add('active')">O webu</button>
-        <span>|</span>
-        <button class="o-webu-btn" onclick="document.getElementById('updates-modal').classList.add('active')">Aktualizace</button>
-        <span>|</span>
-        <button class="o-webu-btn" id="btn-otevrit-denik" style="font-weight: bold; color: #007bff;" onclick="document.getElementById('okno-denik').classList.add('active')">📖 Meteo deník</button>
+    <!-- 1. ŘÁDEK: Discord a hned vedle něj VELKÉ tlačítko Stáhnout -->
+    <div style="display: flex; align-items: center; gap: 8px;">
+        <!-- Discord tlačítko -->
+        <a href="https://discord.gg/kHfT6GkKM" target="_blank" class="discord-absolute-btn" rel="noopener noreferrer" title="Přidej se na náš Discord Server" style="display: flex; align-items: center;">
+          <svg viewBox="0 0 127.14 96.36" style="width: 18px; height: 18px; fill: #ffffff;">
+            <path d="M107.7,8.07A105.15,105.15,0,0,0,77.26,0a77.19,77.19,0,0,0-3.3,6.83A96.67,96.67,0,0,0,53.22,6.83,77.19,77.19,0,0,0,49.88,0,105.15,105.15,0,0,0,19.44,8.07C3.66,31.58-1.95,54.65,1,77.53A105.73,105.73,0,0,0,32,96.36a74.37,74.37,0,0,0,6.73-11,68.21,68.21,0,0,1-10.57-5c1,.74,2,1.51,3,2.26a74.12,74.12,0,0,0,64.78,0c1-.75,2-1.52,3-2.26a68.21,68.21,0,0,1-10.57,5,74.37,74.37,0,0,0,6.73,11,105.73,105.73,0,0,0,31.06-18.83C129.85,50.7,123.32,27.87,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53S36.18,40.36,42.45,40.36,53.83,46,53.83,53,48.72,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.24,60,73.24,53S78.41,40.36,84.69,40.36,96.07,46,96.07,53,91,65.69,84.69,65.69Z"/>
+          </svg>
+        </a>
+
+        <!-- VĚTŠÍ tlačítko Stáhnout hned vedle Discordu -->
+        <button id="install-btn" style="display: flex; align-items: center; gap: 7px; padding: 6px 14px; background: #2ea043; color: #24292e; border: none; border-radius: 10px; cursor: pointer; font-weight: 700; font-size: 14px; margin-left: 50px;" title="Stáhnout aplikaci">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span>Stáhnout</span>
+        </button>
+
+<span style="background-color: #000; color: #aaa; border: none; width: 20px; height: 20px; border-radius: 4px; font-weight: bold; font-size: 12px; cursor: default; margin-left: 0px; display: inline-flex; align-items: center; justify-content: center;">i</span>
+
+</div>
+
+    <!-- 2. ŘÁDEK: Čas, datum a tlačítka pod tím -->
+    <div style="display: flex; align-items: center; gap: 8px;">
+        <span id="live-time" style="font-size: 1.2rem; font-weight: bold; letter-spacing: 0.5px; color: var(--text-main);">13:12:14</span>
+        <div style="font-size: 0.85rem; color: var(--text-muted); display: flex; align-items: center; gap: 5px;">
+            <span>|</span>
+            <span id="live-date">15. 8. 2026</span>
+            <button class="o-webu-btn" onclick="document.getElementById('author-modal').classList.add('active')">O webu</button>
+            <span>|</span>
+            <button class="o-webu-btn" onclick="document.getElementById('updates-modal').classList.add('active')">Aktualizace</button>
+            <span>|</span>
+            <button class="o-webu-btn" id="btn-otevrit-denik" style="font-weight: bold; color: #007bff;" onclick="document.getElementById('okno-denik').classList.add('active')">📖 Meteo deník</button>
+        </div>
     </div>
 </div>
 
@@ -739,14 +819,16 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
 
                 <div>
                     <h3 style="margin: 5px 0 8px 0; font-size: 1.1rem; color: var(--text-accent);">Vývoj počasí na 3 dny</h3>
-                    <div class="chart-btn-group">
-                        <button id="btn-chart-temp" class="chart-toggle-btn active" onclick="switchChart('temp')">Teplota</button>
-                        <button id="btn-chart-rain" class="chart-toggle-btn" onclick="switchChart('rain')">Srážky</button>
-                        <button id="btn-chart-wind" class="chart-toggle-btn" onclick="switchChart('wind')">Vítr</button>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="meteoChart"></canvas>
-                    </div>
+<div class="chart-btn-group">
+    <button id="btn-chart-temp" class="chart-toggle-btn active" onclick="switchChart('temp')">Teplota</button>
+    <button id="btn-chart-rain" class="chart-toggle-btn" onclick="switchChart('rain')">Srážky</button>
+    <button id="btn-chart-wind" class="chart-toggle-btn" onclick="switchChart('wind')">Vítr</button>
+    <button id="btn-chart-humidity" class="chart-toggle-btn" onclick="switchChart('humidity')">Vlhkost</button>
+    <button id="btn-chart-pressure" class="chart-toggle-btn" onclick="switchChart('pressure')">Tlak</button>
+</div>
+<div class="chart-container">
+    <canvas id="meteoChart"></canvas>
+</div>
                 </div>
             </div>
         </div>
@@ -819,33 +901,43 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
         </p>
 
         <!-- ZAČÁTEK SCROLLOVACÍHO BOXU PRO AKTUALIZACE -->
-        <div style="max-height: 380px; overflow-y: auto; padding-right: 8px; margin-bottom: 20px; scrollbar-width: thin;">
+<div style="max-height: 380px; overflow-y: auto; padding-right: 8px; margin-bottom: 20px; scrollbar-width: thin;">
 
-            <!-- NOVÝ PŘÍSPĚVEK Ze 5. 8. 2026 -->
-            <div style="text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-accent); margin-bottom: 25px; box-sizing: border-box;">
-                <span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 5. 8. 2026</span>
-                <p style="margin: 0; color: var(--text-main); font-size: 15px; line-height: 1.4;">Přidán odkaz na náš Discord server, opraven horní panel na mobilu, změna drobných věcí.</p>
-            </div>
-            <div style="text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-accent); margin-bottom: 25px; box-sizing: border-box;">
-                <span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 29. 7. 2026</span>
-                <p style="margin: 0; color: var(--text-main); font-size: 15px; line-height: 1.4;">Přidán východ a západ Měsíce, opravené malé chyby.</p>
-            </div>
-            <div style="text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-accent); margin-bottom: 25px; box-sizing: border-box;">
-                <span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 22. 7. 2026</span>
-                <p style="margin: 0; color: var(--text-main); font-size: 15px; line-height: 1.4;">Přidán meteorologický deník, opravené malé chyby.</p>
-            </div>
-            <div style="text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-accent); margin-bottom: 25px; box-sizing: border-box;">
-                <span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 18. 7. 2026</span>
-                <p style="margin: 0; color: var(--text-main); font-size: 15px; line-height: 1.4;">Přidáno 10 nových indexů, změna drobných věcí.</p>
-            </div>
-            <div style="text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-accent); margin-bottom: 25px; box-sizing: border-box;">
-                <span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 13. 7. 2026</span>
-                <p style="margin: 0; color: var(--text-main); font-size: 15px; line-height: 1.4;">Přidán zbytek měst z celé ČR, přidáno push upozornění, změna drobných věcí, opravené malé chyby.</p>
-            </div>
-            <div style="text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-accent); margin-bottom: 25px; box-sizing: border-box;">
-                <span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 11. 7. 2026</span>
-                <p style="margin: 0; color: var(--text-main); font-size: 15px; line-height: 1.4;">Přidán vyhledávač měst, přidáno 100 měst, změna drobných věcí, opravené malé chyby.</p>
-            </div>
+    <!-- NOVÝ PŘÍSPĚVEK Ze 15. 8. 2026 -->
+    <div style="text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-accent); margin-bottom: 25px; box-sizing: border-box;">
+        <span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 16. 8. 2026</span>
+        <p style="margin: 0; color: var(--text-main); font-size: 15px; line-height: 1.4;">Přidán tlak a vlhkost do vývoje počasí na 3 dny, přidáno tlačítko Stáhnout, opravené malé chyby, změna drobných věcí.</p>
+    </div>
+
+    <div style="text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-accent); margin-bottom: 25px; box-sizing: border-box;">
+        <span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 5. 8. 2026</span>
+        <p style="margin: 0; color: var(--text-main); font-size: 15px; line-height: 1.4;">Přidán odkaz na náš Discord server, opraven horní panel na mobilu, změna drobných věcí.</p>
+    </div>
+
+    <div style="text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-accent); margin-bottom: 25px; box-sizing: border-box;">
+        <span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 29. 7. 2026</span>
+        <p style="margin: 0; color: var(--text-main); font-size: 15px; line-height: 1.4;">Přidán východ a západ Měsíce, opravené malé chyby.</p>
+    </div>
+
+    <div style="text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-accent); margin-bottom: 25px; box-sizing: border-box;">
+        <span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 22. 7. 2026</span>
+        <p style="margin: 0; color: var(--text-main); font-size: 15px; line-height: 1.4;">Přidán meteorologický deník, opravené malé chyby.</p>
+    </div>
+
+    <div style="text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-accent); margin-bottom: 25px; box-sizing: border-box;">
+        <span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 18. 7. 2026</span>
+        <p style="margin: 0; color: var(--text-main); font-size: 15px; line-height: 1.4;">Přidáno 10 nových indexů, změna drobných věcí.</p>
+    </div>
+
+    <div style="text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-accent); margin-bottom: 25px; box-sizing: border-box;">
+        <span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 13. 7. 2026</span>
+        <p style="margin: 0; color: var(--text-main); font-size: 15px; line-height: 1.4;">Přidán zbytek měst z celé ČR, přidáno push upozornění, změna drobných věcí, opravené malé chyby.</p>
+    </div>
+
+    <div style="text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-accent); margin-bottom: 25px; box-sizing: border-box;">
+        <span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 11. 7. 2026</span>
+        <p style="margin: 0; color: var(--text-main); font-size: 15px; line-height: 1.4;">Přidán vyhledávač měst, přidáno 100 měst, změna drobných věcí, opravené malé chyby.</p>
+    </div>
 
         </div>
         <!-- KONEC SCROLLOVACÍHO BOXU -->
@@ -1643,6 +1735,7 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
         });
 
         // Načteme uložený motiv z paměti, a pokud tam žádný není, nastavíme jako výchozí SVĚTLÝ ('light')
+let curre// Načteme uložený motiv z paměti, a pokud tam žádný není, nastavíme jako výchozí SVĚTLÝ ('light')
 let currentTheme = localStorage.getItem('theme') || 'light';
 document.documentElement.setAttribute('data-theme', currentTheme);
 
@@ -1665,94 +1758,133 @@ function toggleTheme() {
         currentTheme = "dark";
         localStorage.setItem('theme', 'dark'); // Uložíme tmavý motiv do paměti
     }
-    if (myChart) { createOrUpdateChart(); }
+    
+    // Okamžitě aktualizujeme graf při přepnutí motivu
+    if (typeof createOrUpdateChart === 'function') {
+        createOrUpdateChart();
+    }
 }
-        let globHourlyTimes = [], globHourlyTemp = [], globHourlyRain = [], globHourlyWind = [];
-        let myChart = null;
-        let activeChartType = 'temp';
+
+window.globHourlyTimes = []; window.globHourlyTemp = []; window.globHourlyRain = []; window.globHourlyWind = []; window.globHourlyHumidity = []; window.globHourlyUV = []; window.globHourlyPressure = [];
+let myChart = null;
+let activeChartType = 'temp';
 
         function switchChart(type) {
-            activeChartType = type;
-            document.querySelectorAll('.chart-toggle-btn').forEach(b => b.classList.remove('active'));
-            if(type === 'temp') document.getElementById('btn-chart-temp').classList.add('active');
-            if(type === 'rain') document.getElementById('btn-chart-rain').classList.add('active');
-            if(type === 'wind') document.getElementById('btn-chart-wind').classList.add('active');
-            createOrUpdateChart();
-        }
+    activeChartType = type;
+    document.querySelectorAll('.chart-toggle-btn').forEach(b => b.classList.remove('active'));
+    if(type === 'temp') document.getElementById('btn-chart-temp').classList.add('active');
+    if(type === 'rain') document.getElementById('btn-chart-rain').classList.add('active');
+    if(type === 'wind') document.getElementById('btn-chart-wind').classList.add('active');
+    if(type === 'humidity') document.getElementById('btn-chart-humidity').classList.add('active');
+    if(type === 'uv') document.getElementById('btn-chart-uv').classList.add('active');
+    if(type === 'pressure') document.getElementById('btn-chart-pressure').classList.add('active');
+    createOrUpdateChart();
+}
 
-        function createOrUpdateChart() {
-            const canvasEl = document.getElementById('meteoChart');
-            if (!canvasEl) return;
-            const ctx = canvasEl.getContext('2d');
-            const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-            const labelColor = isLight ? '#0f172a' : '#94a3b8';
-            const gridColor = isLight ? '#cbd5e1' : '#1f2937';
-            
-            let dataValues = [], dataLabel = '', lineColor = '', bgColor = '';
-            if(activeChartType === 'temp') {
-                dataValues = globHourlyTemp; dataLabel = 'Teplota (°C)'; lineColor = '#f43f5e'; bgColor = 'rgba(244, 63, 94, 0.1)';
-            } else if(activeChartType === 'rain') {
-                dataValues = globHourlyRain; dataLabel = 'Srážky (mm)'; lineColor = '#38bdf8'; bgColor = 'rgba(56, 189, 248, 0.1)';
-            } else {
-                dataValues = globHourlyWind; dataLabel = 'Rychlost větru (km/h)'; lineColor = '#eab308'; bgColor = 'rgba(234, 179, 8, 0.1)';
+function createOrUpdateChart() {
+    const canvasEl = document.getElementById('meteoChart');
+    if (!canvasEl) return;
+    const ctx = canvasEl.getContext('2d');
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    const labelColor = isLight ? '#000000' : '#ffffff';
+    const gridColor = 'rgba(128, 128, 128, 0.25)';
+
+    let dataValues = [], dataLabel = '', lineColor = '', bgColor = '';
+    
+    // TADY JE FINÁLNÍ PROPOJENÍ GRAFU S DATY NATVRDO:
+    if (activeChartType === 'temp') {
+        dataValues = globHourlyTemp; dataLabel = 'Teplota (°C)'; lineColor = '#f43f5e'; bgColor = 'rgba(244, 63, 94, 0.1)';
+    } else if (activeChartType === 'rain') {
+        dataValues = globHourlyRain; dataLabel = 'Srážky (mm)'; lineColor = '#38bdf8'; bgColor = 'rgba(56, 189, 248, 0.1)';
+    } else if (activeChartType === 'wind') {
+        dataValues = globHourlyWind; dataLabel = 'Rychlost větru (km/h)'; lineColor = '#eab308'; bgColor = 'rgba(234, 179, 8, 0.1)';
+    } else if (activeChartType === 'humidity') {
+        dataValues = globHourlyHumidity; dataLabel = 'Vlhkost (%)'; lineColor = '#a855f7'; bgColor = 'rgba(168, 85, 247, 0.1)';
+    } else if (activeChartType === 'uv') {
+        dataValues = globHourlyUV; dataLabel = 'UV Index'; lineColor = '#f97316'; bgColor = 'rgba(249, 115, 22, 0.1)';
+    } else if (activeChartType === 'pressure') {
+        dataValues = globHourlyPressure; dataLabel = 'Tlak vzduchu (hPa)'; lineColor = '#10b981'; bgColor = 'rgba(16, 185, 129, 0.1)';
+    }
+
+    // Pokud už graf existuje, zničíme ho, aby se mohl vytvořit nový s novými daty
+    if (window.myChart) {
+        window.myChart.destroy();
+    }
+
+    // Kompletní vykreslení grafu pro Chart.js knihovnu
+    window.myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: globHourlyTimes,
+            datasets: [{
+                label: dataLabel,
+                data: dataValues,
+                borderColor: lineColor,
+                backgroundColor: bgColor,
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: { grid: { color: gridColor }, ticks: { color: labelColor } },
+                y: { grid: { color: gridColor }, ticks: { color: labelColor } }
+            },
+            plugins: {
+                legend: { labels: { color: labelColor } }
             }
-            
-            if(myChart) { myChart.destroy(); }
-            myChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: globHourlyTimes,
-                    datasets: [{
-                        label: dataLabel,
-                        data: dataValues,
-                        borderColor: lineColor,
-                        backgroundColor: bgColor,
-                        borderWidth: 2,
-                        fill: true,
-                        tension: 0.3,
-                        pointRadius: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        x: { ticks: { color: labelColor, font: { size: 10 } }, grid: { color: gridColor } },
-                        y: { ticks: { color: labelColor }, grid: { color: gridColor } }
-                    }
-                }
-            });
         }
+    });
+}
 
         async function nactiPocasi() {
-            const container = document.getElementById('forecast-container');
-            const hourlyContainer = document.getElementById('hourly-container');
-            document.getElementById('mesto-hlavni-nazev').innerText = mName;
-            aktualizujHomeCheck();
+    const container = document.getElementById('forecast-container');
+    const hourlyContainer = document.getElementById('hourly-container');
+    document.getElementById('mesto-hlavni-nazev').innerText = mName;
+    aktualizujHomeCheck();
 
-            try {
-                const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,pressure_msl,wind_speed_10m,precipitation,snowfall,weather_code,european_aqi,uv_index&hourly=temperature_2m,weather_code,precipitation,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,wind_speed_10m_max,precipitation_sum,relative_humidity_2m_mean,pressure_msl_mean&forecast_days=14&timezone=auto`;
-                const res = await fetch(url);
-                const d = await res.json();
-                container.innerHTML = "";
-                hourlyContainer.innerHTML = "";
+    try {
+        // 1. OPRAVENO URL: V části hourly= jsme přidali relative_humidity_2m, uv_index a pressure_msl
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,pressure_msl,wind_speed_10m,precipitation,snowfall,weather_code,european_aqi,uv_index&hourly=temperature_2m,weather_code,precipitation,wind_speed_10m,relative_humidity_2m,uv_index,pressure_msl&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,wind_speed_10m_max,precipitation_sum,relative_humidity_2m_mean,pressure_msl_mean&forecast_days=14&timezone=auto`;
+        
+        const res = await fetch(url);
+        const d = await res.json();
+        
+        container.innerHTML = "";
+        hourlyContainer.innerHTML = "";
 
-                const tReal = Math.round(d.current.temperature_2m);
-                document.getElementById('teplota-aktualni').innerHTML = `${tReal > 0 ? '+' : ''}${tReal}°C`;
+        // 2. ULOŽENÍ HODINOVÝCH DAT DO GLOBÁLNÍCH PROMĚNNÝCH PRO GRAF
+        window.globHourlyTimes = d.hourly.time;                  // Časy (osa X)
+        window.globHourlyTemp = d.hourly.temperature_2m;         // Teplota
+        window.globHourlyRain = d.hourly.precipitation;          // Srážky
+        window.globHourlyWind = d.hourly.wind_speed_10m;         // Vítr
+        window.globHourlyHumidity = d.hourly.relative_humidity_2m; // Vlhkost
+        window.globHourlyUV = d.hourly.uv_index;                 // UV index
+        window.globHourlyPressure = d.hourly.pressure_msl;       // Tlak vzduchu
 
-                const tApparent = Math.round(d.current.apparent_temperature);
-                document.getElementById('teplota-pocitova').innerHTML = `Pocitová teplota: ${tApparent > 0 ? '+' : ''}${tApparent}°C`;
+        // Zobrazení aktuálních hodnot na stránce
+        const tReal = Math.round(d.current.temperature_2m);
+        document.getElementById('teplota-aktualni').innerHTML = `${tReal > 0 ? '+' : ''}${tReal}°C`;
 
-                rawWindSpeed = d.current.wind_speed_10m;
-                updateWindDisplay();
+        const tApparent = Math.round(d.current.apparent_temperature);
+        document.getElementById('teplota-pocitova').innerHTML = `Pocitová teplota: ${tApparent > 0 ? '+' : ''}${tApparent}°C`;
 
+        rawWindSpeed = d.current.wind_speed_10m;
+        updateWindDisplay();
 
-                document.getElementById('meteo-vlhkost').innerHTML = `${Math.round(d.current.relative_humidity_2m)} %`;
-                document.getElementById('meteo-tlak').innerHTML = `${Math.round(d.current.pressure_msl)} hPa`;
+        document.getElementById('meteo-vlhkost').innerHTML = `${Math.round(d.current.relative_humidity_2m)} %`;
+        document.getElementById('meteo-tlak').innerHTML = `${Math.round(d.current.pressure_msl)} hPa`;
 
-                rawPrecipitation = d.current.precipitation;
-                rawSnowfall = d.current.snowfall;
+        rawPrecipitation = d.current.precipitation;
+        rawSnowfall = d.current.snowfall;
+
+        // 3. OKAMŽITÉ VYKRESLENÍ/AKTUALIZACE GRAFU PO STAŽENÍ DAT
+        if (typeof createOrUpdateChart === 'function') {
+            createOrUpdateChart();
+        }
 
 // Spočítáme celkový součet srážek od půlnoci
 let celkoveSrazkyDnes = 0;
@@ -1798,14 +1930,20 @@ rawPrecipitation = celkoveSrazkyDnes;
 
 
                     }
-                    if (j % 2 === 0) {
-                        globHourlyTimes.push(fCas);
-                        globHourlyTemp.push(Math.round(d.hourly.temperature_2m[j]));
-                        globHourlyRain.push(d.hourly.precipitation[j]);
-                        globHourlyWind.push(Math.round(d.hourly.wind_speed_10m[j]));
-                    }
-                }
-                createOrUpdateChart();
+                                            if (j % 2 === 0) {
+            globHourlyTimes.push(fCas);
+            globHourlyTemp.push(Math.round(d.hourly.temperature_2m[j]));
+            globHourlyRain.push(d.hourly.precipitation[j]);
+            globHourlyWind.push(Math.round(d.hourly.wind_speed_10m[j]));
+            
+            // OPRAVA: Nové řádky musí být uvnitř této podmínky mezi stejnými závorkami
+            if (d.hourly.relative_humidity_2m) globHourlyHumidity.push(d.hourly.relative_humidity_2m[j]);
+            if (d.hourly.uv_index) globHourlyUV.push(d.hourly.uv_index[j]);
+            if (d.hourly.surface_pressure) globHourlyPressure.push(Math.round(d.hourly.surface_pressure[j]));
+        }
+    }
+    createOrUpdateChart();
+
                 
                 const dny = ["Neděle", "Pondělí", "Úterý", "Středa", "Čtvrtek", "Pátek", "Sobota"];
                 for (let i = 0; i < 14; i++) {
@@ -2031,70 +2169,20 @@ if (!document.getElementById('open-indexes-btn')) {
         else if (temp > 20 && humidity < 60) pradlo = "Vynikající (uschne velmi rychle)";
         else if (temp > 15 && humidity < 70) pradlo = "Dobré (uschne během dne)";
 
-                        // 4. Astronomický index (analyzuje hodinovou předpověď na celou noc: 22:00 - 04:00)
-        let astro = "Zhoršená viditelnost, hvězd bude vidět málo.";
-        
-        try {
-            if (typeof d !== 'undefined' && d.hourly && d.hourly.weather_code) {
-                // Zjistíme aktuální index hodiny v poli
-                const aktualniHodina = new Date().getHours();
-                
-                // Nasbíráme kódy počasí a srážky pro kritické noční hodiny (od 22:00 do 04:00 rána)
-                let nocniKody = [];
-                let nocniSrazky = 0;
-                
-                // Projdeme následujících 8 hodin předpovědi
-                for (let i = 0; i < 8; i++) {
-                    let hIdx = aktualniHodina + i;
-                    // Pokud přejdeme přes půlnoc, Open-Meteo pole pokračuje dál (má 24 nebo více hodin)
-                    if (d.hourly.weather_code[hIdx] !== undefined) {
-                        nocniKody.push(d.hourly.weather_code[hIdx]);
-                        if (d.hourly.precipitation && d.hourly.precipitation[hIdx]) {
-                            nocniSrazky += d.hourly.precipitation[hIdx];
-                        }
-                    }
-                }
+                        // 4. Astronomický index
+let astro = "🌌 Ideální příležitost pro sledování hvězd/planet.";
 
-                // Spočítáme, kolikrát se v noci objeví jaký typ počasí
-                let pocetJasno = 0;
-                let pocetPolojasno = 0;
-                let pocetZle = 0;
-
-                nocniKody.forEach(k => {
-                    if (k === 0) {
-                        pocetJasno++;
-                    } else if (k === 1 || k === 2 || k === 80 || k === 81 || k === 82) {
-                        pocetPolojasno++;
-                    } else if (k === 3 || k === 45 || k === 48 || k === 51 || k === 53 || k === 55 || k === 61 || k === 63 || k === 65 || k === 71 || k === 73 || k === 75 || k === 77 || k === 95) {
-                        pocetZle++;
-                    }
-                });
-
-                // Vyhodnocení podle vašich přesných pravidel pro celou noc
-                if (nocniSrazky > 0.5 || pocetZle >= 3) {
-                    // Pokud bude pršet nebo bude většinu noci zataženo/mlha/bouřka
-                    astro = "🚫 Mraky překrývají prakticky celou oblohu, pozorování hvězd je nemožné.";
-                } else if (pocetJasno > pocetPolojasno && pocetZle === 0) {
-                    // Pokud bude převládat úplně čisté nebe bez mraků
-                    astro = "🌌 Ideální příležitost pro sledování hvězd/planet.";
-                } else {
-                    // Polojasno, slabé přeháňky nebo střídavá oblačnost s měsícem
-                    astro = "☁️ Zhoršená viditelnost, hvězd bude vidět málo.";
-                }
-            } else {
-                // Záložní plán, pokud by hodinová data selhala, podíváme se na aktuální ikonku
-                const oblohaText = document.body.innerText.toLowerCase();
-                if (oblohaText.includes('zataženo') || oblohaText.includes('déšť') || oblohaText.includes('bouřka')) {
-                    astro = "🚫 Mraky překrývají prakticky celou oblohu, pozorování hvězd je nemožné.";
-                } else if (oblohaText.includes('jasno')) {
-                    astro = "🌌 Ideální příležitost pro sledování hvězd/planet.";
-                } else {
-                    astro = "☁️ Zhoršená viditelnost, hvězd bude vidět málo.";
-                }
-            }
-        } catch(e) {
-            astro = "☁️ Zhoršená viditelnost, hvězd bude vidět málo.";
-        }
+try {
+    // Podíváme se na texty na stránce. Pokud tam svítí zataženo nebo déšť, změníme to.
+    const stavWebu = document.body.innerText.toLowerCase();
+    
+    if (stavWebu.includes('zataženo') || stavWebu.includes('déšť') || stavWebu.includes('bouřka') || stavWebu.includes('přeháňky')) {
+        astro = "⛅ Zhoršená viditelnost, hvězd bude vidět málo, nebo žádné.";
+    }
+} catch(e) {
+    console.error("Chyba:", e);
+    astro = "⛅ Zhoršená viditelnost, hvězd bude vidět málo, nebo žádné.";
+}
 
         // 5. Běžecký index
         let beh = "Ideální na běh";
@@ -3125,6 +3213,49 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 </style>
 
+<script>
+    let deferredPrompt;
+    const installBtn = document.getElementById('install-btn');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        if (installBtn) {
+            installBtn.style.display = 'flex'; 
+        }
+    });
+
+    if (installBtn) {
+        installBtn.addEventListener('click', async () => {
+            if (!deferredPrompt) {
+                alert('Aplikace ještě není připravená k instalaci nebo už je nainstalovaná.');
+                return;
+            }
+            
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            
+            if (outcome === 'accepted') {
+                console.log('Uživatel potvrdil instalaci.');
+            }
+            
+            deferredPrompt = null;
+            if (installBtn) {
+                installBtn.style.display = 'none';
+            }
+        });
+    }
+</script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then((reg) => console.log('Service Worker zaregistrován:', reg.scope))
+        .catch((err) => console.log('Chyba při registraci SW:', err));
+    });
+  }
+</script>
 
 </body>
 </html>
