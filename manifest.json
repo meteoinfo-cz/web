@@ -1,0 +1,20 @@
+{
+  "name": "MeteoInfo",
+  "short_name": "Meteo",
+  "start_url": "/web/index.html",
+  "display": "standalone",
+  "background_color": "#0d117",
+  "theme_color": "#0d117",
+  "icons": [
+    {
+      "src": "/web/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/web/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
