@@ -1,6 +1,6 @@
 {
   "name": "MeteoInfo",
-  "short_name": "Meteo",
+  "short_name": "MeteoInfo",
   "start_url": "/web/index.html",
   "display": "standalone",
   "background_color": "#0d117",
