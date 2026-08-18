@@ -3254,7 +3254,7 @@ document.addEventListener('DOMContentLoaded', () => {
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js')
+      navigator.serviceWorker.register('/web/sw.js')
         .then((reg) => console.log('Service Worker zaregistrován:', reg.scope))
         .catch((err) => console.log('Chyba při registraci SW:', err));
     });
