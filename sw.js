@@ -1,4 +1,4 @@
-const CACHE_NAME = 'meteoinfo-v3';
+const CACHE_NAME = 'meteoinfo-v4';
 const urlsToCache = [
   '/web/',
   '/web/index.html',
@@ -33,13 +33,17 @@ self.addEventListener('activate', event => {
   self.clients.claim();
 });
 
-// Načítání ze sítě nebo z cache (Network falling back to cache nebo naopak)
+// Načítání: Nejprve zkusit síť, když není internet, vzít z cache
 self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(event.request)
-      .then(response => {
-        // Pokud je soubor v cache, vrátí ho, jinak se podívá do sítě
-        return response || fetch(event.request);
+    fetch(event.request)
+      .then(networkResponse => {
+        // Pokud síť odpověděla úspěšně, vrátíme čerstvá data
+        return networkResponse;
+      })
+      .catch(() => {
+        // Pokud nejde internet, zkusíme nouzově cache
+        return caches.match(event.request);
       })
   );
 });
