@@ -845,16 +845,51 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
     </div>
 
     <div id="radar-modal" class="modal-overlay">
-        <div class="modal-box" style="max-width: 950px; width: 95%;">
-            <h3 style="margin-top: 0; color: var(--text-accent); text-align: center;">🛰️ Živý srážkový meteoradar (RainViewer)</h3>
-            
-            <div class="radar-box" style="padding: 0; overflow: hidden; border-radius: 8px;">
-                <iframe src="https://www.rainviewer.com/map.html?loc=49.2044,16.0491,5.825044397602779&oC=true&oCS=1&oF=1&c=9&o=83&lm=1&layer=radar&sm=1&sn=1" style="border:0; width:100%; height:50vh;" allowfullscreen></iframe>
-            </div>
-            
-            <button class="close-btn" onclick="document.getElementById('radar-modal').classList.remove('active')">Zavřít radar</button>
+    <div class="modal-box" style="max-width: 950px; width: 95%; max-height: 90vh; overflow-y: auto;">
+        
+        <!-- 1. PRVNÍ MAPA (RainViewer) -->
+        <h3 style="margin-top: 0; color: var(--text-accent); text-align: center;">🛰️ Živý srážkový meteoradar (RainViewer)</h3>
+        
+        <div class="radar-box" style="padding: 0; overflow: hidden; border-radius: 8px;">
+            <iframe src="https://www.rainviewer.com/map.html?loc=49.2044,16.0491,5.825044397602779&oC=true&oCS=1&oF=1&c=9&o=83&lm=1&layer=radar&sm=1&sn=1" style="border:0; width:100%; height:50vh;" allowfullscreen></iframe>
         </div>
+        
+        <!-- 2. DRUHÁ MAPA (Ventusky) -->
+        <div style="margin-top: 25px; border-top: 2px solid rgba(0,0,0,0.1); padding-top: 20px;">
+            <h3 style="color: var(--text-accent); text-align: center; margin-bottom: 15px;">🌡️ Ventusky předpověď počasí</h3>
+            
+            <div style="display:block!important;position:relative!important;max-width:177.797vh!important;margin:auto!important;padding:0!important;border:0!important">
+                <div style="display:block!important;position:relative!important;width:100%!important;height:0!important;box-sizing:content-box!important;margin:0!important;border:0!important;padding:0 0 56.244%!important;left:0!important;top:0!important;right:0!important;bottom:0!important">
+                    <iframe id="ventusky-iframe" src="https://embed.ventusky.com/?p=49.76;15.69;6&l=temperature-2m" style="display:block!important;position:absolute!important;left:0!important;top:0!important;width:100%!important;height:100%!important;margin:0!important;padding:0!important;border:0!important;right:auto!important;bottom:auto!important" loading="lazy"></iframe>
+                </div>
+            </div>
+
+            <!-- 3. INTERAKTIVNÍ VÝBĚR (Pouze ověřené funkční modely) -->
+            <div style="margin-top: 15px; text-align: center;">
+                <p style="font-size: 14px; font-weight: bold; margin-bottom: 8px; color: var(--text-main, #333);">Vybrat meteorologický model:</p>
+                <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;">
+                    <button onclick="zmenModelVentusky('icon')" style="background: #f0f0f0; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; color: #333; border: 1px solid #ccc;">ICON</button>
+                    <button onclick="zmenModelVentusky('gfs')" style="background: #f0f0f0; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; color: #333; border: 1px solid #ccc;">GFS</button>
+                    <button onclick="zmenModelVentusky('gem')" style="background: #f0f0f0; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; color: #333; border: 1px solid #ccc;">GEM</button>
+                    <button onclick="zmenModelVentusky('aladin')" style="background: #f0f0f0; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; color: #333; border: 1px solid #ccc;">Aladin</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ZAVÍRACÍ TLAČÍTKO -->
+        <button class="close-btn" onclick="document.getElementById('radar-modal').classList.remove('active')" style="margin-top: 25px;">Zavřít radar</button>
+        
     </div>
+</div>
+
+<!-- JAVASCRIPT -->
+<script>
+function zmenModelVentusky(model) {
+    var iframe = document.getElementById('ventusky-iframe');
+    var dnes = new Date().toISOString().split('T')[0];
+    iframe.src = "https://embed.ventusky.com/?p=49.76;15.69;6&l=temperature-2m&t=" + dnes + "T12:00&m=" + model;
+}
+</script>
 
     <div id="moon-modal" class="modal-overlay">
         <div class="modal-box">
@@ -908,7 +943,11 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
         <!-- ZAČÁTEK SCROLLOVACÍHO BOXU PRO AKTUALIZACE -->
 <div style="max-height: 380px; overflow-y: auto; padding-right: 8px; margin-bottom: 20px; scrollbar-width: thin;">
 
-    <!-- NOVÝ PŘÍSPĚVEK Ze 15. 8. 2026 -->
+<div style="text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-accent); margin-bottom: 25px; box-sizing: border-box;">
+    <span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 19. 8. 2026</span>
+    <p style="margin: 0; color: var(--text-main); font-size: 15px; line-height: 1.4;">Přidání mapy Ventusky se 4 modely, změna drobných věcí.</p>
+</div>
+
     <div style="text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-accent); margin-bottom: 25px; box-sizing: border-box;">
         <span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 16. 8. 2026</span>
         <p style="margin: 0; color: var(--text-main); font-size: 15px; line-height: 1.4;">Přidán tlak a vlhkost do vývoje počasí na 3 dny, přidáno tlačítko Stáhnout, opravené malé chyby, změna drobných věcí.</p>
