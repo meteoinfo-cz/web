@@ -209,7 +209,6 @@ header { position: relative; display: flex; justify-content: space-between; padd
   }
 }
 
-
         .o-webu-btn {
             background: none;
             border: none;
@@ -586,19 +585,23 @@ CSS
 
 </div>
 
-    <!-- 2. ŘÁDEK: Čas, datum a tlačítka pod tím -->
-    <div style="display: flex; align-items: center; gap: 8px;">
-        <span id="live-time" style="font-size: 1.2rem; font-weight: bold; letter-spacing: 0.5px; color: var(--text-main);">13:12:14</span>
-        <div style="font-size: 0.85rem; color: var(--text-muted); display: flex; align-items: center; gap: 5px;">
-            <span>|</span>
-            <span id="live-date">15. 8. 2026</span>
-            <button class="o-webu-btn" onclick="document.getElementById('author-modal').classList.add('active')">O webu</button>
-            <span>|</span>
-            <button class="o-webu-btn" onclick="document.getElementById('updates-modal').classList.add('active')">Aktualizace</button>
-            <span>|</span>
-            <button class="o-webu-btn" id="btn-otevrit-denik" style="font-weight: bold; color: #007bff;" onclick="document.getElementById('okno-denik').classList.add('active')">📖 Meteo deník</button>
-        </div>
-    </div>
+    <!-- Tlačítko Články posunuté a zvětšené -->
+<div style="margin-top: -20px; margin-left: 350px;">
+<button class="o-webu-btn" style="padding: -px 14px; font-size: 1rem;" onclick="window.location.href='clanky.html'">📰 Články</button>
+</div>
+
+<!-- 2. ŘÁDEK POD TÍM: Čas, datum a Meteo deník -->
+<div style="display: flex; align-items: center; gap: 8px;">
+<span id="live-time" style="font-size: 1.2rem; font-weight: bold; letter-spacing: 0.5px; color: var(--text-main);">13:12:14</span>
+<div style="font-size: 0.85rem; color: var(--text-muted); display: flex; align-items: center; gap: 5px;">
+<span id="live-date">15. 8. 2026</span>
+<button class="o-webu-btn" onclick="document.getElementById('author-modal').classList.add('active')">O webu</button>
+<span>|</span>
+<button class="o-webu-btn" onclick="document.getElementById('updates-modal').classList.add('active')">Aktualizace</button>
+<span>|</span>
+<button class="o-webu-btn" id="btn-openet-denik" style="font-weight: bold; color: #007bff;" onclick="document.getElementById('okno-denik').classList.add('active')">📖 Meteo deník</button>
+</div>
+</div>
 </div>
 
         <!-- STŘED: Původní nápis s neviditelným textem pro Google -->
@@ -938,6 +941,11 @@ function zmenModelVentusky(model) {
 
         <!-- ZAČÁTEK SCROLLOVACÍHO BOXU PRO AKTUALIZACE -->
 <div style="max-height: 380px; overflow-y: auto; padding-right: 8px; margin-bottom: 20px; scrollbar-width: thin;">
+
+<div style="text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-accent); margin-bottom: 25px; box-sizing: border-box;">
+    <span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 20. 8. 2026</span>
+    <p style="margin: 0; color: var(--text-main); font-size: 15px; line-height: 1.4;">Přidání nové sekce Články, změna drobných věcí.</p>
+</div>
 
 <div style="text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-accent); margin-bottom: 25px; box-sizing: border-box;">
     <span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 19. 8. 2026</span>
