@@ -542,7 +542,7 @@ CSS
         <header>
             
             <!-- LEVÁ STRANA -->
-<div class="header-left" style="display: flex; flex-direction: column; gap: 8px; position: relative;">
+<div class="header-left" style="display: flex; flex-direction: column; gap: 10px; position: relative;">
     
     <!-- 1. ŘÁDEK: Discord a hned vedle něj VELKÉ tlačítko Stáhnout -->
     <div style="display: flex; align-items: center; gap: 8px;">
@@ -553,14 +553,13 @@ CSS
           </svg>
         </a>
 
-        
-<span style="background-color: #000; color: #aaa; border: none; width: 20px; height: 20px; border-radius: 4px; font-weight: bold; font-size: 12px; cursor: default; margin-left: 0px; display: inline-flex; align-items: center; justify-content: center;">i</span>
+
 
 </div>
 
     <!-- Tlačítko Články posunuté a zvětšené -->
-<div style="margin-top: -20px; margin-left: 350px;">
-<button class="o-webu-btn" style="padding: -20px 14px; font-size: 1rem;" onclick="window.location.href='clanky.html'">📰 Články</button>
+<div style="margin-top: -10px; margin-left: 350px;">
+<button class="o-webu-btn" style="padding: -px 14px; font-size: 1rem;" onclick="window.location.href='clanky.html'">📰 Články</button>
 </div>
 
 <!-- 2. ŘÁDEK POD TÍM: Čas, datum a Meteo deník -->
@@ -577,15 +576,18 @@ CSS
 </div>
 </div>
 
-        <!-- STŘED: Původní nápis s neviditelným textem pro Google -->
-        <h1 class="header-center-title" style="margin: 0; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);">
-            <a href="https://meteoinfo-cz.github.io/web/" style="text-decoration: none; color: inherit; display: block;">MeteoInfo</a>
-        </h1>
+        <!-- STŘED: Klikací nadpis MeteoInfo -->
+<h1 class="header-center-title" style="margin: 0; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);">
+    <a href="https://meteoinfo-cz.github.io/web/" style="text-decoration: none; color: inherit;">MeteoInfo</a>
+</h1>
+<h2 style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0;">
+Aktuální předpověď počasí, meteoradar, srážky a teploty pro města online</h2>
         
 
         <!-- PRAVÁ STRANA: Krabičky natvrdo vpravo (přesně tam, kde je chceš) -->
         <div style="display: flex; gap: 8px; align-items: center;">
             <button class="header-btn" onclick="document.getElementById('radar-modal').classList.add('active')">☄️ Meteoradar</button>
+            <button id="moon-trigger-btn" class="header-btn" onclick="document.getElementById('moon-modal').classList.add('active')"> Měsíc: 🌓
             <button id="theme-button" class="header-btn" onclick="toggleTheme()" style="font-size: 1.1rem; padding: 4px 10px;">🌙</button>
 
 
