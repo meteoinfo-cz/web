@@ -1,4 +1,4 @@
-const CACHE_NAME = 'meteoinfo-v5';
+const CACHE_NAME = 'meteoinfo-v6';
 const urlsToCache = [
   '/web/',
   '/web/index.html',
