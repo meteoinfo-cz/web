@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Články - MeteoInfo</title>
+    <title>Blíží se výrazné zatmění Měsíce - MeteoInfo</title>
 <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png">
@@ -500,13 +500,48 @@ header { position: relative; display: flex; justify-content: space-between; padd
   transform: scale(1.08);
 }
 
+CSS
+
+#install-btn + span {
+    position: relative;
+}
+
+#install-btn + span:hover::after {
+    content: "Pokud tuto webovou stránku máte rádi a často jí sledujete, doporučujeme si jí stáhnout. Po kliknutí na tlačítko Stáhnout, se Vám stáhne \"aplikace\" na plochu mobilu, počítače a jiných zařízení. Takže jestli rychle spěcháte, stáhnutí je dobrá volba. Upozorňujeme, že to lze stáhnout na všech prohlížečích (Chrome, Microsoft Edge, atd.), ale na Firefoxu Vám to z důvodu chybějící podpory desktopových PWA aplikací nepůjde.";
+    white-space: pre-line;
+    position: absolute;
+    top: 45%;
+    left: 90px;
+    width: 270px;
+    background-color: #000000;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 12px;
+    font-weight: normal;
+    text-align: left;
+    z-index: 9999;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    opacity: 0;
+    visibility: hidden;
+    animation: fadeInTooltip 0.2s ease forwards;
+}
+
+@keyframes fadeInTooltip {
+    to {
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
     </style>
 </head>
 <body>
     <div class="container"> 
         <header>
             
-             <!-- LEVÁ STRANA -->
+            <!-- LEVÁ STRANA -->
 <div class="header-left" style="display: flex; flex-direction: column; gap: 10px; position: relative;">
     
     <!-- 1. ŘÁDEK: Discord a hned vedle něj VELKÉ tlačítko Stáhnout -->
@@ -567,45 +602,66 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
 </div>
         </header>
 
-        <!-- OBSAH STRÁNKY S ČLÁNKY -->
-<main class="card" style="margin-top: 20px;">
-    <h2 style="font-size: 2rem; color: var(--text-accent);">📰 Články a novinky</h2>
-    <p>V této sekci budou psány různé články a novinky o počasí, astronomii a dalším.</p>
+<!-- CELÝ ČLÁNEK PŘÍMO NA STRÁNCE -->
+<main class="card" style="margin-top: 20px; background: var(--bg-card); border: 1px solid var(--border-inner); border-radius: 12px; padding: 35px;">
+    <h2 style="font-size: 2rem; color: var(--text-accent); margin-top: 0; margin-bottom: 10px;">Blíží se výrazné zatmění Měsíce</h2>
+    <div style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 30px;">📅 22. srpna 2026</div>
 
-<!-- NOVÝ ČLÁNEK O ZATMĚNÍ MĚSÍCE -->
-<div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner); padding: 20px; border-radius: 12px;">
-    <span style="color: var(--text-muted); font-size: 0.85rem;">📅 22. srpna 2026</span>
-    <h3 style="margin: 10px 0; font-size: 1.4rem;">
-        <a href="zatemeni-mesice.html" style="color: var(--text-accent); text-decoration: none;">Blíží se výrazné zatmění Měsíce</a>
-    </h3>
-    <p style="color: var(--text-main); margin-bottom: 15px;">
-        Už za necelý týden nastane v Česku a po celém světě zatmění Měsíce. I přes to, že půjde o částečné zatmění, bude zakryto až 93% Měsíce...
+    <p style="margin-bottom: 20px; font-size: 1.05rem;">
+        Už za necelý týden nastane v Česku a po celém světě zatmění Měsíce. Jelikož minulý rok jsme mohli vidět úplné zatmění Měsíce, tak letos to bude pouze částečné. I přesto ale bude zakryto stínem naší planety až 93% Měsíce.
     </p>
-    <a href="blizi-se-vyrazne-zatmeni-mesice.html" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">číst celý článek →</a>
-</div>
 
-    <!-- NOVÝ ČLÁNEK O BOUŘKÁCH -->
-    <div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner);">
-        <span style="color: var(--text-muted); font-size: 0.85rem;">📅 21. srpna 2026</span>
-        <h3 style="margin: 10px 0; font-size: 1.4rem;">
-            <a href="hrozi-velmi-silne-bourky.html" style="color: var(--text-accent); text-decoration: none;">Hrozí až velmi silné bouřky, hlavním rizikem bude vítr a srážky</a>
-        </h3>
-        <p style="color: var(--text-main); margin-bottom: 15px;">
-            Česko opět čeká další bouřlivý den. Zatímco včera bouřky řádily hlavně na Moravě a ve Slezsku...
-        </p>
-        <a href="hrozi-velmi-silne-bourky.html" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek →</a>
+    <!-- OBRÁZEK MĚSÍCE -->
+    <div style="text-align: center; margin: 30px 0;">
+        <div style="display: inline-block; max-width: 80%; width: 100%; border: 1px solid var(--border-inner); border-radius: 10px; overflow: hidden; background: var(--bg-body); text-align: left;">
+            <img src="mesic.jpg" alt="Zatmění Měsíce" style="width: 100%; display: block;">
+            <div style="padding: 10px 15px; font-size: 0.85rem; color: var(--text-muted);">
+                Ilustrační pohled na Měsíc.
+            </div>
+        </div>
     </div>
 
-    <!-- STARŠÍ ČLÁNEK (DOLE) -->
-    <div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner);">
-        <span style="color: var(--text-muted); font-size: 0.85rem;">📅 20. srpna 2026</span>
-        <h3 style="margin: 10px 0; font-size: 1.4rem;">
-            <a href="jak-vznikl-web.html" style="color: var(--text-accent); text-decoration: none;">Jak a proč tato stránka vznikla?</a>
-        </h3>
-        <p style="color: var(--text-main); margin-bottom: 15px;">
-            Vítám vás v této sekci, kde budou psány články o počasí, astronomii a dalším. Přečtěte si, jak vznikl projekt MeteoInfo...
-        </p>
-        <a href="jak-vznikl-web.html" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek →</a>
+    <p style="margin-bottom: 20px; font-size: 1.05rem;">
+        Zatímco minulý rok jsme mohli pozorovat zatmění Měsíce po západu Slunce, tak letos to bude naopak a zatmění budeme moci sledovat před východem Slunce.
+    </p>
+
+    <p style="margin-bottom: 20px; font-size: 1.05rem;">
+        Připomeňme si, že zatmění Měsíce vzniká tehdy, když je Měsíc ve fázi úplňku a Slunce, Země a Měsíc, se nacházejí v jedné přímce a sluneční záření nedopadá na Měsíc (tedy zakryjeme ho my naší planetou a vytvoříme stín na Měsíci).
+    </p>
+
+    <p style="margin-bottom: 20px; font-size: 1.05rem;">
+        Zatmění Měsíce začne v pátek 28.8.2026 ve 4:33 SELČ, kdy Měsíc začne vcházet do zemského stínu. Maximální fáze nastane v 6:12 SELČ, kdy bude zakryto až 93% Měsíce.
+    </p>
+
+    <p style="margin-bottom: 20px; font-size: 1.05rem;">
+        Zatmění Měsíce budeme moci pozorovat nad jihozápadním obzorem, kde bude i postupně zapadat. Například ale v Praze už bude Měsíc pod obzorem v 6:17 SELČ. Na některých místech (například v Opavě) už bude Měsíc zapadat v 6:02 SELČ a maximální fáze zde bude probíhat pod obzorem.
+    </p>
+
+    <!-- MAPA ZÁPADU MĚSÍCE -->
+    <div style="text-align: center; margin: 30px 0;">
+        <div style="display: inline-block; max-width: 80%; width: 100%; border: 1px solid var(--border-inner); border-radius: 10px; overflow: hidden; background: var(--bg-body); text-align: left;">
+            <img src="zapad-mesic.png" alt="Mapa západu Měsíce" style="width: 100%; object-fit: cover; object-position: top; display: block;">
+            <div style="padding: 10px 15px; font-size: 0.85rem; color: var(--text-muted);">
+                Mapa západu Měsíce. Hlavně ve východní polovině bude bohužel probíhat maximum pod obzorem.
+            </div>
+        </div>
+    </div>
+
+    <p style="margin-bottom: 20px; font-size: 1.05rem;">
+        Oproti zatmění Slunce, kde je potřeba speciální vybavení na pozorování, není na zatmění Měsíce potřeba žádné vybavení. Můžete úkaz pozorovat pouhým okem. Pozorování si ale můžete i vylepšit, například vzít si menší dalekohled.
+    </p>
+
+    <p style="margin-bottom: 20px; font-size: 1.05rem;">
+        Je ale potřeba si najít místo, kde bude nenarušený výhled na jihozápadní obzor, protože zatmění Měsíce se bude konat těsně nad obzorem. Doporučuji vyjet na vyvýšená místa anebo na hory.
+    </p>
+
+    <p style="margin-bottom: 20px; font-size: 1.05rem;">
+        Také dost záleží, jestli nám pozorování dovolí počasí. Zatím to vypadá, že nejvíce oblačnosti bude na západě Česka a na východě by na některých místech mohla panovat i vysoká oblačnost. Předpovědi se ale mohou ještě hodně měnit.
+    </p>
+</main>
+
+    <div style="margin-top: 30px;">
+        <a href="clanky.html" style="color: var(--text-accent); text-decoration: none; font-weight: bold;">← Zpět na seznam článků</a>
     </div>
 </main>
 
