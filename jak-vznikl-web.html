@@ -665,107 +665,22 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
             Sdílej tento článek!
         </div>
 
-        <!-- Samotná tlačítka -->
-        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-            <!-- Like (změněné ID pro tento článek) -->
-            <button id="like-btn-bourky" onclick="pridejLikeBourky()" style="background: var(--bg-main, #f1f3f5); border: 1px solid var(--border-inner, #dcedf2); padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 700; color: #e03131; display: inline-flex; align-items: center; gap: 5px;">
-                ❤️ <span id="like-count-bourky">0</span>
-            </button>
+<div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
+    <!-- Facebook -->
+    <a href="https://www.facebook.com/sharer/sharer.php?u=" target="_blank" id="share-fb" style="background: var(--bg-main, #f1f3f5); border: 1px solid var(--border-inner, #dcedf2); padding: 6px 12px; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 700; color: #1877F2; display: inline-flex; align-items: center; gap: 5px;">
+        📘 Facebook
+    </a>
 
-<!-- Facebook -->
-        <a href="https://www.facebook.com/sharer/sharer.php?u=" target="_blank" id="share-fb" style="background: var(--bg-main, #f1f3f5); border: 1px solid var(--border-inner, #dcedf2); padding: 6px 12px; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 700; color: #1877F2; display: inline-flex; align-items: center; gap: 5px;">
-            📘 Facebook
-        </a>
+    <!-- WhatsApp -->
+    <a href="https://api.whatsapp.com/send?text=Přečti%20si%20tento%20článek%20na%20MeteoInfo!" target="_blank" style="background: var(--bg-main, #f1f3f5); border: 1px solid var(--border-inner, #dcedf2); padding: 6px 12px; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 700; color: #25d366; display: inline-flex; align-items: center; gap: 5px;">
+        💬 WhatsApp
+    </a>
 
-        <!-- WhatsApp -->
-        <a href="https://api.whatsapp.com/send?text=Přečti%20si%20tento%20článek%20na%20MeteoInfo!" target="_blank" style="background: var(--bg-main, #f1f3f5); border: 1px solid var(--border-inner, #dcedf2); padding: 6px 12px; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 700; color: #25d366; display: inline-flex; align-items: center; gap: 5px;">
-            💬 WhatsApp
-        </a>
-
-        <!-- X (Twitter) -->
-        <a href="https://twitter.com/intent/tweet?text=Skvělý%20článek%20na%20MeteoInfo!" target="_blank" style="background: var(--bg-main, #f1f3f5); border: 1px solid var(--border-inner, #dcedf2); padding: 6px 12px; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 700; color: var(--text-accent, #000); display: inline-flex; align-items: center; gap: 5px;">
-            𝕏 X
-        </a>
-    </div>
+    <!-- X (Twitter) -->
+    <a href="https://twitter.com/intent/tweet?text=Přečti%20si%20tento%20článek%20na%20MeteoInfo!" target="_blank" style="background: var(--bg-main, #f1f3f5); border: 1px solid var(--border-inner, #dcedf2); padding: 6px 12px; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 700; color: var(--text-accent, #000); display: inline-flex; align-items: center; gap: 5px;">
+        𝕏 X
+    </a>
 </div>
-
-<!-- JAVASCRIPT S FIREBASE PROPOJENÍM -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getFirestore, doc, getDoc, setDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-  // Tvoje reálné Firebase nastavení z projektu MeteoInfo
-  const firebaseConfig = {
-    apiKey: "AIzaSyBPDqKfL6B_Zw9fmSHXf0CoGkISQAMQzaM",
-    authDomain: "metoinfo-88f14.firebaseapp.com",
-    projectId: "metoinfo-88f14",
-    storageBucket: "metoinfo-88f14.firebasestorage.app",
-    messagingSenderId: "473399085906",
-    appId: "1:473399085906:web:e42861697ae24fb96b488b"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-
-  const storageKeyBourky = 'like_hrozici_bourky';
-  const docRef = doc(db, "lajky", "bourky");
-
-  // Načtení počtu lajků z Firebase při otevření stránky
-  async function nactiLike() {
-    try {
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        document.getElementById("like-count-bourky").innerText = docSnap.data().pocet || 0;
-      } else {
-        await setDoc(docRef, { pocet: 0 });
-      }
-    } catch (e) {
-      console.error("Chyba při načítání: ", e);
-    }
-
-    // Zkontroluje, jestli už uživatel lajkoval z tohoto prohlížeče
-    if (localStorage.getItem(storageKeyBourky + '_zapsano') === 'true') {
-      zamknoutTlacitkoBourky();
-    }
-  }
-
-  // Funkce po kliknutí na srdíčko
-  window.pridejLikeBourky = async function() {
-    if (localStorage.getItem(storageKeyBourky + '_zapsano') === 'true') {
-      alert("Tento článek už se ti líbil! Z jednoho prohlížeče lze hlasovat jen jednou.");
-      return;
-    }
-
-    try {
-      // Přičte +1 v databázi ve Firebase
-      await updateDoc(docRef, {
-        pocet: increment(1)
-      });
-
-      let span = document.getElementById('like-count-bourky');
-      let novyPocet = parseInt(span.textContent, 10) + 1;
-      span.textContent = novyPocet;
-
-      localStorage.setItem(storageKeyBourky + '_zapsano', 'true');
-      zamknoutTlacitkoBourky();
-    } catch (e) {
-      console.error("Chyba při ukládání lajku: ", e);
-    }
-  }
-
-  function zamknoutTlacitkoBourky() {
-    const btn = document.getElementById('like-btn-bourky');
-    btn.style.opacity = "0.7";
-    btn.style.cursor = "default";
-  }
-
-  window.kopirujOdkaz = function() {
-    navigator.clipboard.writeText(window.location.href);
-  }
-
-  // Spustit při načtení
-  nactiLike();
-</script>
 
 <!-- VELKÉ OKNO METEO DENÍKU S ČISTOU TABULKOU -->
 <script>
