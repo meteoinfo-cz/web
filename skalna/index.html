@@ -570,6 +570,12 @@ CSS
     }
 }
 
+/* Zvětšení ikonek počasí v předpovědi */
+img[src*="png/"] {
+    width: 50px !important;  /* Tady si můžeš číslo změnit (např. 36px, 42px, 50px) */
+    height: auto !important;
+}
+
     </style>
 </head>
 <body>
@@ -947,6 +953,11 @@ function zmenModelVentusky(model) {
 
         <!-- ZAČÁTEK SCROLLOVACÍHO BOXU PRO AKTUALIZACE -->
 <div style="max-height: 380px; overflow-y: auto; padding-right: 8px; margin-bottom: 20px; scrollbar-width: thin;">
+
+<div style="text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-accent); margin-bottom: 25px; box-sizing: border-box;">
+    <span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 24. 8. 2026</span>
+    <p style="margin: 0; color: var(--text-main); font-size: 15px; line-height: 1.4;">Přidané 4 nové indexy, přidání nových ikonek počasí, přidání sdílení pod články, změna drobných věcí.</p>
+</div>
 
 <div style="text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-accent); margin-bottom: 25px; box-sizing: border-box;">
     <span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 20. 8. 2026</span>
@@ -1638,18 +1649,21 @@ function zmenModelVentusky(model) {
 
         function ziskejIkonuUrl(kod, aktualniCasText, vychodSlunceText, zapadSlunceText) {
     const aktualniMesic = new Date().getMonth();
+    // Zima: říjen až duben (10, 11, 0, 1, 2, 3)
     const jeZima = aktualniMesic === 9 || aktualniMesic === 10 || aktualniMesic === 11 || 
                    aktualniMesic === 0 || aktualniMesic === 1 || aktualniMesic === 2 || 
                    aktualniMesic === 3;
 
     if (!aktualniCasText || !vychodSlunceText || !zapadSlunceText) {
         const mapovaniDen = {
-            0: "jasno", 1: "polojasno", 2: "polojasno", 3: "zatazeno", 45: "zatazeno", 48: "zatazeno",
-            51: jeZima ? "mrznouci_dest" : "dest", 53: "dest", 55: "dest", 61: "dest", 63: "dest", 65: "dest",
-            71: "snih", 73: "snih", 75: "snih", 77: "snih", 80: "prehanky", 81: "prehanky", 82: "prehanky", 95: "bourka"
+            0: "jasno", 1: "skoro_jasno", 2: "polojasno", 3: "oblacno", 45: "mlha", 48: "mlha",
+            51: jeZima ? "mrznouci_dest" : "prehanky", 53: "prehanky", 55: "prehanky", 
+            61: "dest", 63: "dest", 65: "dest",
+            71: "snih", 73: "snih", 75: "snih", 77: "snih", 
+            80: "prehanky", 81: "prehanky", 82: "prehanky", 95: "bourka"
         };
-        if (kod >= 71 && kod <= 77) return `/web/png/${jeZima ? "snih" : "prehanky"}.png`;
-return `/web/png/${mapovaniDen[kod] || "polojasno"}.png`;
+        if (kod >= 71 && kod <= 77) return `png/${jeZima ? "snih" : "prehanky"}.png`;
+        return `png/${mapovaniDen[kod] || "polojasno"}.png`;
     }
 
     const spoctiMinuty = (textKombinovany) => {
@@ -1668,16 +1682,17 @@ return `/web/png/${mapovaniDen[kod] || "polojasno"}.png`;
 
     const jeNoc = tedMinuty < vychodMinuty || tedMinuty > zapadMinuty;
 
+    // TADY JSOU OPRAVENÉ NÁZVY TVÝCH IKONEK PRO DEN A NOC
     const mapovani = {
         0: jeNoc ? "jasno_noc" : "jasno",
-        1: jeNoc ? "polojasno_noc" : "polojasno",
-        2: jeNoc ? "polojasno_noc" : "polojasno",
-        3: "zatazeno",
-        45: "zatazeno",
-        48: "zatazeno",
-        51: jeZima ? "mrznouci_dest" : "dest", 
-        53: "dest",
-        55: "dest",
+        1: jeNoc ? "skoro_jasno_noc" : "skoro_jasno", // WMO 1 = skoro jasno
+        2: jeNoc ? "polojasno_noc" : "polojasno",     // WMO 2 = polojasno
+        3: jeNoc ? "oblacno_noc" : "oblacno",         // WMO 3 = oblačno (zataženo)
+        45: "mlha",
+        48: "mlha",
+        51: jeZima ? "mrznouci_dest" : "prehanky", 
+        53: "prehanky",
+        55: "prehanky",
         61: "dest",
         63: "dest",
         65: "dest",
@@ -1692,11 +1707,11 @@ return `/web/png/${mapovaniDen[kod] || "polojasno"}.png`;
     };
 
     if (kod >= 71 && kod <= 77) {
-    if (jeZima) return `/web/png/snih.png`;
-    return `/web/png/${jeNoc ? "destove_prehanky_noc" : "prehanky"}.png`;
-}
+        if (jeZima) return `png/snih.png`;
+        return `png/${jeNoc ? "destove_prehanky_noc" : "prehanky"}.png`;
+    }
 
-return `/web/png/${mapovani[kod] || "polojasno"}.png`;
+    return `png/${mapovani[kod] || "polojasno"}.png`;
 }
 
         function aktualizujHomeCheck() {
@@ -2139,13 +2154,15 @@ setTimeout(() => {
         nactiPocasi();
 
 // Bezpečné vložení tlačítka PŘESNĚ pod zaškrtávátko
-if (!document.getElementById('open-indexes-btn')) {
-    const btn = document.createElement('button');
+let btn = document.getElementById('open-indexes-btn');
+if (!btn) {
+    btn = document.createElement('button');
     btn.id = 'open-indexes-btn';
     btn.innerHTML = '📊 Zobrazit indexy aktivit (11)';
-    btn.style = "display:flex; align-items:center; justify-content:center; gap:8px; width:100%; background:linear-gradient(135deg, #1e293b, #0f172a); color:#f8fafc; border:1px solid #f97316; padding:10px 16px; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer; transition:all 0.2s; margin:15px 0 15px 0;";
-    btn.onmouseover = () => { btn.style.background = '#f97316'; btn.style.color = '#0f172a'; };
-    btn.onmouseout = () => { btn.style.background = 'linear-gradient(135deg, #1e293b, #0f172a)'; btn.style.color = '#f8fafc'; };
+    btn.style.cssText = "display:flex; align-items:center; justify-content:center; gap:8px; width:100%; background:linear-gradient(135deg, #1e293b, #0f172a); color:#f8fafc; border:1px solid #f97316; padding:10px 16px; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer; transition:all 0.2s; margin:15px 0 15px 0;";
+    
+    btn.onmouseover = function() { btn.style.background = '#f97316'; btn.style.color = '#0f172a'; };
+    btn.onmouseout = function() { btn.style.background = 'linear-gradient(135deg, #1e293b, #0f172a)'; btn.style.color = '#f8fafc'; };
 
     let foundLabel = null;
     const labels = document.getElementsByTagName('label');
@@ -2156,170 +2173,183 @@ if (!document.getElementById('open-indexes-btn')) {
         }
     }
 
-    if (foundLabel) {
+    if (foundLabel && foundLabel.parentNode) {
         foundLabel.parentNode.insertBefore(btn, foundLabel.nextSibling);
     } else {
         const checkbox = document.querySelector('input[type="checkbox"]');
         if (checkbox && checkbox.parentNode) {
             checkbox.parentNode.appendChild(btn);
+        } else {
+            document.body.appendChild(btn);
         }
     }
-
-        // Funkce pro otevření okna s 10 indexy vytáhnutými přímo z webu
-    btn.onclick = function() {
-        // Vytáhneme hodnoty přímo z textu prvků na webu
-        let temp = 25;
-        const tempEl = document.getElementById('teplota-aktualni');
-        if (tempEl) {
-            temp = parseFloat(tempEl.innerText.replace(/[^\d.-]/g, '')) || 25;
-        }
-
-        let humidity = 50;
-        const humEl = document.getElementById('meteo-vlhkost');
-        if (humEl) {
-            humidity = parseFloat(humEl.innerText.replace(/[^\d.-]/g, '')) || 50;
-        }
-
-        let wind = 10;
-        const windEl = document.getElementById('meteo-vitr') || document.querySelector('[id*="vitr"]');
-        if (windEl) {
-            wind = parseFloat(windEl.innerText.replace(/[^\d.-]/g, '')) || 10;
-        }
-
-        let rain = 0;
-        const rainEl = document.getElementById('meteo-srazky') || document.querySelector('[id*="srazky"]');
-        if (rainEl) {
-            rain = parseFloat(rainEl.innerText.replace(/[^\d.-]/g, '')) || 0;
-        }
-
-        let uv = 2.5;
-        const uvEl = document.getElementById('meteo-uv') || document.querySelector('[id*="uv"]');
-        if (uvEl) {
-            uv = parseFloat(uvEl.innerText.replace(/[^\d.-]/g, '')) || 2.5;
-        }
-
-        let indexModal = document.getElementById('indexes-modal');
-        if (!indexModal) {
-            indexModal = document.createElement('div');
-            indexModal.id = 'indexes-modal';
-            indexModal.style = "display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background-color:rgba(15,23,42,0.85); backdrop-filter:blur(5px); justify-content:center; align-items:center; padding:20px; box-sizing:border-box;";
-            document.body.appendChild(indexModal);
-        }
-
-        // 1. Komáři
-        let komari = "Nízká aktivita";
-        if (temp > 20 && wind < 10 && humidity > 60) komari = "Vysoká aktivita (ideální podmínky)";
-        else if (temp > 15 && wind < 15) komari = "Střední aktivita";
-
-        // 2. Klíšťata
-        let klistata = "Nízká aktivita";
-        if (temp >= 15 && temp <= 25 && humidity > 50) klistata = "Mimořádné riziko (předpověď stupně 9-10)";
-        else if (temp > 25 || temp < 10) klistata = "Mírné riziko";
-
-        // 3. Sušení prádla
-        let pradlo = "Nevhodné (uschne pomalu)";
-        if (rain > 0) pradlo = "⚠️ Nedoporučuje se (prší)";
-        else if (temp > 20 && humidity < 60) pradlo = "Vynikající (uschne velmi rychle)";
-        else if (temp > 15 && humidity < 70) pradlo = "Dobré (uschne během dne)";
-
-                        // 4. Astronomický index
-let astro = "🌌 Ideální příležitost pro sledování hvězd/planet.";
-
-try {
-    // Podíváme se na texty na stránce. Pokud tam svítí zataženo nebo déšť, změníme to.
-    const stavWebu = document.body.innerText.toLowerCase();
-    
-    if (stavWebu.includes('zataženo') || stavWebu.includes('déšť') || stavWebu.includes('bouřka') || stavWebu.includes('přeháňky')) {
-        astro = "⛅ Zhoršená viditelnost, hvězd bude vidět málo, nebo žádné.";
-    }
-} catch(e) {
-    console.error("Chyba:", e);
-    astro = "⛅ Zhoršená viditelnost, hvězd bude vidět málo, nebo žádné.";
 }
 
-        // 5. Běžecký index
-        let beh = "Ideální na běh";
-        if (temp > 25) beh = "Zhoršené (příliš velké horko)";
-        else if (temp < 5 || rain > 1) beh = "Nevhodné podmínky";
+// Funkce pro otevření okna s indexy (připojí se vždy, ať už tlačítko existovalo, nebo se právě vytvořilo)
+btn.onclick = function() {
+    let temp = 25;
+    const tempEl = document.getElementById('teplota-aktualni');
+    if (tempEl) {
+        temp = parseFloat(tempEl.innerText.replace(/[^\d.-]/g, '')) || 25;
+    }
 
-        // 6. Cyklistický index
-        let cyklo = "Skvělé na vyjížďku";
-        if (wind > 20) cyklo = "⚠️ Nebezpečné (silný nárazový vítr)";
-        else if (rain > 0.5) cyklo = "Zhoršené (mokrá silnice)";
+    let humidity = 50;
+    const humEl = document.getElementById('meteo-vlhkost');
+    if (humEl) {
+        humidity = parseFloat(humEl.innerText.replace(/[^\d.-]/g, '')) || 50;
+    }
 
-        // 7. Přírodní koupání
-        let prirKoupal = "Voda může být čistá (začátek sezóny)";
-        if (temp > 28 && humidity > 65) prirKoupal = "⚠️ Riziko výskytu sinic a zhoršené kvality vody!";
+    let wind = 10;
+    const windEl = document.getElementById('meteo-vitr') || document.querySelector('[id*="vitr"]');
+    if (windEl) {
+        wind = parseFloat(windEl.innerText.replace(/[^\d.-]/g, '')) || 10;
+    }
 
-        // 8. Ideální den na koupačku
-        let koupacka = "Zatím chladno na koupání";
-        if (temp >= 25 && uv > 2 && !prirKoupal.includes('sinic')) koupacka = "☀️ Perfektní den na koupačku u vody!";
-        else if (temp >= 25 && prirKoupal.includes('sinic')) koupacka = "Teplo je, ale přírodní koupaliště raději vynechte.";
+    let rain = 0;
+    const rainEl = document.getElementById('meteo-srazky') || document.querySelector('[id*="srazky"]');
+    if (rainEl) {
+        rain = parseFloat(rainEl.innerText.replace(/[^\d.-]/g, '')) || 0;
+    }
 
-        // 9. Vyhřáté auto
-        let auto = "Bezpečné";
-        if (temp > 22 && uv > 1.5) {
-            let uvnitr = Math.round(temp + 15);
-            auto = `🚨 Kritické! Pokud svítí slunce, teplota v autě stoupne na ${uvnitr}°C během 20 minut!`;
+    let uv = 2.5;
+    const uvEl = document.getElementById('meteo-uv') || document.querySelector('[id*="uv"]');
+    if (uvEl) {
+        uv = parseFloat(uvEl.innerText.replace(/[^\d.-]/g, '')) || 2.5;
+    }
+
+    let indexModal = document.getElementById('indexes-modal');
+    if (!indexModal) {
+        indexModal = document.createElement('div');
+        indexModal.id = 'indexes-modal';
+        indexModal.style.cssText = "display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background-color:rgba(15,23,42,0.85); backdrop-filter:blur(5px); justify-content:center; align-items:center; padding:20px; box-sizing:border-box;";
+        document.body.appendChild(indexModal);
+    }
+
+    let komari = "Nízká aktivita";
+    if (temp > 20 && wind < 10 && humidity > 60) komari = "Vysoká aktivita (ideální podmínky)";
+    else if (temp > 15 && wind < 15) komari = "Střední aktivita";
+
+    let klistata = "Nízká aktivita";
+    if (temp >= 15 && temp <= 25 && humidity > 50) klistata = "Mimořádné riziko (předpověď stupně 9-10)";
+    else if (temp > 25 || temp < 10) klistata = "Mírné riziko";
+
+    let pradlo = "Nevhodné (uschne pomalu)";
+    if (rain > 0) pradlo = "⚠️ Nedoporučuje se (prší)";
+    else if (temp > 20 && humidity < 60) pradlo = "Vynikající (uschne velmi rychle)";
+    else if (temp > 15 && humidity < 70) pradlo = "Dobré (uschne během dne)";
+
+    let astro = "🌌 Ideální příležitost pro sledování hvězd/planet.";
+    try {
+        const stavWebu = document.body.innerText.toLowerCase();
+        if (stavWebu.includes('zataženo') || stavWebu.includes('déšť') || stavWebu.includes('bouřka') || stavWebu.includes('přeháňky')) {
+            astro = "⛅ Zhoršená viditelnost, hvězd bude vidět málo, nebo žádné.";
         }
+    } catch(e) {
+        console.error("Chyba:", e);
+    }
 
-        // 10. Aquaplaning
-        let aqua = "Nízké riziko";
-        if (rain > 1.5 || (rain > 0 && wind > 20)) aqua = "⚠️ Vysoké riziko! Na silnicích hrozí stojící voda.";
+    let beh = "Ideální na běh";
+    if (temp > 25) beh = "Zhoršené (příliš velké horko)";
+    else if (temp < 5 || rain > 1) beh = "Nevhodné podmínky";
 
-// Výpočet textu a barvy pro Psí index přímo z aktuální teploty (temp)
-let psiText = "";
-let barvaPsi = "";
+    let cyklo = "Skvělé na vyjížďku";
+    if (wind > 20) cyklo = "⚠️ Nebezpečné (silný nárazový vítr)";
+    else if (rain > 0.5) cyklo = "Zhoršené (mokrá silnice)";
 
-if (temp < -15) { psiText = "Pod -15 °C: Extrémní počasí. Venčení psů zkraťte pouze na nezbytnou potřebu."; barvaPsi = "#7f1d1d"; }
-else if (temp >= -15 && temp <= -10) { psiText = "-10 °C až -15 °C: Mrazivé počasí. Venčení zkraťte na maximálně 15 minut."; barvaPsi = "#ef4444"; }
-else if (temp > -9 && temp <= -4) { psiText = "-4 °C až -9 °C: Nebezpečné počasí pro malá plemena psů bez oblečku."; barvaPsi = "#f97316"; }
-else if (temp >= -3 && temp <= -1) { psiText = "-1 °C až -3 °C: Zimní počasí, naháči už potřebují funkční obleček."; barvaPsi = "#eab308"; }
-else if (temp >= 0 && temp <= 10) { psiText = "0 °C až 10 °C: Ideální počasí pro psí aktivitu, běh a dlouhé procházky."; barvaPsi = "#065f46"; }
-else if (temp >= 11 && temp <= 19) { psiText = "11 °C až 19 °C: Skvělé počasí na dlouhé procházky and bezpečné venčení psů."; barvaPsi = "#10b981"; }
-else if (temp >= 20 && temp <= 23) { psiText = "20 °C až 23 °C: Pozor u starších nebo nemocných psů při venčení na přímém slunci."; barvaPsi = "#eab308"; }
-else if (temp >= 24 && temp <= 28) { psiText = "24 °C až 28 °C: Začíná být teplo. Omezte náročný trénink psů, hrozí rychlé přehřátí."; barvaPsi = "#f97316"; }
-else if (temp >= 29 && temp <= 31) { psiText = "29 °C až 31 °C: Riziko přehřátí psa, hlavně na asfaltu. Bezpečné venčení směřujte pouze do stínu na trávu."; barvaPsi = "#ef4444"; }
-else { psiText = "Nad 32 °C: Extrémní vedro! Hrozí okamžitý úpal, při nejhorším kolaps psa. Tlapky pálí o horký asfalt. Rychle vyvenčete pouze ve stínu!"; barvaPsi = "#7f1d1d"; }
+    let koupacka = "Zatím chladno na koupání";
+    if (temp >= 25 && uv > 2) {
+        koupacka = "☀️ Perfektní den na koupačku u vody!";
+    }
 
-// HTML karta pro vložení pod aquaplaning dovnitř indexModal.innerHTML
-const psiKartaHTML = `
-        <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid ${barvaPsi};"><strong>🐕 Psí index:</strong><br><span style="font-size: 13px; color: #cbd5e1;">${psiText}</span></div>
-`;
+    let auto = "Bezpečné";
+    if (temp > 22 && uv > 1.5) {
+        let uvnitr = Math.round(temp + 15);
+        auto = `🚨 Kritické! Pokud svítí slunce, teplota v autě stoupne na ${uvnitr}°C během 20 minut!`;
+    }
 
+    let aqua = "Nízké riziko";
+    if (rain > 1.5 || (rain > 0 && wind > 20)) {
+        aqua = "⚠️ Vysoké riziko! Na silnicích hrozí stojící voda.";
+    }
 
+    let houby = "Růst hub je omezen suchem.";
+    if (rain > 0 && temp >= 15 && temp <= 23) {
+        houby = "Ideální podmínky! Houby rostou.";
+    } else if (temp < 5) {
+        houby = "Je příliš chladno.";
+    }
 
-                indexModal.innerHTML = `
-            <div style="background: linear-gradient(135deg, #1e293b, #0f172a); border: 2px solid #38bdf8; border-radius: 12px; max-width: 800px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); color: #f8fafc; font-family: sans-serif;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #334155; padding-bottom: 10px;">
-                    <h2 style="margin: 0; color: #38bdf8;">📊 Přehled indexů aktivit pro město</h2>
-                    <button id="close-indexes-btn" style="background: #38bdf8; border: none; color: #0f172a; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer;">Zavřít</button>
-                </div>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px;">
-                    <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #38bdf8;"><strong>🦟 Komáři:</strong><br><span style="font-size:13px; color:#cbd5e1;">${komari}</span></div>
-                    <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #34d399;"><strong>🕷️ Klíšťata:</strong><br><span style="font-size:13px; color:#cbd5e1;">${klistata}</span></div>
-                    <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #fbbf24;"><strong>🧺 Sušení prádla:</strong><br><span style="font-size:13px; color:#cbd5e1;">${pradlo}</span></div>
-                    <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #a78bfa;"><strong>🌌 Astronomický:</strong><br><span style="font-size:13px; color:#cbd5e1;">${astro}</span></div>
-                    <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #f472b6;"><strong>🏃 Běžecký:</strong><br><span style="font-size:13px; color:#cbd5e1;">${beh}</span></div>
-                    <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #60a5fa;"><strong>🚴 Cyklistický:</strong><br><span style="font-size:13px; color:#cbd5e1;">${cyklo}</span></div>
-                    <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #2dd4bf;"><strong>🏊 Přírodní koupání:</strong><br><span style="font-size:13px; color:#cbd5e1;">${prirKoupal}</span></div>
-                    <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #06b6d4;"><strong>🌊 Koupání obecně:</strong><br><span style="font-size:13px; color:#cbd5e1;">${koupacka}</span></div>
-                    <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #fb7185;"><strong>🚗 Vyhřáté auto:</strong><br><span style="font-size:13px; color:#cbd5e1;">${auto}</span></div>
-                    <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #38bdf8;"><strong>🌧️ Aquaplaning:</strong><br><span style="font-size:13px; color:#cbd5e1;">${aqua}</span></div>
-                    <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid ${barvaPsi};"><strong>🐕 Psí index:</strong><br><span style="font-size: 13px; color: #cbd5e1;">${psiText}</span></div>
+    let turistika = "Počasí pro výlety je příznivé.";
+    if (temp >= 15 && temp <= 25 && wind < 20) {
+        turistika = "Perfektní počasí na túru!";
+    } else if (temp > 30) {
+        turistika = "Je horko, omezte pohyb na slunci.";
+    }
 
-</div>
+    let silnice = "Silnice jsou suché a sjízdné.";
+    if (temp <= 0 && rain > 0) {
+        silnice = "⚠️ Pozor, hrozí ledovka a náledí!";
+    } else if (temp <= 0) {
+        silnice = "Pozor, riziko namrzání vozovek!";
+    } else if (rain > 0 && temp < 3) {
+        silnice = "Mokro, jeďte opatrně.";
+    }
 
-                </div>
+    let uvText = "UV index je v normálu.";
+    if (uv >= 8) {
+        uvText = "🔥 Extrémní UV záření! Nevycházejte na slunce.";
+    } else if (uv >= 6) {
+        uvText = "⚠️ Vysoké UV záření! Použijte krém s SPF.";
+    } else if (uv >= 3) {
+        uvText = "Mírné UV záření, doporučujeme sluneční brýle.";
+    }
+
+    let psiText = "";
+    let barvaPsi = "";
+    if (temp < -15) { psiText = "Pod -15 °C: Extrémní počasí. Venčení zkraťte na minimum."; barvaPsi = "#7f1d1d"; }
+    else if (temp >= -15 && temp <= -10) { psiText = "-10 °C až -15 °C: Mrazivé počasí. Venčení max 15 minut."; barvaPsi = "#ef4444"; }
+    else if (temp > -9 && temp <= -4) { psiText = "-4 °C až -9 °C: Nebezpečné pro malá plemena bez oblečku."; barvaPsi = "#f97316"; }
+    else if (temp >= -3 && temp <= -1) { psiText = "-1 °C až -3 °C: Zimní počasí, naháči potřebují obleček."; barvaPsi = "#eab308"; }
+    else if (temp >= 0 && temp <= 10) { psiText = "0 °C až 10 °C: Ideální počasí pro psí aktivitu a běh."; barvaPsi = "#065f46"; }
+    else if (temp >= 11 && temp <= 19) { psiText = "11 °C až 19 °C: Skvělé počasí na dlouhé procházky."; barvaPsi = "#10b981"; }
+    else if (temp >= 20 && temp <= 23) { psiText = "20 °C až 23 °C: Pozor u starších psů na slunci."; barvaPsi = "#eab308"; }
+    else if (temp >= 24 && temp <= 28) { psiText = "24 °C až 28 °C: Omezte náročný trénink, hrozí přehřátí."; barvaPsi = "#f97316"; }
+    else if (temp >= 29 && temp <= 31) { psiText = "29 °C až 31 °C: Riziko přehřátí, venčete jen ve stínu na trávě."; barvaPsi = "#ef4444"; }
+    else { psiText = "Nad 32 °C: Extrémní vedro! Hrozí úpal a popálení tlapek o asfalt!"; barvaPsi = "#7f1d1d"; }
+
+    indexModal.innerHTML = `
+        <div style="background: linear-gradient(135deg, #1e293b, #0f172a); border: 2px solid #38bdf8; border-radius: 12px; max-width: 800px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); color: #f8fafc; font-family: sans-serif;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #334155; padding-bottom: 10px;">
+                <h2 style="margin: 0; color: #38bdf8;">Přehled indexů aktivit pro město</h2>
+                <button id="close-indexes-btn" style="background: #38bdf8; border: none; color: #0f172a; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer;">Zavřít</button>
             </div>
-        `;
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px;">
+                <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #38bdf8;"><strong>🦟 Komáři:</strong><br><span style="font-size:13px; color: #cbd5e1;">${komari}</span></div>
+                <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #34d399;"><strong>🕷️ Klíšťata:</strong><br><span style="font-size:13px; color: #cbd5e1;">${klistata}</span></div>
+                <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #fbbf24;"><strong>👕 Sušení prádla:</strong><br><span style="font-size:13px; color: #cbd5e1;">${pradlo}</span></div>
+                <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #a78bfa;"><strong>✨ Astronomický:</strong><br><span style="font-size:13px; color: #cbd5e1;">${astro}</span></div>
+                <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #f472b6;"><strong>🏃 Běžecký:</strong><br><span style="font-size:13px; color: #cbd5e1;">${beh}</span></div>
+                <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #60a5fa;"><strong>🚴 Cyklistický:</strong><br><span style="font-size:13px; color: #cbd5e1;">${cyklo}</span></div>
+                <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #06b6d4;"><strong>🌊 Koupání obecně:</strong><br><span style="font-size:13px; color: #cbd5e1;">${koupacka}</span></div>
+                <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #fb7185;"><strong>🚗 Vyhřáté auto:</strong><br><span style="font-size:13px; color: #cbd5e1;">${auto}</span></div>
+                <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #38bdf8;"><strong>💦 Aquaplaning:</strong><br><span style="font-size:13px; color: #cbd5e1;">${aqua}</span></div>
+                <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid ${barvaPsi};"><strong>🐕 Psí index:</strong><br><span style="font-size:13px; color: #cbd5e1;">${psiText}</span></div>
+                <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #eab308;"><strong>☀️ UV index:</strong><br><span style="font-size:13px; color: #cbd5e1;">${uvText}</span></div>
+                <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #10b981;"><strong>🍄 Houbařský:</strong><br><span style="font-size:13px; color: #cbd5e1;">${houby}</span></div>
+                <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #f97316;"><strong>🥾 Turistický:</strong><br><span style="font-size:13px; color: #cbd5e1;">${turistika}</span></div>
+                <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #94a3b8;"><strong>🚗 Sjízdnost silnic:</strong><br><span style="font-size:13px; color: #cbd5e1;">${silnice}</span></div>
+            </div>
+        </div>
+    `;
+    indexModal.style.display = 'flex';
 
-        indexModal.style.display = 'flex';
-
-        document.getElementById('close-indexes-btn').onclick = function() { indexModal.style.display = 'none'; };
-        indexModal.onclick = function(e) { if (e.target === indexModal) indexModal.style.display = 'none'; };
+    document.getElementById('close-indexes-btn').onclick = function() { 
+        indexModal.style.display = 'none'; 
     };
-}
+    indexModal.onclick = function(e) { 
+        if (e.target === indexModal) indexModal.style.display = 'none'; 
+    };
+};
 
     // --- KÓD PRO SLEDOVÁNÍ WEBU ---
     const followBtn = document.getElementById('follow-btn');
@@ -2370,7 +2400,7 @@ const meteoDopodusVystrahy = {
     },
     2: {
       titul: "Upozornění",
-      text: "Hrozí silné bouřky, které mohou být často doprovázené přívalovým deštěm, silným nárazovým větrem do 70 km/h and malými kroupami.\n\nDoporučení: Je třeba zabezpečit předměty, které mohou lehce ulétnout větrem, na silnici snížit rychlost, dávat si pozor na častější pády menších a ojediněle i věvších větví. Zavřít všechna okna a dveře. Hrozí škody hlavně kvůli zasažení blesků, kroupami a silnému větru."
+      text: "Hrozí silné bouřky, které mohou být často doprovázené přívalovým deštěm, silným nárazovým větrem do 70 km/h a malými kroupami.\n\nDoporučení: Je třeba zabezpečit předměty, které mohou lehce ulétnout větrem, na silnici snížit rychlost, dávat si pozor na častější pády menších a ojediněle i věvších větví. Zavřít všechna okna a dveře. Hrozí škody hlavně kvůli zasažení blesků, kroupami a silnému větru."
     },
     3: {
       titul: "Upozornění",
@@ -2378,7 +2408,7 @@ const meteoDopodusVystrahy = {
     },
     4: {
       titul: "Upozornění",
-      text: "POZOR!! Hrozí až extrémně silné bouřky, které mohou doprovázet extrémní jevy, jako prudké lijáky, extrémní silné nárazy větru přesahující 100 km/h (výjimečně i více), a velké kroupy! Mohou hrozit i silné supercely hlavně s extrémním větrem nad 120 km/h and obřími kroupami, které mohou dosáhnout velikosti až 8 cm (ojediněle i více). Výjimečně, pokud hrozí supercely, nejsou vyloučena i tornáda!\n\nDoporučení: Před takto silnými bouřkami se snažte venku rozhodně nic nenechávat a pokud možno, předměty ukryjte doma. Takto silný vítr už může lámat i celé stromy, odnášet střechy a působit velké komplikace v dopravě, tak v energetice! Kroupy mohou rozbít celá auta, stromy a střechy! Pokud by vás takto silná bouřka zastihla v autě, rozhodně se nesnažte bouřce ujet a nejlépe úplně ZASTAVTE! Vysoké nebezpečí představují i blesky a lijáky, které mohou dospět k bleskovým povodním. Rozhodně buďte ve střehu!"
+      text: "POZOR!! Hrozí až extrémně silné bouřky, které mohou doprovázet extrémní jevy, jako prudké lijáky, extrémní silné nárazy větru přesahující 100 km/h (výjimečně i více), a velké kroupy! Mohou hrozit i silné supercely hlavně s extrémním větrem nad 120 km/h a obřími kroupami, které mohou dosáhnout velikosti až 8 cm (ojediněle i více). Výjimečně, pokud hrozí supercely, nejsou vyloučena i tornáda!\n\nDoporučení: Před takto silnými bouřkami se snažte venku rozhodně nic nenechávat a pokud možno, předměty ukryjte doma. Takto silný vítr už může lámat i celé stromy, odnášet střechy a působit velké komplikace v dopravě, tak v energetice! Kroupy mohou rozbít celá auta, stromy a střechy! Pokud by vás takto silná bouřka zastihla v autě, rozhodně se nesnažte bouřce ujet a nejlépe úplně ZASTAVTE! Vysoké nebezpečí představují i blesky a lijáky, které mohou dospět k bleskovým povodním. Rozhodně buďte ve střehu!"
     }
   },
   vitr: {
@@ -2396,7 +2426,7 @@ const meteoDopodusVystrahy = {
     },
     4: {
       titul: "Upozornění",
-      text: "POZOR!! Hrozí velmi silný až extrémně silný nárazový vítr o síle vichřice! Hrozí nárazy větru od 100-120 km/h (výjimečně i více)!\n\nDoporučení: Nutně zajistěte všechny předměty, které mohou být okamžitě uneseny větrem! Hrozí četné pády celých stromů a velké komplikace na silnicích and v energetice! Je potřeba být akutně ve střehu!"
+      text: "POZOR!! Hrozí velmi silný až extrémně silný nárazový vítr o síle vichřice! Hrozí nárazy větru od 100-120 km/h (výjimečně i více)!\n\nDoporučení: Nutně zajistěte všechny předměty, které mohou být okamžitě uneseny větrem! Hrozí četné pády celých stromů a velké komplikace na silnicích a v energetice! Je potřeba být akutně ve střehu!"
     }
   },
   dest: {
@@ -2444,7 +2474,7 @@ const meteoDopodusVystrahy = {
   ledovka: {
     1: {
       titul: "Upozornění",
-      text: "Hrozí slabá ledovka s tloušťkou ledu do 2 mm. Krátkodobý mrznoucí déšť nebo mrholení.\n\nDoporučení: Povrchy mohou začít slabě namrzat a klouzat. Klouzat to může hlavně na silnicích a chodnících, proto doporučujeme zvýšenou opatrnost pro chodce a řidiče. Škody na stromech and energetice zatím nehrozí."
+      text: "Hrozí slabá ledovka s tloušťkou ledu do 2 mm. Krátkodobý mrznoucí déšť nebo mrholení.\n\nDoporučení: Povrchy mohou začít slabě namrzat a klouzat. Klouzat to může hlavně na silnicích a chodnících, proto doporučujeme zvýšenou opatrnost pro chodce a řidiče. Škody na stromech a energetice zatím nehrozí."
     },
     2: {
       titul: "Upozornění",
@@ -2452,11 +2482,11 @@ const meteoDopodusVystrahy = {
     },
     3: {
       titul: "Upozornění",
-      text: "Hrozí silná ledovka s tloušťkou ledu 5-10 mm. Dlouhotrvající mrznoucí déšť.\n\nDoporučení: Hrozí kalamitní stav. Těžký led může začít lámat i velké větve stromů, venku všechny cesty and chodníky silně kloužou, proto nedoporučujeme se vydávat ven. Pokud musíte, jeďte extrémně opatrně! Mohou namrzat také troleje. Hrozí také první výpadky elektřiny."
+      text: "Hrozí silná ledovka s tloušťkou ledu 5-10 mm. Dlouhotrvající mrznoucí déšť.\n\nDoporučení: Hrozí kalamitní stav. Těžký led může začít lámat i velké větve stromů, venku všechny cesty a chodníky silně kloužou, proto nedoporučujeme se vydávat ven. Pokud musíte, jeďte extrémně opatrně! Mohou namrzat také troleje. Hrozí také první výpadky elektřiny."
     },
     4: {
       titul: "Upozornění",
-      text: "POZOR! Hrozí velmi silná ledovka s tloušťkou ledu 10-15 mm. Vydatný a trvalý mrznoucí déšť.\n\nDoporučení: Hrozí až extrémně vysoké risiko pádů na chodnících. Silnice jsou téměř nesjízdné, auta jsou jen koule ledu. Začíná docházet ke kolapsu železniční a tramvajové dopravy. Tíha ledu už může vyvracet i menší stromy and dráty elektrického napětí. Hrozí častější výpadky elektřiny. Buďte ve střehu and nedoporučujeme vůbec vycházet ven!"
+      text: "POZOR! Hrozí velmi silná ledovka s tloušťkou ledu 10-15 mm. Vydatný a trvalý mrznoucí déšť.\n\nDoporučení: Hrozí až extrémně vysoké risiko pádů na chodnících. Silnice jsou téměř nesjízdné, auta jsou jen koule ledu. Začíná docházet ke kolapsu železniční a tramvajové dopravy. Tíha ledu už může vyvracet i menší stromy a dráty elektrického napětí. Hrozí častější výpadky elektřiny. Buďte ve střehu a nedoporučujeme vůbec vycházet ven!"
     },
     5: {
       titul: "Upozornění",
@@ -2470,7 +2500,7 @@ const meteoDopodusVystrahy = {
     },
     2: {
       titul: "Upozornění",
-      text: "Očekává se silný mráz. Noční a ranní teploty místy klesnou na -5 až -12 °C.\n\nDoporučení: Při delším pobytu venku bez teplejšího oblečení může dojít k omrzlinám během několika minut. Je potřeba se teple obléct (hlavně zimní bunda, čepice, rukavice, šála a teplé boty!). Můžete zvolit i termo prádlo. Pro malé dětí and starší osoby nedoporučujeme delší pobyt venku. Auta budou zamrzlá, proto počítejte se škrábáním."
+      text: "Očekává se silný mráz. Noční a ranní teploty místy klesnou na -5 až -12 °C.\n\nDoporučení: Při delším pobytu venku bez teplejšího oblečení může dojít k omrzlinám během několika minut. Je potřeba se teple obléct (hlavně zimní bunda, čepice, rukavice, šála a teplé boty!). Můžete zvolit i termo prádlo. Pro malé dětí a starší osoby nedoporučujeme delší pobyt venku. Auta budou zamrzlá, proto počítejte se škrábáním."
     },
     3: {
       titul: "Upozornění",
