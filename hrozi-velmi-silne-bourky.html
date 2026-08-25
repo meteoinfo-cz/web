@@ -634,17 +634,43 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
     </p>
 
     <p style="margin-bottom: 20px; font-size: 1.05rem;">
-        Ve večerních hodinách ojedinělé bouřky hrozí i na Moravě a ve Slezsku, které mohou být také silné.
+        Ve večerních hodinách ojediněle bouřky hrozí i na Moravě a ve Slezsku, které mohou být také silné.
     </p>
 
     <p style="margin-bottom: 20px; font-size: 1.05rem;">
         Při přechodu studené fronty s bouřkami se také citelně ochladí. Teploty spadnou až k 15 °C, pocitově i níže.
     </p>
 
-    <div style="margin-top: 30px;">
+    <!-- DOLNÍ ŘÁDEK: Zpět vlevo + Nadpis a tlačítka vpravo -->
+<div style="margin-top: 40px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 20px;">
+    <!-- Zpět na seznam -->
+    <div>
         <a href="clanky.html" style="color: var(--text-accent); text-decoration: none; font-weight: bold;">← Zpět na seznam článků</a>
     </div>
-</main>
+
+    <!-- Pravá strana: Nadpis + tlačítka -->
+    <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
+        <!-- Ztučněný text nad tlačítky -->
+        <div style="font-size: 0.9rem; font-weight: 800; color: var(--text-muted, #666); text-transform: uppercase; letter-spacing: 0.5px;">
+            Sdílej tento článek!
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
+    <!-- Facebook -->
+    <a href="https://www.facebook.com/sharer/sharer.php?u=" target="_blank" id="share-fb" style="background: var(--bg-main, #f1f3f5); border: 1px solid var(--border-inner, #dcedf2); padding: 6px 12px; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 700; color: #1877F2; display: inline-flex; align-items: center; gap: 5px;">
+        📘 Facebook
+    </a>
+
+    <!-- WhatsApp -->
+    <a href="https://api.whatsapp.com/send?text=Přečti%20si%20tento%20článek%20na%20MeteoInfo!" target="_blank" style="background: var(--bg-main, #f1f3f5); border: 1px solid var(--border-inner, #dcedf2); padding: 6px 12px; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 700; color: #25d366; display: inline-flex; align-items: center; gap: 5px;">
+        💬 WhatsApp
+    </a>
+
+    <!-- X (Twitter) -->
+    <a href="https://twitter.com/intent/tweet?text=Přečti%20si%20tento%20článek%20na%20MeteoInfo!" target="_blank" style="background: var(--bg-main, #f1f3f5); border: 1px solid var(--border-inner, #dcedf2); padding: 6px 12px; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 700; color: var(--text-accent, #000); display: inline-flex; align-items: center; gap: 5px;">
+        𝕏 X
+    </a>
+</div>
 
 <!-- VELKÉ OKNO METEO DENÍKU S ČISTOU TABULKOU -->
 <script>
