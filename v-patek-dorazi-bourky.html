@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Články - MeteoInfo</title>
+    <title>V pátek dorazi další velmi silné bouřky s prudkými nárazy větru - MeteoInfo</title>
 <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="48x48" href="favicon-48x48.png">
 <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png">
@@ -501,13 +501,48 @@ header { position: relative; display: flex; justify-content: space-between; padd
   transform: scale(1.08);
 }
 
+CSS
+
+#install-btn + span {
+    position: relative;
+}
+
+#install-btn + span:hover::after {
+    content: "Pokud tuto webovou stránku máte rádi a často jí sledujete, doporučujeme si jí stáhnout. Po kliknutí na tlačítko Stáhnout, se Vám stáhne \"aplikace\" na plochu mobilu, počítače a jiných zařízení. Takže jestli rychle spěcháte, stáhnutí je dobrá volba. Upozorňujeme, že to lze stáhnout na všech prohlížečích (Chrome, Microsoft Edge, atd.), ale na Firefoxu Vám to z důvodu chybějící podpory desktopových PWA aplikací nepůjde.";
+    white-space: pre-line;
+    position: absolute;
+    top: 45%;
+    left: 90px;
+    width: 270px;
+    background-color: #000000;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 12px;
+    font-weight: normal;
+    text-align: left;
+    z-index: 9999;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    opacity: 0;
+    visibility: hidden;
+    animation: fadeInTooltip 0.2s ease forwards;
+}
+
+@keyframes fadeInTooltip {
+    to {
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
     </style>
 </head>
 <body>
     <div class="container"> 
         <header>
             
-             <!-- LEVÁ STRANA -->
+            <!-- LEVÁ STRANA -->
 <div class="header-left" style="display: flex; flex-direction: column; gap: 10px; position: relative;">
     
     <!-- 1. ŘÁDEK: Discord a hned vedle něj VELKÉ tlačítko Stáhnout -->
@@ -568,83 +603,67 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
 </div>
         </header>
 
-        <!-- OBSAH STRÁNKY S ČLÁNKY -->
-<main class="card" style="margin-top: 20px;">
-    <h2 style="font-size: 2rem; color: var(--text-accent);">📰 Články a novinky</h2>
-    <p>V této sekci budou psány různé články a novinky o počasí, astronomii a dalším.</p>
+<!-- CELÝ ČLÁNEK PŘÍMO NA STRÁNCE -->
+<main class="card" style="margin-top: 20px; background: var(--bg-card); border: 1px solid var(--border-inner); border-radius: 12px; padding: 35px;">
+    <h2 style="font-size: 2rem; color: var(--text-accent); margin-top: 0; margin-bottom: 10px;">V pátek dorazí další velmi silné bouřky s prudkými nárazy větru</h2>
+    <div style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 30px;">📅 26.8.2026</div>
 
-<!-- NOVÝ ČLÁNEK O BOUŘKÁCH -->
-<div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner); padding: 20px; border-radius: 12px;">
-    <span style="color: var(--text-muted); font-size: 0.85rem;">📅 26. srpna 2026</span>
-    <h3 style="margin: 10px 0; font-size: 1.4rem;">
-        <a href="v-patek-dorazi-bourky.html" style="color: var(--text-accent); text-decoration: none;">V pátek dorazí další velmi silné bouřky s prudkými nárazy větru</a>
-    </h3>
-    <p style="color: var(--text-main); margin-bottom: 15px;">
-        Tento pátek na naše území dorazí studená fronta, která s sebou přinese ochlazení a další bouřky. Hlavně s prudkými nárazy větru...
+    <p style="margin-bottom: 20px; font-size: 1.05rem;">
+        Tento pátek dorazí na naše území studená fronta, která s sebou přinese ochlazení a další bouřky. Hlavně s prudkými nárazy větru.
     </p>
-    <a href="v-patek-dorazi-bourky.html" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek &rarr;</a>
-</div>
 
-<!-- NOVÝ ČLÁNEK O TORNÁDU -->
-<div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner); padding: 20px; border-radius: 12px;">
-    <span style="color: var(--text-muted); font-size: 0.85rem;">📅 25. srpna 2026</span>
-    <h3 style="margin: 10px 0; font-size: 1.4rem;">
-        <a href="na-jihu-francie-uderilo-tornado.html" style="color: var(--text-accent); text-decoration: none;">Na jihu Francie v obci Pomas udeřilo silné tornádo</a>
-    </h3>
-    <p style="color: var(--text-main); margin-bottom: 15px;">
-        V podvečerních hodinách se na jihu Francie začaly tvořit až extrémně silné bouřky, které přecházely i v supercely. Na jihu Francie i dokonce do tornáda...
+    <p style="margin-bottom: 20px; font-size: 1.05rem;">
+        Páteční den přinese zprvu většinou polojasno s vysokou oblačností, která bude od západu během dne přibývat a bude panovat většinou oblačno až zataženo.
     </p>
-    <a href="na-jihu-francie-uderilo-tornado.html" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek &rarr;</a>
-</div>
 
-<!-- NOVÝ ČLÁNEK O CHLADNÉM RÁNU -->
-<div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner); padding: 20px; border-radius: 12px;">
-    <span style="color: var(--text-muted); font-size: 0.85rem;">📅 23. srpna 2026</span>
-    <h3 style="margin: 10px 0; font-size: 1.4rem;">
-        <a href="dneska-bylo-chladne-rano.html" style="color: var(--text-accent); text-decoration: none;">Dneska bylo chladné ráno, na Šumavě i mrzlo</a>
-    </h3>
-    <p style="color: var(--text-main); margin-bottom: 15px;">
-        Po delší době k nám zavítalo chladné ráno. Třeba na Šumavě i mrzlo...
+    <p style="margin-bottom: 20px; font-size: 1.05rem;">
+        Na frontě se poté začnou tvořit bouřky, které mohou být silné až velmi silné, doprovázené hlavně prudkým nárazovým větrem až 90 km/h, přívalovým deštěm s úhrny 20-50 mm (hrozí tak rozvodnění menších toků, ojedinělé zaplavení podchodů a sklepů), a kroupami do 2 cm. Bouřky budou postupovat směrem na východ až severovýchod.
     </p>
-    <a href="dneska-bylo-chladne-rano.html" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek &rarr;</a>
-</div>
 
-<!-- NOVÝ ČLÁNEK O ZATMĚNÍ MĚSÍCE -->
-<div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner); padding: 20px; border-radius: 12px;">
-    <span style="color: var(--text-muted); font-size: 0.85rem;">📅 22. srpna 2026</span>
-    <h3 style="margin: 10px 0; font-size: 1.4rem;">
-        <a href="blizi-se-vyrazne-zatmeni-mesice.html" style="color: var(--text-accent); text-decoration: none;">Blíží se výrazné zatmění Měsíce</a>
-    </h3>
-    <p style="color: var(--text-main); margin-bottom: 15px;">
-        Už za necelý týden nastane v Česku a po celém světě zatmění Měsíce. Jelikož minulý rok jsme mohli vidět úplné zatmění Měsíce, tak letos to bude pouze částečné...
-    </p>
-    <a href="blizi-se-vyrazne-zatmeni-mesice.html" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek →</a>
-</div>
-
-    <!-- NOVÝ ČLÁNEK O BOUŘKÁCH -->
-    <div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner);">
-        <span style="color: var(--text-muted); font-size: 0.85rem;">📅 21. srpna 2026</span>
-        <h3 style="margin: 10px 0; font-size: 1.4rem;">
-            <a href="hrozi-velmi-silne-bourky.html" style="color: var(--text-accent); text-decoration: none;">Hrozí až velmi silné bouřky, hlavním rizikem bude vítr a srážky</a>
-        </h3>
-        <p style="color: var(--text-main); margin-bottom: 15px;">
-            Česko opět čeká další bouřlivý den. Zatímco včera bouřky řádily hlavně na Moravě a ve Slezsku, tak dnes udeří hlavně ve středních Čechách a na Vysočině...
-        </p>
-        <a href="hrozi-velmi-silne-bourky.html" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek →</a>
+<!-- OBRÁZEK: Větší radarová mapa Ventusky -->
+    <div style="text-align: center; margin: 30px 0;">
+        <div style="display: inline-block; max-width: 80%; border: 1px solid var(--border-inner); border-radius: 10px; overflow: hidden; background: var(--bg-body); text-align: left;">
+            <img src="Obrázky web/bourky.jpg" alt="Srážky podle modelu ICON v pátek ve 23:00" style="width: 100%; display: block;">
+            <div style="padding: 10px 15px; font-size: 0.85rem; color: var(--text-muted);">
+                Srážky podle modelu ICON v pátek ve 23:00. Zdroj: Ventusky.com
+            </div>
+        </div>
     </div>
 
-    <!-- STARŠÍ ČLÁNEK (DOLE) -->
-    <div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner);">
-        <span style="color: var(--text-muted); font-size: 0.85rem;">📅 20. srpna 2026</span>
-        <h3 style="margin: 10px 0; font-size: 1.4rem;">
-            <a href="jak-vznikl-web.html" style="color: var(--text-accent); text-decoration: none;">Jak a proč tato stránka vznikla?</a>
-        </h3>
-        <p style="color: var(--text-main); margin-bottom: 15px;">
-            Vítám vás v této sekci, kde budou psány články o počasí, astronomii a dalším. Přečtěte si, jak vznikl projekt MeteoInfo...
-        </p>
-        <a href="jak-vznikl-web.html" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek →</a>
+    <p style="margin-bottom: 20px; font-size: 1.05rem; font-style: italic; color: var(--text-muted);">
+        Výstraha ČHMÚ ještě není k dispozici.
+    </p>
+
+    <!-- DOLNÍ ŘÁDEK: Zpět vlevo + Nadpis a tlačítka vpravo -->
+<div style="margin-top: 40px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 20px;">
+    <!-- Zpět na seznam -->
+    <div>
+        <a href="clanky.html" style="color: var(--text-accent); text-decoration: none; font-weight: bold;">← Zpět na seznam článků</a>
     </div>
-</main>
+
+    <!-- Pravá strana: Nadpis + tlačítka -->
+    <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
+        <!-- Ztučněný text nad tlačítky -->
+        <div style="font-size: 0.9rem; font-weight: 800; color: var(--text-muted, #666); text-transform: uppercase; letter-spacing: 0.5px;">
+            Sdílej tento článek!
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
+    <!-- Facebook -->
+    <a href="https://www.facebook.com/sharer/sharer.php?u=" target="_blank" id="share-fb" style="background: var(--bg-main, #f1f3f5); border: 1px solid var(--border-inner, #dcedf2); padding: 6px 12px; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 700; color: #1877F2; display: inline-flex; align-items: center; gap: 5px;">
+        📘 Facebook
+    </a>
+
+    <!-- WhatsApp -->
+    <a href="https://api.whatsapp.com/send?text=Přečti%20si%20tento%20článek%20na%20MeteoInfo!" target="_blank" style="background: var(--bg-main, #f1f3f5); border: 1px solid var(--border-inner, #dcedf2); padding: 6px 12px; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 700; color: #25d366; display: inline-flex; align-items: center; gap: 5px;">
+        💬 WhatsApp
+    </a>
+
+    <!-- X (Twitter) -->
+    <a href="https://twitter.com/intent/tweet?text=Přečti%20si%20tento%20článek%20na%20MeteoInfo!" target="_blank" style="background: var(--bg-main, #f1f3f5); border: 1px solid var(--border-inner, #dcedf2); padding: 6px 12px; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 700; color: var(--text-accent, #000); display: inline-flex; align-items: center; gap: 5px;">
+        𝕏 X
+    </a>
+</div>
 
 <!-- VELKÉ OKNO METEO DENÍKU S ČISTOU TABULKOU -->
 <script>
