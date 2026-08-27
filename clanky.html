@@ -100,123 +100,151 @@ header { position: relative; display: flex; justify-content: space-between; padd
 
 /* --- FINÁLNÍ ÚPRAVA PRO MOBIL --- */
 @media (max-width: 900px) {
-  /* Vytvoříme nahoře prostor pro nadpis */
+  /* Hlavní kontejner - vše řadíme přehledně pod sebe */
   header {
     position: relative !important;
-    padding-top: 80px !important; 
+    padding: 20px 15px !important; 
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
+    gap: 15px !important; /* Automatické rozestupy mezi bloky */
   }
   
-  /* Nadpis natvrdo přibijeme úplně nahoru */
+  /* Nadpis - čisté vycentrované zobrazení */
   .header-center-title {
     position: static !important;
     transform: none !important;
     display: block !important;
-    order: -9999 !important; 
-    margin: 10px 0 20px 0 !important;
+    order: -1 !important; 
+    margin: 0 0 10px 0 !important;
+    text-align: center !important;
   }
 
-  /* Čas a odkazy zůstanou uprostřed */
+/* Srovná celou řadu a natvrdo ji posune doleva, aby byla pod nadpisem */
+.header-buttons-row {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 8px !important; 
+  width: 100% !important;
+  
+  /* POSUN DOLEVA: Tento řádek posune celou skupinu tlačítek pod nadpis */
+  position: relative !important;
+  left: -20px !important; 
+}
+
+/* Posune Discord doprava a záporným marginem přitáhne Stáhnout s sebou doleva */
+a[href*="discord"] {
+  position: relative !important;
+  display: inline-block !important;
+  left: -17px !important;            /* Zmenšeno ze 40px, aby šel Discord doleva */
+  margin-right: -45px !important;   /* Záporný margin natvrdo přitáhne zelené tlačítko doleva */
+  top: 0px !important;
+}
+
+/* Posune DOLŮ pouze vnitřní logo/obrázek Discordu (zarovnání na střed) */
+a[href*="discord"] img,
+a[href*="discord"] i,
+a[href*="discord"] svg,
+a[href*="discord"] span {
+  position: relative !important;
+  top: 6px !important; 
+}
+
+/* Oprava celého bloku Článků a narovnání textů na mobilu */
+@media screen and (max-width: 768px) {
+  /* Cílí na celou krabici, která drží tlačítko Články */
+  div:has(> .o-webu-btn) {
+    margin-left: 0px !important;    /* Vynuluje 330px z PC, co to rozbíjelo */
+    margin-top: 5px !important;    /* Odstrčí texty bezpečně dolů */
+    text-align: center !important;  /* Vycentruje Články pěkně pod tlačítka */
+    width: 100% !important;
+    position: relative !important;
+  }
+
+  /* Samotné tlačítko necháme přirozeně, aby nic nerozbíjelo */
+  .o-webu-btn {
+    position: static !important;
+    display: inline-block !important;
+  }
+}
+
+  /* Čas, datum a textové odkazy */
   .header-left {
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
     width: 100% !important;
-    margin-bottom: 20px !important;
+    gap: 8px !important;
+    margin: 10px 0 !important;
   }
 
-  /* Obal pro mřížku tlačítek - upravíme na flexbox, aby se vedle sebe vešly tlačítko a ikonka */
-  header > div:last-of-type,
-  header .header-right,
-  header > flex {
+  /* Řádek pro Čas | O webu | Aktualizace | Meteodeník */
+  .header-info-line {
     display: flex !important;
     flex-wrap: wrap !important;
     justify-content: center !important;
     align-items: center !important;
     gap: 10px !important;
-    width: 100% !important;
-    max-width: 420px !important;
-    margin: 15px auto 0 auto !important;
+    color: var(--text-main);
+    font-size: 0.9rem !important;
   }
 
-  /* Běžná tlačítka v mřížce */
-  header a[class*="-btn"], 
-  header button, 
-  header .header-btn,
-  header > div:last-of-type > *,
-  header .header-right > * {
-    box-sizing: border-box !important;
+  /* Spodní sekce s náhledem (Meteoradar, Měsíc) */
+  .header-preview-row {
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
-    padding: 10px !important;
-    margin: 0 !important;
-  }
-
-  /* --- DISCORD TLAČÍTKO NAHORU --- */
-  header a[href*="discord"],
-  header .discord-btn {
+    gap: 12px !important;
     width: 100% !important;
-    margin-top: 0 !important;
+    margin-top: 10px !important;
   }
 
-  /* --- ZELENÉ TLAČÍTKO STÁHNOUT + VEDLEJŠÍ IKONA (ROZTAŽENÍ DO TVARU ČTVEREČKU/ OBDÉLNÍKU) --- */
-  header a[href*="download"],
-  header a[href*="stahnout"],
-  header .btn-stahnout,
-  header a:first-child,
-  header > div:last-of-type > *:nth-child(2),
-  header .header-right > *:nth-child(2) {
-    position: relative !important;
-    margin-top: -10px !important;    /* Posune je ještě o kousek výše */
-    min-height: 35px !important;     /* Sjednotí výšku s tlačítkem Sledovat web */
+  /* Sjednocení tlačítek a boxů (Meteoradar, Měsíc, Sledováno) */
+  .radar-preview-box, .moon-preview-box, .followed-box {
     display: flex !important;
-    width: 44px !important; height: 44px !important;
-    transform: translateY(6px) !important;
-    justify-content: center !important;
+    flex-direction: column !important;
     align-items: center !important;
-  }
-
-  /* Konkrétně pro tu malou ikonku vedle Stáhnout, aby vypadala jako blok */
-  header > div:last-of-type > *:nth-child(2),
-  header .header-right > *:nth-child(2) {
-    min-width: 44px !important;
-    background-color: rgba(0, 0, 0, 0.0); /* Jemné podbarvení pro tvar čtverečku */
+    justify-content: center !important;
+    gap: 5px !important;
+    padding: 8px 12px !important;
+    background: #111622 !important;
+    border: 1px solid var(--border-inner) !important;
     border-radius: 8px !important;
+    min-width: 80px !important;
   }
 
+  /* Odstraněno problematické zoomování celého webu */
   html, body {
     zoom: 0.90 !important;
   }
 }
 
+/* --- OPRAVA A VYČIŠTĚNÍ PRO OBECNÉ TŘÍDY --- */
+.o-webu-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: underline;
+}
+.o-webu-btn:hover {
+    color: var(--text-accent);
+}
 
-        .o-webu-btn {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            cursor: pointer;
-            margin-left: 10px;
-            padding: 0;
-            text-decoration: underline;
-        }
-        .o-webu-btn:hover {
-            color: var(--text-accent);
-        }
+.radar-box {
+    width: 100%;
+    margin: 10px auto;
+    background: #111622;
+    padding: 10px;
+    border-radius: 8px;
+    color: var(--text-main);
+    border: 1px solid var(--border-inner);
+    box-sizing: border-box;
+}
 
-        .radar-box {
-            width: 100%;
-            margin: 10px auto;
-            background: #111622;
-            padding: 10px;
-            border-radius: 8px;
-            color: var(--text-main);
-            border: 1px solid var(--border-inner);
-            box-sizing: border-box;
-        }
 @media (max-width: 900px) {
   header {
     flex-direction: column !important;
@@ -504,11 +532,12 @@ header { position: relative; display: flex; justify-content: space-between; padd
     </style>
 </head>
 <body>
-    <div class="container"> 
-        <header>
-            
-             <!-- LEVÁ STRANA -->
-<div class="header-left" style="display: flex; flex-direction: column; gap: 10px; position: relative;">
+    <div class="container">
+         <header style="display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; background: var(--bg-header); border-radius: 12px; position: relative;">
+
+        
+        <!-- LEVÁ STRANA -->
+<div class="header-left" style="display: flex; flex-direction: column; gap: 12.8px; position: relative;">
     
     <!-- 1. ŘÁDEK: Discord a hned vedle něj VELKÉ tlačítko Stáhnout -->
     <div style="display: flex; align-items: center; gap: 8px;">
@@ -519,13 +548,11 @@ header { position: relative; display: flex; justify-content: space-between; padd
           </svg>
         </a>
 
-
-
 </div>
 
-    <!-- Tlačítko Články posunuté a zvětšené -->
-<div style="margin-top: -10px; margin-left: 350px;">
-<button class="o-webu-btn" style="padding: -px 14px; font-size: 1rem;" onclick="window.location.href='clanky.html'">📰 Články</button>
+    <!-- Tlačítko Články - posun nahoru POUZE pro tlačítko na PC -->
+<div style="margin-top: -20px; margin-left: 315px;">
+  <button class="o-webu-btn" style="padding: 6px 14px; font-size: 1rem; transform: translateY(15px);" onclick="window.location.href='clanky.html'">📰 Články</button>
 </div>
 
 <!-- 2. ŘÁDEK POD TÍM: Čas, datum a Meteo deník -->
@@ -552,8 +579,8 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
 
         <!-- PRAVÁ STRANA: Krabičky natvrdo vpravo (přesně tam, kde je chceš) -->
         <div style="display: flex; gap: 8px; align-items: center;">
-            <button class="header-btn" onclick="document.getElementById('radar-modal').classList.add('active')">☄️ Meteoradar</button>
-            <button id="moon-trigger-btn" class="header-btn" onclick="document.getElementById('moon-modal').classList.add('active')"> Měsíc: 🌓
+            <a href="meteoradar.html" class="header-btn" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 4px;">🛰️ Meteoradar</a>
+            <a id="moon-trigger-btn" href="mesic.html" class="header-btn" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 4px;"> Měsíc: 🌓</a>
             <button id="theme-button" class="header-btn" onclick="toggleTheme()" style="font-size: 1.1rem; padding: 4px 10px;">🌙</button>
 
 
@@ -572,6 +599,18 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
 <main class="card" style="margin-top: 20px;">
     <h2 style="font-size: 2rem; color: var(--text-accent);">📰 Články a novinky</h2>
     <p>V této sekci budou psány různé články a novinky o počasí, astronomii a dalším.</p>
+
+<!-- NOVÝ ČLÁNEK O TAJFUNU -->
+<div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner); padding: 20px; border-radius: 12px;">
+    <span style="color: var(--text-muted); font-size: 0.85rem;">📅 27. srpna 2026</span>
+    <h3 style="margin: 10px 0; font-size: 1.4rem;">
+        <a href="na-cinu-se-riti-tajfun.html" style="color: var(--text-accent); text-decoration: none;">Na Čínu se řítí tajfun Saudel, na pobřeží hrozí nárazy až 150 km/h</a>
+    </h3>
+    <p style="color: var(--text-main); margin-bottom: 15px;">
+        Na jihovýchod Číny se řítí tajfun jménem Saudel. Už ji začíná ovlivňovat a na pobřeží jsou nyní nárazy větru okolo 80 km/h...
+    </p>
+    <a href="na-cinu-se-riti-tajfun.html" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek &rarr;</a>
+</div>
 
 <!-- NOVÝ ČLÁNEK O BOUŘKÁCH -->
 <div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner); padding: 20px; border-radius: 12px;">
@@ -1193,6 +1232,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
             <!-- ZAČÁTEK SCROLLOVACÍHO BOXU PRO AKTUALIZACE -->
             <div style="max-height: 380px; overflow-y: auto; padding-right: 8px; margin-bottom: 20px; scrollbar-width: thin;">
+
+<div style="text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-accent); margin-bottom: 25px; box-sizing: border-box;">
+    <span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 27. 8. 2026</span>
+    <p style="margin: 0; color: var(--text-main); font-size: 15px; line-height: 1.4;">Přidáno 20 pranostik na roční období, změna drobných věcí.</p>
+</div>
+
+<div style="text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-accent); margin-bottom: 25px; box-sizing: border-box;">
+    <span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 24. 8. 2026</span>
+    <p style="margin: 0; color: var(--text-main); font-size: 15px; line-height: 1.4;">Přidané 4 nové indexy, přidání nových ikonek počasí, přidání sdílení pod články, změna drobných věcí.</p>
+</div>
 
 <div style="text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-accent); margin-bottom: 25px; box-sizing: border-box;">
     <span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 20. 8. 2026</span>
