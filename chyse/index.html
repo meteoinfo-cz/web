@@ -605,6 +605,42 @@ img[src*="png/"] {
     height: auto !important;
 }
 
+<style>
+  /* Výchozí nastavení: BÍLÝ MOTIV (Texty budou ČERNÉ) */
+  #pranostika-box #pranostika-nadpis {
+    color: #000000 !important;
+  }
+  #pranostika-box .tlacitko-pranostiky {
+    color: #000000 !important;
+    background-color: rgba(0, 0, 0, 0.06) !important;
+  }
+
+  /* AUTOMATICKÝ ČERNÝ MOTIV (Pokud ho systém/prohlížeč aktivuje, texty zbělají) */
+  @media (prefers-color-scheme: dark) {
+    #pranostika-box #pranostika-nadpis {
+      color: #ffffff !important;
+    }
+    #pranostika-box .tlacitko-pranostiky {
+      color: #ffffff !important;
+      background-color: rgba(255, 255, 255, 0.1) !important;
+    }
+  }
+
+  /* SPECIÁLNÍ OPRAVA: Pokud tvůj web přepíná motivy ručně tlačítkem, 
+     přidej sem název třídy, kterou web používá pro tmavý režim (např. .dark-theme nebo .night-mode) */
+  .dark #pranostika-box #pranostika-nadpis,
+  .dark-mode #pranostika-box #pranostika-nadpis,
+  [data-theme="dark"] #pranostika-box #pranostika-nadpis {
+    color: #ffffff !important;
+  }
+  
+  .dark #pranostika-box .tlacitko-pranostiky,
+  .dark-mode #pranostika-box .tlacitko-pranostiky,
+  [data-theme="dark"] #pranostika-box .tlacitko-pranostiky {
+    color: #ffffff !important;
+    background-color: rgba(255, 255, 255, 0.1) !important;
+  }
+
     </style>
 </head>
 <body>
@@ -876,15 +912,17 @@ img[src*="png/"] {
 </div>
 
 <div id="pranostika-box" style="margin: 15px 0; padding: 12px 15px; border-radius: 6px; display: flex; flex-direction: column; gap: 4px; font-size: 0.95rem; transition: all 0.5s ease;">
-  <span id="pranostika-nadpis" style="color: #ffffff; font-weight: bold; font-size: 1.1rem; margin-bottom: 2px;">Pranostiky</span>
+  <!-- Nadpis "Pranostiky" -->
+  <span id="pranostika-nadpis" style="font-weight: bold; font-size: 1.1rem; margin-bottom: 2px;">Pranostiky</span>
   
+  <!-- Prostor pro načtení textu pranostiky z JavaScriptu -->
   <div id="text-pranostiky" style="font-style: italic; display: flex; flex-direction: column; gap: 4px; transition: all 0.5s ease; margin-bottom: 10px;">
     <span>Načítám pranostiky...</span>
   </div>
 
-  <!-- Tlačítko, které vás zavede na stránku pranostiky.html -->
-  <div style="display: flex; justify-content: flex-end;">
-    <a href="pranostiky.html" style="background: rgba(255, 255, 255, 0.08); border: none; color: #ffffff; padding: 5px 10px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; text-decoration: none; transition: background 0.3s;" onmouseover="this.style.background='rgba(255, 255, 255, 0.15)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.08)'">
+  <!-- Tlačítko zobrazení všech pranostik -->
+  <div style="display: flex; justify-content: flex-end; margin-top: 5px;">
+    <a href="pranostiky.html" class="tlacitko-pranostiky" style="border: none; padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; text-decoration: none; transition: all 0.3s ease;">
       Zobrazit všechny pranostiky
     </a>
   </div>
@@ -3394,23 +3432,21 @@ document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener("DOMContentLoaded", function() {
   function ziskajSezonuABarvu(mesic) {
     const barvy = {
-      jaro:   { bg: "rgba(46, 204, 113, 0.05)",  border: "#2ecc71" }, // Zelená (březen, duben, květen)
-      leto:   { bg: "rgba(231, 76, 60, 0.05)",   border: "#e74c3c" }, // Červená (červen, červenec, srpen)
-      podzim: { bg: "rgba(230, 126, 34, 0.05)",  border: "#e67e22" }, // Oranžová (září, říjen, listopad)
-      zima:   { bg: "rgba(52, 152, 219, 0.05)",  border: "#3498db" }  // Modrá (prosinec, leden, únor)
+      jaro:   { bg: "rgba(46, 204, 113, 0.05)",  border: "#2ecc71" }, 
+      leto:   { bg: "rgba(231, 76, 60, 0.05)",   border: "#e74c3c" }, 
+      podzim: { bg: "rgba(230, 126, 34, 0.05)",  border: "#e67e22" }, 
+      zima:   { bg: "rgba(52, 152, 219, 0.05)",  border: "#3498db" }  
     };
 
-    // Přesné rozřazení měsíců podle vašeho zadání
     if (mesic === 3 || mesic === 4 || mesic === 5) return barvy.jaro;
     if (mesic === 6 || mesic === 7 || mesic === 8) return barvy.leto;
     if (mesic === 9 || mesic === 10 || mesic === 11) return barvy.podzim;
-    return barvy.zima; // 12, 1, 2
+    return barvy.zima; 
   }
 
   function ziskajPranostiky(mesic, den) {
     let nalezene = [];
     
-    // Přesná významná data
     if (mesic === 1 && den === 1) nalezene.push("Na Nový rok o slepičí krok.");
     if (mesic === 2 && den === 2) nalezene.push("Na Hromnice o hodinu více.");
     if (mesic === 2 && den === 24) nalezene.push("Svatý Matěj ledy plaví, když neplaví, tak je staví.");
@@ -3429,7 +3465,6 @@ document.addEventListener("DOMContentLoaded", function() {
     if (mesic === 11 && den === 30) nalezene.push("Ondřej mosty staví, nebo je splaví.");
     if (mesic === 12 && den === 13) nalezene.push("Lucie noci upije a dni nepřidá.");
 
-    // Obecné měsíční pranostiky
     if (nalezene.length === 0) {
       if (mesic === 2) nalezene.push("Únor bílý, pole sílí.");
       if (mesic === 3) nalezene.push("Březen – za kamna vlezem.");
@@ -3469,6 +3504,32 @@ document.addEventListener("DOMContentLoaded", function() {
       kontajnerTextu.appendChild(radek);
     });
   }
+
+  // --- NOVÁ ČÁST PRO AUTOMATICKOU BARVU TEXTU (NADPIS A ODKAZ) ---
+  function aktualizujBarvuTextu() {
+    const elementyKUprave = document.querySelectorAll('.dynamic-text');
+    
+    // Zjistíme, zda má web tmavé pozadí (nebo zda tělo dokumentu obsahuje třídu 'dark', 'night' apod.)
+    const jeTmavyMotiv = window.matchMedia('(prefers-color-scheme: dark)').matches || 
+                         document.body.classList.contains('dark') || 
+                         document.body.classList.contains('dark-mode') ||
+                         document.documentElement.getAttribute('data-theme') === 'dark';
+
+    elementyKUprave.forEach(function(el) {
+      if (jeTmavyMotiv) {
+        el.style.setProperty('color', '#ffffff', 'important'); // V černém motivu bude bílý
+      } else {
+        el.style.setProperty('color', '#000000', 'important'); // V bílém motivu bude černý
+      }
+    });
+  }
+
+  // Spustíme ihned po načtení
+  aktualizujBarvuTextu();
+
+  // Pokud na webu klikáš na tlačítko pro změnu motivu, budeme sledovat změny na body
+  const observer = new MutationObserver(aktualizujBarvuTextu);
+  observer.observe(document.body, { attributes: true, attributeFilter: ['class', 'style'] });
 });
 </script>
 
