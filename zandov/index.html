@@ -1750,8 +1750,8 @@ function zmenModelVentusky(model) {
             71: "snih", 73: "snih", 75: "snih", 77: "snih", 
             80: "prehanky", 81: "prehanky", 82: "prehanky", 95: "bourka"
         };
-        if (kod >= 71 && kod <= 77) return `png/${jeZima ? "snih" : "prehanky"}.png`;
-        return `png/${mapovaniDen[kod] || "polojasno"}.png`;
+        if (kod >= 71 && kod <= 77) return `/web/png/${jeZima ? "snih" : "prehanky"}.png`;
+        return `/web/png/${mapovaniDen[kod] || "polojasno"}.png`;
     }
 
     const spoctiMinuty = (textKombinovany) => {
@@ -1799,7 +1799,7 @@ function zmenModelVentusky(model) {
         return `png/${jeNoc ? "destove_prehanky_noc" : "prehanky"}.png`;
     }
 
-    return `png/${mapovani[kod] || "polojasno"}.png`;
+    return `/web/png/${mapovani[kod] || "polojasno"}.png`;
 }
 
         function aktualizujHomeCheck() {
