@@ -702,8 +702,8 @@ img[src*="png/"] {
 
         <!-- PRAVÁ STRANA: Krabičky natvrdo vpravo (přesně tam, kde je chceš) -->
         <div style="display: flex; gap: 8px; align-items: center;">
-            <a href="https://meteoinfo-cz.github.io/web/meteoradar.html" class="header-btn" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 4px;">🛰️ Meteoradar</a>
-            <a id="moon-trigger-btn" href="https://meteoinfo-cz.github.io/web/mesic.html" class="header-btn" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 4px;"> Měsíc: 🌓</a>
+            <a href="https://meteoinfo-cz.github.io/web/meteoradar/" class="header-btn" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 4px;">🛰️ Meteoradar</a>
+            <a id="moon-trigger-btn" href="https://meteoinfo-cz.github.io/web/mesic/" class="header-btn" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 4px;"> Měsíc: 🌓</a>
             <button id="theme-button" class="header-btn" onclick="toggleTheme()" style="font-size: 1.1rem; padding: 4px 10px;">🌙</button>
 
 
@@ -713,6 +713,8 @@ img[src*="png/"] {
         <div class="info-box">i</div>
         <div class="tooltip-text">
             Po kliknutí na tlačítko Sledovat Vám začnou přicházet zprávy o mimořádných situacích (např. silné bouřky, vichřice). Sledování můžete kdykoliv zrušit.
+            <br><br>
+            <span style="color: #ff4d4d;">UPOZORNĚNÍ: Poslední dobou je problém zprovoznit tlačítko Sledovat web. Když na něj kliknete, oznámení se sice objeví, ale výstrahy už ne. Na této funkci budu dále pracovat a zkusím to co nejrychleji zprovoznit. Děkuji.</span>
         </div>
     </div>
 </div>
@@ -922,7 +924,7 @@ img[src*="png/"] {
 
   <!-- Tlačítko zobrazení všech pranostik -->
   <div style="display: flex; justify-content: flex-end; margin-top: 5px;">
-    <a href="https://meteoinfo-cz.github.io/web/pranostiky.html" class="tlacitko-pranostiky" style="border: none; padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; text-decoration: none; transition: all 0.3s ease;">
+    <a href="https://meteoinfo-cz.github.io/web/pranostiky/" class="tlacitko-pranostiky" style="border: none; padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; text-decoration: none; transition: all 0.3s ease;">
       Zobrazit všechny pranostiky
     </a>
   </div>
@@ -1036,6 +1038,11 @@ function zmenModelVentusky(model) {
 
         <!-- ZAČÁTEK SCROLLOVACÍHO BOXU PRO AKTUALIZACE -->
 <div style="max-height: 380px; overflow-y: auto; padding-right: 8px; margin-bottom: 20px; scrollbar-width: thin;">
+
+<div style="text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-accent); margin-bottom: 25px; box-sizing: border-box;">
+    <span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 29.-31. 8. 2026</span>
+    <p style="margin: 0; color: var(--text-main); font-size: 15px; line-height: 1.4;">Upraveny URL adresy na všech podstránkách.</p>
+</div>
 
 <div style="text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-accent); margin-bottom: 25px; box-sizing: border-box;">
     <span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 27. 8. 2026</span>
