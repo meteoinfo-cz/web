@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jak a proč tato stránka vznikla? - MeteoInfo</title>
-<link rel="apple-touch-icon" sizes="180x180" href="../web-ikonky/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="48x48" href="../web-ikonky/favicon-48x48.png">
-<link rel="icon" type="image/png" sizes="32x32" href="../web-ikonky/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="../web-ikonky/favicon-16x16.png">
+    <title>Meteoradar - MeteoInfo</title>
+<link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="48x48" href="favicon-48x48.png">
+<link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png">
 <link rel="manifest" href="./manifest.json">
     
 <style>
@@ -137,7 +137,7 @@ header { position: relative; display: flex; justify-content: space-between; padd
 a[href*="discord"] {
   position: relative !important;
   display: inline-block !important;
-  left: 5px !important;            /* Zmenšeno ze 40px, aby šel Discord doleva */
+  left: -17px !important;            /* Zmenšeno ze 40px, aby šel Discord doleva */
   margin-right: -45px !important;   /* Záporný margin natvrdo přitáhne zelené tlačítko doleva */
   top: 0px !important;
 }
@@ -529,41 +529,6 @@ a[href*="discord"] span {
   transform: scale(1.08);
 }
 
-CSS
-
-#install-btn + span {
-    position: relative;
-}
-
-#install-btn + span:hover::after {
-    content: "Pokud tuto webovou stránku máte rádi a často jí sledujete, doporučujeme si jí stáhnout. Po kliknutí na tlačítko Stáhnout, se Vám stáhne \"aplikace\" na plochu mobilu, počítače a jiných zařízení. Takže jestli rychle spěcháte, stáhnutí je dobrá volba. Upozorňujeme, že to lze stáhnout na všech prohlížečích (Chrome, Microsoft Edge, atd.), ale na Firefoxu Vám to z důvodu chybějící podpory desktopových PWA aplikací nepůjde.";
-    white-space: pre-line;
-    position: absolute;
-    top: 45%;
-    left: 90px;
-    width: 270px;
-    background-color: #000000;
-    color: #ffffff;
-    border: 2px solid #ffffff;
-    border-radius: 6px;
-    padding: 10px;
-    font-size: 12px;
-    font-weight: normal;
-    text-align: left;
-    z-index: 9999;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-    opacity: 0;
-    visibility: hidden;
-    animation: fadeInTooltip 0.2s ease forwards;
-}
-
-@keyframes fadeInTooltip {
-    to {
-        opacity: 1;
-        visibility: visible;
-    }
-}
-
     </style>
 </head>
 <body>
@@ -587,7 +552,7 @@ CSS
 
     <!-- Tlačítko Články - posun nahoru POUZE pro tlačítko na PC -->
 <div style="margin-top: -20px; margin-left: 315px;">
-  <button class="o-webu-btn" style="padding: 6px 14px; font-size: 1rem; transform: translateY(15px);" onclick="window.location.href='https://meteoinfo-cz.github.io/web/clanky.html'">📰 Články</button>
+  <button class="o-webu-btn" style="padding: 6px 14px; font-size: 1rem; transform: translateY(15px);" onclick="window.location.href='clanky.html'">📰 Články</button>
 </div>
 
 <!-- 2. ŘÁDEK POD TÍM: Čas, datum a Meteo deník -->
@@ -631,86 +596,6 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
     </div>
 </div>
         </header>
-
-<!-- CELÝ ČLÁNEK PŘÍMO NA STRÁNCE -->
-<main class="card" style="margin-top: 20px; background: var(--bg-card); border: 1px solid var(--border-inner); border-radius: 12px; padding: 35px;">
-    <h2 style="font-size: 2rem; color: var(--text-accent); margin-top: 0; margin-bottom: 10px;">Jak a proč tato stránka vznikla?</h2>
-    <div style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 30px;">📅 20. srpna 2026</div>
-
-    <p style="font-weight: bold; margin-bottom: 20px; font-size: 1.05rem;">
-        Vítám vás v této sekci, kde budou psány články o počasí, astronomii a dalším.
-    </p>
-
-    <p style="margin-bottom: 20px; font-size: 1.05rem;">
-        Abych vás všechny přivítal (jak v této sekci, tak na webu – pokud jste tu třeba poprvé), tak níže vysvětlím, jak a proč tato stránka vznikla.
-    </p>
-
-    <p style="margin-bottom: 20px; font-size: 1.05rem;">
-        Tato stránka vznikla mnou, tedy Tadeášem (kde se například na In-počasí – populárním meteorologickém webu, jmenuji Tadeas). Baví mě hodně programování a meteorologie.
-    </p>
-
-    <h3 style="color: var(--text-accent); font-size: 1.4rem; margin-top: 40px; margin-bottom: 15px; border-bottom: 2px solid var(--text-accent); padding-bottom: 8px; display: inline-block;">
-        28. 06. 2026 – Tímto dnem to začalo
-    </h3>
-
-    <p style="margin-bottom: 20px; font-size: 1.05rem;">
-        Přesně v toto datum vše začalo. Jelikož se už meteorologii věnuji cca 8 let a prohlížel jsem si ostatní webové stránky o počasí, tak mě to zaujalo a přemýšlel jsem, že si vytvořím vlastní webovou stránku o počasí.
-    </p>
-
-    <p style="margin-bottom: 20px; font-size: 1.05rem;">
-        Například na In-počasí už chodím cca 5 let. Proto jsem před necelými dvěma měsíci začal pracovat na svém novém projektu.
-    </p>
-
-    <p style="margin-bottom: 20px; font-size: 1.05rem;">
-        Zprvu se můj web jmenoval Meteoinfo-cz, ale o několik dní později jsem ho přejmenoval pouze na MeteoInfo. Proč? Tento web plánuji rozšířit i do okolních států, později i do celé Evropy, ale určitě to zabere hodně práce. Prozatím můj web by byl pro Evropu, ale uvažuji, že tento web do budoucna přesunu až do Ameriky, či Austrálie. V URL adrese mého webu však ale stále -cz prozatím je.
-    </p>
-
-    <p style="margin-bottom: 20px; font-size: 1.05rem;">
-        Ze začátku web působil prázdně. Jenom výstrahy a předpovědi. Ale já jsem se nevzdal, a začal jsem pracovat na něčem originálním. Posléze mě napadlo, že v česku žije hodně pejsků a proto jsem založil <strong>Psí index</strong>, který se mění podle aktuální teploty v daném městě a určuje, jak bezpečně venčit pejska venku (např. pokud už je nad 30 °C, tak se doporučuje venčit hlavně ve stínu a krátce).
-    </p>
-
-    <p style="margin-bottom: 20px; font-size: 1.05rem;">
-        Hned ale po Psím indexu vzniklo dalších 10 indexů, které se určitě budou hodit. V nejbližší době plánuji přidat ještě další.
-    </p>
-
-    <p style="margin-bottom: 20px; font-size: 1.05rem;">
-        Pak také vznikly další zajímavé věci, jako například Meteo deník, Meteoradar, Měsíc, Meteo Asistent, Předpověď na hodiny, 3 dny a 14 dní a nebo dokonce i odkaz na náš Discord server (Meteoclub) a tlačítko Stáhnout – více v infu vedle tlačítka. Přidal jsem také světlý a tmavý motiv, který si můžete měnit. Můžete si také zapnout Sledovat web, díky této funkci budete informováni o různých výstrahách – musím ale říct, že výstrahy je poslední dobu pořád problém a nepřicházejí. Na tomto problému budu pracovat, abyste upozornění dostávali včas. Na tomto webu budou také pravidelně probíhat další aktualizace.
-    </p>
-
-    <p style="font-weight: bold; margin-top: 30px; font-size: 1.1rem; color: var(--text-accent);">
-        Doufám, že se vám na tomto webu bude líbit. Budu moc rád za sdílení, abychom web rozšířili do celého česka.
-    </p>
-
-    <!-- DOLNÍ ŘÁDEK: Zpět vlevo + Nadpis a tlačítka vpravo -->
-<div style="margin-top: 40px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 20px;">
-    <!-- Zpět na seznam -->
-    <div>
-        <a href="https://meteoinfo-cz.github.io/web/clanky/" style="color: var(--text-accent); text-decoration: none; font-weight: bold;">← Zpět na seznam článků</a>
-    </div>
-
-    <!-- Pravá strana: Nadpis + tlačítka -->
-    <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
-        <!-- Ztučněný text nad tlačítky -->
-        <div style="font-size: 0.9rem; font-weight: 800; color: var(--text-muted, #666); text-transform: uppercase; letter-spacing: 0.5px;">
-            Sdílej tento článek!
-        </div>
-
-<div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
-    <!-- Facebook -->
-    <a href="https://www.facebook.com/sharer/sharer.php?u=" target="_blank" id="share-fb" style="background: var(--bg-main, #f1f3f5); border: 1px solid var(--border-inner, #dcedf2); padding: 6px 12px; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 700; color: #1877F2; display: inline-flex; align-items: center; gap: 5px;">
-        📘 Facebook
-    </a>
-
-    <!-- WhatsApp -->
-    <a href="https://api.whatsapp.com/send?text=Přečti%20si%20tento%20článek%20na%20MeteoInfo!" target="_blank" style="background: var(--bg-main, #f1f3f5); border: 1px solid var(--border-inner, #dcedf2); padding: 6px 12px; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 700; color: #25d366; display: inline-flex; align-items: center; gap: 5px;">
-        💬 WhatsApp
-    </a>
-
-    <!-- X (Twitter) -->
-    <a href="https://twitter.com/intent/tweet?text=Přečti%20si%20tento%20článek%20na%20MeteoInfo!" target="_blank" style="background: var(--bg-main, #f1f3f5); border: 1px solid var(--border-inner, #dcedf2); padding: 6px 12px; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 700; color: var(--text-accent, #000); display: inline-flex; align-items: center; gap: 5px;">
-        𝕏 X
-    </a>
-</div>
 
 <!-- VELKÉ OKNO METEO DENÍKU S ČISTOU TABULKOU -->
 <script>
@@ -1514,6 +1399,59 @@ function toggleTheme() {
         .catch((err) => console.log('Chyba při registraci SW:', err));
     });
   }
+</script>
+
+<!-- Hlavní karta s meteoradarem -->
+<main class="card">
+    
+    <!-- 1. PRVNÍ MAPA (RainViewer) -->
+    <h3 style="margin-top: 0; color: var(--text-accent); text-align: center; font-size: 1.8rem; margin-bottom: 20px;">🛰️ Živý srážkový meteoradar (RainViewer)</h3>
+    
+    <div class="radar-box" style="padding: 0; overflow: hidden; border-radius: 8px; border: 1px solid var(--border-inner);">
+        <iframe src="https://www.rainviewer.com/map.html?loc=49.2044,16.0491,5.825044397602779&oC=true&oCS=1&oF=1&c=9&o=83&lm=1&layer=radar&sm=1&sn=1" style="border:0; width:100%; height:55vh;" allowfullscreen></iframe>
+    </div>
+    
+    <!-- 2. DRUHÁ MAPA (Ventusky) -->
+<div style="margin-top: 25px; border-top: 2px solid rgba(0,0,0,0.1); padding-top: 20px;">
+    <h3 style="color: var(--text-accent); text-align: center; margin-bottom: 15px;">🌡️ Ventusky předpověď počasí</h3>
+    
+    <div style="display:block!important;position:relative!important;max-width:177.899vh!important;margin:auto!important;padding:0!important;border:0!important">
+        <div style="display:block!important;position:relative!important;width:100%!important;height:0!important;box-sizing:content-box!important;margin:0!important;border:0!important;padding:0 0 56.212%!important;left:0!important;top:0!important;right:0!important;bottom:0!important">
+            
+            <div id="ventusky-container" style="position:absolute;left:0;top:0;width:100%;height:100%;">
+                <iframe id="ventusky-iframe" src="https://embed.ventusky.com/?p=49.81;15.62;6&l=temperature-2m" style="display:block!important;position:absolute!important;left:0!important;top:0!important;width:100%!important;height:100%!important;margin:0!important;padding:0!important;border:0!important;right:auto!important;bottom:auto!important" loading="lazy"></iframe>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 3. INTERAKTIVNÍ VÝBĚR -->
+    <div style="margin-top: 15px; text-align: center;">
+        <p style="font-size: 14px; font-weight: bold; margin-bottom: 8px; color: var(--text-main, #333);">Vybrat meteorologický model:</p>
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;">
+            <button onclick="zmenModelVentusky('icon')" style="background: #f0f0f0; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; color: #333; border: 1px solid #ccc;">ICON</button>
+            <button onclick="zmenModelVentusky('gfs')" style="background: #f0f0f0; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; color: #333; border: 1px solid #ccc;">GFS</button>
+            <button onclick="zmenModelVentusky('gem')" style="background: #f0f0f0; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; color: #333; border: 1px solid #ccc;">GEM</button>
+            <button onclick="zmenModelVentusky('aladin')" style="background: #f0f0f0; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; color: #333; border: 1px solid #ccc;">Aladin</button>
+        </div>
+    </div>
+</div>
+
+<!-- JAVASCRIPT -->
+<script>
+function zmenModelVentusky(model) {
+    var container = document.getElementById('ventusky-container');
+    if (!container) return;
+
+    // Základní embed URL z tvého kódu (včetně pozice ČR a vrstvy teploty)
+    var baseEmbedUrl = "https://embed.ventusky.com/?p=49.81;15.62;6&l=temperature-2m";
+    
+    // Připojení modelu k URL (Ventusky používá parametr m=)
+    var novaUrl = baseEmbedUrl + "&m=" + model;
+    
+    // Výměna iframe s novým parametrem modelu
+    container.innerHTML = '<iframe id="ventusky-iframe" src="' + novaUrl + '" style="display:block!important;position:absolute!important;left:0!important;top:0!important;width:100%!important;height:100%!important;margin:0!important;padding:0!important;border:0!important;right:auto!important;bottom:auto!important" loading="lazy"></iframe>';
+}
 </script>
 
 </body> 

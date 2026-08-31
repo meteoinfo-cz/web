@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Články - MeteoInfo</title>
+    <title>Měsíc - MeteoInfo</title>
 <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="48x48" href="favicon-48x48.png">
 <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png">
@@ -98,6 +98,7 @@ header { position: relative; display: flex; justify-content: space-between; padd
 .header-btn { background: var(--bg-inner); border: 1px solid var(--border-inner); color: var(--text-main); padding: 6px 12px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 0.85rem; }
 .header-btn:hover { border-color: var(--text-accent); }
 
+/* --- FINÁLNÍ ÚPRAVA PRO MOBIL --- */
 /* --- FINÁLNÍ ÚPRAVA PRO MOBIL --- */
 @media (max-width: 900px) {
   /* Hlavní kontejner - vše řadíme přehledně pod sebe */
@@ -579,8 +580,8 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
 
         <!-- PRAVÁ STRANA: Krabičky natvrdo vpravo (přesně tam, kde je chceš) -->
         <div style="display: flex; gap: 8px; align-items: center;">
-            <a href="meteoradar.html" class="header-btn" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 4px;">🛰️ Meteoradar</a>
-            <a id="moon-trigger-btn" href="mesic.html" class="header-btn" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 4px;"> Měsíc: 🌓</a>
+            <a href="https://meteoinfo-cz.github.io/web/meteoradar/" class="header-btn" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 4px;">🛰️ Meteoradar</a>
+            <a id="moon-trigger-btn" href="https://meteoinfo-cz.github.io/web/mesic/" class="header-btn" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 4px;"> Měsíc: 🌓</a>
             <button id="theme-button" class="header-btn" onclick="toggleTheme()" style="font-size: 1.1rem; padding: 4px 10px;">🌙</button>
 
 
@@ -590,136 +591,12 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
         <div class="info-box">i</div>
         <div class="tooltip-text">
             Po kliknutí na tlačítko Sledovat Vám začnou přicházet zprávy o mimořádných situacích (např. silné bouřky, vichřice). Sledování můžete kdykoliv zrušit.
+            <br><br>
+            <span style="color: #ff4d4d;">UPOZORNĚNÍ: Poslední dobou je problém zprovoznit tlačítko Sledovat web. Když na něj kliknete, oznámení se sice objeví, ale výstrahy už ne. Na této funkci budu dále pracovat a zkusím to co nejrychleji zprovoznit. Děkuji.</span>
         </div>
     </div>
 </div>
         </header>
-
-        <!-- OBSAH STRÁNKY S ČLÁNKY -->
-<main class="card" style="margin-top: 20px;">
-    <h2 style="font-size: 2rem; color: var(--text-accent);">📰 Články a novinky</h2>
-    <p>V této sekci budou psány různé články a novinky o počasí, astronomii a dalším.</p>
-
-<!-- NOVÝ ČLÁNEK O DEŠTI -->
-<div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner); padding: 20px; border-radius: 12px;">
-    <span style="color: var(--text-muted); font-size: 0.85rem;">📅 30. srpna 2026</span>
-    <h3 style="margin: 10px 0; font-size: 1.4rem;">
-        <a href="clanky/studena-fronta-prinese-srazky-30-srpna-2026/index.html" style="color: var(--text-accent); text-decoration: none;">Přes naše území přejde studená fronta, přinese srážky a bouřky</a>
-    </h3>
-    <p style="color: var(--text-main); margin-bottom: 15px;">
-        V zítřejších ranních hodinách začne přes Česko přecházet studená fronta. Na ní se objeví srážky a ojediněle také bouřky...
-    </p>
-    <a href="clanky/studena-fronta-prinese-srazky-30-srpna-2026/index.html" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek &rarr;</a>
-</div>
-
-<!-- NOVÝ ČLÁNEK O DEŠTI -->
-<div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner); padding: 20px; border-radius: 12px;">
-    <span style="color: var(--text-muted); font-size: 0.85rem;">📅 29. srpna 2026</span>
-    <h3 style="margin: 10px 0; font-size: 1.4rem;">
-        <a href="clanky/zaprselo-po-celem-cesku-29-srpna-2026/index.html" style="color: var(--text-accent); text-decoration: none;">Po delší době zapršelo po celém Česku, sucho na některých místech ale stále přetrvává</a>
-    </h3>
-    <p style="color: var(--text-main); margin-bottom: 15px;">
-        Během včerejšího dne na našem území začalo pršet. Předpovídány byly také velmi silné bouřky, které byly nakonec o něco slabší, než se očekávalo...
-    </p>
-    <a href="clanky/zaprselo-po-celem-cesku-29-srpna-2026/index.html" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek &rarr;</a>
-</div>
-
-<!-- NOVÝ ČLÁNEK O VELMI SILNÝCH BOUŘKÁCH -->
-<div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner); padding: 20px; border-radius: 12px;">
-    <span style="color: var(--text-muted); font-size: 0.85rem;">📅 28. srpna 2026</span>
-    <h3 style="margin: 10px 0; font-size: 1.4rem;">
-        <a href="clanky/silne-bourky-a-supercely-28-srpna-2026/index.html" style="color: var(--text-accent); text-decoration: none;">Dnes velmi silné bouřky, hrozí četné supercely</a>
-    </h3>
-    <p style="color: var(--text-main); margin-bottom: 15px;">
-        Máme tu další bouřkový den, který by mohl být, co se týče bouřek, nejintenzivnější v tomto roce. Hrozí totiž velmi silné bouřky a četné supercely...
-    </p>
-    <a href="clanky/silne-bourky-a-supercely-28-srpna-2026/index.html" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek &rarr;</a>
-</div>
-
-<!-- NOVÝ ČLÁNEK O TAJFUNU -->
-<div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner); padding: 20px; border-radius: 12px;">
-    <span style="color: var(--text-muted); font-size: 0.85rem;">📅 27. srpna 2026</span>
-    <h3 style="margin: 10px 0; font-size: 1.4rem;">
-        <a href="clanky/tajfun-saudel-v-cine-27-srpna-2026/index.html" style="color: var(--text-accent); text-decoration: none;">Na Čínu se řítí tajfun Saudel, na pobřeží hrozí nárazy až 150 km/h</a>
-    </h3>
-    <p style="color: var(--text-main); margin-bottom: 15px;">
-        Na jihovýchod Číny se řítí tajfun jménem Saudel. Už ji začíná ovlivňovat a na pobřeží jsou nyní nárazy větru okolo 80 km/h...
-    </p>
-    <a href="clanky/tajfun-saudel-v-cine-27-srpna-2026/index.html" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek &rarr;</a>
-</div>
-
-<!-- NOVÝ ČLÁNEK O BOUŘKÁCH -->
-<div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner); padding: 20px; border-radius: 12px;">
-    <span style="color: var(--text-muted); font-size: 0.85rem;">📅 26. srpna 2026</span>
-    <h3 style="margin: 10px 0; font-size: 1.4rem;">
-        <a href="clanky/v-patek-silne-bourky-26-srpna-2026/index.html" style="color: var(--text-accent); text-decoration: none;">V pátek dorazí další velmi silné bouřky s prudkými nárazy větru</a>
-    </h3>
-    <p style="color: var(--text-main); margin-bottom: 15px;">
-        Tento pátek na naše území dorazí studená fronta, která s sebou přinese ochlazení a další bouřky. Hlavně s prudkými nárazy větru...
-    </p>
-    <a href="clanky/v-patek-silne-bourky-26-srpna-2026/index.html" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek &rarr;</a>
-</div>
-
-<!-- NOVÝ ČLÁNEK O TORNÁDU -->
-<div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner); padding: 20px; border-radius: 12px;">
-    <span style="color: var(--text-muted); font-size: 0.85rem;">📅 25. srpna 2026</span>
-    <h3 style="margin: 10px 0; font-size: 1.4rem;">
-        <a href="clanky/tornado-na-jihu-francie-25-srpna-2026/index.html" style="color: var(--text-accent); text-decoration: none;">Na jihu Francie v obci Pomas udeřilo silné tornádo</a>
-    </h3>
-    <p style="color: var(--text-main); margin-bottom: 15px;">
-        V podvečerních hodinách se na jihu Francie začaly tvořit až extrémně silné bouřky, které přecházely i v supercely. Na jihu Francie i dokonce do tornáda...
-    </p>
-    <a href="clanky/tornado-na-jihu-francie-25-srpna-2026/index.html" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek &rarr;</a>
-</div>
-
-<!-- NOVÝ ČLÁNEK O CHLADNÉM RÁNU -->
-<div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner); padding: 20px; border-radius: 12px;">
-    <span style="color: var(--text-muted); font-size: 0.85rem;">📅 23. srpna 2026</span>
-    <h3 style="margin: 10px 0; font-size: 1.4rem;">
-        <a href="clanky/dneska-bylo-chladne-rano-23-srpna-2026/index.html" style="color: var(--text-accent); text-decoration: none;">Dneska bylo chladné ráno, na Šumavě i mrzlo</a>
-    </h3>
-    <p style="color: var(--text-main); margin-bottom: 15px;">
-        Po delší době k nám zavítalo chladné ráno. Třeba na Šumavě i mrzlo...
-    </p>
-    <a href="clanky/dneska-bylo-chladne-rano-23-srpna-2026/index.html" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek &rarr;</a>
-</div>
-
-<!-- NOVÝ ČLÁNEK O ZATMĚNÍ MĚSÍCE -->
-<div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner); padding: 20px; border-radius: 12px;">
-    <span style="color: var(--text-muted); font-size: 0.85rem;">📅 22. srpna 2026</span>
-    <h3 style="margin: 10px 0; font-size: 1.4rem;">
-        <a href="clanky/blizi-se-zatmeni-mesice-22-srpna-2026/index.html" style="color: var(--text-accent); text-decoration: none;">Blíží se výrazné zatmění Měsíce</a>
-    </h3>
-    <p style="color: var(--text-main); margin-bottom: 15px;">
-        Už za necelý týden nastane v Česku a po celém světě zatmění Měsíce. Jelikož minulý rok jsme mohli vidět úplné zatmění Měsíce, tak letos to bude pouze částečné...
-    </p>
-    <a href="clanky/blizi-se-zatmeni-mesice-22-srpna-2026/index.html" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek →</a>
-</div>
-
-    <!-- NOVÝ ČLÁNEK O BOUŘKÁCH -->
-    <div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner);">
-        <span style="color: var(--text-muted); font-size: 0.85rem;">📅 21. srpna 2026</span>
-        <h3 style="margin: 10px 0; font-size: 1.4rem;">
-            <a href="clanky/hrozi-velmi-silne-bourky-21-srpna-2026/index.html" style="color: var(--text-accent); text-decoration: none;">Hrozí až velmi silné bouřky, hlavním rizikem bude vítr a srážky</a>
-        </h3>
-        <p style="color: var(--text-main); margin-bottom: 15px;">
-            Česko opět čeká další bouřlivý den. Zatímco včera bouřky řádily hlavně na Moravě a ve Slezsku, tak dnes udeří hlavně ve středních Čechách a na Vysočině...
-        </p>
-        <a href="clanky/hrozi-velmi-silne-bourky-21-srpna-2026/index.html" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek →</a>
-    </div>
-
-    <!-- STARŠÍ ČLÁNEK (DOLE) -->
-    <div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner);">
-        <span style="color: var(--text-muted); font-size: 0.85rem;">📅 20. srpna 2026</span>
-        <h3 style="margin: 10px 0; font-size: 1.4rem;">
-            <a href="clanky/proc-tato-stranka-vznikla-20-srpna-2026/index.html" style="color: var(--text-accent); text-decoration: none;">Jak a proč tato stránka vznikla?</a>
-        </h3>
-        <p style="color: var(--text-main); margin-bottom: 15px;">
-            Vítám vás v této sekci, kde budou psány články o počasí, astronomii a dalším. Přečtěte si, jak vznikl projekt MeteoInfo...
-        </p>
-        <a href="clanky/proc-tato-stranka-vznikla-20-srpna-2026/index.html" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek →</a>
-    </div>
-</main>
 
 <!-- VELKÉ OKNO METEO DENÍKU S ČISTOU TABULKOU -->
 <script>
@@ -1270,6 +1147,11 @@ document.addEventListener('DOMContentLoaded', () => {
             <div style="max-height: 380px; overflow-y: auto; padding-right: 8px; margin-bottom: 20px; scrollbar-width: thin;">
 
 <div style="text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-accent); margin-bottom: 25px; box-sizing: border-box;">
+    <span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 29.-31. 8. 2026</span>
+    <p style="margin: 0; color: var(--text-main); font-size: 15px; line-height: 1.4;">Upraveny URL adresy na všech podstránkách.</p>
+</div>
+
+<div style="text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-accent); margin-bottom: 25px; box-sizing: border-box;">
     <span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 27. 8. 2026</span>
     <p style="margin: 0; color: var(--text-main); font-size: 15px; line-height: 1.4;">Přidáno 20 pranostik na roční období, změna drobných věcí.</p>
 </div>
@@ -1518,6 +1400,86 @@ function toggleTheme() {
         .catch((err) => console.log('Chyba při registraci SW:', err));
     });
   }
+</script>
+
+<!-- Hlavní karta s předpovědí Měsíce -->
+<main class="card">
+    <h3 style="margin-top: 0; color: var(--text-accent); font-size: 2rem; margin-bottom: 10px;">Předpověď fází Měsíce</h3>
+    <div id="moon-current-status" style="font-weight: bold; margin-bottom: 25px; font-size: 1.1rem; color: var(--text-muted);">Načítám aktuální stav...</div>
+    
+    <div style="overflow-x: auto;">
+        <table class="moon-table" style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="border-bottom: 1px solid var(--border-inner);">
+                    <th style="width: 20%; text-align: left; padding: 12px 10px;">Datum</th>
+                    <th style="width: 15%; text-align: center; padding: 12px 10px;">Ikona</th>
+                    <th style="width: 45%; text-align: left; padding: 12px 10px;">Fáze</th>
+                    <th style="width: 20%; text-align: right; padding: 12px 15px 12px 10px;">Osvětlení</th>
+                </tr>
+            </thead>
+            <tbody id="moon-forecast-rows">
+                <!-- Zde se dynamicky naplní tabulka pomocí vašeho skriptu -->
+            </tbody>
+        </table>
+    </div>
+
+    <div id="moon-times-box" style="margin-top: 20px; padding: 15px; background: var(--bg-body); border: 1px solid var(--border-inner); border-radius: 8px; text-align: center; font-size: 1rem;">
+        🌙 Východ Měsíce: <strong id="modal-moon-rise">19:07</strong> &nbsp;|&nbsp; 🌑 Západ Měsíce: <strong id="modal-moon-set">03:36</strong>
+    </div>
+</main>
+
+<!-- Váš skript upravený pro spuštění na této podstránce -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const rows = document.getElementById('moon-forecast-rows');
+    const status = document.getElementById('moon-current-status');
+    if(!rows) return;
+    rows.innerHTML = "";
+    
+    const fazaText = ["Novoluní", "Dorůstající srpek", "První čtvrť", "Dorůstající měsíc", "Úplněk", "Couvající měsíc", "Poslední čtvrť", "Ubývající srpek"];
+    const fazaIko = ["🌑", "🌒", "🌓", "🌔", "🌕", "🌖", "🌗", "🌘"];
+    
+    let d = new Date();
+    let ts = d.getTime();
+    
+    let synodic = 29.530588853;
+    let baseDate = new Date(1970, 0, 7, 20, 35, 0).getTime();
+    let diff = ts - baseDate;
+    let lcycle = diff / (1000 * 60 * 60 * 24);
+    let age = lcycle % synodic;
+    if (age < 0) age += synodic;
+
+    function spoctiIndexFaze(vynasobeneDny) {
+        if (vynasobeneDny < 1.0 || vynasobeneDny > 28.53) return 0;
+        if (vynasobeneDny >= 1.0 && vynasobeneDny < 6.38) return 1;
+        if (vynasobeneDny >= 6.38 && vynasobeneDny < 8.38) return 2;
+        if (vynasobeneDny >= 8.38 && vynasobeneDny < 13.76) return 3;
+        if (vynasobeneDny >= 13.76 && vynasobeneDny < 15.76) return 4;
+        if (vynasobeneDny >= 15.76 && vynasobeneDny < 21.14) return 5;
+        if (vynasobeneDny >= 21.14 && vynasobeneDny < 23.14) return 6;
+        return 7;
+    }
+
+    let idx = spoctiIndexFaze(age);
+    status.innerText = `Dnes je: ${fazaText[idx]} ${fazaIko[idx]} (Stáří: ${age.toFixed(1)} dní)`;
+
+    for(let i=0; i<7; i++) {
+        let tDate = new Date();
+        tDate.setDate(d.getDate() + i);
+        let fAge = ((tDate.getTime() - baseDate) / (1000 * 60 * 60 * 24)) % synodic;
+        if (fAge < 0) fAge += synodic;
+        
+        let fIdx = spoctiIndexFaze(fAge);
+        let pct = fAge < synodic / 2 ? (fAge / (synodic / 2)) * 100 : (1 - ((fAge - (synodic / 2)) / (synodic / 2))) * 100;
+
+        rows.innerHTML += `<tr style="border-bottom:1px solid var(--border-inner);">
+            <td style="padding:14px 10px; width: 20%;">${tDate.getDate()}.${tDate.getMonth()+1}.</td>
+            <td style="text-align:center; padding:14px 10px; width: 15%;">${fazaIko[fIdx]}</td>
+            <td style="padding:14px 10px; width: 45%;">${fazaText[fIdx]}</td>
+            <td style="text-align:right; padding:14px 15px 14px 10px; width: 20%; font-weight:bold;">${pct.toFixed(0)}%</td>
+        </tr>`;
+    }
+});
 </script>
 
 </body> 
