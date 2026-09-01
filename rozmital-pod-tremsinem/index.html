@@ -3472,16 +3472,9 @@ document.addEventListener("DOMContentLoaded", function() {
     if (mesic === 11 && den === 30) nalezene.push("Ondřej mosty staví, nebo je splaví.");
     if (mesic === 12 && den === 13) nalezene.push("Lucie noci upije a dni nepřidá.");
 
+    // Pokud pro dnešní den žádná pranostika neexistuje, vypíše se požadovaný text
     if (nalezene.length === 0) {
-      if (mesic === 2) nalezene.push("Únor bílý, pole sílí.");
-      if (mesic === 3) nalezene.push("Březen – za kamna vlezem.");
-      if (mesic === 4) nalezene.push("Duben – ještě tam budem.");
-      if (mesic === 5) nalezene.push("Studený máj – v stodole ráj.");
-      if (mesic === 7 || mesic === 8) nalezene.push("Jaká léta, taková zima.");
-    }
-
-    if (nalezene.length === 0) {
-      nalezene.push("Čistý říjen, jasný říjen – studený bude příští duben.");
+      nalezene.push("Žádná z daných pranostik zde aktuálně není.");
     }
 
     return nalezene;
