@@ -138,7 +138,7 @@ a[href*="discord"] {
   position: relative !important;
   display: inline-block !important;
   left: 5px !important;            /* Zmenšeno ze 40px, aby šel Discord doleva */
-  margin-right: -45px !important;   /* Záporný margin natvrdo přitáhne zelené tlačítko doleva */
+  margin-right: 10px !important;   /* Záporný margin natvrdo přitáhne zelené tlačítko doleva */
   top: 0px !important;
 }
 
@@ -148,7 +148,7 @@ a[href*="discord"] i,
 a[href*="discord"] svg,
 a[href*="discord"] span {
   position: relative !important;
-  top: 6px !important; 
+  top: 3px !important; 
 }
 
 /* Oprava celého bloku Článků a narovnání textů na mobilu */
@@ -353,7 +353,7 @@ a[href*="discord"] span {
 }
 
 
-/* Tlačítko Sledovat web */
+/* Tlačítko Sledovat */
 .btn-follow {
     background-color: #2563eb;
     color: white;
@@ -564,73 +564,101 @@ CSS
     }
 }
 
+body.light-mode {
+    --header-bg: #ffffff;
+    --header-border: #d0d7de;
+    --text-color: #24292e;
+}
+
+#main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    background-color: #1c2333 !important; /* Výchozí tmavá, aby to při načtení neblikalo bíle */
+    border-bottom: 1px solid #30363d !important;
+    width: 100%;
+    box-sizing: border-box;
+    flex-wrap: wrap;
+    gap: 15px;
+    /* ÚPLNĚ ODSTRANĚNO: transition, aby nebylo zpoždění */
+}
+
+/* Když je aktivní světlý režim (uprav podle toho, jakou třídu/atribut pro světlejší režim používáš, např. .light-mode nebo [data-theme="light"]) */
+.light-mode #main-header,
+[data-theme="light"] #main-header {
+    background-color: #ffffff !important;
+    border-bottom: 1px solid #e5e7eb !important;
+}
+
     </style>
 </head>
 <body>
     <div class="container">
-         <header style="display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; background: var(--bg-header); border-radius: 12px; position: relative;">
 
+<header id="main-header" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; background-color: #0d1117; border-bottom: 1px solid #21262d; width: 100%; box-sizing: border-box; flex-wrap: wrap; gap: 15px;">
+
+    <!-- LEVÁ STRANA: Logo a ovládací prvky pohromadě -->
+    <div style="display: flex; align-items: center; gap: 25px; flex-wrap: wrap;">
         
-        <!-- LEVÁ STRANA -->
-<div class="header-left" style="display: flex; flex-direction: column; gap: 12.8px; position: relative;">
-    
-    <!-- 1. ŘÁDEK: Discord a hned vedle něj VELKÉ tlačítko Stáhnout -->
-    <div style="display: flex; align-items: center; gap: 8px;">
-        <!-- Discord tlačítko -->
-        <a href="https://discord.gg/kHfT6GkKM" target="_blank" class="discord-absolute-btn" rel="noopener noreferrer" title="Přidej se na náš Discord Server" style="display: flex; align-items: center;">
-          <svg viewBox="0 0 127.14 96.36" style="width: 18px; height: 18px; fill: #ffffff;">
-            <path d="M107.7,8.07A105.15,105.15,0,0,0,77.26,0a77.19,77.19,0,0,0-3.3,6.83A96.67,96.67,0,0,0,53.22,6.83,77.19,77.19,0,0,0,49.88,0,105.15,105.15,0,0,0,19.44,8.07C3.66,31.58-1.95,54.65,1,77.53A105.73,105.73,0,0,0,32,96.36a74.37,74.37,0,0,0,6.73-11,68.21,68.21,0,0,1-10.57-5c1,.74,2,1.51,3,2.26a74.12,74.12,0,0,0,64.78,0c1-.75,2-1.52,3-2.26a68.21,68.21,0,0,1-10.57,5,74.37,74.37,0,0,0,6.73,11,105.73,105.73,0,0,0,31.06-18.83C129.85,50.7,123.32,27.87,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53S36.18,40.36,42.45,40.36,53.83,46,53.83,53,48.72,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.24,60,73.24,53S78.41,40.36,84.69,40.36,96.07,46,96.07,53,91,65.69,84.69,65.69Z"/>
-          </svg>
+        <a href="https://meteoinfo-cz.github.io/web/" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
+            <img src="../../apple-touch-icon.png" alt="MI" style="width: 32px; height: 32px; object-fit: contain; border-radius: 6px;">
+            <h1 style="margin: 0; font-size: 1.8rem; font-weight: 800; letter-spacing: -0.5px; white-space: nowrap;">
+                <span style="color: #38bdf8;">Meteo</span><span style="color: #38bdf8;">Info</span>
+            </h1>
+            <h2 style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0;">Aktuální předpověď počasí, meteoradar, srážky a teploty pro města online</h2>
         </a>
 
-</div>
+        <!-- Ostatní věci (Discord, Stáhnout, Čas, Odkazy) -->
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+            
+            <!-- 1. Řádek vlevo: Discord -->
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                <a href="https://discord.gg/zTqpRYSb5" target="_blank" rel="noopener noreferrer" title="Přidej se na náš Discord Server" style="display: flex; align-items: center; background: #5865F2; padding: 5px 8px; border-radius: 6px; text-decoration: none;">
+                    <svg viewBox="0 0 127.14 96.36" style="width: 16px; height: 16px; fill: #ffffff;">
+                        <path d="M107.7,8.07A105.15,105.15,0,0,0,77.26,0a77.19,77.19,0,0,0-3.3,6.83A96.67,96.67,0,0,0,53.22,6.83,77.19,77.19,0,0,0,49.88,0,105.15,105.15,0,0,0,19.44,8.07C3.66,31.58-1.95,54.65,1,77.53A105.73,105.73,0,0,0,32,96.36a74.37,74.37,0,0,0,6.73-11,68.21,68.21,0,0,1-10.57-5c1,.74,2,1.51,3,2.26a74.12,74.12,0,0,0,64.78,0c1-.75,2-1.52,3-2.26a68.21,68.21,0,0,1-10.57,5,74.37,74.37,0,0,0,6.73,11,105.73,105.73,0,0,0,31.06-18.83C129.85,50.7,123.32,27.87,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53S36.18,40.36,42.45,40.36,53.83,46,53.83,53,48.72,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.24,60,73.24,53S78.41,40.36,84.69,40.36,96.07,46,96.07,53,91,65.69,84.69,65.69Z"/>
+                    </svg>
+                </a>
+            </div>
 
-    <!-- Tlačítko Články - posun nahoru POUZE pro tlačítko na PC -->
-<div style="margin-top: -20px; margin-left: 315px;">
-  <button class="o-webu-btn" style="padding: 6px 14px; font-size: 1rem; transform: translateY(15px);" onclick="window.location.href='https://meteoinfo-cz.github.io/web/clanky/'">📰 Články</button>
-</div>
-
-<!-- 2. ŘÁDEK POD TÍM: Čas, datum a Meteo deník -->
-<div style="display: flex; align-items: center; gap: 8px;">
-<span id="live-time" style="font-size: 1.2rem; font-weight: bold; letter-spacing: 0.5px; color: var(--text-main);">13:12:14</span>
-<div style="font-size: 0.85rem; color: var(--text-muted); display: flex; align-items: center; gap: 5px;">
-<span id="live-date">15. 8. 2026</span>
-<button class="o-webu-btn" onclick="document.getElementById('author-modal').classList.add('active')">O webu</button>
-<span>|</span>
-<button class="o-webu-btn" onclick="document.getElementById('updates-modal').classList.add('active')">Aktualizace</button>
-<span>|</span>
-<button class="o-webu-btn" id="btn-openet-denik" style="font-weight: bold; color: #007bff;" onclick="document.getElementById('okno-denik').classList.add('active')">📖 Meteo deník</button>
-</div>
-</div>
-</div>
-
-        <!-- STŘED: Klikací nadpis MeteoInfo -->
-<h1 class="header-center-title" style="margin: 0; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);">
-    <a href="https://meteoinfo-cz.github.io/web/" style="text-decoration: none; color: inherit;">MeteoInfo</a>
-</h1>
-<h2 style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0;">
-Aktuální předpověď počasí, meteoradar, srážky a teploty pro města online</h2>
-        
-
-        <!-- PRAVÁ STRANA: Krabičky natvrdo vpravo (přesně tam, kde je chceš) -->
-        <div style="display: flex; gap: 8px; align-items: center;">
-            <a href="https://meteoinfo-cz.github.io/web/meteoradar/" class="header-btn" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 4px;">🛰️ Meteoradar</a>
-            <a id="moon-trigger-btn" href="https://meteoinfo-cz.github.io/web/mesic/" class="header-btn" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 4px;"> Měsíc: 🌓</a>
-            <button id="theme-button" class="header-btn" onclick="toggleTheme()" style="font-size: 1.1rem; padding: 4px 10px;">🌙</button>
-
-
-<div class="mobilni-sledovat-kontejner">
-    <button id="follow-btn" class="btn-follow">🔔 Sledovat web</button>
-    <div class="info-tooltip-container">
-        <div class="info-box">i</div>
-        <div class="tooltip-text">
-            Po kliknutí na tlačítko Sledovat Vám začnou přicházet zprávy o mimořádných situacích (např. silné bouřky, vichřice). Sledování můžete kdykoliv zrušit.
-            <br><br>
-            <span style="color: #ff4d4d;">UPOZORNĚNÍ: Poslední dobou je problém zprovoznit tlačítko Sledovat web. Když na něj kliknete, oznámení se sice objeví, ale výstrahy už ne. Na této funkci budu dále pracovat a zkusím to co nejrychleji zprovoznit. Děkuji.</span>
+            <!-- 2. Řádek vlevo: Čas, datum, odkazy, deník i články -->
+            <div style="display: flex; align-items: center; gap: 6px; font-size: 0.8rem; flex-wrap: wrap;">
+                <span id="live-time" style="font-weight: bold; font-size: 1.2rem; color: #ffffff;">17:16:12</span>
+                <span style="color: #484f58;">|</span>
+                <span id="live-date" style="color: #8b949e;">5. 9. 2026</span>
+                <button class="o-webu-btn" onclick="document.getElementById('author-modal').classList.add('active')">O webu</button>
+                <span style="color: #484f58;">|</span>
+                <button class="o-webu-btn" onclick="document.getElementById('updates-modal').classList.add('active')">Aktualizace</button>
+                <span style="color: #484f58;">|</span>
+                <button class="o-webu-btn" id="btn-openet-denik" style="font-weight: bold; color: #38bdf8;" onclick="document.getElementById('okno-denik').classList.add('active')">📖 Meteo deník</button>
+                <span style="color: #484f58;">|</span>
+                <button class="o-webu-btn" onclick="window.location.href='https://meteoinfo-cz.github.io/web/clanky/'">📰 Články</button>
+            </div>
         </div>
     </div>
-</div>
-        </header>
+
+    <!-- PRAVÁ STRANA: Tlačítka (Radar, Měsíc, Téma, Sledovat) -->
+    <div style="display: flex; gap: 8px; align-items: center; flex-shrink: 0;">
+        <a href="https://meteoinfo-cz.github.io/web/meteoradar/" class="header-btn" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 4px;">🛰️ Meteoradar</a>
+        
+        <a id="moon-trigger-btn" href="https://meteoinfo-cz.github.io/web/mesic/" class="header-btn" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 4px;">Měsíc: 🌓</a>
+        
+        <button id="theme-button" class="header-btn" onclick="toggleTheme()" style="font-size: 1.1rem; padding: 4px 10px;">🌙</button>
+
+        <div class="mobilni-sledovat-kontejner" style="position: relative; display: inline-block;">
+            <button id="follow-btn" class="btn-follow">🔔 Sledovat</button>
+            <div class="info-tooltip-container">
+                <div class="info-box">i</div>
+                <div class="tooltip-text">
+                    Po kliknutí na tlačítko Sledovat Vám začnou přicházet zprávy o mimořádných situacích (např. silné bouřky, vichřice). Sledování můžete kdykoliv zrušit.
+                    <br><br>
+                    <span style="color: #ff4d4d;">UPOZORNĚNÍ: Poslední dobou je problém zprovoznit tlačítko Sledovat. Když na něj kliknete, oznámení se sice objeví, ale výstrahy už ne. Na této funkci budu dále pracovat a zkusím to co nejrychleji zprovoznit. Děkuji.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</header>
 
 <!-- CELÝ ČLÁNEK PŘÍMO NA STRÁNCE -->
 <main class="card" style="margin-top: 20px; background: var(--bg-card); border: 1px solid var(--border-inner); border-radius: 12px; padding: 35px;">
@@ -674,7 +702,7 @@ Aktuální předpověď počasí, meteoradar, srážky a teploty pro města onli
     </p>
 
     <p style="margin-bottom: 20px; font-size: 1.05rem;">
-        Pak také vznikly další zajímavé věci, jako například Meteo deník, Meteoradar, Měsíc, Meteo Asistent, Předpověď na hodiny, 3 dny a 14 dní a nebo dokonce i odkaz na náš Discord server (Meteoclub) a tlačítko Stáhnout – více v infu vedle tlačítka. Přidal jsem také světlý a tmavý motiv, který si můžete měnit. Můžete si také zapnout Sledovat web, díky této funkci budete informováni o různých výstrahách – musím ale říct, že výstrahy je poslední dobu pořád problém a nepřicházejí. Na tomto problému budu pracovat, abyste upozornění dostávali včas. Na tomto webu budou také pravidelně probíhat další aktualizace.
+        Pak také vznikly další zajímavé věci, jako například Meteo deník, Meteoradar, Měsíc, Meteo Asistent, Předpověď na hodiny, 3 dny a 14 dní a nebo dokonce i odkaz na náš Discord server (Meteoclub) a tlačítko Stáhnout – více v infu vedle tlačítka. Přidal jsem také světlý a tmavý motiv, který si můžete měnit. Můžete si také zapnout Sledovat, díky této funkci budete informováni o různých výstrahách – musím ale říct, že výstrahy je poslední dobu pořád problém a nepřicházejí. Na tomto problému budu pracovat, abyste upozornění dostávali včas. Na tomto webu budou také pravidelně probíhat další aktualizace.
     </p>
 
     <p style="font-weight: bold; margin-top: 30px; font-size: 1.1rem; color: var(--text-accent);">
@@ -1261,6 +1289,11 @@ document.addEventListener('DOMContentLoaded', () => {
             <div style="max-height: 380px; overflow-y: auto; padding-right: 8px; margin-bottom: 20px; scrollbar-width: thin;">
 
 <div style="text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-accent); margin-bottom: 25px; box-sizing: border-box;">
+    <span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 5.-6. 9. 2026</span>
+    <p style="margin: 0; color: var(--text-main); font-size: 15px; line-height: 1.4;">Úprava horního panelu, přidání patičky.</p>
+</div>
+
+<div style="text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-accent); margin-bottom: 25px; box-sizing: border-box;">
     <span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 29.-31. 8. 2026</span>
     <p style="margin: 0; color: var(--text-main); font-size: 15px; line-height: 1.4;">Upraveny URL adresy na všech podstránkách.</p>
 </div>
@@ -1387,30 +1420,65 @@ function zmenModelVentusky(model) {
         setInterval(updateClock, 1000);
         updateClock();
 
-        // Devátá funkce: Přepínání motivu (Dark / Light)
+        // Devátá funkce
         // Načteme uložený motiv z paměti, a pokud tam žádný není, nastavíme jako výchozí SVĚTLÝ ('light')
-let curre// Načteme uložený motiv z paměti, a pokud tam žádný není, nastavíme jako výchozí SVĚTLÝ ('light')
 let currentTheme = localStorage.getItem('theme') || 'light';
 document.documentElement.setAttribute('data-theme', currentTheme);
 
-// Pomocná kontrola při startu webu, aby ikonka na tlačítku odpovídala motivu
+// Pomocná kontrola při startu webu
 window.addEventListener('DOMContentLoaded', () => {
     const btn = document.getElementById('theme-button');
+    const header = document.getElementById('main-header');
+    const timeEl = document.getElementById('live-time');
+    const dateEl = document.getElementById('live-date');
+    
     if (btn) btn.innerText = currentTheme === 'dark' ? "🌙" : "☀️";
+    
+    if (header) {
+        if (currentTheme === 'light') {
+            header.style.backgroundColor = '#ffffff';
+            header.style.borderBottomColor = '#d0d7de';
+            if (timeEl) timeEl.style.color = '#000000';
+            if (dateEl) dateEl.style.color = '#333333';
+        } else {
+            header.style.backgroundColor = '#0d1117';
+            header.style.borderBottomColor = '#21262d';
+            if (timeEl) timeEl.style.color = '#ffffff';
+            if (dateEl) dateEl.style.color = '#8b949e';
+        }
+    }
 });
 
 function toggleTheme() {
     const btn = document.getElementById('theme-button');
+    const header = document.getElementById('main-header');
+    const timeEl = document.getElementById('live-time');
+    const dateEl = document.getElementById('live-date');
+
     if (currentTheme === 'dark') {
         document.documentElement.setAttribute('data-theme', 'light');
         if (btn) btn.innerText = "☀️";
         currentTheme = "light";
-        localStorage.setItem('theme', 'light'); // Uložíme světlý motiv do paměti
+        localStorage.setItem('theme', 'light');
+
+        if (header) {
+            header.style.backgroundColor = '#ffffff';
+            header.style.borderBottomColor = '#d0d7de';
+        }
+        if (timeEl) timeEl.style.color = '#000000';
+        if (dateEl) dateEl.style.color = '#333333';
     } else {
         document.documentElement.setAttribute('data-theme', 'dark');
         if (btn) btn.innerText = "🌙";
         currentTheme = "dark";
-        localStorage.setItem('theme', 'dark'); // Uložíme tmavý motiv do paměti
+        localStorage.setItem('theme', 'dark');
+
+        if (header) {
+            header.style.backgroundColor = '#0d1117';
+            header.style.borderBottomColor = '#21262d';
+        }
+        if (timeEl) timeEl.style.color = '#ffffff';
+        if (dateEl) dateEl.style.color = '#8b949e';
     }
     
     // Okamžitě aktualizujeme graf při přepnutí motivu
@@ -1430,7 +1498,7 @@ function toggleTheme() {
             followBtn.addEventListener('click', () => {
                 if (localStorage.getItem('webSledovan') === 'true') {
                     localStorage.setItem('webSledovan', 'false');
-                    followBtn.innerText = '🔔 Sledovat web';
+                    followBtn.innerText = '🔔 Sledovat';
                     followBtn.classList.remove('active');
                 } else {
                     localStorage.setItem('webSledovan', 'true');
@@ -1504,16 +1572,21 @@ function toggleTheme() {
             }
         });
     }
-</script>
 
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/web/sw.js')
-        .then((reg) => console.log('Service Worker zaregistrován:', reg.scope))
-        .catch((err) => console.log('Chyba při registraci SW:', err));
-    });
-  }
+    // Vytvoření a vložení patičky na konec stránky
+    const footer = document.createElement('div');
+    footer.className = 'card';
+    footer.style.maxWidth = '20000px';
+    footer.style.width = '100%';
+    footer.style.margin = '25px auto 0px auto';
+    footer.style.boxSizing = 'border-box';
+    footer.style.textAlign = 'center';
+    footer.style.padding = '20px';
+    footer.style.color = '#8b949e';
+    footer.style.fontSize = '1rem';
+    footer.innerHTML = '© 2026 MeteoInfo — Všechna práva vyhrazena';
+
+    document.body.appendChild(footer);
 </script>
 
 </body> 
