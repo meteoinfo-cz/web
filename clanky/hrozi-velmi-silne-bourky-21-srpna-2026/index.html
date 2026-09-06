@@ -353,7 +353,7 @@ a[href*="discord"] span {
 }
 
 
-/* Tlačítko Sledovat web */
+/* Tlačítko Sledovat */
 .btn-follow {
     background-color: #2563eb;
     color: white;
@@ -646,13 +646,13 @@ body.light-mode {
         <button id="theme-button" class="header-btn" onclick="toggleTheme()" style="font-size: 1.1rem; padding: 4px 10px;">🌙</button>
 
         <div class="mobilni-sledovat-kontejner" style="position: relative; display: inline-block;">
-            <button id="follow-btn" class="btn-follow">🔔 Sledovat web</button>
+            <button id="follow-btn" class="btn-follow">🔔 Sledovat</button>
             <div class="info-tooltip-container">
                 <div class="info-box">i</div>
                 <div class="tooltip-text">
                     Po kliknutí na tlačítko Sledovat Vám začnou přicházet zprávy o mimořádných situacích (např. silné bouřky, vichřice). Sledování můžete kdykoliv zrušit.
-                    <br><br>
-                    <span style="color: #ff4d4d;">UPOZORNĚNÍ: Poslední dobou je problém zprovoznit tlačítko Sledovat web. Když na něj kliknete, oznámení se sice objeví, ale výstrahy už ne. Na této funkci budu dále pracovat a zkusím to co nejrychleji zprovoznit. Děkuji.</span>
+                    <br><b
+                    <span style="color: #ff4d4d;">UPOZORNĚNÍ: Poslední dobou je problém zprovoznit tlačítko Sledovat. Když na něj kliknete, oznámení se sice objeví, ale výstrahy už ne. Na této funkci budu dále pracovat a zkusím to co nejrychleji zprovoznit. Děkuji.</span>
                 </div>
             </div>
         </div>
@@ -1488,7 +1488,7 @@ function toggleTheme() {
             followBtn.addEventListener('click', () => {
                 if (localStorage.getItem('webSledovan') === 'true') {
                     localStorage.setItem('webSledovan', 'false');
-                    followBtn.innerText = '🔔 Sledovat web';
+                    followBtn.innerText = '🔔 Sledovat';
                     followBtn.classList.remove('active');
                 } else {
                     localStorage.setItem('webSledovan', 'true');
