@@ -588,59 +588,62 @@ img[src*="png/"] {
     height: auto !important;
 }
 
-<style>
   /* =======================================================
-   PRANOSTIKY: Úprava barev textu pro světlý a tmavý motiv
+   PRANOSTIKY – Kompletní a funkční styly pro oba režimy
    ======================================================= */
 
-/* Výchozí nastavení: BÍLÝ MOTIV (Texty budou ČERNÉ) */
+/* Výchozí tmavý stav (nebo když není zvolen světlý) */
+#pranostika-box {
+    background-color: #1c2333 !important;
+    border: 1px solid #30363d !important;
+    border-radius: 8px !important;
+    padding: 15px !important;
+    margin: 15px 0 !important;
+    box-sizing: border-box !important;
+}
+
 #pranostika-box #pranostika-nadpis,
 #pranostika-box #text-pranostiky,
 #pranostika-box #text-pranostiky span {
-    color: #000000 !important;
+    color: #f8fafc !important;
 }
 
 #pranostika-box .tlacitko-pranostiky {
-    color: #000000 !important;
+    color: #f8fafc !important;
+    background-color: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    text-decoration: none !important;
+    padding: 6px 12px !important;
+    border-radius: 4px !important;
+    display: inline-block !important;
+}
+
+/* Když se zapne světlý režim (třída nebo data-atribut) */
+.light-mode #pranostika-box,
+[data-theme="light"] #pranostika-box {
+    background-color: #ffffff !important;
+    border: 1px solid #d0d7de !important;
+}
+
+.light-mode #pranostika-box #pranostika-nadpis,
+.light-mode #pranostika-box #text-pranostiky,
+.light-mode #pranostika-box #text-pranostiky span,
+[data-theme="light"] #pranostika-box #pranostika-nadpis,
+[data-theme="light"] #pranostika-box #text-pranostiky,
+[data-theme="light"] #pranostika-box #text-pranostiky span {
+    color: #24292e !important;
+}
+
+.light-mode #pranostika-box .tlacitko-pranostiky,
+[data-theme="light"] #pranostika-box .tlacitko-pranostiky {
+    color: #24292e !important;
     background-color: rgba(0, 0, 0, 0.06) !important;
-}
-
-/* AUTOMATICKÝ ČERNÝ MOTIV (Podle nastavení systému/prohlížeče) */
-@media (prefers-color-scheme: dark) {
-    #pranostika-box #pranostika-nadpis,
-    #pranostika-box #text-pranostiky,
-    #pranostika-box #text-pranostiky span {
-        color: #ffffff !important;
-    }
-    #pranostika-box .tlacitko-pranostiky {
-        color: #ffffff !important;
-        background-color: rgba(255, 255, 255, 0.1) !important;
-    }
-}
-
-/* RUČNÍ PŘEPÍNÁNÍ MOTIVU (Přes tlačítko na webu) */
-.dark #pranostika-box #pranostika-nadpis,
-.dark #pranostika-box #text-pranostiky,
-.dark #pranostika-box #text-pranostiky span,
-.dark-mode #pranostika-box #pranostika-nadpis,
-.dark-mode #pranostika-box #text-pranostiky,
-.dark-mode #pranostika-box #text-pranostiky span,
-[data-theme="dark"] #pranostika-box #pranostika-nadpis,
-[data-theme="dark"] #pranostika-box #text-pranostiky,
-[data-theme="dark"] #pranostika-box #text-pranostiky span {
-    color: #ffffff !important;
-}
-
-.dark #pranostika-box .tlacitko-pranostiky,
-.dark-mode #pranostika-box .tlacitko-pranostiky,
-[data-theme="dark"] #pranostika-box .tlacitko-pranostiky {
-    color: #ffffff !important;
-    background-color: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid #d0d7de !important;
 }
 
 
 /* =======================================================
-   HLAVIČKA WEBU
+   HLAVIČKA WEBU (vaše původní, ponechána funkční)
    ======================================================= */
 
 body.light-mode {
@@ -654,16 +657,14 @@ body.light-mode {
     justify-content: space-between;
     align-items: center;
     padding: 12px 20px;
-    background-color: #1c2333 !important; /* Výchozí tmavá, aby to při načtení neblikalo bíle */
+    background-color: #1c2333 !important;
     border-bottom: 1px solid #30363d !important;
     width: 100%;
     box-sizing: border-box;
     flex-wrap: wrap;
     gap: 15px;
-    /* ÚPLNĚ ODSTRANĚNO: transition, aby nebylo zpoždění */
 }
 
-/* Když je aktivní světlý režim */
 .light-mode #main-header,
 [data-theme="light"] #main-header {
     background-color: #ffffff !important;
