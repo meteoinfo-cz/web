@@ -589,40 +589,59 @@ img[src*="png/"] {
 }
 
 <style>
-  /* Výchozí nastavení: BÍLÝ MOTIV (Texty budou ČERNÉ) */
-  #pranostika-box #pranostika-nadpis {
+  /* =======================================================
+   PRANOSTIKY: Úprava barev textu pro světlý a tmavý motiv
+   ======================================================= */
+
+/* Výchozí nastavení: BÍLÝ MOTIV (Texty budou ČERNÉ) */
+#pranostika-box #pranostika-nadpis,
+#pranostika-box #text-pranostiky,
+#pranostika-box #text-pranostiky span {
     color: #000000 !important;
-  }
-  #pranostika-box .tlacitko-pranostiky {
+}
+
+#pranostika-box .tlacitko-pranostiky {
     color: #000000 !important;
     background-color: rgba(0, 0, 0, 0.06) !important;
-  }
+}
 
-  /* AUTOMATICKÝ ČERNÝ MOTIV (Pokud ho systém/prohlížeč aktivuje, texty zbělají) */
-  @media (prefers-color-scheme: dark) {
-    #pranostika-box #pranostika-nadpis {
-      color: #ffffff !important;
+/* AUTOMATICKÝ ČERNÝ MOTIV (Podle nastavení systému/prohlížeče) */
+@media (prefers-color-scheme: dark) {
+    #pranostika-box #pranostika-nadpis,
+    #pranostika-box #text-pranostiky,
+    #pranostika-box #text-pranostiky span {
+        color: #ffffff !important;
     }
     #pranostika-box .tlacitko-pranostiky {
-      color: #ffffff !important;
-      background-color: rgba(255, 255, 255, 0.1) !important;
+        color: #ffffff !important;
+        background-color: rgba(255, 255, 255, 0.1) !important;
     }
-  }
+}
 
-  /* SPECIÁLNÍ OPRAVA: Pokud tvůj web přepíná motivy ručně tlačítkem, 
-     přidej sem název třídy, kterou web používá pro tmavý režim (např. .dark-theme nebo .night-mode) */
-  .dark #pranostika-box #pranostika-nadpis,
-  .dark-mode #pranostika-box #pranostika-nadpis,
-  [data-theme="dark"] #pranostika-box #pranostika-nadpis {
+/* RUČNÍ PŘEPÍNÁNÍ MOTIVU (Přes tlačítko na webu) */
+.dark #pranostika-box #pranostika-nadpis,
+.dark #pranostika-box #text-pranostiky,
+.dark #pranostika-box #text-pranostiky span,
+.dark-mode #pranostika-box #pranostika-nadpis,
+.dark-mode #pranostika-box #text-pranostiky,
+.dark-mode #pranostika-box #text-pranostiky span,
+[data-theme="dark"] #pranostika-box #pranostika-nadpis,
+[data-theme="dark"] #pranostika-box #text-pranostiky,
+[data-theme="dark"] #pranostika-box #text-pranostiky span {
     color: #ffffff !important;
-  }
-  
-  .dark #pranostika-box .tlacitko-pranostiky,
-  .dark-mode #pranostika-box .tlacitko-pranostiky,
-  [data-theme="dark"] #pranostika-box .tlacitko-pranostiky {
+}
+
+.dark #pranostika-box .tlacitko-pranostiky,
+.dark-mode #pranostika-box .tlacitko-pranostiky,
+[data-theme="dark"] #pranostika-box .tlacitko-pranostiky {
     color: #ffffff !important;
     background-color: rgba(255, 255, 255, 0.1) !important;
-  }
+}
+
+
+/* =======================================================
+   HLAVIČKA WEBU
+   ======================================================= */
 
 body.light-mode {
     --header-bg: #ffffff;
@@ -644,7 +663,7 @@ body.light-mode {
     /* ÚPLNĚ ODSTRANĚNO: transition, aby nebylo zpoždění */
 }
 
-/* Když je aktivní světlý režim (uprav podle toho, jakou třídu/atribut pro světlejší režim používáš, např. .light-mode nebo [data-theme="light"]) */
+/* Když je aktivní světlý režim */
 .light-mode #main-header,
 [data-theme="light"] #main-header {
     background-color: #ffffff !important;
