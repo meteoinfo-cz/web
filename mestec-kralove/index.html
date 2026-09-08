@@ -605,41 +605,88 @@ img[src*="png/"] {
     height: auto !important;
 }
 
-<style>
-  /* Výchozí nastavení: BÍLÝ MOTIV (Texty budou ČERNÉ) */
-  #pranostika-box #pranostika-nadpis {
-    color: #000000 !important;
-  }
-  #pranostika-box .tlacitko-pranostiky {
-    color: #000000 !important;
-    background-color: rgba(0, 0, 0, 0.06) !important;
-  }
+  /* =======================================================
+   PRANOSTIKY – Sezónní barvy a podpora světlého/tmavého režimu
+   ======================================================= */
 
-  /* AUTOMATICKÝ ČERNÝ MOTIV (Pokud ho systém/prohlížeč aktivuje, texty zbělají) */
-  @media (prefers-color-scheme: dark) {
-    #pranostika-box #pranostika-nadpis {
-      color: #ffffff !important;
-    }
-    #pranostika-box .tlacitko-pranostiky {
-      color: #ffffff !important;
-      background-color: rgba(255, 255, 255, 0.1) !important;
-    }
-  }
+/* Základní struktura boxu */
+#pranostika-box {
+    border-radius: 8px !important;
+    padding: 15px !important;
+    margin: 15px 0 !important;
+    box-sizing: border-box !important;
+    transition: all 0.5s ease;
+}
 
-  /* SPECIÁLNÍ OPRAVA: Pokud tvůj web přepíná motivy ručně tlačítkem, 
-     přidej sem název třídy, kterou web používá pro tmavý režim (např. .dark-theme nebo .night-mode) */
-  .dark #pranostika-box #pranostika-nadpis,
-  .dark-mode #pranostika-box #pranostika-nadpis,
-  [data-theme="dark"] #pranostika-box #pranostika-nadpis {
-    color: #ffffff !important;
-  }
-  
-  .dark #pranostika-box .tlacitko-pranostiky,
-  .dark-mode #pranostika-box .tlacitko-pranostiky,
-  [data-theme="dark"] #pranostika-box .tlacitko-pranostiky {
-    color: #ffffff !important;
-    background-color: rgba(255, 255, 255, 0.1) !important;
-  }
+/* ROČNÍ OBDOBÍ – Pozadí, levý okraj a barva textu */
+#pranostika-box.sezona-zima {
+    background-color: rgba(52, 152, 219, 0.05) !important;
+    border: 1px solid #30363d;
+    border-left: 4px solid #3498db !important;
+}
+#pranostika-box.sezona-zima #text-pranostiky span {
+    color: #3498db !important;
+}
+
+#pranostika-box.sezona-jaro {
+    background-color: rgba(46, 204, 113, 0.05) !important;
+    border: 1px solid #30363d;
+    border-left: 4px solid #2ecc71 !important;
+}
+#pranostika-box.sezona-jaro #text-pranostiky span {
+    color: #2ecc71 !important;
+}
+
+#pranostika-box.sezona-leto {
+    background-color: rgba(231, 76, 60, 0.05) !important;
+    border: 1px solid #30363d;
+    border-left: 4px solid #e74c3c !important;
+}
+#pranostika-box.sezona-leto #text-pranostiky span {
+    color: #e74c3c !important;
+}
+
+#pranostika-box.sezona-podzim {
+    background-color: rgba(230, 126, 34, 0.05) !important;
+    border: 1px solid #30363d;
+    border-left: 4px solid #e67e22 !important;
+}
+#pranostika-box.sezona-podzim #text-pranostiky span {
+    color: #e67e22 !important;
+}
+
+/* Nadpis a další prvky v boxu */
+#pranostika-box #pranostika-nadpis {
+    font-weight: bold !important;
+    font-size: 1.1rem !important;
+    margin-bottom: 2px !important;
+    color: inherit;
+}
+
+#text-pranostiky {
+    font-style: italic !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+    margin-bottom: 10px !important;
+}
+
+.tlacitko-pranostiky {
+    border: none !important;
+    padding: 6px 12px !important;
+    border-radius: 4px !important;
+    font-size: 0.8rem !important;
+    cursor: pointer !important;
+    text-decoration: none !important;
+    display: inline-block !important;
+    background-color: rgba(255, 255, 255, 0.08) !important;
+    color: inherit !important;
+}
+
+
+/* =======================================================
+   HLAVIČKA WEBU
+   ======================================================= */
 
 body.light-mode {
     --header-bg: #ffffff;
@@ -652,16 +699,14 @@ body.light-mode {
     justify-content: space-between;
     align-items: center;
     padding: 12px 20px;
-    background-color: #1c2333 !important; /* Výchozí tmavá, aby to při načtení neblikalo bíle */
+    background-color: #1c2333 !important;
     border-bottom: 1px solid #30363d !important;
     width: 100%;
     box-sizing: border-box;
     flex-wrap: wrap;
     gap: 15px;
-    /* ÚPLNĚ ODSTRANĚNO: transition, aby nebylo zpoždění */
 }
 
-/* Když je aktivní světlý režim (uprav podle toho, jakou třídu/atribut pro světlejší režim používáš, např. .light-mode nebo [data-theme="light"]) */
 .light-mode #main-header,
 [data-theme="light"] #main-header {
     background-color: #ffffff !important;
