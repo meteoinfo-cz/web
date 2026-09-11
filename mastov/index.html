@@ -1117,6 +1117,11 @@ function zmenModelVentusky(model) {
 <div style="max-height: 380px; overflow-y: auto; padding-right: 8px; margin-bottom: 20px; scrollbar-width: thin;">
 
 <div style="text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-accent); margin-bottom: 25px; box-sizing: border-box;">
+    <span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 11. 9. 2026</span>
+    <p style="margin: 0; color: var(--text-main); font-size: 15px; line-height: 1.4;">Upraven Meteo asistent.</p>
+</div>
+
+<div style="text-align: left; background: var(--bg-color); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-accent); margin-bottom: 25px; box-sizing: border-box;">
     <span style="font-weight: bold; color: var(--text-accent); display: block; margin-bottom: 5px;">📅 5.-6. 9. 2026</span>
     <p style="margin: 0; color: var(--text-main); font-size: 15px; line-height: 1.4;">Úprava horního panelu, přidání patičky.</p>
 </div>
@@ -2209,19 +2214,19 @@ rawPrecipitation = celkoveSrazkyDnes;
     document.getElementById('asistent-stupne').innerText = `METEO ASISTENT PRO MĚSTO (${mName}):`;
     let textDoporuceni = "Aktuální předpověď počasí a doporučení.";
 
-    if (t <= -20) textDoporuceni = "Pozor, extrémní mráz pod -20°C! Aktuální počasí doporučuje vycházet jen v nouzi.";
-    else if (t >= -19 && t <= -15) textDoporuceni = "Venku je extrémní zima. Sledujte meteoradar a omezte dlouhý pobyt venku, hrozí omrzliny.";
-    else if (t >= -14 && t <= -10) textDoporuceni = "Venku je velká zima, předpověď počasí radí pořádně se obléct, hrozí prochladnutí.";
-    else if (t >= -9 && t <= -5) textDoporuceni = "Začíná přituhovat. Dnešní počasí vyžaduje zimní čepici a rukavice pro delší pobyt.";
-    else if (t >= -4 && t <= 0) textDoporuceni = "Nutná zimní bunda, čepice a popřípadě i rukavice. Sledujte náš meteoradar online.";
-    else if (t >= 1 && t <= 5) textDoporuceni = "Předpověď hlásí jarní teploty, ale nemrzne. Rukavice nutné nejsou, čepice je dobrovolná, zimní bunda se hodí.";
-    else if (t >= 6 && t <= 10) textDoporuceni = "Příjemné počasí. Pro lidi, kterým je více zima, předpověď doporučuje softshellovou bundu.";
-    else if (t >= 11 && t <= 15) textDoporuceni = "Jarní teploty, pro aktuální počasí doporučujeme jarní bundu nebo mikinu.";
-    else if (t >= 16 && t <= 20) textDoporuceni = "Stále svěží teploty, dnešní předpověď počasí dovoluje pro většinu lidí už krátké tričko a kraťasy.";
-    else if (t >= 21 && t <= 25) textDoporuceni = "Letní počasí, vhodné vzít krátké tričko a kraťasy. Slunce začíná pálit.";
-    else if (t >= 26 && t <= 30) textDoporuceni = "Letní až tropické počasí, vezměte jen kraťasy a tričko, UV index bývá silný, sledujte meteoradar, pokud hrozí bouřkové meteorologické jevy";
-    else if (t >= 31 && t <= 35) textDoporuceni = "Tropické až supertropické teploty. Předpověď počasí radí opalovací krém! Nezdržujte se na slunci!";
-    else if (t >= 36) textDoporuceni = "Extrémní neúnosná vedra! Předpověď doporučuje nevycházet na přímé slunce, hrozí úpal. Pokud je to nutné vycházet, rozhodně nezapoměňte opalovací krém!";
+    if (t <= -20) textDoporuceni = "Pozor! Extrémně silný mráz pod -20°C! Doporučuje se vycházet jen v nezbytných případech.";
+    else if (t >= -19 && t <= -15) textDoporuceni = "Venku je extrémní zima. Omezte dlouhý pobyt venku, hrozí omrzliny!";
+    else if (t >= -14 && t <= -10) textDoporuceni = "Venku je velká zima, Doporučuje se teple obléct, hrozí prochladnutí a omrzliny! ";
+    else if (t >= -9 && t <= -5) textDoporuceni = "Začíná přituhovat, je velmi důležité se teple obléct pro delší pobyt venku.";
+    else if (t >= -4 && t <= 0) textDoporuceni = "Nutné zimní oblečení, čepice, popřípadě i rukavice.";
+    else if (t >= 1 && t <= 5) textDoporuceni = "Teploty nad bodem mrazu. Je vhodné se teple obléct.";
+    else if (t >= 6 && t <= 10) textDoporuceni = "Chladno, pro lidi, kterým je více zima, se doporučuje teplejší bunda.";
+    else if (t >= 11 && t <= 15) textDoporuceni = "Jarní teploty, doporučuje se jarní bunda nebo mikina.";
+    else if (t >= 16 && t <= 20) textDoporuceni = "Svěží teploty, pro většinu lidí už ale na krátké tričko a kraťasy.";
+    else if (t >= 21 && t <= 25) textDoporuceni = "Letní teploty, je vhodné si vzít krátké tričko a kraťasy.";
+    else if (t >= 26 && t <= 30) textDoporuceni = "Letní až tropické teploty, vezměte si jen kraťasy a tričko, UV index bývá silný. Doporučuje se také namazat opalovacím krémem, vzít si sluneční brýle a pokrývku hlavy na přímém Slunci.";
+    else if (t >= 31 && t <= 35) textDoporuceni = "Tropické až supertropické teploty. Je důležitý opalovací krém, sluneční brýle a pokrývku hlavy na přímem Slunci. Je potřeba dbát na pitný režim!";
+    else if (t >= 36) textDoporuceni = "Extrémní vedra! Doporučuje se nevycházet na přímé Slunce, hrozí úpal. Pokud je to nutné vycházet, rozhodně nezapoměňte opalovací krém, sluneční brýle a pokrývku hlavy! Je potřeba dbát na pitný režim!";
     h.innerHTML = textDoporuceni;
 }
         function aktualizujPsiIndex(t) {
