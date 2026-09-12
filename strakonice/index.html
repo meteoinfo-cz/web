@@ -759,9 +759,9 @@ body.light-mode {
                 <span id="live-time" style="font-weight: bold; font-size: 1.2rem; color: #ffffff;">17:16:12</span>
                 <span style="color: #484f58;">|</span>
                 <span id="live-date" style="color: #8b949e;">5. 9. 2026</span>
-                <button class="o-webu-btn" onclick="document.getElementById('author-modal').classList.add('active')">O webu</button>
+                <button class="o-webu-btn" onclick="window.location.href='https://meteoinfo-cz.github.io/web/o-webu/'">O webu</button>
                 <span style="color: #484f58;">|</span>
-                <button class="o-webu-btn" onclick="document.getElementById('updates-modal').classList.add('active')">Aktualizace</button>
+                <button class="o-webu-btn" onclick="window.location.href='https://meteoinfo-cz.github.io/web/aktualizace/'">Aktualizace</button>
                 <span style="color: #484f58;">|</span>
                 <button class="o-webu-btn" id="btn-openet-denik" style="font-weight: bold; color: #38bdf8;" onclick="document.getElementById('okno-denik').classList.add('active')">📖 Meteo deník</button>
                 <span style="color: #484f58;">|</span>
@@ -774,7 +774,7 @@ body.light-mode {
     <div style="display: flex; gap: 8px; align-items: center; flex-shrink: 0;">
         <a href="https://meteoinfo-cz.github.io/web/meteoradar/" class="header-btn" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 4px;">🛰️ Meteoradar</a>
         
-        <a id="moon-trigger-btn" href="https://meteoinfo-cz.github.io/web/mesic/" class="header-btn" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 4px;">Měsíc: 🌓</a>
+        <a id="moon-trigger-btn" href="https://meteoinfo-cz.github.io/web/astro/" class="header-btn" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 4px;">Astro: 🌓</a>
         
         <button id="theme-button" class="header-btn" onclick="toggleTheme()" style="font-size: 1.1rem; padding: 4px 10px;">🌙</button>
 
@@ -1063,30 +1063,6 @@ function zmenModelVentusky(model) {
     iframe.src = "https://embed.ventusky.com/?p=49.76;15.69;6&l=temperature-2m&t=" + dnes + "T12:00&m=" + model;
 }
 </script>
-
-    <div id="moon-modal" class="modal-overlay">
-        <div class="modal-box">
-            <h3 style="margin-top: 0; color: var(--text-accent);">Předpověď fází Měsíce</h3>
-            <div id="moon-current-status" style="font-weight: bold; margin-bottom: 10px; font-size: 0.95rem;"></div>
-            <div style="max-height: 300px; overflow-y: auto;">
-                <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
-                    <thead>
-                        <tr style="border-bottom: 1px solid var(--border-inner); text-align: left;">
-                            <th>Datum</th>
-                            <th style="text-align: center;">Ikona</th>
-                            <th>Fáze</th>
-                            <th style="text-align: right;">Osvětlení</th>
-                        </tr>
-                    </thead>
-                    <tbody id="moon-forecast-rows"></tbody>
-                </table>
-<div id="moon-times-box" style="margin-top: 15px; padding-top: 10px; border-top: 1px solid var(--border-inner); text-align: center; font-size: 14px;">
-    🌙 Východ Měsíce: <strong id="modal-moon-rise">--:--</strong> | 🌑 Západ Měsíce: <strong id="modal-moon-set">--:--</strong>
-</div>
-            </div>
-            <button class="close-btn" onclick="document.getElementById('moon-modal').classList.remove('active')">Zavřít přehled</button>
-        </div>
-    </div>
 
     <div id="m-modal" class="modal-overlay">
         <div class="modal-box">
@@ -3529,7 +3505,7 @@ document.addEventListener("DOMContentLoaded", function() {
       jaro:   { bg: "rgba(46, 204, 113, 0.05)",  border: "#2ecc71" }, 
       leto:   { bg: "rgba(231, 76, 60, 0.05)",   border: "#e74c3c" }, 
       podzim: { bg: "rgba(230, 126, 34, 0.05)",  border: "#e67e22" }, 
-      zima:   { bg: "rgba(52, 152, 219, 0.05)",  border: "#3498db" }  
+      zima:   { bg: "rgba(52, 152, 219, 0.05)",   border: "#3498db" }  
     };
 
     if (mesic === 3 || mesic === 4 || mesic === 5) return barvy.jaro;
@@ -3538,30 +3514,144 @@ document.addEventListener("DOMContentLoaded", function() {
     return barvy.zima; 
   }
 
+  const seznamVsechPranostik = [
+    // ZIMA (20 pranostik - #38bdf8)
+    { datum: "1. 1.", text: "Na Nový rok o slepičí krok.", barva: "#38bdf8" },
+    { datum: "6. 1.", text: "Na Tři krále o krok dále.", barva: "#38bdf8" },
+    { datum: "11. 1.", text: "Svatá Higinie mrazy přinese, celá krajina se v ledu třese.", barva: "#38bdf8" },
+    { datum: "17. 1.", text: "Svatý Antonín poustevník mrazy přihání, zima nemá slitování.", barva: "#38bdf8" },
+    { datum: "18. 1.", text: "Svatá Priska mrazy tiskne.", barva: "#38bdf8" },
+    { datum: "21. 1.", text: "Svatá Anežka se zardívá, zima často začíná.", barva: "#38bdf8" },
+    { datum: "25. 1.", text: "Obrácení svatého Pavla – zima zasedá nebo zlost má.", barva: "#38bdf8" },
+    { datum: "28. 1.", text: "Svatý Karel Veliký – mrazivý led pro panovníky.", barva: "#38bdf8" },
+    { datum: "Únor", text: "Únor bílý, pole sílí.", barva: "#38bdf8" },
+    { datum: "2. 2.", text: "Na Hromnice o hodinu více.", barva: "#38bdf8" },
+    { datum: "6. 2.", text: "Svatá Dorota sněhem roztaje anebo mrazem zalije.", barva: "#38bdf8" },
+    { datum: "9. 2.", text: "Svatá Apolena bývá zimy plena.", barva: "#38bdf8" },
+    { datum: "14. 2.", text: "Na svatého Valentýna zima sílí, ale jaro už se blíží.", barva: "#38bdf8" },
+    { datum: "22. 2.", text: "Na svatého Petra v okovech zima láme vazy.", barva: "#38bdf8" },
+    { datum: "24. 2.", text: "Svatý Matěj ledy plaví, když neplaví, tak je staví.", barva: "#38bdf8" },
+
+    // JARO (20 pranostik - #4ade80)
+    { datum: "Březen", text: "Březen – za kamna vlezem.", barva: "#4ade80" },
+    { datum: "1. 3.", text: "Svatý Albin březen otvírá, teplým dechem vítr stírá.", barva: "#4ade80" },
+    { datum: "4. 3.", text: "Na svatého Kazimíra zima s jarem mír si vybírá.", barva: "#4ade80" },
+    { datum: "19. 3.", text: "Svatý Josef s ledem bojuje, jaro sluncem maluje.", barva: "#4ade80" },
+    { datum: "25. 3.", text: "Zvěstování Panny Marie – jaro oznamuje v plné síle.", barva: "#4ade80" },
+    { datum: "Duben", text: "Duben – ještě tam budem. (Březen - za kamna vlezem)", barva: "#4ade80" },
+    { datum: "4. 4.", text: "Svatý Ambrož jaro budí, mráz už lidi tolik nudí.", barva: "#4ade80" },
+    { datum: "10. 4.", text: "Svatý Ezechiel deštěm hrozí, jarní slunce zemi kosí.", barva: "#4ade80" },
+    { datum: "14. 4.", text: "Svatý Tiburc přináší teplo do krajiny, jaro zahání chladné stíny.", barva: "#4ade80" },
+    { datum: "15. 4.", text: "Na svatou Anastázii déšť zemi oblaží.", barva: "#4ade80" },
+    { datum: "20. 4.", text: "Svatý Sulpic teplo chystá, jarní cesta bývá jistá.", barva: "#4ade80" },
+    { datum: "24. 4.", text: "Na svatého Jiří vylézají hadi a štíři.", barva: "#4ade80" },
+    { datum: "30. 4.", text: "Čarodějnice a oheň v noci, jaro vládne plnou mocí.", barva: "#4ade80" },
+    { datum: "Květen", text: "Studený máj – v stodole ráj.", barva: "#4ade80" },
+    { datum: "1. 5.", text: "Svatý Filip a Jakub – zahradníkům vpadl do ruk.", barva: "#4ade80" },
+    { datum: "12.-14. 5.", text: "Pankrác, Servác, Bonifác – ledoví muži, spalují mrazem ovoce i růži.", barva: "#4ade80" },
+    { datum: "19. 5.", text: "Svatá Ivo jaro tají, včely v květech rády mají.", barva: "#4ade80" },
+    { datum: "25. 5.", text: "Svatý Urban slunko hřeje, vinařům se hezky směje.", barva: "#4ade80" },
+    { datum: "26. 5.", text: "Svatý Filip Neri květy voní, včely v sadě vesele zvoní.", barva: "#4ade80" },
+    { datum: "31. 5.", text: "Konec května teplo nese, celá příroda se směje.", barva: "#4ade80" },
+
+    // LÉTO (20 pranostik - #f87171)
+    { datum: "8. 6.", text: "Medardova kápě, čtyřicet dní kape.", barva: "#f87171" },
+    { datum: "13. 6.", text: "Svatý Antonín z Padovy letní horka připraví.", barva: "#f87171" },
+    { datum: "15. 6.", text: "Svatý Vít – slunce musí pálit v mžik.", barva: "#f87171" },
+    { datum: "24. 6.", text: "Svatý Jan – svatojánská noc, letní slunce má velkou moc.", barva: "#f87171" },
+    { datum: "29. 6.", text: "Svatý Petr a Pavel – léto začíná naplno v celém stavu.", barva: "#f87171" },
+    { datum: "Červenec", text: "Jaká léta, taková zima.", barva: "#f87171" },
+    { datum: "1. 7.", text: "Začátek července suchý a teplý, úrodu nám žne velice rázně.", barva: "#f87171" },
+    { datum: "2. 7.", text: "Svatá Margareta plače, léto deštěm skáče.", barva: "#f87171" },
+    { datum: "6. 7.", text: "Svatý Jan Hus v ohni plane, letní žár už nepřestane.", barva: "#f87171" },
+    { datum: "10. 7.", text: "Svatá Klára jasná – žňová sláva krásná.", barva: "#f87171" },
+    { datum: "20. 7.", text: "Svatý Eliáš s hromem v zádech, léto v plném běhu i v deštích.", barva: "#f87171" },
+    { datum: "22. 7.", text: "Svatá Maří Magdalena slunko pálí, žně už píší v dáli.", barva: "#f87171" },
+    { datum: "25. 7.", text: "Svatý Jakub – brambory už vyndej z hub.", barva: "#f87171" },
+    { datum: "26. 7.", text: "Svatá Anna – chladna zrána.", barva: "#f87171" },
+    { datum: "Srpen", text: "Jaká léta, taková zima.", barva: "#f87171" },
+    { datum: "5. 8.", text: "Svatý Osvald léto drží, horký vzduch se v koutě hříží.", barva: "#f87171" },
+    { datum: "10. 8.", text: "Vavřinec ukazuje, jaký podzim nastupuje.", barva: "#f87171" },
+    { datum: "15. 8.", text: "Nanebevzetí Panny Marie – letní slunce ještě hřeje.", barva: "#f87171" },
+    { datum: "24. 8.", text: "Svatý Bartoloměj léto končí, ranní mlha trávu smočí.", barva: "#f87171" },
+    { datum: "31. 8.", text: "Konec srpna léto zavírá, podzim už se na nás dívá.", barva: "#f87171" },
+
+    // PODZIM (20 pranostik - #fb923c)
+    { datum: "1. 9.", text: "Svatý Jiljí podzim hlásí, vítr fouká mezi řasy.", barva: "#fb923c" },
+    { datum: "8. 9.", text: "Narození Panny Marie – podzim zemi obaluje.", barva: "#fb923c" },
+    { datum: "12. 9.", text: "Svatá Mária podzim přivane, listí žloutne neustále.", barva: "#fb923c" },
+    { datum: "21. 9.", text: "Svatý Matouš přináší chlad, vítr začne louky brát.", barva: "#fb923c" },
+    { datum: "28. 9.", text: "Na svatého Václava pěkné počasí přináší stálý podzim.", barva: "#fb923c" },
+    { datum: "29. 9.", text: "Svatý Michael – podzim tu je, v lesích barvy maluje.", barva: "#fb923c" },
+    { datum: "4. 10.", text: "Svatý František z Assisi podzimní mlhy tiskne k zisi.", barva: "#fb923c" },
+    { datum: "5. 10.", text: "Svatý Placidus listí shazuje, podzimní čas oslavuje.", barva: "#fb923c" },
+    { datum: "10. 10.", text: "Svatý Daniel mrazem dýchá, podzimní noc tiše vzdychá.", barva: "#fb923c" },
+    { datum: "15. 10.", text: "Svatá Tereza podzim váže, studený vítr lidem ukáže.", barva: "#fb923c" },
+    { datum: "16.-18. 10.", text: "Svatý Havel teplý, svatý Lukáš chladný.", barva: "#fb923c" },
+    { datum: "20. 10.", text: "Svatá Vendelína – podzim už se začíná chýlit.", barva: "#fb923c" },
+    { datum: "22. 10.", text: "Svatá Kordula slunce schová, podzimní nálada je tu znova.", barva: "#fb923c" },
+    { datum: "28. 10.", text: "Svatý Šimon a Juda – podzimní studená přejde zrůda.", barva: "#fb923c" },
+    { datum: "2. 11.", text: "Dušičky s mlhou a chladem, podzim vládne celým sadem.", barva: "#fb923c" },
+    { datum: "6. 11.", text: "Svatý Leonard podzim kryje, studený sever vítr bije.", barva: "#fb923c" },
+    { datum: "11. 11.", text: "Svatý Martin přijíždí na bílém koni.", barva: "#fb923c" },
+    { datum: "19. 11.", text: "Svatá Alžběta podzim střídá, mráz už lidi poprvé hlídá.", barva: "#fb923c" },
+    { datum: "25. 11.", text: "Chodí-li Kateřina po ledě, chodí Štěpán po blátě.", barva: "#fb923c" },
+    { datum: "30. 11.", text: "Ondřej mosty staví, nebo je splaví.", barva: "#fb923c" },
+
+    // ZIMA (pokračování)
+    { datum: "6. 12.", text: "Na svatého Mikuláše už je zima celá naše.", barva: "#38bdf8" },
+    { datum: "13. 12.", text: "Lucie noci upije a dni nepřidá.", barva: "#38bdf8" },
+    { datum: "21. 12.", text: "Svatý Tomáš – dlouhá noc a velký mráz.", barva: "#38bdf8" },
+    { datum: "24. 12.", text: "Štědrý den jasný – ročník krásný, studený a bílý – úroda se sílí.", barva: "#38bdf8" },
+    { datum: "31. 12.", text: "Silvestr jasný a bez deště, v novém roce vítr bude ještě.", barva: "#38bdf8" }
+  ];
+
+  function odpovidaDatumu(itemDatum, mesic, den) {
+    const mesiceMap = {
+      "leden": 1, "únor": 2, "březen": 3, "duben": 4, "květen": 5, "červen": 6,
+      "červenec": 7, "srpen": 8, "září": 9, "říjen": 10, "listopad": 11, "prosinec": 12
+    };
+    const cistyDatum = itemDatum.toLowerCase().trim();
+    if (mesiceMap[cistyDatum] === mesic) {
+      return true;
+    }
+
+    if (itemDatum.includes("-") && itemDatum.includes(".")) {
+      const casti = itemDatum.split(".");
+      if (casti.length >= 2) {
+        const m = parseInt(casti[casti.length - 2].trim());
+        const denCast = casti[0].trim();
+        if (denCast.includes("-")) {
+          const [odDne, doDne] = denCast.split("-").map(d => parseInt(d.trim()));
+          if (mesic === m && den >= odDne && den <= doDne) {
+            return true;
+          }
+        }
+      }
+    }
+
+    const parsujiciCasti = itemDatum.split(".");
+    if (parsujiciCasti.length >= 2) {
+      const d = parseInt(parsujiciCasti[0].trim());
+      const m = parseInt(parsujiciCasti[1].trim());
+      if (!isNaN(d) && !isNaN(m) && d === den && m === mesic) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   function ziskajPranostiky(mesic, den) {
     let nalezene = [];
-    
-    if (mesic === 1 && den === 1) nalezene.push("Na Nový rok o slepičí krok.");
-    if (mesic === 2 && den === 2) nalezene.push("Na Hromnice o hodinu více.");
-    if (mesic === 2 && den === 24) nalezene.push("Svatý Matěj ledy plaví, když neplaví, tak je staví.");
-    if (mesic === 4 && den === 24) nalezene.push("Na svatého Jiří vylézají hadi a štíři.");
-    if (mesic === 5 && (den >= 12 && den <= 14)) nalezene.push("Pankrác, Servác, Bonifác – ledoví muži, spalují mrazem ovoce i růži.");
-    if (mesic === 6 && den === 8) nalezene.push("Medardova kápě, čtyricet dní kape.");
-    if (mesic === 7 && den === 26) {
-      nalezene.push("Svatá Anna – chladna zrána.");
-      nalezene.push("Jaká léta, taková zima.");
-    }
-    if (mesic === 8 && den === 10) nalezene.push("Vavřinec ukazuje, jaký podzim nastupuje.");
-    if (mesic === 9 && den === 28) nalezene.push("Na svatého Václava pěkné počasí přináší stálý podzim.");
-    if (mesic === 10 && (den === 16 || den === 18)) nalezene.push("Svatý Havel teplý, svatý Lukáš chladný.");
-    if (mesic === 11 && den === 11) nalezene.push("Svatý Martin přijíždí na bílém koni.");
-    if (mesic === 11 && den === 25) nalezene.push("Chodí-li Kateřina po ledě, chodí Štěpán po blátě.");
-    if (mesic === 11 && den === 30) nalezene.push("Ondřej mosty staví, nebo je splaví.");
-    if (mesic === 12 && den === 13) nalezene.push("Lucie noci upije a dni nepřidá.");
+    seznamVsechPranostik.forEach(item => {
+      if (odpovidaDatumu(item.datum, mesic, den)) {
+        nalezene.push(item);
+      }
+    });
 
-    // Pokud pro dnešní den žádná pranostika neexistuje, vypíše se požadovaný text
     if (nalezene.length === 0) {
-      nalezene.push("Žádná z daných pranostik zde aktuálně není.");
+      nalezene.push({ text: "Žádná z daných pranostik zde aktuálně není.", barva: null });
     }
 
     return nalezene;
@@ -3575,28 +3665,26 @@ document.addEventListener("DOMContentLoaded", function() {
   const box = document.getElementById('pranostika-box');
   const kontajnerTextu = document.getElementById('text-pranostiky');
   
+  const seznamPranostik = ziskajPranostiky(mesic, den);
+
   if (box && kontajnerTextu) {
     box.style.backgroundColor = tema.bg;
-    box.style.borderLeft = `4px solid ${tema.border}`;
-    kontajnerTextu.style.color = tema.border;
+    const aktivniBarva = (seznamPranostik.length > 0 && seznamPranostik[0].barva) ? seznamPranostik[0].barva : tema.border;
+    box.style.borderLeft = `4px solid ${aktivniBarva}`;
+    kontajnerTextu.style.color = aktivniBarva;
   }
 
   if (kontajnerTextu) {
-    const seznamPranostik = ziskajPranostiky(mesic, den);
     kontajnerTextu.innerHTML = '';
-    
-    seznamPranostik.forEach(function(text) {
+    seznamPranostik.forEach(function(item) {
       const radek = document.createElement('span');
-      radek.innerText = text;
+      radek.innerText = item.text;
       kontajnerTextu.appendChild(radek);
     });
   }
 
-  // --- NOVÁ ČÁST PRO AUTOMATICKOU BARVU TEXTU (NADPIS A ODKAZ) ---
   function aktualizujBarvuTextu() {
     const elementyKUprave = document.querySelectorAll('.dynamic-text');
-    
-    // Zjistíme, zda má web tmavé pozadí (nebo zda tělo dokumentu obsahuje třídu 'dark', 'night' apod.)
     const jeTmavyMotiv = window.matchMedia('(prefers-color-scheme: dark)').matches || 
                          document.body.classList.contains('dark') || 
                          document.body.classList.contains('dark-mode') ||
@@ -3604,17 +3692,15 @@ document.addEventListener("DOMContentLoaded", function() {
 
     elementyKUprave.forEach(function(el) {
       if (jeTmavyMotiv) {
-        el.style.setProperty('color', '#ffffff', 'important'); // V černém motivu bude bílý
+        el.style.setProperty('color', '#ffffff', 'important');
       } else {
-        el.style.setProperty('color', '#000000', 'important'); // V bílém motivu bude černý
+        el.style.setProperty('color', '#000000', 'important');
       }
     });
   }
 
-  // Spustíme ihned po načtení
   aktualizujBarvuTextu();
 
-  // Pokud na webu klikáš na tlačítko pro změnu motivu, budeme sledovat změny na body
   const observer = new MutationObserver(aktualizujBarvuTextu);
   observer.observe(document.body, { attributes: true, attributeFilter: ['class', 'style'] });
 });
