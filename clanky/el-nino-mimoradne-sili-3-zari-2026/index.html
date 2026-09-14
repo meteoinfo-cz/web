@@ -626,9 +626,9 @@ body.light-mode {
                 <span id="live-time" style="font-weight: bold; font-size: 1.2rem; color: #ffffff;">17:16:12</span>
                 <span style="color: #484f58;">|</span>
                 <span id="live-date" style="color: #8b949e;">5. 9. 2026</span>
-                <button class="o-webu-btn" onclick="document.getElementById('author-modal').classList.add('active')">O webu</button>
+                <button class="o-webu-btn" onclick="window.location.href='https://meteoinfo-cz.github.io/web/o-webu/'">O webu</button>
                 <span style="color: #484f58;">|</span>
-                <button class="o-webu-btn" onclick="document.getElementById('updates-modal').classList.add('active')">Aktualizace</button>
+                <button class="o-webu-btn" onclick="window.location.href='https://meteoinfo-cz.github.io/web/aktualizace/'">Aktualizace</button>
                 <span style="color: #484f58;">|</span>
                 <button class="o-webu-btn" id="btn-openet-denik" style="font-weight: bold; color: #38bdf8;" onclick="document.getElementById('okno-denik').classList.add('active')">📖 Meteo deník</button>
                 <span style="color: #484f58;">|</span>
@@ -641,7 +641,7 @@ body.light-mode {
     <div style="display: flex; gap: 8px; align-items: center; flex-shrink: 0;">
         <a href="https://meteoinfo-cz.github.io/web/meteoradar/" class="header-btn" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 4px;">🛰️ Meteoradar</a>
         
-        <a id="moon-trigger-btn" href="https://meteoinfo-cz.github.io/web/mesic/" class="header-btn" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 4px;">Měsíc: 🌓</a>
+        <a id="moon-trigger-btn" href="https://meteoinfo-cz.github.io/web/astro/" class="header-btn" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 4px;">Astro: 🌓</a>
         
         <button id="theme-button" class="header-btn" onclick="toggleTheme()" style="font-size: 1.1rem; padding: 4px 10px;">🌙</button>
 
@@ -680,7 +680,7 @@ Dopady tohoto jevu pocítí mnoho lidí po celém světě, přičemž každá ob
 <!-- OBRÁZEK MAPY Z OTEPLOVÁNÍ -->
 <div style="text-align: center; margin: 30px 0;">
     <div style="display: inline-block; max-width: 80%; width: 100%; border: 1px solid var(--border-inner); border-radius: 10px; overflow: hidden; background: var(--bg-body); text-align: left;">
-        <img src="../obrazky/oteplovani.jpg" alt="Radarový snímek" style="width: 100%; display: block;">
+        <img src="../obrazky/oteplovani.jpg" alt="Obrázek globálního oteplování v Pacifiku" style="width: 100%; display: block;">
         <div style="padding: 10px 15px; font-size: 0.85rem; color: var(--text-muted);">
             Obrázek globálního oteplování v Pacifiku. Zdroj: <a href="https://eu-space.europa.eu" target="_blank" style="color: inherit;">eu-space.europa.eu</a>
         </div>
