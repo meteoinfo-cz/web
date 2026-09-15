@@ -9,6 +9,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="../web-ikonky/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="../web-ikonky/favicon-16x16.png">
 <link rel="manifest" href="./manifest.json">
+<meta name="robots" content="max-image-preview:large">
     
 <style>
         :root {
@@ -641,7 +642,7 @@ body.light-mode {
     <div style="display: flex; gap: 8px; align-items: center; flex-shrink: 0;">
         <a href="https://meteoinfo-cz.github.io/web/meteoradar/" class="header-btn" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 4px;">🛰️ Meteoradar</a>
         
-        <a id="moon-trigger-btn" href="https://meteoinfo-cz.github.io/web/astro/" class="header-btn" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 4px;">Astro: 🌓</a>
+        <a id="moon-trigger-btn" href="https://meteoinfo-cz.github.io/web/astro/" class="header-btn" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 4px;">Astro 🌓</a>
         
         <button id="theme-button" class="header-btn" onclick="toggleTheme()" style="font-size: 1.1rem; padding: 4px 10px;">🌙</button>
 
@@ -662,8 +663,11 @@ body.light-mode {
 
 <!-- CELÝ ČLÁNEK PŘÍMO NA STRÁNCE -->
 <main class="card" style="margin-top: 20px; background: var(--bg-card); border: 1px solid var(--border-inner); border-radius: 12px; padding: 35px;">
-<h2 style="font-size: 2rem; color: var(--text-accent); margin-top: 0; margin-bottom: 10px;">Dnes velmi silné bouřky, hrozí i četné supercely</h2>
-<div style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 30px;">📅 28. srpna 2026</div>
+    <h2 style="font-size: 2rem; color: var(--text-accent); margin-top: 0; margin-bottom: 10px;">Dnes velmi silné bouřky, hrozí i četné supercely</h2>
+    <div style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 30px;">
+        📅 28. srpna 2026<br>
+        <span style="font-size: 1rem; opacity: 1;">Autor: Tadeas</span>
+    </div>
 
 <p style="margin-bottom: 20px; font-size: 1.05rem;">
 Máme tu další bouřkový den, který by mohl být, co se týče bouřek, nejintenzivnější v tomto roce. Hrozí totiž velmi silné bouřky a četné supercely.
@@ -676,7 +680,7 @@ V ranních a dopoledních hodinách ještě bude převažovat většinou vysoká
 <!-- OBRÁZEK ESTOFEXU -->
 <div style="text-align: center; margin: 30px 0;">
     <div style="display: inline-block; max-width: 80%; width: 100%; border: 1px solid var(--border-inner); border-radius: 10px; overflow: hidden; background: var(--bg-body); text-align: left;">
-        <img src="../obrazky/estofex.jpg" alt="Obrázek mapy výstrah před bouřkami" style="width: 100%; display: block;">
+        <img src="../obrazky/estofex.jpg" width="1400" height="1398" alt="Obrázek mapy výstrah před bouřkami" style="width: 100%; height: auto; display: block;">
         <div style="padding: 10px 15px; font-size: 0.85rem; color: var(--text-muted);">
             Mapa výstrahy na bouřky, na krajním jihozápadě je poprvé v tomto roce i 3. stupeň. Výstrahu poskytl ESTOFEX, zdroj: <a href="https://www.estofex.org" target="_blank" style="color: inherit;">estofex.org</a>
         </div>
