@@ -724,7 +724,7 @@ body.light-mode {
     <div style="display: flex; align-items: center; gap: 25px; flex-wrap: wrap;">
         
         <a href="https://meteoinfo-cz.github.io/web/" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
-            <img src="/web/apple-touch-icon.png" alt="MI" style="width: 32px; height: 32px; object-fit: contain; border-radius: 6px;">
+            <img src="apple-touch-icon.png" alt="MI" style="width: 32px; height: 32px; object-fit: contain; border-radius: 6px;">
             <h1 style="margin: 0; font-size: 1.8rem; font-weight: 800; letter-spacing: -0.5px; white-space: nowrap;">
                 <span style="color: #38bdf8;">Meteo</span><span style="color: #38bdf8;">Info</span>
             </h1>
@@ -734,25 +734,27 @@ body.light-mode {
         <!-- Ostatní věci (Discord, Stáhnout, Čas, Odkazy) -->
         <div style="display: flex; flex-direction: column; gap: 4px;">
             
-            <!-- 1. Řádek vlevo: Discord, Stáhnout, Info -->
-            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                <a href="https://discord.gg/zTqpRYSb5" target="_blank" rel="noopener noreferrer" title="Přidej se na náš Discord Server" style="display: flex; align-items: center; background: #5865F2; padding: 5px 8px; border-radius: 6px; text-decoration: none;">
-                    <svg viewBox="0 0 127.14 96.36" style="width: 16px; height: 16px; fill: #ffffff;">
-                        <path d="M107.7,8.07A105.15,105.15,0,0,0,77.26,0a77.19,77.19,0,0,0-3.3,6.83A96.67,96.67,0,0,0,53.22,6.83,77.19,77.19,0,0,0,49.88,0,105.15,105.15,0,0,0,19.44,8.07C3.66,31.58-1.95,54.65,1,77.53A105.73,105.73,0,0,0,32,96.36a74.37,74.37,0,0,0,6.73-11,68.21,68.21,0,0,1-10.57-5c1,.74,2,1.51,3,2.26a74.12,74.12,0,0,0,64.78,0c1-.75,2-1.52,3-2.26a68.21,68.21,0,0,1-10.57,5,74.37,74.37,0,0,0,6.73,11,105.73,105.73,0,0,0,31.06-18.83C129.85,50.7,123.32,27.87,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53S36.18,40.36,42.45,40.36,53.83,46,53.83,53,48.72,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.24,60,73.24,53S78.41,40.36,84.69,40.36,96.07,46,96.07,53,91,65.69,84.69,65.69Z"/>
-                    </svg>
-                </a>
+            <!-- 1. Řádek vlevo: Discord, Stáhnout, Info a Partneři vedle sebe -->
+<div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+    <a href="https://discord.gg/zTqpRYSb5" target="_blank" rel="noopener noreferrer" title="Přidej se na náš Discord Server" style="display: flex; align-items: center; background: #5865F2; padding: 5px 8px; border-radius: 6px; text-decoration: none;">
+        <svg viewBox="0 0 127.14 96.36" style="width: 16px; height: 16px; fill: #ffffff;">
+            <path d="M107.7,8.07A105.15,105.15,0,0,0,77.26,0a77.19,77.19,0,0,0-3.3,6.83A96.67,96.67,0,0,0,53.22,6.83,77.19,77.19,0,0,0,49.88,0,105.15,105.15,0,0,0,19.44,8.07C3.66,31.58-1.95,54.65,1,77.53A105.73,105.73,0,0,0,32,96.36a74.37,74.37,0,0,0,6.73-11,68.21,68.21,0,0,1-10.57-5c1,.74,2,1.51,3,2.26a74.12,74.12,0,0,0,64.78,0c1-.75,2-1.52,3-2.26a68.21,68.21,0,0,1-10.57,5,74.37,74.37,0,0,0,6.73,11,105.73,105.73,0,0,0,31.06-18.83C129.85,50.7,123.32,27.87,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53S36.18,40.36,42.45,40.36,53.83,46,53.83,53,48.72,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.24,60,73.24,53S78.41,40.36,84.69,40.36,96.07,46,96.07,53,91,65.69,84.69,65.69Z"/>
+        </svg>
+    </a>
 
-                <button id="install-btn" style="display: flex; align-items: center; gap: 5px; padding: 5px 10px; background: #2ea043; color: #ffffff; border: none; border-radius: 6px; cursor: pointer; font-weight: 700; font-size: 12px;" title="Stáhnout aplikaci">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                        <polyline points="7 10 12 15 17 10"></polyline>
-                        <line x1="12" y1="15" x2="12" y2="3"></line>
-                    </svg>
-                    <span>Stáhnout</span>
-                </button>
+    <button id="install-btn" style="display: flex; align-items: center; gap: 5px; padding: 5px 10px; background: #2ea043; color: #ffffff; border: none; border-radius: 6px; cursor: pointer; font-weight: 700; font-size: 12px;" title="Stáhnout aplikaci">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        <span>Stáhnout</span>
+    </button>
 
-                <span style="background-color: #21262d; color: #aaa; border: 1px solid #30363d; width: 18px; height: 18px; border-radius: 4px; font-weight: bold; font-size: 10px; display: inline-flex; align-items: center; justify-content: center; cursor: default;">i</span>
-            </div>
+    <span style="background-color: #21262d; color: #aaa; border: 1px solid #30363d; width: 18px; height: 18px; border-radius: 4px; font-weight: bold; font-size: 10px; display: inline-flex; align-items: center; justify-content: center; cursor: default;">i</span>
+
+    <a href="https://meteoinfo-cz.github.io/web/partneri/" style="display: inline-flex; align-items: center; padding: 5px 10px; background-color: #0366d6; color: #ffffff; border: none; border-radius: 6px; text-decoration: none; font-weight: 700; font-size: 12px;">Partneři</a>
+</div>
 
             <!-- 2. Řádek vlevo: Čas, datum, odkazy, deník i články -->
             <div style="display: flex; align-items: center; gap: 6px; font-size: 0.8rem; flex-wrap: wrap;">
