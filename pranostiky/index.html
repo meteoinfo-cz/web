@@ -592,6 +592,32 @@ body.light-mode {
     border-bottom: 1px solid #e5e7eb !important;
 }
 
+/* ==========================================
+   6. PRANOSTIKY V BÍLÉM REŽIMU
+   ========================================== */
+
+/* Změna pozadí a rámečku hlavního boxu pranostik na bílou */
+body.light div[style*="max-width: 1200px"],
+body.light-theme div[style*="max-width: 1200px"],
+[data-theme="light"] div[style*="max-width: 1200px"] {
+    background-color: #ffffff !important;
+    border-color: #e5e7eb !important;
+}
+
+/* Změna barvy oddělovacích čar mezi řádky pranostik */
+body.light div[style*="max-width: 1200px"] > div,
+body.light-theme div[style*="max-width: 1200px"] > div,
+[data-theme="light"] div[style*="max-width: 1200px"] > div {
+    border-bottom-color: #e5e7eb !important;
+}
+
+/* Změna data (1. 1., Únor atd.) na černou barvu v bílém režimu */
+body.light div[style*="max-width: 1200px"] div[style*="width: 95px"],
+body.light-theme div[style*="max-width: 1200px"] div[style*="width: 95px"],
+[data-theme="light"] div[style*="max-width: 1200px"] div[style*="width: 95px"] {
+    color: #111827 !important;
+}
+
     </style>
 </head>
 <body>

@@ -4,6 +4,7 @@
 <script defer src="https://cloud.umami.is/script.js" data-website-id="19d1e1d0-e930-4394-a845-1b7b70261544"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <title>Astro - MeteoInfo</title>
 <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="48x48" href="../favicon-48x48.png">
@@ -585,11 +586,125 @@ body.light-mode {
     /* ÚPLNĚ ODSTRANĚNO: transition, aby nebylo zpoždění */
 }
 
-/* Když je aktivní světlý režim (uprav podle toho, jakou třídu/atribut pro světlejší režim používáš, např. .light-mode nebo [data-theme="light"]) */
-.light-mode #main-header,
-[data-theme="light"] #main-header {
+/* ==========================================
+   1. HORNÍ LIŠTA A KARTY (Tmavý vs. Bílý režim)
+   ========================================== */
+
+/* Horní lišta v tmavém režimu - jemně světlejší odstín (#1a2336) */
+#main-header,
+header {
+    background-color: #1a2336 !important;
+    border-color: #26334d !important;
+}
+
+/* Hlavní karty */
+.card,
+.astro-section {
+    background-color: #111827 !important;
+    border-color: #1f2937 !important;
+}
+
+/* Bílý režim – všechno čistě bílé */
+body.light #main-header,
+body.light header,
+body.light-theme #main-header,
+body.light-theme header,
+[data-theme="light"] #main-header,
+[data-theme="light"] header,
+body.light .card,
+body.light-theme .card,
+[data-theme="light"] .card,
+body.light .astro-section,
+body.light-theme .astro-section,
+[data-theme="light"] div[style*="background-color: #111827"] {
     background-color: #ffffff !important;
-    border-bottom: 1px solid #e5e7eb !important;
+    border-color: #e5e7eb !important;
+}
+
+
+/* ==========================================
+   2. VNITŘNÍ BOXY MĚST
+   ========================================== */
+.card div[style*="background"],
+.astro-item-card {
+    background-color: #1f2937 !important;
+    border-color: #374151 !important;
+}
+
+body.light .card div[style*="background"],
+body.light .astro-item-card,
+body.light-theme .card div[style*="background"],
+body.light-theme .astro-item-card,
+[data-theme="light"] .card div[style*="background"],
+[data-theme="light"] .astro-item-card {
+    background-color: #f9fafb !important;
+    border-color: #e5e7eb !important;
+}
+
+
+/* ==========================================
+   3. POČÍTADLO MĚST (Tmavý = bílá, Bílý = černá)
+   ========================================== */
+#sun-counter,
+#moon-counter,
+.card span[id*="counter"],
+.card span[style*="font-size: 0.9rem"] {
+    color: #ffffff !important;
+}
+
+body.light #sun-counter,
+body.light #moon-counter,
+body.light .card span[id*="counter"],
+body.light .card span[style*="font-size: 0.9rem"],
+body.light-theme #sun-counter,
+body.light-theme #moon-counter,
+[data-theme="light"] #sun-counter,
+[data-theme="light"] #moon-counter,
+[data-theme="light"] .card span[id*="counter"],
+[data-theme="light"] .card span[style*="font-size: 0.9rem"] {
+    color: #111827 !important;
+}
+
+
+/* ==========================================
+   4. BARVY NÁZVŮ MĚST A ČASŮ V BÍLÉM REŽIMU
+   ========================================== */
+
+/* Výchozí názvy měst (Měsíc - první sekce) - modrá */
+body.light .astro-section:first-of-type .card div[style*="background"] > div:first-child,
+body.light-theme .astro-section:first-of-type .card div[style*="background"] > div:first-child,
+[data-theme="light"] .astro-section:first-of-type .card div[style*="background"] > div:first-child,
+body.light .astro-section:first-of-type .astro-item-card > div:first-child {
+    color: #0284c7 !important;
+}
+
+/* SEKCE SLUNCE (druhá sekce) - Názvy měst ŽLUTÉ v bílém režimu */
+body.light .astro-section:nth-of-type(2) .card div[style*="background"] > div:first-child,
+body.light-theme .astro-section:nth-of-type(2) .card div[style*="background"] > div:first-child,
+[data-theme="light"] .astro-section:nth-of-type(2) .card div[style*="background"] > div:first-child,
+body.light .astro-section:nth-of-type(2) .astro-item-card > div:first-child,
+body.light-theme .astro-section:nth-of-type(2) .astro-item-card > div:first-child,
+[data-theme="light"] .astro-section:nth-of-type(2) .astro-item-card > div:first-child {
+    color: #ca8a04 !important;
+}
+
+/* Samotné časy v boxech - černá v bílém režimu */
+body.light .card div[style*="background"] > div:not(:first-child),
+body.light .astro-item-card > div:not(:first-child),
+body.light-theme .card div[style*="background"] > div:not(:first-child),
+body.light-theme .astro-item-card > div:not(:first-child),
+[data-theme="light"] .card div[style*="background"] > div:not(:first-child),
+[data-theme="light"] .astro-item-card > div:not(:first-child) {
+    color: #111827 !important;
+}
+
+body.light .card div[style*="background"] > div:not(:first-child) *,
+body.light .astro-item-card > div:not(:first-child) *,
+body.light-theme .card div[style*="background"] > div:not(:first-child) *,
+body.light-theme .astro-item-card > div:not(:first-child) *,
+[data-theme="light"] .card div[style*="background"] > div:not(:first-child) *,
+[data-theme="light"] .astro-item-card > div:not(:first-child) * {
+    color: #111827 !important;
 }
 
     </style>
@@ -2251,16 +2366,23 @@ function toggleTheme() {
 })();
 </script>
 
-<div class="card" style="max-width: 1400px; width: 100%; margin: 0 auto 30px auto; padding: 25px; background-color: #111827; border: 1px solid #1f2937; border-radius: 15px; font-family: 'Segoe UI', sans-serif; box-sizing: border-box; color: #ffffff;">
+<div class="card" style="max-width: 1400px; width: 100%; margin: 0 auto 30px auto; padding: 25px; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 15px; font-family: 'Segoe UI', sans-serif; box-sizing: border-box; color: #1f2937;">
     
     <!-- Podnadpis se Sluncem a počítadlo v jednom řádku pod ním -->
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
-        <h3 style="margin: 0; color: #eab308; font-size: 1.5rem;">☀️ Východy a západy Slunce</h3>
-        <span id="sun-counter" style="color: #9ca3af; font-size: 0.9rem;"></span>
+        <h3 style="margin: 0; color: #ca8a04; font-size: 1.5rem;">☀️ Východy a západy Slunce</h3>
+        <span id="sun-counter" style="color: #4b5563; font-size: 0.9rem;"></span>
     </div>
     
     <!-- Kontejner pro karty měst (Slunce) -->
-    <div id="sun-mesta-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 20px;"></div>
+    <div id="sun-mesta-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 20px;">
+        <!-- Příklad jednoho vnitřního boxu města s bílým pozadím a žlutým levým okrajem -->
+        <div style="background-color: #f9fafb; border: 1px solid #e5e7eb; border-left: 4px solid #eab308; padding: 15px; border-radius: 8px;">
+            <div style="color: #ca8a04; font-weight: bold; font-size: 1.1rem; margin-bottom: 8px;">Název města</div>
+            <div style="color: #4b5563; font-size: 0.95rem; margin-bottom: 4px;">☀️ Východ: 07:01</div>
+            <div style="color: #4b5563; font-size: 0.95rem;">☀️ Západ: 19:01</div>
+        </div>
+    </div>
 
     <!-- Kontejner pro tlačítka Zpět a Další města -->
     <div style="display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 20px; flex-wrap: wrap;">
@@ -2985,15 +3107,15 @@ function toggleTheme() {
 <script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
 <script>
 (function() {
-    // Vytvoření a vložení boxu Planety s užší šířkou zarovnanou s ostatními moduly
+    // Vytvoření hlavního boxu s třídou
     const cardContainer = document.createElement('div');
-    cardContainer.className = 'card';
-    cardContainer.style.cssText = 'max-width: 1200px; width: 100%; margin: 0 auto 30px auto; padding: 25px; background-color: #111827; border: 1px solid #1f2937; border-radius: 15px; font-family: "Segoe UI", sans-serif; box-sizing: border-box; color: #ffffff;';
+    cardContainer.className = 'card astro-main-card';
+    cardContainer.style.cssText = 'max-width: 1200px; width: 100%; margin: 0 auto 30px auto; padding: 25px; border-radius: 15px; font-family: "Segoe UI", sans-serif; box-sizing: border-box;';
     
     cardContainer.innerHTML = `
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
             <h3 style="margin: 0; color: #c084fc; font-size: 1.5rem;">🪐 Aktuální viditelnost planet</h3>
-            <span id="planety-time-info" style="color: #9ca3af; font-size: 0.85rem;"></span>
+            <span id="planety-time-info" class="astro-time-text" style="font-size: 0.85rem;"></span>
         </div>
         <div id="planety-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 10px;"></div>
     `;
@@ -3006,43 +3128,38 @@ function toggleTheme() {
     const now = new Date();
     timeInfo.textContent = `Stav pro: ${now.toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit' })} (Výpočet pro střední Evropu)`;
 
-    // Výchozí souřadnice (střed ČR / Praha: 50.0736, 14.4185)
     const lat = 50.0736;
     const lon = 14.4185;
     const observer = new Astronomy.Observer(lat, lon, 0);
 
     const planetySeznam = [
-        { jmeno: "Merkur", body: Astronomy.Body.Mercury, ikona: "", barva: "#a855f7" },
-        { jmeno: "Venuše", body: Astronomy.Body.Venus, ikona: "", barva: "#ec4899" },
-        { jmeno: "Mars", body: Astronomy.Body.Mars, ikona: "", barva: "#ef4444" },
-        { jmeno: "Jupiter", body: Astronomy.Body.Jupiter, ikona: "", barva: "#f59e0b" },
-        { jmeno: "Saturn", body: Astronomy.Body.Saturn, ikona: "", barva: "#eab308" }
+        { jmeno: "Merkur", body: Astronomy.Body.Mercury, barva: "#a855f7" },
+        { jmeno: "Venuše", body: Astronomy.Body.Venus, barva: "#ec4899" },
+        { jmeno: "Mars", body: Astronomy.Body.Mars, barva: "#ef4444" },
+        { jmeno: "Jupiter", body: Astronomy.Body.Jupiter, barva: "#f59e0b" },
+        { jmeno: "Saturn", body: Astronomy.Body.Saturn, barva: "#eab308" }
     ];
 
     if (grid) {
         grid.innerHTML = '';
         planetySeznam.forEach(p => {
-            // Výpočet horizontálních souřadnic (výška nad obzorem)
             const equ_2000 = Astronomy.Equator(p.body, now, observer, true, true);
             const hor = Astronomy.Horizon(now, observer, equ_2000.ra, equ_2000.dec, 'normal');
             
-            // hor.altitude je výška ve stupních nad obzorem (> 0 znamená, že je nad obzorem)
             const jeNadObzorem = hor.altitude > 0;
             const vyskaZaokrouhlena = hor.altitude.toFixed(1);
 
             const card = document.createElement('div');
-            card.style.backgroundColor = '#1f2937';
-            card.style.padding = '12px';
-            card.style.borderRadius = '6px';
-            card.style.borderLeft = `4px solid ${p.barva}`;
+            card.className = 'astro-item-card';
+            card.style.cssText = `padding: 12px; border-radius: 6px; border-left: 4px solid ${p.barva};`;
 
             const stavBarva = jeNadObzorem ? '#10b981' : '#ef4444';
             const stavText = jeNadObzorem ? 'Nad obzorem' : 'Pod obzorem';
             const popisText = jeNadObzorem ? `${vyskaZaokrouhlena}° n. o.` : 'Neviditelná';
 
             card.innerHTML = `
-                <div style="font-weight: bold; font-size: 1rem; color: ${p.barva}; margin-bottom: 6px;">${p.ikona} ${p.jmeno}</div>
-                <div style="color: #9ca3af; font-size: 0.8rem; line-height: 1.4;">
+                <div style="font-weight: bold; font-size: 1rem; color: ${p.barva}; margin-bottom: 6px;">${p.jmeno}</div>
+                <div class="astro-item-text" style="font-size: 0.8rem; line-height: 1.4;">
                     🔭 ${popisText}<br>
                     ✨ <span style="color: ${stavBarva}; font-weight: bold;">${stavText}</span>
                 </div>
@@ -3050,6 +3167,28 @@ function toggleTheme() {
             grid.appendChild(card);
         });
     }
+})();
+</script>
+
+<script>
+(function() {
+    const cardContainer = document.createElement('div');
+    cardContainer.className = 'card astro-main-card';
+    cardContainer.style.cssText = 'max-width: 1200px; width: 100%; margin: 0 auto 30px auto; padding: 25px; border-radius: 15px; font-family: "Segoe UI", sans-serif; box-sizing: border-box; background: #121824; color: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.4);';
+
+    cardContainer.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+            <h3 style="margin: 0; color: #ec4899; font-size: 1.5rem;">🛰️ ISS (Mezinárodní kosmická stanice)</h3>
+            <span id="iss-time-info" class="astro-time-text" style="font-size: 0.85rem; color: #94a3b8;">🔴 Živý přenos</span>
+        </div>
+        <div style="text-align: center; background: #1a2233; border-radius: 10px; overflow: hidden; padding: 10px;">
+            <div style="position: relative; width: 100%; padding-bottom: 56.25%; height: 0;">
+                <iframe src="https://www.youtube.com/embed/fO9e9jnhYK8?si=-Y5vqTaSW4RKo64O" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 6px;"></iframe>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(cardContainer);
 })();
 </script>
 
