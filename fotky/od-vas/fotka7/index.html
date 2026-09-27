@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="19d1e1d0-e930-4394-a845-1b7b70261544"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duha po přeháňce — MeteoInfo</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="../../../favicon-48x48.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../../favicon-16x16.png">
+    <link rel="manifest" href="../../../manifest.json">
+    <style>
+        body {
+            background: #0d1117;
+            color: #fff;
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            box-sizing: border-box;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .back-link-wrapper {
+            width: 100%;
+            max-width: 1500px;
+            text-align: left;
+            padding: 10px 10px;
+            box-sizing: border-box;
+        }
+
+        .back-link {
+            color: #58a6ff;
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 1500px;
+            padding: 0 15px;
+            box-sizing: border-box;
+        }
+
+        .responsive-img {
+            max-height: 78vh; /* Zmenšeno, aby se dole pohodlně vešel popisek i autor */
+            max-width: 100%;
+            width: auto;
+            height: auto;
+            border-radius: 6px;
+            display: block;
+            object-fit: contain;
+            margin-bottom: 5px;
+        }
+
+        .photo-caption {
+            font-size: 0.85rem;
+            color: #fff;
+            margin: 0 0 6px 0; /* Větší mezera pod tučným popiskem */
+            font-weight: bold;
+        }
+
+        .photo-meta {
+            font-size: 0.78rem;
+            color: #8b949e;
+            margin: 0;
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Odkaz zpět na galerii -->
+    <div class="back-link-wrapper">
+        <a href="https://meteoinfo-cz.github.io/web/fotky/od-vas/" class="back-link">← Zpět na galerii</a>
+    </div>
+
+    <!-- Hlavní kontejner s fotkou a popiskem -->
+    <div class="main-container">
+        <img src="od-lidi7" alt="Pohled na duhu" class="responsive-img">
+
+        <!-- Popisek pod fotkou a doplňující informace -->
+        <p class="photo-caption">
+            Duha po přeháňce.
+        </p>
+        <p class="photo-meta">
+            Autor: Tom | Datum: 21. 09. 2026 | Místo: Olomouc
+        </p>
+    </div>
+
+</body>
+</html>
