@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="19d1e1d0-e930-4394-a845-1b7b70261544"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hřib kovář — MeteoInfo</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="../../../favicon-48x48.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../../favicon-16x16.png">
+    <link rel="manifest" href="../../../manifest.json">
+    <style>
+        /* Základní nastavení pro celou stránku */
+        body {
+            background: #0d1117;
+            color: #fff;
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            box-sizing: border-box;
+            overflow: hidden; /* Zabrání scrollování celé stránky */
+            display: flex;
+            flex-direction: column; /* Uspořádá prvky pod sebe */
+            align-items: center;
+        }
+
+        /* Hlavní kontejner, který obaluje fotku a popisek */
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            flex: 1; /* Zabere všechen volný prostor v body */
+            justify-content: center; /* Vycentruje obsah svisle */
+            align-items: center;
+            width: 100%;
+            max-width: 1500px;
+            padding: 0 15px; /* Boční mezery pro responzivitu */
+            box-sizing: border-box;
+        }
+
+        .back-link-wrapper {
+            width: 100%;
+            max-width: 1500px;
+            text-align: left;
+            padding: 10px 10px; /* Boční odsazení */
+            box-sizing: border-box;
+        }
+
+        .back-link {
+            color: #58a6ff;
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+
+        /* Samotný obrázek - zmenšeno na 78vh, aby se dole pohodlně vešel popisek i autor */
+        .responsive-img {
+            max-height: 78vh; 
+            max-width: 100%; 
+            width: auto;
+            height: auto;
+            border-radius: 6px;
+            display: block; /* Odstraní mezery pod obrázkem */
+            object-fit: contain;
+            margin-bottom: 5px; /* Malá mezera pod fotkou */
+        }
+
+        /* Popisek pod fotkou */
+        .photo-caption {
+            font-size: 0.85rem;
+            color: #fff;
+            margin: 0 0 6px 0; /* Větší mezera pod tučným popiskem */
+            font-weight: bold;
+        }
+
+        /* Doplňující informace (autor, datum, místo) */
+        .photo-meta {
+            font-size: 0.78rem;
+            color: #8b949e;
+            margin: 0;
+            padding-bottom: 10px; /* Odsazení od spodního okraje */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Odkaz zpět na galerii -->
+    <div class="back-link-wrapper">
+        <a href="https://meteoinfo-cz.github.io/web/fotky/od-vas/" class="back-link">← Zpět na galerii</a>
+    </div>
+
+    <!-- Hlavní kontejner s fotkou a popiskem -->
+    <div class="main-container">
+        <!-- Fotka roztažená na maximum k okrajům na výšku -->
+        <img src="od-lidi1" alt="Hřib kovář" class="responsive-img">
+
+        <!-- Popisek pod fotkou a doplňující informace -->
+        <p class="photo-caption">
+            Hřib kovář.
+        </p>
+        <p class="photo-meta">
+            Autor: Dominik | Datum: 20. 09. 2026 | Místo: Ressl
+        </p>
+    </div>
+
+</body>
+</html>
