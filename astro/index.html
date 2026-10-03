@@ -3192,5 +3192,22 @@ function toggleTheme() {
 })();
 </script>
 
+<!-- JavaScript pro automatické vygenerování patičky -->
+<script>
+const footer = document.createElement('div');
+footer.className = 'card';
+footer.style.maxWidth = '20000px';
+footer.style.width = '100%';
+footer.style.margin = '25px auto 0px auto';
+footer.style.boxSizing = 'border-box';
+footer.style.textAlign = 'center';
+footer.style.padding = '20px';
+footer.style.color = '#8b949e';
+footer.style.fontSize = '1rem';
+footer.innerHTML = '© 2026 MeteoInfo - Všechna práva vyhrazena';
+
+document.body.appendChild(footer);
+</script>
+
 </body> 
 </html>
