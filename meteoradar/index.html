@@ -1558,21 +1558,24 @@ function zmenModelVentusky(model) {
     
     container.innerHTML = '<iframe id="ventusky-iframe" src="' + novaUrl + '" style="display:block!important;position:absolute!important;left:0!important;top:0!important;width:100%!important;height:100%!important;margin:0!important;padding:0!important;border:0!important;right:auto!important;bottom:auto!important" loading="lazy"></iframe>';
 }
+</script>
 
-// Vytvoření a vložení patičky roztáhlé na 100 %
+<!-- JavaScript pro automatické vygenerování patičky -->
+<script>
 const footer = document.createElement('div');
 footer.className = 'card';
 footer.style.maxWidth = '20000px';
-footer.style.width = '100%';               // Roztáhne se na plnou šířku
-footer.style.margin = '25px auto 0px auto';   // Větší odstup seshora
+footer.style.width = '100%';
+footer.style.margin = '25px auto 0px auto';
 footer.style.boxSizing = 'border-box';
 footer.style.textAlign = 'center';
 footer.style.padding = '20px';
 footer.style.color = '#8b949e';
 footer.style.fontSize = '1rem';
-footer.innerHTML = '© 2026 MeteoInfo — Všechna práva vyhrazena';
+footer.innerHTML = '© 2026 MeteoInfo - Všechna práva vyhrazena';
 
 document.body.appendChild(footer);
+</script>
 
 </body> 
 </html>
