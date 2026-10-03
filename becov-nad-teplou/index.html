@@ -575,7 +575,7 @@ CSS
     white-space: pre-line;
     position: absolute;
     top: 45%;
-    left: 90px;
+    left: 100px;
     width: 270px;
     background-color: #000000;
     color: #ffffff;
@@ -724,7 +724,7 @@ body.light-mode {
     <div style="display: flex; align-items: center; gap: 25px; flex-wrap: wrap;">
         
         <a href="https://meteoinfo-cz.github.io/web/" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
-            <img src="/web/apple-touch-icon.png" alt="MI" style="width: 32px; height: 32px; object-fit: contain; border-radius: 6px;">
+            <img src="apple-touch-icon.png" alt="MI" style="width: 32px; height: 32px; object-fit: contain; border-radius: 6px;">
             <h1 style="margin: 0; font-size: 1.8rem; font-weight: 800; letter-spacing: -0.5px; white-space: nowrap;">
                 <span style="color: #38bdf8;">Meteo</span><span style="color: #38bdf8;">Info</span>
             </h1>
@@ -803,117 +803,130 @@ body.light-mode {
     <!-- ======================================================= -->
     <!-- FINÁLNÍ A STABLE NAŠEPTÁVAČ MĚST WITH AUTOMATIC PRAHA    -->
     <!-- ======================================================= -->
-<div style="position: relative; width: 100%; margin-bottom: 10px; box-sizing: border-box;">
-    <input type="text" id="main-search" placeholder="🔍 Napiš město a vyber ze seznamu..." style="width: 100%; padding: 12px 15px; border: 2px solid var(--border-color); border-radius: 8px; background: var(--bg-color); color: var(--text-main); font-size: 16px; box-sizing: border-box; outline: none; transition: border-color 0.2s;">
-    
-    <div id="main-suggestions" style="position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-card); border: 2px solid var(--border-color); border-radius: 8px; max-height: 250px; overflow-y: auto; z-index: 9999; display: none; margin-top: 5px; box-shadow: 0 8px 16px rgba(0,0,0,0.2); box-sizing: border-box;"></div>
-</div>
+    <div style="position: relative; width: 100%; margin-bottom: 10px; box-sizing: border-box;">
+        <input type="text" id="main-search" placeholder="🔍 Vyhledat místo..." style="width: 100%; padding: 12px 15px; border: 2px solid var(--border-color); border-radius: 8px; background: var(--bg-color); color: var(--text-main); font-size: 16px; box-sizing: border-box; outline: none; transition: border-color 0.2s;">
+        
+        <!-- Plovoucí tabulka s výsledky vyhledávání -->
+        <div id="main-suggestions" style="position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-card); border: 2px solid var(--border-color); border-radius: 8px; max-height: 250px; overflow-y: auto; z-index: 9999; display: none; margin-top: 5px; box-shadow: 0 8px 16px rgba(0,0,0,0.2); box-sizing: border-box;"></div>
+    </div>
 
-<script>
+      <script>
 (function() {
-  // Pomocná funkce na odstranění diakritiky, mezer A POMLČEK z URL
-  function ocastiText(txt) {
-    return txt 
-      ? txt.toLowerCase()
-           .normalize("NFD")
-           .replace(/[\u0300-\u036f]/g, "")
-           .replace(/-/g, " ") // nahradí pomlčky z URL za mezery pro dvouslovná města
-           .trim() 
-      : "";
-  }
+  // === 1. NAČTENÍ MĚSTA Z URL ADRESY (?mesto=Olomouc nebo /olomouc/) ===
+  const urlParams = new URLSearchParams(window.location.search);
+  let urlMesto = urlParams.get('mesto');
 
-  // === 1. PARSOVÁNÍ A NAČTENÍ MĚSTA Z URL ===
-  const pathSegments = window.location.pathname.split('/').filter(p => p && p !== 'web' && p !== 'index.html');
-  let urlMesto = pathSegments.length > 0 ? pathSegments[0] : null;
-
+  // Pokud není v otazníku (?mesto=...), zkusíme zjistit, zda není v cestě URL (např. /web/olomouc/)
   if (!urlMesto) {
-    const urlParams = new URLSearchParams(window.location.search);
-    urlMesto = urlParams.get('mesto');
+    const pathSegments = window.location.pathname.split('/').filter(p => p && p !== 'web' && p !== 'index.html');
+    if (pathSegments.length > 0) {
+      urlMesto = pathSegments[0]; // Vezme složku za /web/
+    }
   }
 
+  // Pokud jsme v URL našli název města
   if (urlMesto) {
-    window.addEventListener('DOMContentLoaded', () => {
-      if (typeof mm !== 'undefined') {
-        const nasleMesto = mm.find(m => ocastiText(m.n) === ocastiText(urlMesto));
+    urlMesto = urlMesto.charAt(0).toUpperCase() + urlMesto.slice(1).toLowerCase();
 
-        if (nasleMesto) {
-          if (typeof mName !== 'undefined') mName = nasleMesto.n;
-          if (typeof lat !== 'undefined') lat = nasleMesto.la;
-          if (typeof lon !== 'undefined') lon = nasleMesto.lo;
-          if (typeof sTemp !== 'undefined') sTemp = nasleMesto.t;
-
-          const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
-          if (chkBox) chkBox.checked = false;
-
-          if (typeof nactiPocasi === 'function') {
-            nactiPocasi(nasleMesto.la, nasleMesto.lo, nasleMesto.n);
-          } else if (typeof updateUI === 'function') {
-            updateUI();
-          } else {
-            const cityEl = document.querySelector('h1') || document.getElementById('city-name');
-            if (cityEl) cityEl.textContent = nasleMesto.n;
-          }
-        }
+    // Najdeme město v databázi 'mm' podle názvu
+    if (typeof mm !== 'undefined') {
+      const nasleMesto = mm.find(m => m.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === urlMesto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""));
+      
+      if (nasleMesto) {
+        localStorage.setItem('defaultCityName', nasleMesto.n);
+        localStorage.setItem('defaultCityLat', nasleMesto.la.toString());
+        localStorage.setItem('defaultCityLon', nasleMesto.lo.toString());
+        localStorage.setItem('defaultCityTemp', nasleMesto.t.toString());
+        mName = nasleMesto.n; lat = nasleMesto.la; lon = nasleMesto.lo; sTemp = nasleMesto.t;
       }
+    }
+  }
+
+  // --- KONTROLA PŘI STARTU STRÁNKY ---
+  const savedUserCity = localStorage.getItem('user_permanently_saved_home');
+  
+  if (sessionStorage.getItem('search_city_active') === 'true') {
+    window.addEventListener('DOMContentLoaded', () => {
+      const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
+      if (chkBox) chkBox.checked = false;
+      sessionStorage.removeItem('search_city_active');
+    });
+  } 
+  // Pokud NENÍ město zadané v URL a uživatel nemá uloženo vlastní, načte se Praha
+  else if (!urlMesto && savedUserCity !== 'true') {
+    localStorage.setItem('defaultCityName', 'Praha');
+    localStorage.setItem('defaultCityLat', '50.08');
+    localStorage.setItem('defaultCityLon', '14.42');
+    localStorage.setItem('defaultCityTemp', '22');
+    
+    mName = "Praha"; lat = 50.08; lon = 14.42; sTemp = 22;
+    
+    window.addEventListener('DOMContentLoaded', () => {
+      const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
+      if (chkBox) chkBox.checked = true;
     });
   }
 
-  // === 2. FUNKČNOST VYHLEDÁVAČE / NAŠEPTÁVAČE ===
-  window.addEventListener('DOMContentLoaded', () => {
-    const input = document.getElementById('main-search');
-    const box = document.getElementById('main-suggestions');
+      // --- 2. SLEDOVÁNÍ ZMĚNY CHECKBOXU PRO TRVALÉ ULOŽENÍ VÝCHOZÍHO MĚSTA ---
+      window.addEventListener('DOMContentLoaded', () => {
+        const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
+        if (chkBox) {
+          chkBox.addEventListener('change', function() {
+            if (this.checked) {
+              // Pokud uživatel čtvereček zaškrtne sám, zablokujeme automatický návrat k Praze při F5
+              localStorage.setItem('user_permanently_saved_home', 'true');
+            } else {
+              // Pokud ho odškrtne, web se při F5 vrátí k Praze
+              localStorage.removeItem('user_permanently_saved_home');
+            }
+          });
+        }
 
-    if (!input || !box) return;
+        // --- 3. LOGIKA SAMOTNÉHO VYHLEDÁVÁNÍ MĚST ---
+        const mainSearch = document.getElementById('main-search');
+        const mainSuggestions = document.getElementById('main-suggestions');
+        if (!mainSearch || !mainSuggestions) return;
 
-    input.addEventListener('input', function() {
-      const dotaz = ocastiText(this.value);
-      box.innerHTML = '';
+        mainSearch.addEventListener('input', function(e) {
+          const text = e.target.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+          mainSuggestions.innerHTML = '';
+          if (text.length === 0) { mainSuggestions.style.display = 'none'; return; }
+          
+          const nalezenaMesta = mm.filter(m => m.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").startsWith(text));
+          if (nalezenaMesta.length > 0) {
+            mainSuggestions.style.display = 'block';
+            nalezenaMesta.forEach(mesta => {
+              const div = document.createElement('div'); div.innerText = mesta.n;
+              div.style.padding = '12px 15px'; div.style.cursor = 'pointer'; div.style.borderBottom = '1px solid var(--border-inner)'; div.style.color = 'var(--text-main)'; div.style.fontSize = '15px';
+              div.addEventListener('mouseenter', () => div.style.background = 'var(--border-color)');
+              div.addEventListener('mouseleave', () => div.style.background = 'transparent');
+              
+              // KLIKNUTÍ NA MĚSTO V SEZNAMU VYHLEDÁVAČE
+              div.addEventListener('click', () => {
+                // Aktivujeme režim vyhledaného města (odškrtne checkbox po reloadu)
+                sessionStorage.setItem('search_city_active', 'true');
+                
+                // Zapíšeme hodnoty vybraného města do paměti
+                localStorage.setItem('defaultCityName', mesta.n);
+                localStorage.setItem('defaultCityLat', mesta.la.toString());
+                localStorage.setItem('defaultCityLon', mesta.lo.toString());
+                localStorage.setItem('defaultCityTemp', mesta.t.toString());
 
-      if (dotaz.length < 1 || typeof mm === 'undefined') {
-        box.style.display = 'none';
-        return;
-      }
-
-      // Hledáme města začínající na zadaný text
-      const vysledky = mm
-        .filter(m => ocastiText(m.n).startsWith(dotaz))
-        .sort((a, b) => a.n.localeCompare(b.n, 'cs'))
-        .slice(0, 10);
-
-      if (vysledky.length === 0) {
-        box.style.display = 'none';
-        return;
-      }
-
-      vysledky.forEach(m => {
-        const div = document.createElement('div');
-        div.textContent = m.n;
-        div.style.padding = '10px 15px';
-        div.style.cursor = 'pointer';
-        div.style.borderBottom = '1px solid var(--border-color)';
-        div.style.color = 'var(--text-main)';
-
-        // Po kliknutí přesměrujeme na URL složku města
-        div.addEventListener('click', () => {
-          const urlSlug = ocastiText(m.n).replace(/\s+/g, '-');
-          window.location.href = `/web/${urlSlug}/`;
+                mainSearch.value = '';
+                mainSuggestions.style.display = 'none';
+                
+                // Restartujeme stránku pro 100% načtení čistých dat z API
+                location.reload();
+              });
+              mainSuggestions.appendChild(div);
+            });
+          } else { mainSuggestions.style.display = 'none'; }
         });
 
-        box.appendChild(div);
+        document.addEventListener('click', function(e) { if (e.target !== mainSearch && e.target !== mainSuggestions) mainSuggestions.style.display = 'none'; });
       });
-
-      box.style.display = 'block';
-    });
-
-    // Zavření našeptávače při kliknutí mimo
-    document.addEventListener('click', (e) => {
-      if (!input.contains(e.target) && !box.contains(e.target)) {
-        box.style.display = 'none';
-      }
-    });
-  });
-})();
-</script>
+    })();
+    </script>
                  <div style="text-align: center; position: relative;">
                     <h2 id="mesto-hlavni-nazev" style="margin: 0 0 5px 0; font-size: 1.4rem; font-weight: bold; display: inline-block;">---</h2>
                     <div id="teplota-aktualni" style="font-size: 3.5rem; font-weight: bold; margin: 5px 0; line-height: 1;">---°C</div>
@@ -1019,7 +1032,7 @@ body.light-mode {
     </div>
 
 <div class="card" style="margin-top: 20px; text-align: center; padding: 20px; color: #8b949e; font-size: 1rem;">
-    © 2026 MeteoInfo — Všechna práva vyhrazena
+    © 2026 MeteoInfo - Všechna práva vyhrazena
 </div>
 
     <div id="radar-modal" class="modal-overlay">
@@ -1786,7 +1799,661 @@ function zmenModelVentusky(model) {
   {"n":"Židlochovice", "la":49.03, "lo":16.61, "t":21},
   {"n":"Žirovnice", "la":49.25, "lo":15.18, "t":21},
   {"n":"Žlutice", "la":50.09, "lo":13.16, "t":21},
-  {"n":"Žulová", "la":50.31, "lo":17.10, "t":21}          
+  {"n":"Žulová", "la":50.31, "lo":17.10, "t":21},
+  {"n":"Sněžka", "la":50.736, "lo":15.74, "t":21},
+  {"n":"Praděd", "la":50.083, "lo":17.231, "t":21},
+  {"n":"Lysá hora", "la":49.546, "lo":18.447, "t":21},
+  {"n":"Klínovec", "la":50.396, "lo":12.968, "t":21},
+  {"n":"Králický Sněžník", "la":50.208, "lo":16.848, "t":21},
+  {"n":"Milešovka", "la":50.555, "lo":13.931, "t":21},
+  {"n":"Smrk", "la":49.508, "lo":18.371, "t":21},
+  {"n":"Velká Deštná", "la":50.302, "lo":16.398, "t":21},
+  {"n":"Velká Javořina", "la":48.858, "lo":17.676, "t":21},
+  {"n":"Čerchov", "la":49.383, "lo":12.784, "t":21},
+  {"n":"Ještěd", "la":50.733, "lo":14.985, "t":21},
+  {"n":"Kněhyně", "la":49.497, "lo":18.313, "t":21},
+  {"n":"Plechý", "la":48.771, "lo":13.857, "t":21},
+  {"n":"Travný", "la":49.562, "lo":18.507, "t":21},
+  {"n":"Skalka", "la":49.553, "lo":18.301, "t":21},
+  {"n":"Suchý vrch", "la":50.051, "lo":16.693, "t":21},
+  {"n":"Knížecí stolec", "la":48.847, "lo":14.02, "t":21},
+  {"n":"Kleť", "la":48.865, "lo":14.283, "t":21},
+  {"n":"Lesný", "la":50.035, "lo":12.616, "t":21},
+  {"n":"Sedlo", "la":50.593, "lo":14.264, "t":21},
+  {"n":"Studniční vrch", "la":50.258, "lo":17.167, "t":21},
+  {"n":"Keprník", "la":50.171, "lo":17.116, "t":21},
+  {"n":"Jeřáb", "la":50.057, "lo":16.813, "t":21},
+  {"n":"Velký Lopeník", "la":48.917, "lo":17.783, "t":21},
+  {"n":"Kelčský Javorník", "la":49.40, "lo":17.766, "t":21},
+  {"n":"Boubín", "la":48.991, "lo":13.818, "t":21},
+  {"n":"Luž", "la":50.849, "lo":14.647, "t":21},
+  {"n":"Velký Javorník", "la":49.527, "lo":18.161, "t":21},
+  {"n":"Ralsko", "la":50.674, "lo":14.766, "t":21},
+  {"n":"Královecký Špičák", "la":50.658, "lo":15.989, "t":21},
+  {"n":"Děvín", "la":48.87, "lo":16.65, "t":21},
+  {"n":"Dyleň", "la":49.968, "lo":12.503, "t":21},
+  {"n":"Vysoké kolo", "la":50.777, "lo": 15.568, "t":21},
+  {"n":"Růžovský vrch", "la":50.833, "lo":14.33, "t":21},
+  {"n":"Skalky", "la":49.502, "lo":16.789, "t":21},
+  {"n":"Tok", "la":49.704, "lo":13.877, "t":21},
+  {"n":"Smrčina", "la":48.737, "lo":13.921, "t":21},
+  {"n":"Devět skal", "la":49.671, "lo":16.032, "t":21},
+  {"n":"Ropice", "la":49.597, "lo":18.587, "t":21},
+  {"n":"Smrk", "la":50.229, "lo":17.034, "t":21},
+  {"n":"Velká Čantoryje", "la":49.679, "lo":18.805, "t":21},
+  {"n":"Jezerní hora", "la":49.169, "lo":13.184, "t":21},
+  {"n":"Javořice", "la":49.221, "lo":15.339, "t":21},
+  {"n":"Brdo", "la":49.171, "lo":17.309, "t":21},
+  {"n":"Červený kámen", "la":49.575, "lo":18.155, "t":21},
+  {"n":"Bezděz", "la":50.539, "lo":14.721, "t":21},
+  {"n":"Medvědí vrch", "la":50.16, "lo":17.312, "t":21},
+  {"n":"Kozákov", "la":50.594, "lo":15.264, "t":21},
+  {"n":"Hradiště", "la":50.218, "lo":13.127, "t":21},
+  {"n":"Libín", "la":48.979, "lo":14.012, "t":21},
+  {"n":"Vlhošť", "la":50.603, "lo":14.454, "t":21},
+  {"n":"Tlustec", "la":50.726, "lo":14.744, "t":21},
+  {"n":"Radeč", "la":49.823, "lo":13.666, "t":21},
+  {"n":"Plesná", "la":49.105, "lo":13.313, "t":21},
+  {"n":"Lovoš", "la":50.528, "lo":14.018, "t":21},
+  {"n":"Můstek", "la":49.202, "lo":13.247, "t":21},
+  {"n":"Velký Polom", "la":49.506, "lo":18.671, "t":21},
+  {"n":"Jezevčí vrch", "la":50.791, "lo":14.704, "t":21},
+  {"n":"Příčný vrch", "la":50.219, "lo":17.384, "t":21},
+  {"n":"Kyčera", "la":49.595, "lo":18.839, "t":21},
+  {"n":"Čáp", "la":50.574, "lo":16.124, "t":21},
+  {"n":"Stožec", "la":48.881, "lo":13.828, "t":21},
+  {"n":"Vítkův kámen", "la":48.645, "lo":14.103, "t":21},
+  {"n":"Klášťov", "la":49.206, "lo":17.944, "t":21},
+  {"n":"Špičák", "la":50.864, "lo":15.074, "t":21},
+  {"n":"Poluška", "la":48.754, "lo":14.42, "t":21},
+  {"n":"Ucháč", "la":50.093, "lo":17.048, "t":21},
+  {"n":"Černá studnice", "la":50.712, "lo":15.234, "t":21},
+  {"n":"Svatobor", "la":49.236, "lo":13.488, "t":21},
+  {"n":"Borůvková hora", "la":50.391, "lo":16.902, "t":21},
+  {"n":"Koráb", "la":49.396, "lo":13.075, "t":21},
+  {"n":"Buková hora", "la":50.672, "lo":14.227, "t":21},
+  {"n":"Javorník", "la":49.028, "lo":17.996, "t":21},
+  {"n":"Říp", "la":50.387, "lo":14.289, "t":21},
+  {"n":"Kubánkov", "la":49.633, "lo":18.264, "t":21},
+  {"n":"Jizera", "la":50.834, "lo":15.259, "t":21},
+  {"n":"Petřkovická hora", "la":49.546, "lo":17.966, "t":21},
+  {"n":"Vaňovský vrch", "la":50.614, "lo":14.06, "t":21},
+  {"n":"Loučná", "la":50.649, "lo":13.61, "t":21},
+  {"n":"Hradišťany", "la":50.508, "lo":13.87, "t":21},
+  {"n":"Velký Mehelník", "la":49.294, "lo":14.224, "t":21},
+  {"n":"Girova", "la":49.532, "lo":18.8, "t":21},
+  {"n":"Hvozd", "la":50.822, "lo":14.726, "t":21},
+  {"n":"Kletečná", "la":50.567, "lo":13.973, "t":21},
+  {"n":"Makyta", "la":49.261, "lo":18.163, "t":21},
+  {"n":"Přimda", "la":49.683, "lo":12.668, "t":21},
+  {"n":"Kaliště", "la":48.656, "lo":14.21, "t":21},
+  {"n":"Stráně", "la":49.12, "lo":17.995, "t":21},
+  {"n":"Vysoká", "la":49.404, "lo":18.361, "t":21},
+  {"n":"Komonec", "la":49.157, "lo":17.773, "t":21},
+  {"n":"Jedlová", "la":50.857, "lo":14.561, "t":21},
+  {"n":"Vrchovina", "la":50.594, "lo":14.14, "t":21},
+  {"n":"Javorský vrch", "la":50.732, "lo":14.114, "t":21},
+  {"n":"Oblík", "la":50.411, "lo":13.809, "t":21},
+  {"n":"Bořeň", "la":50.528, "lo":13.764, "t":21},
+  {"n":"Černá hora", "la":50.653, "lo":15.742, "t":21},
+  {"n":"Jelení loučky", "la":50.146, "lo":17.266, "t":21},
+  {"n":"Černá stráň", "la":50.122, "lo":17.078, "t":21},
+  {"n":"Vysoká", "la":48.715, "lo":14.739, "t":21},
+  {"n":"Bulový", "la":48.909, "lo":14.19, "t":21},
+  {"n":"Vápenný", "la":50.789, "lo":14.898, "t":21},
+  {"n":"Žaltman", "la":50.553, "lo":16.052, "t":21},
+  {"n":"Zlatník", "la":50.516, "lo":13.715, "t":21},
+  {"n":"Klíč", "la":50.789, "lo":14.573, "t":21},
+  {"n":"Kloč", "la":50.546, "lo":13.878, "t":21},
+  {"n":"Běleč", "la":49.477, "lo":13.241, "t":21},
+  {"n":"Roh", "la":49.724, "lo":16.586, "t":21},
+  {"n":"Tisový vrch", "la":50.724, "lo":14.609, "t":21},
+  {"n":"Dobrná", "la":50.769, "lo":14.308, "t":21},
+  {"n":"Trosky", "la":50.516, "lo":15.232, "t":21},
+  {"n":"Kančí vrch", "la":49.839, "lo":16.781, "t":21},
+  {"n":"Hazmburk", "la":50.434, "lo":14.014, "t":21},
+  {"n":"Tábor", "la":50.509, "lo":15.367, "t":21},
+  {"n":"Kohout", "la":48.769, "lo":14.583, "t":21},
+  {"n":"Bílá hora", "la":49.594, "lo":18.127, "t":21},
+  {"n":"Chlum", "la":48.884, "lo":14.091, "t":21},
+  {"n":"Žlebský vrch", "la":48.875, "lo":13.767, "t":21},
+  {"n":"Studenec", "la":50.832, "lo":14.454, "t":21},
+  {"n":"Kazničov", "la":49.607, "lo":18.22, "t":21},
+  {"n":"Ronov", "la":50.62, "lo":14.414, "t":21},
+  {"n":"Doubrava", "la":49.432, "lo":13.203, "t":21},
+  {"n":"Milá", "la":50.435, "lo":13.758, "t":21},
+  {"n":"Bílá skála", "la":50.739, "lo":15.375, "t":21},
+  {"n":"Písek", "la":49.785, "lo":14.036, "t":21},
+  {"n":"Bukovec", "la":49.363, "lo":16.595, "t":21},
+  {"n":"Křemelná", "la":49.123, "lo":13.448, "t":21},
+  {"n":"Javorník", "la":49.138, "lo":13.653, "t":21},
+  {"n":"Humenec", "la":49.326, "lo":17.839, "t":21},
+  {"n":"Zelený vrch", "la":50.784, "lo":14.654, "t":21},
+  {"n":"Raná", "la":50.407, "lo":13.771, "t":21},
+  {"n":"Zvičina", "la":50.455, "lo":15.696, "t":21},
+  {"n":"Horní les", "la":49.591, "lo":16.342, "t":21},
+  {"n":"Vyskeř", "la":50.532, "lo":15.160, "t":21},
+  {"n":"Těšíňočka", "la":49.497, "lo":18.453, "t":21},
+  {"n":"Špičák", "la":48.815, "lo":14.039, "t":21},
+  {"n":"Filka", "la":49.264, "lo":18.055, "t":21},
+  {"n":"Kozel", "la":50.664, "lo":14.456, "t":21},
+  {"n":"Kamenárka", "la":49.509, "lo":18.136, "t":21},
+  {"n":"Vrátenská hora", "la":50.479, "lo":14.651, "t":21},
+  {"n":"Pecný", "la":49.914, "lo":14.787, "t":21},
+  {"n":"Poledník", "la":49.064, "lo":13.395, "t":21},
+  {"n":"Škarmanka", "la":49.454, "lo":12.751, "t":21},
+  {"n":"Průklesy", "la":49.084, "lo":18.091, "t":21},
+  {"n":"Kozlovická hora", "la":49.612, "lo":18.287, "t":21},
+  {"n":"Dub", "la":50.613, "lo":14.641, "t":21},
+  {"n":"Smrk", "la":50.889, "lo":15.273, "t":21},
+  {"n":"Velký Buk", "la":50.817, "lo":14.584, "t":21},
+  {"n":"Borek", "la":49.251, "lo":13.397, "t":21},
+  {"n":"Bradlo", "la":49.854, "lo":17.054, "t":21},
+  {"n":"Biskupská kupa", "la":50.257, "lo":17.429, "t":21},
+  {"n":"Zadní Žalý", "la":50.665, "lo":15.568, "t":21},
+  {"n":"Plešivec", "la":49.811, "lo":13.989, "t":21},
+  {"n":"Dvorský les", "la":50.649, "lo":15.863, "t":21},
+  {"n":"Trojačka", "la":49.448, "lo":18.374, "t":21},
+  {"n":"Javorová skála", "la":49.543, "lo":14.502, "t":21},
+  {"n":"Chlum", "la":50.095, "lo":16.356, "t":21},
+  {"n":"Špičák", "la":50.751, "lo":15.282, "t":21},
+  {"n":"Hušák", "la":49.686, "lo":16.702, "t":21},
+  {"n":"Bobík", "la":48.959, "lo":13.865, "t":21},
+  {"n":"Vysoká hora", "la":50.098, "lo":17.352, "t":21},
+  {"n":"Ostrý", "la":49.203, "lo":13.110, "t":21},
+  {"n":"Žibřidovský vrch", "la":48.662, "lo":14.390, "t":21},
+  {"n":"Krušná hora", "la":49.963, "lo":13.930, "t":21},
+  {"n":"Jelení hora", "la":50.490, "lo":13.159, "t":21},
+  {"n":"Kamenný vrch", "la":49.964, "lo":17.100, "t":21},
+  {"n":"Vidhošť", "la":49.308, "lo":13.469, "t":21},
+  {"n":"Kobyla", "la":50.198, "lo":17.605, "t":21},
+  {"n":"Hlásnice", "la":49.565, "lo":18.084, "t":21},
+  {"n":"Končina", "la":50.199, "lo":17.424, "t":21},
+  {"n":"Vladař", "la":50.080, "lo":13.216, "t":21},
+  {"n":"Těchovín", "la":49.917, "lo":13.795, "t":21},
+  {"n":"Palice", "la":49.912, "lo":16.516, "t":21},
+  {"n":"Liščí hora", "la":50.476, "lo":15.919, "t":21},
+  {"n":"Maršovický vrch", "la":50.584, "lo":14.578, "t":21},
+  {"n":"Mužský", "la":50.528, "lo":15.046, "t":21},
+  {"n":"Babí lom", "la":49.313, "lo":16.577, "t":21},
+  {"n":"Dvorský kopec", "la":50.721, "lo":14.421, "t":21},
+  {"n":"Kozubová", "la":49.567, "lo":18.673, "t":21},
+  {"n":"Dlouhá hora", "la":50.790, "lo":14.924, "t":21},
+  {"n":"Špičák", "la":50.928, "lo":14.646, "t":21},
+  {"n":"Květnice", "la":49.359, "lo":16.415, "t":21},
+  {"n":"Ovčí vrch", "la":50.538, "lo":13.726, "t":21},
+  {"n":"Luční hora", "la":50.728, "lo":15.682, "t":21},
+  {"n":"Jelení vrch J", "la":50.155, "lo":17.389, "t":21},
+  {"n":"Hradisko", "la":49.201, "lo":17.121, "t":21},
+  {"n":"Velký Jelení vrch", "la":50.677, "lo":14.827, "t":21},
+  {"n":"Deblík", "la":50.585, "lo":14.053, "t":21},
+  {"n":"Vlčí hora", "la":49.811, "lo":12.856, "t":21},
+  {"n":"Dubina", "la":49.776, "lo":16.681, "t":21},
+  {"n":"Bacín", "la":49.897, "lo":14.103, "t":21},
+  {"n":"Ressl", "la":50.507, "lo":13.617, "t":21},
+  {"n":"Dlouhé stráně", "la":50.071, "lo":17.157, "t":21},
+  {"n":"Úhošť", "la":50.359, "lo":13.238, "t":21},
+  {"n":"Koníček", "la":50.342, "lo":16.938, "t":21},
+  {"n":"Slunečná", "la":49.839, "lo":17.429, "t":21},
+  {"n":"Ulíkovská hora", "la":49.439, "lo":13.054, "t":21},
+  {"n":"Žlíbský vrch", "la":48.935, "lo":13.729, "t":21},
+  {"n":"Ortel", "la":50.749, "lo":14.633, "t":21},
+  {"n":"Hradišťský vrch", "la":48.740, "lo":14.540, "t":21},
+  {"n":"Háj", "la":49.971, "lo":16.934, "t":21},
+  {"n":"Drastihlava", "la":49.338, "lo":17.901, "t":21},
+  {"n":"Petrovský vrch", "la":49.994, "lo":17.072, "t":21},
+  {"n":"Vrchhůra", "la":49.440, "lo":18.024, "t":21},
+  {"n":"Jelenská hora", "la":48.829, "lo":13.882, "t":21},
+  {"n":"Jezvinec", "la":49.323, "lo":13.070, "t":21},
+  {"n":"Ostrý vrch", "la":49.677, "lo":18.751, "t":21},
+  {"n":"Javor", "la":50.826, "lo":14.501, "t":21},
+  {"n":"Hrazený", "la":50.976, "lo":14.426, "t":21},
+  {"n":"Tichavská hůrka", "la":49.581, "lo":18.201, "t":21},
+  {"n":"Maleník", "la":49.514, "lo":17.678, "t":21},
+  {"n":"Tachovský vrch", "la":50.538, "lo":14.646, "t":21},
+  {"n":"Smrčí", "la":49.428, "lo":13.270, "t":21},
+  {"n":"Hůrka", "la":50.009, "lo":16.349, "t":21},
+  {"n":"Doubravská hora", "la":50.639, "lo":13.860, "t":21},
+  {"n":"Berkovský vrch", "la":50.557, "lo":14.580, "t":21},
+  {"n":"Špičák", "la":50.703, "lo":14.549, "t":21},
+  {"n":"Skalnatý hřbet", "la":48.907, "lo":13.682, "t":21},
+  {"n":"Kamenec", "la":48.585, "lo":14.670, "t":21},
+  {"n":"Klenovec", "la":48.972, "lo":14.098, "t":21},
+  {"n":"Spálený", "la":49.091, "lo":13.468, "t":21},
+  {"n":"Zadní vrch", "la":49.952, "lo":17.531, "t":21},
+  {"n":"Velká Tisová", "la":50.839, "lo":14.547, "t":21},
+  {"n":"Blaník", "la":49.642, "lo":14.873, "t":21},
+  {"n":"Chotovický vrch", "la":50.745, "lo":14.541, "t":21},
+  {"n":"Ktišská hora", "la":48.926, "lo":14.120, "t":21},
+  {"n":"Buglata", "la":48.963, "lo":14.199, "t":21},
+  {"n":"Hrachovec", "la":49.281, "lo":18.124, "t":21},
+  {"n":"Melechov", "la":49.638, "lo":15.320, "t":21},
+  {"n":"Doubská hora", "la":50.204, "lo":12.847, "t":21},
+  {"n":"U Slepice", "la":49.100, "lo":17.049, "t":21},
+  {"n":"Raškovská bouda", "la":50.063, "lo":16.896, "t":21},
+  {"n":"Kluk", "la":48.924, "lo":14.329, "t":21},
+  {"n":"Svobodná hora", "la":49.123, "lo":14.117, "t":21},
+  {"n":"Zámecký vrch", "la":50.791, "lo":14.434, "t":21},
+  {"n":"Bílé skály", "la":50.231, "lo":17.250, "t":21},
+  {"n":"Děčínský Sněžník", "la":50.791, "lo":14.104, "t":21},
+  {"n":"Černá hora", "la":49.599, "lo":12.761, "t":21},
+  {"n":"Stráž", "la":50.562, "lo":15.557, "t":21},
+  {"n":"Na Peklech", "la":49.553, "lo":18.141, "t":21},
+  {"n":"Borný", "la":50.589, "lo":14.663, "t":21},
+  {"n":"Blatný vrch", "la":48.964, "lo":13.449, "t":21},
+  {"n":"Přílba", "la":49.041, "lo":13.618, "t":21},
+  {"n":"Lemešná", "la":49.356, "lo":18.395, "t":21},
+  {"n":"Lipská hora", "la":50.513, "lo":13.913, "t":21},
+  {"n":"Sutomský vrch", "la":50.507, "lo":13.978, "t":21},
+  {"n":"Žárový vrch", "la":50.109, "lo":17.311, "t":21},
+  {"n":"Velká Jehličná", "la":50.319, "lo":13.078, "t":21},
+  {"n":"Spálený vrch", "la":49.374, "lo":12.883, "t":21},
+  {"n":"Hrad", "la":49.169, "lo":14.096, "t":21},
+  {"n":"Vysoká hole", "la":50.063, "lo":17.236, "t":21},
+  {"n":"Slavíč", "la":49.568, "lo":18.588, "t":21},
+  {"n":"Hůrka", "la":50.118, "lo":12.893, "t":21},
+  {"n":"Lipka", "la":50.695, "lo":14.762, "t":21},
+  {"n":"Sychrov", "la":49.273, "lo":16.551, "t":21},
+  {"n":"Rudná hora", "la":50.046, "lo":17.116, "t":21},
+  {"n":"Homole", "la":49.880, "lo":12.799, "t": 21},
+  {"n":"Starojický kopec", "la":49.583, "lo":17.963, "t":21},
+  {"n":"Libhošťská hůrka", "la":49.610, "lo":18.075, "t":21},
+  {"n":"Křemenná", "la":48.879, "lo":13.936, "t":21},
+  {"n":"Třebouňský vrch", "la":50.014, "lo":13.002, "t":21},
+  {"n":"Stražiště", "la":49.535, "lo":15.003, "t":21},
+  {"n":"Stírka", "la":49.414, "lo":13.549, "t":21},
+  {"n":"Holá hora", "la":48.780, "lo":14.845, "t":21},
+  {"n":"Čerňava", "la":49.376, "lo":17.768, "t":21},
+  {"n":"Okrouhlice", "la":49.507, "lo":18.468, "t":21},
+  {"n":"Kumburk", "la":50.493, "lo":15.445, "t":21},
+  {"n":"Jelení vrch", "la":49.641, "lo":13.374, "t":21},
+  {"n":"Kobylí vrch", "la":48.927, "lo":16.907, "t":21},
+  {"n":"Lysečinská hora", "la":50.725, "lo":15.830, "t":21},
+  {"n":"Buková hora", "la":50.009, "lo":16.709, "t":21},
+  {"n":"Luč", "la":48.632, "lo":14.263, "t":21},
+  {"n":"Třemšín", "la":49.566, "lo":13.777, "t":21},
+  {"n":"Počátecký vrch", "la":50.323, "lo":12.440, "t":21},
+  {"n":"Nuzerovská Stráž", "la":49.193, "lo":13.469, "t":21},
+  {"n":"Čubův kopec", "la":49.194, "lo":18.132, "t":21},
+  {"n":"Rysov", "la":49.149, "lo":17.729, "t":21},
+  {"n":"Obrovec", "la":48.985, "lo":13.752, "t":21},
+  {"n":"Kraví hora", "la":48.730, "lo":14.719, "t":21},
+  {"n":"Studený", "la":50.078, "lo":16.596, "t":21},
+  {"n":"Ostaš", "la":50.560, "lo":16.206, "t":21},
+  {"n":"Bílý kámen", "la":49.871, "lo":16.973, "t":21},
+  {"n":"Vlčí hora", "la":50.939, "lo":14.465, "t":21},
+  {"n":"Vartovna", "la":49.270, "lo":17.938, "t":21},
+  {"n":"Žďár", "la":49.738, "lo":13.657, "t":21},
+  {"n":"Kamenná hora", "la":50.647, "lo":14.178, "t":21},
+  {"n":"Pláňava", "la":49.418, "lo":16.361, "t":21},
+  {"n":"Brnišťský vrch", "la":50.729, "lo":14.677, "t":21},
+  {"n":"Černý vrch", "la":50.831, "lo":15.298, "t":21},
+  {"n":"Kyjov", "la":49.443, "lo":15.890, "t":21},
+  {"n":"Sokol", "la":50.632, "lo":15.205, "t":21},
+  {"n":"Výhon", "la":49.036, "lo":16.644, "t":21},
+  {"n":"Ovčí hora", "la":50.795, "lo":14.971, "t":21},
+  {"n":"Kopeček", "la":49.212, "lo":16.447, "t":21},
+  {"n":"Zadní vrch", "la":49.260, "lo":17.636, "t":21},
+  {"n":"Stráž", "la":48.975, "lo":13.579, "t":21},
+  {"n":"Lukavice", "la":49.420, "lo":18.481, "t":21},
+  {"n":"Čudácka", "la":49.467, "lo":18.548, "t":21},
+  {"n":"Pěnkavčí vrch", "la":50.848, "lo":14.611, "t":21},
+  {"n":"Sklený vrch", "la":49.987, "lo":16.905, "t":21},
+  {"n":"Hůrka u České Rybné", "la":50.079, "lo":16.401, "t":21},
+  {"n":"Rychnovský vrch", "la":49.830, "lo":16.660, "t":21},
+  {"n":"U rozhledny", "la":50.199, "lo":16.122, "t":21},
+  {"n":"Vysoký kámen", "la":49.087, "lo":15.185, "t":21},
+  {"n":"Malý Buk", "la":50.802, "lo":14.553, "t":21},
+  {"n":"Javorčí", "la":49.337, "lo":17.671, "t":21},
+  {"n":"Velká Buková", "la":50.592, "lo":14.755, "t":21},
+  {"n":"Plešivec", "la":49.717, "lo":12.613, "t":21},
+  {"n":"Zubštejn", "la":49.531, "lo":16.326, "t":21},
+  {"n":"Bambule", "la":49.750, "lo":13.742, "t":21},
+  {"n":"U zadních chalup", "la":49.253, "lo":13.081, "t":21},
+  {"n":"Kopřivný", "la":50.231, "lo":17.101, "t":21},
+  {"n":"Potůčník", "la":50.057, "lo":16.990, "t":21},
+  {"n":"Červenec", "la":49.446, "lo":18.283, "t":21},
+  {"n":"Strážník", "la":50.607, "lo":15.438, "t":21},
+  {"n":"Ve chvojkách", "la":50.620, "lo":13.820, "t":21},
+  {"n":"Úliště", "la":49.326, "lo":13.280, "t":21},
+  {"n":"Radlice", "la":49.481, "lo":13.130, "t":21},
+  {"n":"Medvědí skála", "la":50.570, "lo":13.464, "t":21},
+  {"n":"Drkolná", "la":49.338, "lo":13.393, "t":21},
+  {"n":"Řičej", "la":49.458, "lo":13.213, "t":21},
+  {"n":"Velký Šibák", "la":49.143, "lo":14.007, "t":21},
+  {"n":"Čepičná", "la":49.271, "lo":13.582, "t":21},
+  {"n":"Štědrý", "la":49.510, "lo":13.653, "t":21},
+  {"n":"Radečský kopec", "la":50.716, "lo":14.447, "t":21},
+  {"n":"Plešný", "la":48.875, "lo":14.117, "t":21},
+  {"n":"Ruprechtický Špičák", "la":50.661, "lo":16.280, "t":21},
+  {"n":"Plešivec", "la":50.836, "lo":14.684, "t":21},
+  {"n":"Kraví hora", "la":49.673, "lo":16.662, "t":21},
+  {"n":"Háj", "la":48.890, "lo":17.550, "t":21},
+  {"n":"Kleštěnec", "la":49.216, "lo":17.209, "t":21},
+  {"n":"Volovický vrch", "la":48.996, "lo":13.972, "t":21},
+  {"n":"Karlštejn", "la":49.715, "lo":16.067, "t":21},
+  {"n":"Boudovka JZ", "la":49.316, "lo":13.341, "t":21},
+  {"n":"Buková hora", "la":49.532, "lo":13.550, "t":21},
+  {"n":"Žebrákovský kopec", "la":49.682, "lo":15.364, "t":21},
+  {"n":"Panna", "la":50.611, "lo":14.184, "t":21},
+  {"n":"Šumburk", "la":50.372, "lo":13.146, "t":21},
+  {"n":"Louštín", "la":50.163, "lo":13.793, "t":21},
+  {"n":"Stolová hora", "la":48.840, "lo":16.637, "t":21},
+  {"n":"Ondřejník", "la":49.584, "lo":18.313, "t":21},
+  {"n":"Želivský vrch", "la":49.280, "lo":13.211, "t":21},
+  {"n":"Křemenáč", "la":50.286, "lo":17.224, "t":21},
+  {"n":"Lišák", "la":49.302, "lo":13.063, "t":21},
+  {"n":"Výšina", "la":49.558, "lo":12.682, "t":21},
+  {"n":"Čupek", "la":49.619, "lo":18.343, "t":21},
+  {"n":"Mlýny", "la":50.875, "lo":14.366, "t":21},
+  {"n":"Adam", "la":50.111, "lo":16.604, "t":21},
+  {"n":"Ochmelov", "la":49.333, "lo":18.096, "t":21},
+  {"n":"Vysoký kámen", "la":50.689, "lo":14.135, "t":21},
+  {"n":"Strážiště", "la":50.816, "lo":14.371, "t":21},
+  {"n":"Kopaniny", "la":49.124, "lo":16.416, "t":21},
+  {"n":"Přivýšina", "la":50.466, "lo":15.320, "t":21},
+  {"n":"Velký Kosíř", "la":49.548, "lo":17.061, "t":21},
+  {"n":"U stavení", "la":49.056, "lo":16.389, "t":21},
+  {"n":"Ostrý", "la":49.601, "lo":18.657, "t":21},
+  {"n":"Běleč", "la":49.060, "lo":13.893, "t":21},
+  {"n":"Špičák", "la":49.311, "lo":15.511, "t":21},
+  {"n":"Boží hora", "la":50.310, "lo":17.112, "t":21},
+  {"n":"Chmelník", "la":50.754, "lo":14.158, "t":21},
+  {"n":"Děd", "la":49.967, "lo":14.033, "t":21},
+  {"n":"Sokolí", "la":49.3039, "lo":16.4319, "t":21},
+  {"n":"Vrata", "la":48.9575, "lo":14.1278, "t":21},
+  {"n":"Lokov", "la":48.9975, "lo":17.8681, "t":21},
+  {"n":"Svatá hora", "la":49.3694, "lo":16.1575, "t":21},
+  {"n":"Kozník", "la":49.2739, "lo":13.6583, "t":21},
+  {"n":"Sokol", "la":50.8075, "lo":14.7497, "t":21},
+  {"n":"Malý Chlum", "la":49.4514, "lo":16.5858, "t":21},
+  {"n":"Baba", "la":50.4544, "lo":14.9556, "t":21},
+  {"n":"Červená hora", "la":50.1442, "lo":17.1361, "t":21},
+  {"n":"Sedlo", "la":49.1900, "lo":13.5689, "t":21},
+  {"n":"Dlouhá", "la":49.5200, "lo":18.1250, "t":21},
+  {"n":"Korecký vrch", "la":50.5356, "lo":14.6067, "t":21},
+  {"n":"Špičák", "la":50.5197, "lo":13.6678, "t":21},
+  {"n":"Kovadlina", "la":50.2639, "lo":17.0133, "t":21},
+  {"n":"Herbertovský vrch", "la":48.6042, "lo":14.3461, "t":21},
+  {"n":"Roh", "la":50.2103, "lo":12.7942, "t":21},
+  {"n":"Studený vrch", "la":50.2617, "lo":12.9728, "t":21},
+  {"n":"Vysoký Tok", "la":49.9928, "lo":13.8494, "t":21},
+  {"n":"Drbákov", "la":49.7167, "lo":14.3603, "t":21},
+  {"n":"Markovice", "la":49.8939, "lo":16.9508, "t":21},
+  {"n":"Maxinec", "la":50.4000, "lo":15.5250, "t":21},
+  {"n":"Malý Polom", "la":49.5094, "lo":18.5981, "t":21},
+  {"n":"Dvorská", "la":49.7281, "lo":16.6703, "t":21},
+  {"n":"Střední vrch", "la":50.8011, "lo":14.4769, "t":21},
+  {"n":"Lotarův vrch", "la":50.7594, "lo":14.1392, "t":21},
+  {"n":"Starý Herštejn", "la":49.4722, "lo":12.7139, "t":21},
+  {"n":"Hostýn", "la":49.3800, "lo":17.7017, "t":21},
+  {"n":"Černý vrch", "la":50.3639, "lo":13.1767, "t":21},
+  {"n":"Solanská hora", "la":50.4931, "lo":13.9031, "t":21},
+  {"n":"Kanešův kopec", "la":50.0869, "lo":13.3408, "t":21},
+  {"n":"Holý kopec", "la":49.1039, "lo":17.2886, "t":21},
+  {"n":"Radhošť", "la":49.4917, "lo":18.2231, "t":21},
+  {"n":"Plošina", "la":49.2478, "lo":13.2581, "t":21},
+  {"n":"Buchtův kopec", "la":49.6594, "lo":16.1333, "t":21},
+  {"n":"Lesná", "la":50.3167, "lo":13.1503, "t":21},
+  {"n":"Nad Zámečkem", "la":49.4300, "lo":12.6928, "t":21},
+  {"n":"Kozelka", "la":49.9944, "lo":13.1581, "t":21},
+  {"n":"Tuhošť", "la":49.4917, "lo":13.2606, "t":21},
+  {"n":"Bednářský vrch", "la":50.0858, "lo":17.6153, "t":21},
+  {"n":"Lysý vrch", "la":50.1378, "lo":17.2358, "t":21},
+  {"n":"Polecký vrch", "la":48.9522, "lo":13.6722, "t":21},
+  {"n":"Myslivna", "la":48.6319, "lo":14.6831, "t":21},
+  {"n":"Ocásek", "la":49.0989, "lo":17.2358, "t":21},
+  {"n":"Javorná", "la":49.1997, "lo":13.3242, "t":21},
+  {"n":"Stanovnická Kyčera", "la":49.3167, "lo":18.2644, "t":21},
+  {"n":"Sýkoř", "la":49.4464, "lo":16.4081, "t":21},
+  {"n":"Návrší", "la":49.9372, "lo":17.4603, "t":21},
+  {"n":"Háj", "la":49.2325, "lo":13.5911, "t":21},
+  {"n":"Kalný vrch", "la":49.2011, "lo":13.9050, "t":21},
+  {"n":"Veselský chlum", "la":49.4075, "lo":16.3853, "t":21},
+  {"n":"Andrlův chlum", "la":49.9600, "lo":16.3739, "t":21},
+  {"n":"Herinky", "la":49.9658, "lo":14.1142, "t":21},
+  {"n":"Chlustov", "la":48.9250, "lo":13.7569, "t":21},
+  {"n":"Zámecký pahorek", "la":50.2197, "lo":17.3336, "t":21},
+  {"n":"Žárovec", "la":50.0683, "lo":17.0139, "t":21},
+  {"n":"Kladnatá", "la":49.3486, "lo":18.1314, "t":21},
+  {"n":"Žár", "la":49.2728, "lo":18.0939, "t":21},
+  {"n":"Vysoký Kamýk", "la":49.2314, "lo":14.2972, "t":21},
+  {"n":"Lhotský vrch", "la":50.0433, "lo":13.4750, "t":21},
+  {"n":"Podhořín", "la":49.9864, "lo":16.3636, "t":21},
+  {"n":"Výrov", "la":50.2578, "lo":13.6536, "t":21},
+  {"n":"Skalický vrch", "la":50.7364, "lo":14.5264, "t":21},
+  {"n":"Veliš", "la":50.4169, "lo":15.3147, "t":21},
+  {"n":"Čebínka", "la":49.3197, "lo":16.4847, "t":21},
+  {"n":"Vysoký hřbet", "la":49.1686, "lo":13.3739, "t":21},
+  {"n":"Ostrý", "la":50.5317, "lo":13.9514, "t":21},
+  {"n":"Stramchyně", "la":49.5089, "lo":13.2867, "t":21},
+  {"n":"Humrich", "la":50.9717, "lo":15.1697, "t":21},
+  {"n":"Hradní vrch Hukvaldy", "la":49.6206, "lo":18.2278, "t":21},
+  {"n":"Tabule", "la":50.7528, "lo":15.7922, "t":21},
+  {"n":"Jezevčí vrch", "la":48.5825, "lo":14.2889, "t":21},
+  {"n":"Lužnický vrch", "la":48.6911, "lo":14.6483, "t":21},
+  {"n":"Mlýnské vrchy", "la":48.8789, "lo":14.1903, "t":21},
+  {"n":"Buková", "la":50.1647, "lo":12.8014, "t":21},
+  {"n":"Džbány", "la":49.6586, "lo":14.6964, "t":21},
+  {"n":"Chlumská hora", "la":50.0081, "lo":13.2050, "t":21},
+  {"n":"Ošupaná", "la":49.4614, "lo":13.3428, "t":21},
+  {"n":"Čihadlo", "la":49.7542, "lo":14.2589, "t":21},
+  {"n":"Dražník", "la":49.9283, "lo":16.9842, "t":21},
+  {"n":"Kamenná", "la":49.1381, "lo":17.7053, "t":21},
+  {"n":"Doubravice", "la":49.7219, "lo":16.7344, "t":21},
+  {"n":"Velký beškovský vrch", "la":50.5189, "lo":14.5825, "t":21},
+  {"n":"Babí lom", "la":49.0153, "lo":17.0558, "t":21},
+  {"n":"Gigula", "la":49.3286, "lo":18.3175, "t":21},
+  {"n":"Špičák", "la":50.3111, "lo":16.3275, "t":21},
+  {"n":"Uhřice", "la":49.0872, "lo":13.9222, "t":21},
+  {"n":"Kaňúr", "la":49.1028, "lo":18.1111, "t":21},
+  {"n":"Háj", "la":49.2767, "lo":13.3672, "t":21},
+  {"n":"Bedřichova hora", "la":50.1331, "lo":17.4989, "t":21},
+  {"n":"Velký Bítov", "la":49.3997, "lo":13.1783, "t":21},
+  {"n":"Studený vrch", "la":48.9400, "lo":17.7311, "t":21},
+  {"n":"Bučina", "la":49.8792, "lo":15.6503, "t":21},
+  {"n":"Hrádek", "la":49.4311, "lo":12.8614, "t":21},
+  {"n":"Koukolova hora", "la":49.9197, "lo":14.0233, "t":21},
+  {"n":"Trnůvka", "la":49.2622, "lo":16.4939, "t":21},
+  {"n":"Strážný", "la":48.9206, "lo":13.6986, "t":21},
+  {"n":"Hora", "la":50.3369, "lo":13.1053, "t":21},
+  {"n":"Božanovský Špičák", "la":50.5142, "lo":16.3144, "t":21},
+  {"n":"Věnec", "la":49.0989, "lo":13.8683, "t":21},
+  {"n":"Jivina", "la":49.7878, "lo":13.8275, "t":21},
+  {"n":"Kamenitý kopec", "la":50.0269, "lo":17.0633, "t":21},
+  {"n":"Široký vrch", "la":50.8881, "lo":14.4886, "t":21},
+  {"n":"Na Vrchu", "la":49.7239, "lo":14.3928, "t":21},
+  {"n":"Lopušná", "la":49.3389, "lo":18.3461, "t":21},
+  {"n":"Tři smrky", "la":48.6097, "lo":14.4450, "t":21},
+  {"n":"Křemešník", "la":49.4042, "lo":15.3250, "t":21},
+  {"n":"Červená hora", "la":49.7767, "lo":17.5411, "t":21},
+  {"n":"Přední Hradiště", "la":50.5817, "lo":16.0603, "t":21},
+  {"n":"Javorník", "la":50.6914, "lo":15.0806, "t":21},
+  {"n":"Tanečnice", "la":50.9661, "lo":14.3206, "t":21},
+  {"n":"Tisovník", "la":49.2947, "lo":13.8794, "t":21},
+  {"n":"Kunratický vrch", "la":50.8131, "lo":14.4261, "t":21},
+  {"n":"Oltářní kámen", "la":50.8836, "lo":14.3236, "t":21},
+  {"n":"Vlčí hřeben", "la":50.7325, "lo":15.5097, "t":21},
+  {"n":"Věžní skály", "la":50.8364, "lo":15.3483, "t":21},
+  {"n":"Beskydek", "la":49.3928, "lo":18.4056, "t":21},
+  {"n":"Velenecký vrch", "la":48.6828, "lo":14.3394, "t":21},
+  {"n":"Stráž", "la":48.9947, "lo":14.1358, "t":21},
+  {"n":"Mezivrata", "la":49.6022, "lo":14.6711, "t":21},
+  {"n":"U rozhledny", "la":49.5108, "lo":16.3842, "t":21},
+  {"n":"Šedina", "la":50.5692, "lo":14.5906, "t":21},
+  {"n":"Nedvězí", "la":50.5069, "lo":14.5292, "t":21},
+  {"n":"Nad skálou", "la":49.2628, "lo":16.9119, "t":21},
+  {"n":"Česlar", "la":49.6231, "lo":18.8206, "t":21},
+  {"n":"Janský vrch", "la":50.6114, "lo":15.9889, "t":21},
+  {"n":"Fidlův kopec", "la":49.6206, "lo":17.5056, "t":21},
+  {"n":"Bezný", "la":49.3753, "lo":13.0350, "t":21},
+  {"n":"Císařský kámen", "la":50.7131, "lo":15.1044, "t":21},
+  {"n":"Vysoký Ostrý", "la":50.6364, "lo":14.0803, "t":21},
+  {"n":"Mladý háj", "la":49.1258, "lo":17.8464, "t":21},
+  {"n":"Mlýnský vrch", "la":50.5828, "lo":14.6986, "t":21},
+  {"n":"Slunečná", "la":49.1142, "lo":13.4017, "t":21},
+  {"n":"Mezihořský vrch", "la":50.5533, "lo":13.3728, "t":21},
+  {"n":"Nad Skalným", "la":48.7775, "lo":14.1414, "t":21},
+  {"n":"Stržový vrch", "la":50.8686, "lo":15.0911, "t":21},
+  {"n":"Rozhled", "la":50.3222, "lo":12.8678, "t":21},
+  {"n":"Chlumská hora", "la":48.8086, "lo":14.5197, "t":21},
+  {"n":"Hradisko", "la":48.8547, "lo":17.5608, "t":21},
+  {"n":"Plešivec", "la":50.8703, "lo":14.5100, "t":21},
+  {"n":"Ptín", "la":49.4564, "lo":13.3781, "t":21},
+  {"n":"Plešivec", "la":50.565, "lo":14.089, "t":21},
+  {"n":"Větrník", "la":48.886, "lo":15.861, "t":21},
+  {"n":"Želenický vrch", "la":50.519, "lo":13.732, "t":21},
+  {"n":"Kamenický kopec", "la":50.689, "lo":14.671, "t":21},
+  {"n":"Přední Kout", "la":48.971, "lo":16.779, "t":21},
+  {"n":"Kamenný vrch", "la":49.611, "lo":12.666, "t":21},
+  {"n":"Hora", "la":49.363, "lo":13.519, "t":21},
+  {"n":"Věncova hora", "la":48.861, "lo":14.391, "t":21},
+  {"n":"Špička", "la":49.975, "lo":13.864, "t":21},
+  {"n":"Vlková", "la":49.885, "lo":14.603, "t":21},
+  {"n":"Kotouč", "la":49.584, "lo":18.113, "t":21},
+  {"n":"Stříbrník", "la":50.732, "lo":14.849, "t":21},
+  {"n":"Vršetín", "la":50.482, "lo":13.956, "t":21},
+  {"n":"Klucanina", "la":49.344, "lo":16.443, "t":21},
+  {"n":"Střížovický vrch", "la":50.676, "lo":14.003, "t":21},
+  {"n":"Antýgl", "la":49.048, "lo":13.536, "t":21},
+  {"n":"Zaječí vrch", "la":50.390, "lo":12.723, "t":21},
+  {"n":"Čupel", "la":49.524, "lo":18.425, "t":21},
+  {"n":"Mikulčin vrch", "la":48.945, "lo":17.809, "t":21},
+  {"n":"Svidník", "la":49.393, "lo":14.959, "t":21},
+  {"n":"Kuželek", "la":49.327, "lo":17.751, "t":21},
+  {"n":"Šenovský vrch", "la":50.783, "lo":14.481, "t":21},
+  {"n":"Kozinec", "la":50.518, "lo":15.549, "t":21},
+  {"n":"Kohout", "la":50.710, "lo":14.312, "t":21},
+  {"n":"Strážný", "la":49.980, "lo":16.476, "t":21},
+  {"n":"Spící panna", "la":50.630, "lo":14.608, "t":21},
+  {"n":"Ždánidla", "la":49.104, "lo":13.347, "t":21},
+  {"n":"Černá hora", "la":50.827, "lo":15.210, "t":21},
+  {"n":"Sklářský vrch", "la":49.024, "lo":13.786, "t":21},
+  {"n":"Špičák", "la":50.298, "lo":17.012, "t":21},
+  {"n":"Pustý zámek", "la":50.240, "lo":13.100, "t":21},
+  {"n":"Strom", "la":49.663, "lo":16.166, "t":21},
+  {"n":"Na kostele", "la":50.586, "lo":16.221, "t":21},
+  {"n":"Ostrý vrch", "la":49.428, "lo":18.048, "t":21},
+  {"n":"Lysý vrch", "la":50.866, "lo":15.001, "t":21},
+  {"n":"Mazova horka", "la":50.699, "lo":14.985, "t":21},
+  {"n":"Koníček", "la":50.373, "lo":16.186, "t":21},
+  {"n":"Ječný vrch", "la":51.006, "lo":14.324, "t":21},
+  {"n":"Na Kamenném", "la":49.520, "lo":18.000, "t":21},
+  {"n":"Srdov", "la":50.417, "lo":13.821, "t":21},
+  {"n":"Potštejn", "la":50.078, "lo":16.309, "t":21},
+  {"n":"Hněvín", "la":50.521, "lo":13.633, "t":21},
+  {"n":"Přítlucká hora", "la":48.864, "lo":16.773, "t":21},
+  {"n":"Božídarský Špičák", "la":50.401, "lo":12.889, "t":21},
+  {"n":"Kamenný vrch", "la":50.446, "lo":13.035, "t":21},
+  {"n":"Jelení hora S", "la":50.155, "lo":17.389, "t":21},
+  {"n":"Vysoký kámen (Slepice)", "la":48.757, "lo":14.608, "t":21},
+  {"n":"Lučenický vrch", "la":48.976, "lo":14.055, "t":21},
+  {"n":"Čeřínek", "la":49.377, "lo":15.436, "t":21},
+  {"n":"Pekelský vrch", "la":50.894, "lo":15.167, "t":21},
+  {"n":"Sušina", "la":50.174, "lo":16.863, "t":21},
+  {"n":"Ovčí vrch", "la":50.073, "lo":17.331, "t":21},
+  {"n":"Okolí", "la":48.693, "lo":14.243, "t":21},
+  {"n":"Tanečnice", "la":49.387, "lo":18.191, "t":21},
+  {"n":"Sochová", "la":49.385, "lo":17.795, "t":21},
+  {"n":"Pustina", "la":49.973, "lo":16.808, "t":21},
+  {"n":"Baba", "la":49.002, "lo":14.561, "t":21},
+  {"n":"Neštětická hora", "la":49.769, "lo":14.569, "t":21},
+  {"n":"Trojhora", "la":50.593, "lo":14.190, "t":21},
+  {"n":"Na Zámečku", "la":50.859, "lo":14.348, "t":21},
+  {"n":"Strážiště", "la":50.553, "lo":14.063, "t":21},
+  {"n":"Káčov", "la":50.551, "lo":14.986, "t":21},
+  {"n":"Hůrecký vrch", "la":49.136, "lo":13.340, "t":21},
+  {"n":"Šindelný vrch", "la":49.667, "lo":15.948, "t":21},
+  {"n":"Háj", "la":50.234, "lo":12.202, "t":21},
+  {"n":"Batkovy", "la":49.464, "lo":14.831, "t":21},
+  {"n":"Obřany", "la":49.367, "lo":17.733, "t":21},
+  {"n":"Kukla", "la":50.622, "lo":14.128, "t":21},
+  {"n":"Vestec", "la":49.751, "lo":15.764, "t":21},
+  {"n":"Kamzičí vrch", "la":50.843, "lo":14.493, "t":21},
+  {"n":"Zahálkovy skalky", "la":49.654, "lo":16.823, "t":21},
+  {"n":"Pramenáč", "la":50.699, "lo":13.732, "t":21},
+  {"n":"Krudum", "la":50.140, "lo":12.725, "t":21},
+  {"n":"Kyčera", "la":49.420, "lo":18.424, "t":21},
+  {"n":"Válečkova Kyčera", "la":49.311, "lo":18.245, "t":21},
+  {"n":"Černá skála", "la":49.381, "lo":13.115, "t":21},
+  {"n":"Petruškovy vrchy", "la":50.695, "lo":15.386, "t":21},
+  {"n":"Táhlina", "la":50.523, "lo":13.902, "t":21},
+  {"n":"Markétin vrch", "la":49.436, "lo":13.658, "t":21},
+  {"n":"Zvon", "la":50.560, "lo":13.904, "t":21},
+  {"n":"Ředice", "la":50.517, "lo":15.339, "t":21},
+  {"n":"Řasy", "la":49.079, "lo":15.066, "t":21},
+  {"n":"Pyramida", "la":49.618, "lo":15.413, "t":21},
+  {"n":"Radešín", "la":50.697, "lo":14.059, "t":21},
+  {"n":"Lejškov", "la":49.898, "lo":14.031, "t":21},
+  {"n":"Hamerský Špičák", "la":50.690, "lo":14.851, "t":21},
+  {"n":"Podmolí", "la":48.825, "lo":15.985, "t":21},
+  {"n":"Nebovid", "la":49.136, "lo":16.543, "t":21},
+  {"n":"Doppler", "la":48.653, "lo":14.611, "t":21},
+  {"n":"Na raketě", "la":50.201, "lo":13.073, "t":21},
+  {"n":"Šibeník", "la":48.934, "lo":14.172, "t":21},
+  {"n":"Andělská hora", "la":50.206, "lo":12.964, "t":21},
+  {"n":"Pteč", "la":49.585, "lo":14.104, "t":21},
+  {"n":"Michalův vrch", "la":49.920, "lo":16.785, "t":21},
+  {"n":"Páleniska", "la":49.403, "lo":17.974, "t":21},
+  {"n":"Velká Kakada", "la":49.244, "lo":13.931, "t":21},
+  {"n":"Buchlov", "la":49.108, "lo":17.311, "t":21},
+  {"n":"Dlouhá", "la":50.453, "lo":13.796, "t":21},
+  {"n":"Šroubený", "la":50.594, "lo":14.636, "t":21},
+  {"n":"Ládví", "la":50.136, "lo":14.465, "t":21},
+  {"n":"Uherčické staré hory", "la":48.949, "lo":16.684, "t":21},
+  {"n":"Čertova hora", "la":50.761, "lo":15.431, "t":21},
+  {"n":"Mirotický vrch", "la":50.125, "lo":13.006, "t":21},
+  {"n":"Velký Roudný", "la":49.891, "lo":17.523, "t":21},
+  {"n":"Uhelný vrch", "la":50.144, "lo":12.913, "t":21},
+  {"n":"Turov", "la":50.511, "lo":16.149, "t":21},
+  {"n":"Lhota", "la":50.527, "lo":13.935, "t":21},
+  {"n":"Zámecký vrch", "la":49.898, "lo":13.906, "t":21},
+  {"n":"Chrastenský vrch", "la":50.699, "lo":14.879, "t":21},
+  {"n":"Křižák", "la":50.454, "lo":13.856, "t":21},
+  {"n":"Bouda", "la":50.046, "lo":16.851, "t":21},
+  {"n":"Kluč", "la":50.059, "lo":17.109, "t":21},
+  {"n":"Čečetkov", "la":49.394, "lo":17.849, "t":21},
+  {"n":"Holý", "la":49.810, "lo":14.484, "t":21},
+  {"n":"Dránský žlíbek", "la":49.388, "lo":16.574, "t":21},
+  {"n":"Chlum", "la":49.772, "lo":14.609, "t":21},
+  {"n":"Chlum", "la":50.394, "lo":15.568, "t":21},
+  {"n":"Rovný", "la":50.630, "lo":13.978, "t":21},
+  {"n":"Myšince", "la":49.026, "lo":17.588, "t":21},
+  {"n":"Polom", "la":49.130, "lo":13.289, "t":21},
+  {"n":"Buková", "la":50.760, "lo":15.243, "t":21},
+  {"n":"Hradisko", "la":49.154, "lo":15.338, "t":21},
+  {"n":"Javornická hůra", "la":49.681, "lo":15.014, "t":21},
+  {"n":"Kubačka", "la":50.571, "lo":14.009, "t":21},
+  {"n":"Besedná", "la":49.764, "lo":14.376, "t":21},
+  {"n":"Strážnice", "la":50.232, "lo":17.599, "t":21},
+  {"n":"Červená hora", "la":49.828, "lo":14.406, "t":21},
+  {"n":"Vysoká", "la":50.266, "lo":17.574, "t":21},
+  {"n":"Malý Sněžník", "la":50.193, "lo":16.815, "t":21},
+  {"n":"Vysoký les", "la":48.939, "lo":13.920, "t":21},
+  {"n":"Szeroka", "la":50.674, "lo":15.994, "t":21},
+  {"n":"Kříchová", "la":48.776, "lo":14.336, "t":21},
+  {"n":"Trmovský vrch", "la":50.270, "lo":13.150, "t":21},
+  {"n":"Hrby", "la":49.566, "lo":14.253, "t":21},
+  {"n":"Ostrý", "la":49.820, "lo":13.959, "t":21},
+  {"n":"Popovičský vrch", "la":50.794, "lo":14.284, "t":21},
+  {"n":"Kotel", "la":50.752, "lo":15.530, "t":21},
+  {"n":"Vrchmezí", "la":50.353, "lo":16.361, "t":21},
+  {"n":"Černá skála", "la":50.709, "lo":15.566, "t":21},
+  {"n":"Černý les", "la":48.838, "lo":13.980, "t":21},
+  {"n":"Kalený vrch", "la":49.126, "lo":13.754, "t":21},
+  {"n":"Nad Marastkem", "la":49.593, "lo":13.728, "t":21},
+  {"n":"Sokol", "la":50.825, "lo":14.533, "t":21},
+  {"n":"Na Nivách", "la":49.417, "lo":16.058, "t":21},
+  {"n":"Homolka", "la":49.031, "lo":14.989, "t":21},
+  {"n":"Ve vrších", "la":49.586, "lo":16.627, "t":21},
+  {"n":"Velký Kameník", "la":49.098, "lo":14.445, "t":21},
+  {"n":"Vrchy", "la":49.304, "lo":14.639, "t":21},
+  {"n":"Lípa", "la":49.935, "lo":13.736, "t":21},
+  {"n":"Strážný", "la":50.760, "lo":14.606, "t":21},
+  {"n":"Vysoký les", "la":50.761, "lo":14.376, "t":21},
+  {"n":"Pecopala", "la":50.593, "lo":14.703, "t":21},
+  {"n":"Větrník", "la":49.198, "lo":16.984, "t":21},
+  {"n":"Kraví hora", "la":50.638, "lo":14.571, "t":21}    
 ];
         
 
@@ -1810,23 +2477,23 @@ function zmenModelVentusky(model) {
             nactiPocasi();
         }
 
-        function ziskejIkonuUrl(kod, aktualniCasText, vychodSlunceText, zapadSlunceText) {
-    const aktualniMesic = new Date().getMonth();
-    // Zima: říjen až duben (10, 11, 0, 1, 2, 3)
-    const jeZima = aktualniMesic === 9 || aktualniMesic === 10 || aktualniMesic === 11 || 
-                   aktualniMesic === 0 || aktualniMesic === 1 || aktualniMesic === 2 || 
-                   aktualniMesic === 3;
+        // Přidali jsme parametr 'teplota' na konec
+function ziskejIkonuUrl(kod, aktualniCasText, vychodSlunceText, zapadSlunceText, teplota) {
 
+    // Pokud nemáš časové údaje, ošetříme základní mapování s ohledem na teplotu
     if (!aktualniCasText || !vychodSlunceText || !zapadSlunceText) {
+        // Mrznoucí déšť jen při mrazu (např. <= 1 °C) a kódu 51
+        if (kod === 51 && teplota <= 1) return `png/mrznouci_dest.png`;
+        // Sníh jen při teplotě pod 3 °C
+        if (kod >= 71 && kod <= 77 && teplota <= 3) return `png/snih.png`;
+        
         const mapovaniDen = {
             0: "jasno", 1: "skoro_jasno", 2: "polojasno", 3: "oblacno", 45: "mlha", 48: "mlha",
-            51: jeZima ? "mrznouci_dest" : "prehanky", 53: "prehanky", 55: "prehanky", 
+            51: "prehanky", 53: "prehanky", 55: "prehanky", 
             61: "dest", 63: "dest", 65: "dest",
-            71: "snih", 73: "snih", 75: "snih", 77: "snih", 
             80: "prehanky", 81: "prehanky", 82: "prehanky", 95: "bourka"
         };
-        if (kod >= 71 && kod <= 77) return `/web/png/${jeZima ? "snih" : "prehanky"}.png`;
-        return `/web/png/${mapovaniDen[kod] || "polojasno"}.png`;
+        return `png/${mapovaniDen[kod] || "polojasno"}.png`;
     }
 
     const spoctiMinuty = (textKombinovany) => {
@@ -1842,39 +2509,40 @@ function zmenModelVentusky(model) {
     const tedMinuty = spoctiMinuty(aktualniCasText);
     const vychodMinuty = spoctiMinuty(vychodSlunceText);
     const zapadMinuty = spoctiMinuty(zapadSlunceText);
-
     const jeNoc = tedMinuty < vychodMinuty || tedMinuty > zapadMinuty;
 
-    // TADY JSOU OPRAVENÉ NÁZVY TVÝCH IKONEK PRO DEN A NOC
+    // HLAVNÍ MAPOVÁNÍ PRO IKONY
     const mapovani = {
         0: jeNoc ? "jasno_noc" : "jasno",
-        1: jeNoc ? "skoro_jasno_noc" : "skoro_jasno", // WMO 1 = skoro jasno
-        2: jeNoc ? "polojasno_noc" : "polojasno",     // WMO 2 = polojasno
-        3: jeNoc ? "oblacno_noc" : "oblacno",         // WMO 3 = oblačno (zataženo)
+        1: jeNoc ? "skoro_jasno_noc" : "skoro_jasno",
+        2: jeNoc ? "polojasno_noc" : "polojasno",
+        3: jeNoc ? "oblacno_noc" : "oblacno",
         45: "mlha",
         48: "mlha",
-        51: jeZima ? "mrznouci_dest" : "prehanky", 
+        // Pokud je kód 51, mrznoucí déšť se ukáže jen pokud je teplota 1 °C a méně, jinak normální přeháňky
+        51: (teplota <= 1) ? "mrznouci_dest" : "prehanky",
         53: "prehanky",
         55: "prehanky",
         61: "dest",
         63: "dest",
         65: "dest",
-        71: "snih",
-        73: "snih",
-        75: "snih",
-        77: "snih",
         80: jeNoc ? "destove_prehanky_noc" : "prehanky", 
         81: jeNoc ? "destove_prehanky_noc" : "prehanky",
         82: jeNoc ? "destove_prehanky_noc" : "prehanky",
         95: "bourka"
     };
 
+    // Pokud API hlásí sníh (kódy 71 až 77):
     if (kod >= 71 && kod <= 77) {
-        if (jeZima) return `png/snih.png`;
+        // Sníh se zobrazí jen tehdy, když je venku opravdu chladno (např. 3 °C a méně)
+        if (teplota <= 3) {
+            return `png/snih.png`;
+        }
+        // Pokud je tepleji (např. 5 °C a víc), zobrazí se raději běžné přeháňky/déšť
         return `png/${jeNoc ? "destove_prehanky_noc" : "prehanky"}.png`;
     }
 
-    return `/web/png/${mapovani[kod] || "polojasno"}.png`;
+    return `png/${mapovani[kod] || "polojasno"}.png`;
 }
 
         function aktualizujHomeCheck() {
@@ -2182,7 +2850,7 @@ rawPrecipitation = celkoveSrazkyDnes;
                     const dDat = new Date(d.daily.time[i]);
                     const jmDne = i === 0 ? "Dnes" : dny[dDat.getDay()];
                     const fDat = `${dDat.getDate()}.${dDat.getMonth()+1}.`;
-                    container.innerHTML += `<div class="forecast-day-row"> <div class="forecast-date"><strong>${jmDne}</strong> <span>${fDat}</span></div> <img src="${ziskejIkonuUrl(d.daily.weather_code[i])}" class="weather-icon" alt="počasí"> <div style="font-weight:bold; min-width:70px; text-align:right;">${Math.round(d.daily.temperature_2m_max[i])}° / <span style="color:var(--text-muted); font-weight:normal;">${Math.round(d.daily.temperature_2m_min[i])}°</span></div> <div class="forecast-subdata"> <span>💧 ${Math.round(d.daily.relative_humidity_2m_mean[i])}%</span> <span>🌧️ ${d.daily.precipitation_sum[i].toFixed(1)}mm</span> </div> </div>`;
+                    container.innerHTML += `<div class="forecast-day-row"> <div class="forecast-date"><strong>${jmDne}</strong> <span>${fDat}</span></div> <img src="${ziskejIkonuUrl(d.daily.weather_code[i], d.daily.temperature_2m_min[i])}" class="weather-icon" alt="počasí"> <div style="font-weight:bold; min-width:70px; text-align:right;">${Math.round(d.daily.temperature_2m_max[i])}° / <span style="color:var(--text-muted); font-weight:normal;">${Math.round(d.daily.temperature_2m_min[i])}°</span></div> <div class="forecast-subdata"> <span>💧 ${Math.round(d.daily.relative_humidity_2m_mean[i])}%</span> <span>🌧️ ${d.daily.precipitation_sum[i].toFixed(1)}mm</span> </div> </div>`;
                 }
             } catch (e) {
                 console.error(e);
