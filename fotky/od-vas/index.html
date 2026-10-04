@@ -1779,11 +1779,13 @@ function toggleTheme() {
             let cestaObrazku = './' + polozka.nazev + '/od-lidi' + cislo + '.jpg';
 
             gridHtml += `
-            <div style="background: rgba(0, 0, 0, 0.15); padding: 12px; border-radius: 10px; text-align: left;">
-                <img src="${cestaObrazku}" alt="${polozka.popisek}" style="width: 100%; height: auto; border-radius: 6px; display: block; object-fit: contain; max-height: 200px;" onerror="this.style.display='none'">
-                <div style="font-size: 0.85rem; font-weight: bold; margin-top: 8px; color: #fff;">${polozka.popisek}</div>
-                <div style="font-size: 0.75rem; color: #8b949e; margin-top: 4px;">Autor: ${polozka.autor} | Datum: ${polozka.datum} | Místo: ${polozka.misto}</div>
-            </div>`;
+            <a href="./${polozka.nazev}/" style="text-decoration: none; color: inherit; text-align: left;">
+                <div style="background: rgba(0, 0, 0, 0.15); padding: 12px; border-radius: 10px;">
+                    <img src="${cestaObrazku}" alt="${polozka.popisek}" style="width: 100%; height: auto; border-radius: 6px; display: block; object-fit: contain; max-height: 200px;" onerror="this.style.display='none'">
+                    <div style="font-size: 0.85rem; font-weight: bold; margin-top: 8px; color: #fff;">${polozka.popisek}</div>
+                    <div style="font-size: 0.75rem; color: #8b949e; margin-top: 4px;">Autor: ${polozka.autor} | Datum: ${polozka.datum} | Místo: ${polozka.misto}</div>
+                </div>
+            </a>`;
         });
     }
     document.getElementById('galerie-grid').innerHTML = gridHtml;
