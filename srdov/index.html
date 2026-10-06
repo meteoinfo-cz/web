@@ -816,35 +816,33 @@ body.light-mode {
   const urlParams = new URLSearchParams(window.location.search);
   let urlMesto = urlParams.get('mesto');
 
-  // Opravené čtení z cesty pro novou doménu bez podsložky /web/
+  // Čtení z cesty URL na nové doméně
   if (!urlMesto) {
     const pathSegments = window.location.pathname.split('/').filter(p => p && p !== 'web' && p !== 'index.html');
     if (pathSegments.length > 0) {
-      urlMesto = pathSegments[0]; // Správně vezme 'prostejov' přímo za doménou
+      urlMesto = pathSegments[0]; 
     }
   }
 
-  // Pokud jsme v URL našli název města (např. z adresy nebo parametru)
+  let nalezenaShodaVUrl = false;
+
+  // Pokud jsme v URL našli název města
   if (urlMesto) {
-    // Převedeme text z URL na malá písmena a odstraníme diakritiku pro bezpečné porovnání
     const ocisteneUrlMesto = urlMesto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
-    // Najdeme město v databázi 'mm' podle očištěného názvu
     if (typeof mm !== 'undefined') {
       const nasleMesto = mm.find(m => m.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === ocisteneUrlMesto);
       
       if (nasleMesto) {
+        // KRITICKÝ KROK: Pokud jsi na specifické podstránce města, URL VŽDY přebije localStorage!
         localStorage.setItem('defaultCityName', nasleMesto.n);
         localStorage.setItem('defaultCityLat', nasleMesto.la.toString());
         localStorage.setItem('defaultCityLon', nasleMesto.lo.toString());
         localStorage.setItem('defaultCityTemp', nasleMesto.t.toString());
         mName = nasleMesto.n; lat = nasleMesto.la; lon = nasleMesto.lo; sTemp = nasleMesto.t;
         
-        // Zafixujeme, že toto město z URL je aktivní, aby ho nepřepsala Praha
+        nalezenaShodaVUrl = true;
         urlMesto = nasleMesto.n;
-      } else {
-        // Pokud město v DB z nějakého důvodu selže, vyčistíme proměnnou, aby mohl nastoupit fallback
-        urlMesto = null;
       }
     }
   }
@@ -859,8 +857,8 @@ body.light-mode {
       sessionStorage.removeItem('search_city_active');
     });
   } 
-  // Pokud NENÍ město zadané v URL a uživatel nemá uloženo vlastní, načte se Praha
-  else if (!urlMesto && savedUserCity !== 'true') {
+  // Pokud v URL NENÍ platné město (jsme na hlavní straně) a uživatel nemá uloženo vlastní, teprve pak nastoupí Praha
+  else if (!nalezenaShodaVUrl && savedUserCity !== 'true') {
     localStorage.setItem('defaultCityName', 'Praha');
     localStorage.setItem('defaultCityLat', '50.08');
     localStorage.setItem('defaultCityLon', '14.42');
