@@ -2362,9 +2362,9 @@ function ziskejIkonuUrl(kod, aktualniCasText, vychodSlunceText, zapadSlunceText,
     // Pokud nemáš časové údaje, ošetříme základní mapování s ohledem na teplotu
     if (!aktualniCasText || !vychodSlunceText || !zapadSlunceText) {
         // Mrznoucí déšť jen při mrazu (např. <= 1 °C) a kódu 51
-        if (kod === 51 && teplota <= 1) return `png/mrznouci_dest.png`;
+        if (kod === 51 && teplota <= 1) return `/png/mrznouci_dest.png`;
         // Sníh jen při teplotě pod 3 °C
-        if (kod >= 71 && kod <= 77 && teplota <= 3) return `png/snih.png`;
+        if (kod >= 71 && kod <= 77 && teplota <= 3) return `/png/snih.png`;
         
         const mapovaniDen = {
             0: "jasno", 1: "skoro_jasno", 2: "polojasno", 3: "oblacno", 45: "mlha", 48: "mlha",
@@ -2372,7 +2372,7 @@ function ziskejIkonuUrl(kod, aktualniCasText, vychodSlunceText, zapadSlunceText,
             61: "dest", 63: "dest", 65: "dest",
             80: "prehanky", 81: "prehanky", 82: "prehanky", 95: "bourka"
         };
-        return `png/${mapovaniDen[kod] || "polojasno"}.png`;
+        return `/png/${mapovaniDen[kod] || "polojasno"}.png`;
     }
 
     const spoctiMinuty = (textKombinovany) => {
@@ -2415,13 +2415,13 @@ function ziskejIkonuUrl(kod, aktualniCasText, vychodSlunceText, zapadSlunceText,
     if (kod >= 71 && kod <= 77) {
         // Sníh se zobrazí jen tehdy, když je venku opravdu chladno (např. 3 °C a méně)
         if (teplota <= 3) {
-            return `png/snih.png`;
+            return `/png/snih.png`;
         }
         // Pokud je tepleji (např. 5 °C a víc), zobrazí se raději běžné přeháňky/déšť
-        return `png/${jeNoc ? "destove_prehanky_noc" : "prehanky"}.png`;
+        return `!png/${jeNoc ? "destove_prehanky_noc" : "prehanky"}.png`;
     }
 
-    return `png/${mapovani[kod] || "polojasno"}.png`;
+    return `/png/${mapovani[kod] || "polojasno"}.png`;
 }
 
         function aktualizujHomeCheck() {
