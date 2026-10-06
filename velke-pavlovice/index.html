@@ -812,11 +812,10 @@ body.light-mode {
 
 <script>
 (function() {
-  // === 1. NAČTENÍ MĚSTA Z URL ADRESY (?mesto=Olomouc nebo /olomouc/) ===
+  // === 1. OKAMŽITÉ OKAMŽITÉ OKAMŽITÉ NAČTENÍ MĚSTA Z URL ===
   const urlParams = new URLSearchParams(window.location.search);
   let urlMesto = urlParams.get('mesto');
 
-  // Čtení z cesty URL na nové doméně
   if (!urlMesto) {
     const pathSegments = window.location.pathname.split('/').filter(p => p && p !== 'web' && p !== 'index.html');
     if (pathSegments.length > 0) {
@@ -824,75 +823,31 @@ body.light-mode {
     }
   }
 
-  function processCityLogic() {
-    let nalezenaShodaVUrl = false;
-
-    // Pokud jsme v URL našli název města
-    if (urlMesto) {
-      const ocisteneUrlMesto = urlMesto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-
-      if (typeof mm !== 'undefined' && Array.isArray(mm)) {
-        const nasleMesto = mm.find(m => m.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === ocisteneUrlMesto);
-        
-        if (nasleMesto) {
-          const currentStoredCity = localStorage.getItem('defaultCityName');
-          
-          // Pokud se město v URL liší od toho, co je uloženo, přepíšeme paměť a ihned reloadneme stránku (vyřeší problém s F5)
-          if (currentStoredCity !== nasleMesto.n) {
-            localStorage.setItem('defaultCityName', nasleMesto.n);
-            localStorage.setItem('defaultCityLat', nasleMesto.la.toString());
-            localStorage.setItem('defaultCityLon', nasleMesto.lo.toString());
-            localStorage.setItem('defaultCityTemp', nasleMesto.t.toString());
-            
-            location.reload();
-            return;
-          }
-
-          // KRITICKÝ KROK: Pokud jsi na specifické podstránce města, URL VŽDY přebije localStorage!
-          localStorage.setItem('defaultCityName', nasleMesto.n);
-          localStorage.setItem('defaultCityLat', nasleMesto.la.toString());
-          localStorage.setItem('defaultCityLon', nasleMesto.lo.toString());
-          localStorage.setItem('defaultCityTemp', nasleMesto.t.toString());
-          
-          if (typeof mName !== 'undefined') {
-            mName = nasleMesto.n; lat = nasleMesto.la; lon = nasleMesto.lo; sTemp = nasleMesto.t;
-          }
-          
-          nalezenaShodaVUrl = true;
-          urlMesto = nasleMesto.n;
-        }
+  // Pokud máme pole měst mm k dispozici, ihned přepíšeme localStorage, aby ho zbytek šablony viděl správně
+  if (urlMesto && typeof mm !== 'undefined' && Array.isArray(mm)) {
+    const ocisteneUrlMesto = urlMesto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    const nasleMesto = mm.find(m => m.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === ocisteneUrlMesto);
+    
+    if (nasleMesto) {
+      // Ihned nastavíme správné hodnoty do localStorage (žádná Praha se už nestihne načíst)
+      localStorage.setItem('defaultCityName', nasleMesto.n);
+      localStorage.setItem('defaultCityLat', nasleMesto.la.toString());
+      localStorage.setItem('defaultCityLon', nasleMesto.lo.toString());
+      localStorage.setItem('defaultCityTemp', nasleMesto.t.toString());
+      
+      if (typeof mName !== 'undefined') {
+        mName = nasleMesto.n; lat = nasleMesto.la; lon = nasleMesto.lo; sTemp = nasleMesto.t;
       }
     }
-
-    // --- KONTROLA PŘI STARTU STRÁNKY ---
+  } else if (!urlMesto) {
+    // Pokud v URL nic není a uživatel nemá vlastní uloženo, teprve pak nastoupí Praha
     const savedUserCity = localStorage.getItem('user_permanently_saved_home');
-  
-    if (sessionStorage.getItem('search_city_active') === 'true') {
-      const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
-      if (chkBox) chkBox.checked = false;
-      sessionStorage.removeItem('search_city_active');
-    } 
-    // Pád do Prahy nastane POUZE pokud v URL reálně žádné město nebylo a uživatel nemá uloženo vlastní
-    else if (!urlMesto && !nalezenaShodaVUrl && savedUserCity !== 'true') {
+    if (savedUserCity !== 'true' && !localStorage.getItem('defaultCityName')) {
       localStorage.setItem('defaultCityName', 'Praha');
       localStorage.setItem('defaultCityLat', '50.08');
       localStorage.setItem('defaultCityLon', '14.42');
       localStorage.setItem('defaultCityTemp', '22');
-      
-      if (typeof mName !== 'undefined') {
-        mName = "Praha"; lat = 50.08; lon = 14.42; sTemp = 22;
-      }
-      
-      const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
-      if (chkBox) chkBox.checked = true;
     }
-  }
-
-  // Spuštění logiky (pokud už je mm načtené, hned, jinak po načtení DOM)
-  if (typeof mm !== 'undefined') {
-    processCityLogic();
-  } else {
-    window.addEventListener('DOMContentLoaded', processCityLogic);
   }
 
   // --- 2. SLEDOVÁNÍ ZMĚNY CHECKBOXU PRO TRVALÉ ULOŽENÍ VÝCHOZÍHO MĚSTA ---
@@ -930,17 +885,10 @@ body.light-mode {
           div.addEventListener('mouseleave', () => div.style.background = 'transparent');
           
           div.addEventListener('click', () => {
-            sessionStorage.setItem('search_city_active', 'true');
-            
-            localStorage.setItem('defaultCityName', mesta.n);
-            localStorage.setItem('defaultCityLat', mesta.la.toString());
-            localStorage.setItem('defaultCityLon', mesta.lo.toString());
-            localStorage.setItem('defaultCityTemp', mesta.t.toString());
-
-            mainSearch.value = '';
-            mainSuggestions.style.display = 'none';
-            
-            location.reload();
+            // Když uživatel klikne v našeptávači, přesměrujeme ho na čistou URL podstránku města
+            // (předpokládáme strukturu /nazev-mesta/)
+            const slug = mesta.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '-');
+            window.location.href = '/' + slug + '/';
           });
           mainSuggestions.appendChild(div);
         });
