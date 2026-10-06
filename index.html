@@ -2302,10 +2302,31 @@ body.light-mode {
         let lon = parseFloat(localStorage.getItem('defaultCityLon')) || 17.25;
         let sTemp = parseFloat(localStorage.getItem('defaultCityTemp')) || 22;
 
-        const list = document.getElementById('m-list');
-        mm.forEach(m => {
-            list.innerHTML += `<button class="chart-toggle-btn" style="text-align:left; width:100%;" onclick="zvolM('${m.n}', ${m.la}, ${m.lo}, ${m.t})">📍 ${m.n}</button>`;
-        });
+        const searchInput = document.getElementById('main-search');
+const list = document.getElementById('m-list');
+
+// Funkce, která vykreslí maximálně 20 výsledků, aby to bylo okamžité
+function vykresliMesta(mesta) {
+    list.innerHTML = mesta.slice(0, 20).map(m => 
+        `<button class="chart-toggle-btn" style="text-align:left; width:100%">${m.n}</button>`
+    ).join('');
+}
+
+// Když uživatel začne psát do vyhledávání
+if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+        const text = e.target.value.toLowerCase().trim();
+        
+        if (text === "") {
+            list.innerHTML = ""; // Když je políčko prázdné, seznam nic nevykresluje
+            return;
+        }
+
+        // Najde města, která odpovídají napsanému textu
+        const nalezena = mm.filter(m => m.n.toLowerCase().includes(text));
+        vykresliMesta(nalezena);
+    });
+}
 
         function zvolM(jm, la, lo, st) {
             lat = la;
@@ -3044,7 +3065,7 @@ btn.onclick = function() {
                 if (permission === 'granted') {
                     new Notification("MeteoInfo.cz", {
                         body: "Sledování aktivováno. Budeme vás informovat o mimořádných situacích.",
-                        icon: "https://github.io"
+                        icon: "https://www.meteoinfo.cz"
                     });
                 }
             });
@@ -3247,7 +3268,7 @@ function odeslatMeteoVystrahu(jev, stupen, mesto) {
                 event.preventDefault();
                 localStorage.setItem('aktivni_vystraha_titul', upravenyTitul);
                 localStorage.setItem('aktivni_vystraha_text', upravenyText);
-                window.open('https://meteoinfo-cz.github.io/web/', '_blank'); // zde si uprav na svou přesnou adresu webu
+                window.open('https://www.meteoinfo.cz', '_blank');
             };
         }
 
