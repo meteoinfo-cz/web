@@ -835,6 +835,19 @@ body.light-mode {
         const nasleMesto = mm.find(m => m.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === ocisteneUrlMesto);
         
         if (nasleMesto) {
+          const currentStoredCity = localStorage.getItem('defaultCityName');
+          
+          // Pokud se město v URL liší od toho, co je uloženo, přepíšeme paměť a ihned reloadneme stránku (vyřeší problém s F5)
+          if (currentStoredCity !== nasleMesto.n) {
+            localStorage.setItem('defaultCityName', nasleMesto.n);
+            localStorage.setItem('defaultCityLat', nasleMesto.la.toString());
+            localStorage.setItem('defaultCityLon', nasleMesto.lo.toString());
+            localStorage.setItem('defaultCityTemp', nasleMesto.t.toString());
+            
+            location.reload();
+            return;
+          }
+
           // KRITICKÝ KROK: Pokud jsi na specifické podstránce města, URL VŽDY přebije localStorage!
           localStorage.setItem('defaultCityName', nasleMesto.n);
           localStorage.setItem('defaultCityLat', nasleMesto.la.toString());
