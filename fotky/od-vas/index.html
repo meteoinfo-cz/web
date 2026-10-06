@@ -615,7 +615,7 @@ body.light-mode {
             
             <!-- 1. Řádek vlevo: Discord -->
             <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                <a href="https://discord.gg/zTqpRYSb5" target="_blank" rel="noopener noreferrer" title="Přidej se na náš Discord Server" style="display: flex; align-items: center; background: #5865F2; padding: 5px 8px; border-radius: 6px; text-decoration: none;">
+                <a href="https://discord.gg/FgqBW3pyQz" target="_blank" rel="noopener noreferrer" title="Přidej se na náš Discord Server" style="display: flex; align-items: center; background: #5865F2; padding: 5px 8px; border-radius: 6px; text-decoration: none;">
                     <svg viewBox="0 0 127.14 96.36" style="width: 16px; height: 16px; fill: #ffffff;">
                         <path d="M107.7,8.07A105.15,105.15,0,0,0,77.26,0a77.19,77.19,0,0,0-3.3,6.83A96.67,96.67,0,0,0,53.22,6.83,77.19,77.19,0,0,0,49.88,0,105.15,105.15,0,0,0,19.44,8.07C3.66,31.58-1.95,54.65,1,77.53A105.73,105.73,0,0,0,32,96.36a74.37,74.37,0,0,0,6.73-11,68.21,68.21,0,0,1-10.57-5c1,.74,2,1.51,3,2.26a74.12,74.12,0,0,0,64.78,0c1-.75,2-1.52,3-2.26a68.21,68.21,0,0,1-10.57,5,74.37,74.37,0,0,0,6.73,11,105.73,105.73,0,0,0,31.06-18.83C129.85,50.7,123.32,27.87,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53S36.18,40.36,42.45,40.36,53.83,46,53.83,53,48.72,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.24,60,73.24,53S78.41,40.36,84.69,40.36,96.07,46,96.07,53,91,65.69,84.69,65.69Z"/>
                     </svg>
@@ -1514,90 +1514,295 @@ function toggleTheme() {
     <main class="card">
         <h3 style="margin-top: 0; color: var(--text-accent); font-size: 2rem; margin-bottom: 20px;">Fotky od vás</h3>
 
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 20px;">
-    
-    <!-- Okénko 9 -->
-    <a href="fotka9/" style="text-decoration: none; color: inherit; text-align: left;">
-        <div style="background: rgba(0, 0, 0, 0.15); padding: 12px; border-radius: 10px;">
-            <img src="fotka9/od-lidi9" alt="Fotka 9" style="width: 100%; height: auto; border-radius: 6px; display: block; object-fit: contain; max-height: 200px;">
-            <div style="font-size: 0.85rem; font-weight: bold; margin-top: 8px; color: #fff;">Ranní červánky (9)</div>
-            <div style="font-size: 0.75rem; color: #8b949e;">Autor: Tom | Datum: 24. 09. 2026 | Místo: Olomouc</div>
+        <!-- Sem se dynamicky vygenerují fotky -->
+        <div id="galerie-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 20px;">
+            Načítám fotky...
         </div>
-    </a>
 
-    <!-- Okénko 8 -->
-    <a href="fotka8/" style="text-decoration: none; color: inherit; text-align: left;">
-        <div style="background: rgba(0, 0, 0, 0.15); padding: 12px; border-radius: 10px;">
-            <img src="fotka8/od-lidi8" alt="Fotka 8" style="width: 100%; height: auto; border-radius: 6px; display: block; object-fit: contain; max-height: 200px;">
-            <div style="font-size: 0.85rem; font-weight: bold; margin-top: 8px; color: #fff;">Ranní červánky (8)</div>
-            <div style="font-size: 0.75rem; color: #8b949e;">Autor: Vivi | Datum: 24. 09. 2026 | Místo: Olomouc</div>
-        </div>
-    </a>
-
-    <!-- Okénko 7 -->
-    <a href="fotka7/" style="text-decoration: none; color: inherit; text-align: left;">
-        <div style="background: rgba(0, 0, 0, 0.15); padding: 12px; border-radius: 10px;">
-            <img src="fotka7/od-lidi7" alt="Fotka 7" style="width: 100%; height: auto; border-radius: 6px; display: block; object-fit: contain; max-height: 200px;">
-            <div style="font-size: 0.85rem; font-weight: bold; margin-top: 8px; color: #fff;">Duha po přeháňce (7)</div>
-            <div style="font-size: 0.75rem; color: #8b949e;">Autor: Tom | Datum: 21. 09. 2026 | Místo: Olomouc</div>
-        </div>
-    </a>
-
-    <!-- Okénko 6 -->
-    <a href="fotka6/" style="text-decoration: none; color: inherit; text-align: left;">
-        <div style="background: rgba(0, 0, 0, 0.15); padding: 12px; border-radius: 10px;">
-            <img src="fotka6/od-lidi6" alt="Fotka 6" style="width: 100%; height: auto; border-radius: 6px; display: block; object-fit: contain; max-height: 200px;">
-            <div style="font-size: 0.85rem; font-weight: bold; margin-top: 8px; color: #fff;">Výhled z letadla na mraky (6)</div>
-            <div style="font-size: 0.75rem; color: #8b949e;">Autor: Vivi | Datum: 19. 08. 2026 | Místo: Kréta</div>
-        </div>
-    </a>
-
-    <!-- Okénko 5 -->
-    <a href="fotka5/" style="text-decoration: none; color: inherit; text-align: left;">
-        <div style="background: rgba(0, 0, 0, 0.15); padding: 12px; border-radius: 10px;">
-            <img src="fotka5/od-lidi5" alt="Fotka 5" style="width: 100%; height: auto; border-radius: 6px; display: block; object-fit: contain; max-height: 200px;">
-            <div style="font-size: 0.85rem; font-weight: bold; margin-top: 8px; color: #fff;">Ranní červánky (5)</div>
-            <div style="font-size: 0.75rem; color: #8b949e;">Autor: Vivi | Datum: 11. 09. 2026 | Místo: Olomouc</div>
-        </div>
-    </a>
-
-    <!-- Okénko 4 -->
-    <a href="fotka4/" style="text-decoration: none; color: inherit; text-align: left;">
-        <div style="background: rgba(0, 0, 0, 0.15); padding: 12px; border-radius: 10px;">
-            <img src="fotka4/od-lidi4" alt="Fotka 4" style="width: 100%; height: auto; border-radius: 6px; display: block; object-fit: contain; max-height: 200px;">
-            <div style="font-size: 0.85rem; font-weight: bold; margin-top: 8px; color: #fff;">Ranní červánky (4)</div>
-            <div style="font-size: 0.75rem; color: #8b949e;">Autor: Vivi | Datum: 15. 09. 2026 | Místo: Olomouc</div>
-        </div>
-    </a>
-
-    <!-- Okénko 3 -->
-    <a href="fotka3/" style="text-decoration: none; color: inherit; text-align: left;">
-        <div style="background: rgba(0, 0, 0, 0.15); padding: 12px; border-radius: 10px;">
-            <img src="fotka3/od-lidi3" alt="Fotka 3" style="width: 100%; height: auto; border-radius: 6px; display: block; object-fit: contain; max-height: 200px;">
-            <div style="font-size: 0.85rem; font-weight: bold; margin-top: 8px; color: #fff;">Hřib smrkový (3)</div>
-            <div style="font-size: 0.75rem; color: #8b949e;">Autor: Dominik | Datum: 05. 09. 2026 | Místo: Ressl</div>
-        </div>
-    </a>
-
-    <!-- Okénko 2 -->
-    <a href="fotka2/" style="text-decoration: none; color: inherit; text-align: left;">
-        <div style="background: rgba(0, 0, 0, 0.15); padding: 12px; border-radius: 10px;">
-            <img src="fotka2/od-lidi2" alt="Fotka 2" style="width: 100%; height: auto; border-radius: 6px; display: block; object-fit: contain; max-height: 200px;">
-            <div style="font-size: 0.85rem; font-weight: bold; margin-top: 8px; color: #fff;">Muchomůrka červená (2)</div>
-            <div style="font-size: 0.75rem; color: #8b949e;">Autor: Dominik | Datum: 15. 09. 2026 | Místo: Ressl</div>
-        </div>
-    </a>
-
-    <!-- Okénko 1 -->
-    <a href="fotka1/" style="text-decoration: none; color: inherit; text-align: left;">
-        <div style="background: rgba(0, 0, 0, 0.15); padding: 12px; border-radius: 10px;">
-            <img src="fotka1/od-lidi1" alt="Fotka 1" style="width: 100%; height: auto; border-radius: 6px; display: block; object-fit: contain; max-height: 200px;">
-            <div style="font-size: 0.85rem; font-weight: bold; margin-top: 8px; color: #fff;">Hřib kovář (1)</div>
-            <div style="font-size: 0.75rem; color: #8b949e;">Autor: Dominik | Datum: 20. 09. 2026 | Místo: Ressl</div>
-        </div>
-    </a>
-
+        <!-- Sem se vygeneruje stránkování -->
+        <div class="strankovani" id="strankovani" style="text-align: center; margin: 40px 0;"></div>
+    </main>
 </div>
+
+<script>
+    // 1. Zde si u fotek můžeš nastavit vlastní popisek, autor, datum a místo
+    const detailyFotak = {
+        'fotka33': {
+            popisek: 'Galaxie v Andromedě (33)',
+            autor: 'Pavel Čalkovský',
+            datum: '09. 08. 2026',
+            misto: 'Rousínov'
+        },
+        'fotka32': {
+            popisek: 'Výrazný Perseid (32)',
+            autor: 'Pavel Čalkovský',
+            datum: '13. 08. 2025',
+            misto: 'Rousínov'
+        },
+        'fotka31': {
+            popisek: 'Mlhovina Severní Amerika (31)',
+            autor: 'Pavel Čalkovský',
+            datum: '20. 07. 2026',
+            misto: 'Rousínov'
+        },
+        'fotka30': {
+            popisek: 'Noční obloha (30)',
+            autor: 'Pavel Čalkovský',
+            datum: '29. 01. 2025',
+            misto: 'Rousínov'
+        },
+        'fotka29': {
+            popisek: 'Mlhovina v Orionu (29)',
+            autor: 'Pavel Čalkovský',
+            datum: '04. 03. 2025',
+            misto: 'Rousínov'
+        },
+        'fotka28': {
+            popisek: 'Polární záře (28)',
+            autor: 'Pavel Čalkovský',
+            datum: '10. 05. 2024',
+            misto: 'Rousínov'
+        },
+        'fotka27': {
+            popisek: 'Polární záře (27)',
+            autor: 'Pavel Čalkovský',
+            datum: '10. 05. 2024',
+            misto: 'Rousínov'
+        },
+        'fotka26': {
+            popisek: 'Polární záře (26)',
+            autor: 'Pavel Čalkovský',
+            datum: '10. 05. 2024',
+            misto: 'Rousínov'
+        },
+        'fotka25': {
+            popisek: 'Polární záře (25)',
+            autor: 'Pavel Čalkovský',
+            datum: '10. 05. 2024',
+            misto: 'Rousínov'
+        },
+        'fotka24': {
+            popisek: 'Polární záře (24)',
+            autor: 'Pavel Čalkovský',
+            datum: '20. 01. 2026',
+            misto: 'Rousínov'
+        },
+        'fotka23': {
+            popisek: 'Polární záře (23)',
+            autor: 'Pavel Čalkovský',
+            datum: '20. 01. 2026',
+            misto: 'Rousínov'
+        },
+        'fotka22': {
+            popisek: 'Měsíc zbarvený zemskou atmosférou (22)',
+            autor: 'Pavel Čalkovský',
+            datum: '27. 08. 2026',
+            misto: 'Rousínov'
+        },
+        'fotka21': {
+            popisek: 'Mlhovina v Orionu (21)',
+            autor: 'Pavel Čalkovský',
+            datum: '27. 08. 2026',
+            misto: 'Rousínov'
+        },
+        'fotka20': {
+            popisek: 'Galaxie v Andromedě (20)',
+            autor: 'Pavel Čalkovský',
+            datum: '11. 01. 2026',
+            misto: 'Rousínov'
+        },
+        'fotka19': {
+            popisek: 'Měsíc - Den po úplňku (19)',
+            autor: 'Pavel Čalkovský',
+            datum: '12. 07. 2026',
+            misto: 'Rousínov'
+        },
+        'fotka18': {
+            popisek: 'C/2025 A6 (Lemmon) - Nejjasnější kometa roku 2025 (15) (18)',
+            autor: 'Pavel Čalkovský',
+            datum: '27. 09. 2025',
+            misto: 'Rousínov'
+        },
+        'fotka17': {
+            popisek: 'C/2025 A6 (Lemmon) - Nejjasnější kometa roku 2025 (17)',
+            autor: 'Pavel Čalkovský',
+            datum: '27. 09. 2025',
+            misto: 'Rousínov'
+        },
+        'fotka16': {
+            popisek: 'Muchomůrka červená (16)',
+            autor: 'Dominik',
+            datum: '27. 09. 2026',
+            misto: 'Ressl'
+        },
+        'fotka15': {
+            popisek: 'Hvězdná obloha se stanem (15)',
+            autor: 'Wradam',
+            datum: '15. 08. 2026',
+            misto: 'Protivanov'
+        },
+        'fotka14': {
+            popisek: 'Druhy oblačnosti a slunce (14)',
+            autor: 'Wradam',
+            datum: '04. 09. 2026',
+            misto: 'Olomouc'
+        },
+        'fotka13': {
+            popisek: 'Západ slunce (13)',
+            autor: 'Wradam',
+            datum: '19. 09. 2026',
+            misto: 'Olomouc'
+        },
+        'fotka12': {
+            popisek: 'Pravé parhelium (12)',
+            autor: 'RealStorm',
+            datum: '02. 10. 2026',
+            misto: 'Jihlava'
+        },
+        'fotka11': {
+            popisek: 'Vysoká oblačnost (11)',
+            autor: 'RealStorm',
+            datum: '01. 10. 2026',
+            misto: 'Telč'
+        },
+        'fotka10': {
+            popisek: 'Vysoká oblačnost nad rybníkem (10)',
+            autor: 'RealStorm',
+            datum: '01. 10. 2026',
+            misto: 'Zhejral'
+        },
+        'fotka9': {
+            popisek: 'Ranní červánky (9)',
+            autor: 'Tom',
+            datum: '24. 09. 2026',
+            misto: 'Olomouc'
+        },
+        'fotka8': {
+            popisek: 'Ranní červánky (8)',
+            autor: 'Vivi',
+            datum: '24. 09. 2026',
+            misto: 'Olomouc'
+        },
+        'fotka7': {
+            popisek: 'Duha po přeháňce (7)',
+            autor: 'Tom',
+            datum: '21. 09. 2026',
+            misto: 'Šumava'
+        },
+        'fotka6': {
+            popisek: 'Výhled z letadla na mraky (6)',
+            autor: 'Vivi',
+            datum: '19. 08. 2026',
+            misto: 'Kréta'
+        },
+        'fotka5': {
+            popisek: 'Ranní červánky (5)',
+            autor: 'Vivi',
+            datum: '11. 09. 2026',
+            misto: 'Olomouc'
+        },
+        'fotka4': {
+            popisek: 'Ranní červánky (4)',
+            autor: 'Vivi',
+            datum: '15. 09. 2026',
+            misto: 'Olomouc'
+        },
+        'fotka3': {
+            popisek: 'Hřib smrkový (3)',
+            autor: 'Dominik',
+            datum: '05. 09. 2026',
+            misto: 'Ressl'
+        },
+        'fotka2': {
+            popisek: 'Muchomůrka červená (2)',
+            autor: 'Dominik',
+            datum: '15. 08. 2026',
+            misto: 'Ressl'
+        },
+        'fotka1': {
+            popisek: 'Hřib kovář (1)',
+            autor: 'Dominik',
+            datum: '10. 09. 2026',
+            misto: 'Ressl'
+        }
+    };
+
+    // 2. Automaticky vytvoříme seznam všech složek od 1 do 33
+    const slozky = [];
+    for (let i = 1; i <= 33; i++) {
+        let nazevSlozky = 'fotka' + i;
+        
+        let info = detailyFotak[nazevSlozky] || {
+            popisek: 'Pozorování oblohy #' + i,
+            autor: 'Neznámý autor',
+            datum: 'Neuvedeno',
+            misto: 'Neuvedeno'
+        };
+        
+        slozky.push({
+            nazev: nazevSlozky,
+            popisek: info.popisek,
+            autor: info.autor,
+            datum: info.datum,
+            misto: info.misto
+        });
+    }
+
+    // Seřazení složek od největšího čísla po nejmenší (fotka33, fotka32...)
+    slozky.sort((a, b) => {
+        let cisloA = parseInt(a.nazev.replace(/\D/g, '')) || 0;
+        let cisloB = parseInt(b.nazev.replace(/\D/g, '')) || 0;
+        return cisloB - cisloA;
+    });
+
+    const fotekNaStranu = 9;
+    const urlParams = new URLSearchParams(window.location.search);
+    let aktualniStrana = parseInt(urlParams.get('strana')) || 1;
+
+    const celkemFotek = slozky.length;
+    const celkemStran = Math.ceil(celkemFotek / fotekNaStranu);
+
+    if (aktualniStrana < 1) aktualniStrana = 1;
+    if (aktualniStrana > celkemStran && celkemStran > 0) aktualniStrana = celkemStran;
+
+    const start = (aktualniStrana - 1) * fotekNaStranu;
+    const aktualniSlozky = slozky.slice(start, start + fotekNaStranu);
+
+    // Generování mřížky s fotkami a čistým textem pod nimi
+    let gridHtml = '';
+    if (aktualniSlozky.length === 0) {
+        gridHtml = '<p style="color: #fff;">Žádné fotky tu nejsou.</p>';
+    } else {
+        aktualniSlozky.forEach(polozka => {
+            let cisloMatch = polozka.nazev.match(/\d+/);
+            let cislo = cisloMatch ? cisloMatch[0] : '';
+            let cestaObrazku = './' + polozka.nazev + '/od-lidi' + cislo + '.jpg';
+
+            gridHtml += `
+            <a href="./${polozka.nazev}/" style="text-decoration: none; color: inherit; text-align: left;">
+                <div style="background: rgba(0, 0, 0, 0.15); padding: 12px; border-radius: 10px;">
+                    <img src="${cestaObrazku}" alt="${polozka.popisek}" style="width: 100%; height: auto; border-radius: 6px; display: block; object-fit: contain; max-height: 200px;" onerror="this.style.display='none'">
+                    <div style="font-size: 0.85rem; font-weight: bold; margin-top: 8px; color: #fff;">${polozka.popisek}</div>
+                    <div style="font-size: 0.75rem; color: #8b949e; margin-top: 4px;">Autor: ${polozka.autor} | Datum: ${polozka.datum} | Místo: ${polozka.misto}</div>
+                </div>
+            </a>`;
+        });
+    }
+    document.getElementById('galerie-grid').innerHTML = gridHtml;
+
+    // Generování stránkování dole (modrá aktivní stránka, čitelná čísla)
+    let paginationHtml = '';
+    if (celkemStran > 1) {
+        for (let i = 1; i <= celkemStran; i++) {
+            let aktivniStyl = (i === aktualniStrana) 
+                ? 'background: #007bff; color: #fff; font-weight: bold;' 
+                : 'background: #fff; color: #333;';
+                
+            paginationHtml += `<a href="?strana=${i}" style="display: inline-block; padding: 10px 15px; margin: 0 5px; border: 1px solid #ccc; text-decoration: none; border-radius: 5px; ${aktivniStyl}">${i}</a>`;
+        }
+    }
+    document.getElementById('strankovani').innerHTML = paginationHtml;
+</script>
 
 <!-- JavaScript pro automatické vygenerování patičky -->
 <script>
