@@ -194,7 +194,7 @@ a[href*="discord"] span {
 @media screen and (max-width: 768px) {
   /* Cílí na celou krabici, která drží tlačítko Články */
   div:has(> .o-webu-btn) {
-    margin-left: 0px !important;    /* Vynuluje 330px z PC, co to rozbíjelo */
+    margin-left: 5px !important;    /* Vynuluje 330px z PC, co to rozbíjelo */
     margin-top: 5px !important;    /* Odstrčí texty bezpečně dolů */
     text-align: center !important;  /* Vycentruje Články pěkně pod tlačítka */
     width: 100% !important;
@@ -727,7 +727,7 @@ body.light-mode {
     <!-- LEVÁ STRANA: Logo a ovládací prvky pohromadě -->
     <div style="display: flex; align-items: center; gap: 25px; flex-wrap: wrap;">
         
-        <a href="https://meteoinfo-cz.github.io/web/" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
+        <a href="https://www.meteoinfo.cz" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
             <img src="https://www.meteoinfo.cz/apple-touch-icon.png" alt="MI" style="width: 32px; height: 32px; object-fit: contain; border-radius: 6px;">
             <h1 style="margin: 0; font-size: 1.8rem; font-weight: 800; letter-spacing: -0.5px; white-space: nowrap;">
                 <span style="color: #38bdf8;">Meteo</span><span style="color: #38bdf8;">Info</span>
@@ -768,22 +768,22 @@ body.light-mode {
                 <span id="live-time" style="font-weight: bold; font-size: 1.2rem; color: #ffffff;">17:16:12</span>
                 <span style="color: #484f58;">|</span>
                 <span id="live-date" style="color: #8b949e;">5. 9. 2026</span>
-                <button class="o-webu-btn" onclick="window.location.href='https://meteoinfo-cz.github.io/web/o-webu/'">O webu</button>
+                <button class="o-webu-btn" onclick="window.location.href='https://www.meteoinfo.cz/o-webu/'">O webu</button>
                 <span style="color: #484f58;">|</span>
-                <button class="o-webu-btn" onclick="window.location.href='https://meteoinfo-cz.github.io/web/aktualizace/'">Aktualizace</button>
+                <button class="o-webu-btn" onclick="window.location.href='https://www.meteoinfo.cz/aktualizace/'">Aktualizace</button>
                 <span style="color: #484f58;">|</span>
                 <button class="o-webu-btn" id="btn-openet-denik" style="font-weight: bold; color: #38bdf8;" onclick="document.getElementById('okno-denik').classList.add('active')">📖 Meteo deník</button>
                 <span style="color: #484f58;">|</span>
-                <button class="o-webu-btn" onclick="window.location.href='https://meteoinfo-cz.github.io/web/clanky/'">📰 Články</button>
+                <button class="o-webu-btn" onclick="window.location.href='https://www.meteoinfo.cz/clanky/'">📰 Články</button>
             </div>
         </div>
     </div>
 
     <!-- PRAVÁ STRANA: Tlačítka (Radar, Měsíc, Téma, Sledovat) -->
     <div style="display: flex; gap: 8px; align-items: center; flex-shrink: 0;">
-        <a href="https://meteoinfo-cz.github.io/web/meteoradar/" class="header-btn" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 4px;">🛰️ Meteoradar</a>
+        <a href="https://www.meteoinfo.cz/meteoradar/" class="header-btn" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 4px;">🛰️ Meteoradar</a>
         
-        <a id="moon-trigger-btn" href="https://meteoinfo-cz.github.io/web/astro/" class="header-btn" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 4px;">Astro 🌓</a>
+        <a id="moon-trigger-btn" href="https://www.meteoinfo.cz/astro/" class="header-btn" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 4px;">Astro 🌓</a>
         
         <button id="theme-button" class="header-btn" onclick="toggleTheme()" style="font-size: 1.1rem; padding: 4px 10px;">🌙</button>
 
@@ -803,135 +803,134 @@ body.light-mode {
 </header>
 
                  <div class="grid-top">
-    <div class="card" style="gap: 15px;">
+            <div class="card" style="gap: 15px;">
     <!-- ======================================================= -->
     <!-- FINÁLNÍ A STABLE NAŠEPTÁVAČ MĚST WITH AUTOMATIC PRAHA    -->
     <!-- ======================================================= -->
-<div style="position: relative; width: 100%; margin-bottom: 10px; box-sizing: border-box;">
-    <input type="text" id="main-search" placeholder="🔍 Napiš město a vyber ze seznamu..." style="width: 100%; padding: 12px 15px; border: 2px solid var(--border-color); border-radius: 8px; background: var(--bg-color); color: var(--text-main); font-size: 16px; box-sizing: border-box; outline: none; transition: border-color 0.2s;">
-    
-    <div id="main-suggestions" style="position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-card); border: 2px solid var(--border-color); border-radius: 8px; max-height: 250px; overflow-y: auto; z-index: 9999; display: none; margin-top: 5px; box-shadow: 0 8px 16px rgba(0,0,0,0.2); box-sizing: border-box;"></div>
-</div>
+    <div style="position: relative; width: 100%; margin-bottom: 10px; box-sizing: border-box;">
+        <input type="text" id="main-search" placeholder="🔍 Vyhledat místo..." style="width: 100%; padding: 12px 15px; border: 2px solid var(--border-color); border-radius: 8px; background: var(--bg-color); color: var(--text-main); font-size: 16px; box-sizing: border-box; outline: none; transition: border-color 0.2s;">
+        
+        <!-- Plovoucí tabulka s výsledky vyhledávání -->
+        <div id="main-suggestions" style="position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-card); border: 2px solid var(--border-color); border-radius: 8px; max-height: 250px; overflow-y: auto; z-index: 9999; display: none; margin-top: 5px; box-shadow: 0 8px 16px rgba(0,0,0,0.2); box-sizing: border-box;"></div>
+    </div>
 
-<script>
+      <script>
 (function() {
-  // Pomocná funkce na odstranění diakritiky, mezer A POMLČEK z URL
-  function ocastiText(txt) {
-    return txt 
-      ? txt.toLowerCase()
-          .normalize("NFD")
-          .replace(/[\u0300-\u036f]/g, "")
-          .replace(/-/g, " ") // nahradí pomlčky z URL za mezery pro dvouslovná města
-          .trim() 
-      : "";
-  }
+  // === 1. NAČTENÍ MĚSTA Z URL ADRESY (?mesto=Olomouc nebo /olomouc/) ===
+  const urlParams = new URLSearchParams(window.location.search);
+  let urlMesto = urlParams.get('mesto');
 
-  // === 1. PARSOVÁNÍ A OKAMŽITÉ NAČTENÍ MĚSTA Z URL (BEZ ČEKÁNÍ NA DOM) ===
-  const pathSegments = window.location.pathname.split('/').filter(p => p && p !== 'web' && p !== 'index.html');
-  let urlMesto = pathSegments.length > 0 ? pathSegments[0] : null;
-
+  // Pokud není v otazníku (?mesto=...), zkusíme zjistit, zda není v cestě URL (např. /web/olomouc/)
   if (!urlMesto) {
-    const urlParams = new URLSearchParams(window.location.search);
-    urlMesto = urlParams.get('mesto');
+    const pathSegments = window.location.pathname.split('/').filter(p => p && p !== 'web' && p !== 'index.html');
+    if (pathSegments.length > 0) {
+      urlMesto = pathSegments[0]; // Vezme složku za /web/
+    }
   }
 
-  // Pokud je město v URL, pokusíme se ho hned aplikovat (pokud už máme pole mm, nebo počkáme na jeho dostupnost)
-  function aplikujUrlMesto() {
-    if (urlMesto && typeof mm !== 'undefined' && Array.isArray(mm)) {
-      const nasleMesto = mm.find(m => ocastiText(m.n) === ocastiText(urlMesto));
+  // Pokud jsme v URL našli název města
+  if (urlMesto) {
+    urlMesto = urlMesto.charAt(0).toUpperCase() + urlMesto.slice(1).toLowerCase();
 
+    // Najdeme město v databázi 'mm' podle názvu
+    if (typeof mm !== 'undefined') {
+      const nasleMesto = mm.find(m => m.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === urlMesto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""));
+      
       if (nasleMesto) {
-        if (typeof mName !== 'undefined') mName = nasleMesto.n;
-        if (typeof lat !== 'undefined') lat = nasleMesto.la;
-        if (typeof lon !== 'undefined') lon = nasleMesto.lo;
-        if (typeof sTemp !== 'undefined') sTemp = nasleMesto.t;
-
-        // Uložíme i do localStorage, aby to šablona měla jisté
         localStorage.setItem('defaultCityName', nasleMesto.n);
         localStorage.setItem('defaultCityLat', nasleMesto.la.toString());
         localStorage.setItem('defaultCityLon', nasleMesto.lo.toString());
         localStorage.setItem('defaultCityTemp', nasleMesto.t.toString());
-
-        // Aktualizace UI hned jak to jde
-        const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
-        if (chkBox) chkBox.checked = false;
-
-        if (typeof nactiPocasi === 'function') {
-          nactiPocasi(nasleMesto.la, nasleMesto.lo, nasleMesto.n);
-        } else if (typeof updateUI === 'function') {
-          updateUI();
-        } else {
-          const cityEl = document.getElementById('mesto-hlavni-nazev') || document.querySelector('h1') || document.getElementById('city-name');
-          if (cityEl) cityEl.textContent = nasleMesto.n;
-        }
-        return true;
+        mName = nasleMesto.n; lat = nasleMesto.la; lon = nasleMesto.lo; sTemp = nasleMesto.t;
       }
     }
-    return false;
   }
 
-  // Zkusíme aplikovat ihned (pokud je mm už načtené)
-  if (!aplikujUrlMesto()) {
-    // Pokud pole mm ještě není, zkusíme to hned po načtení DOM, ale před vykreslením zbytku
-    window.addEventListener('DOMContentLoaded', aplikujUrlMesto);
+  // --- KONTROLA PŘI STARTU STRÁNKY ---
+  const savedUserCity = localStorage.getItem('user_permanently_saved_home');
+  
+  if (sessionStorage.getItem('search_city_active') === 'true') {
+    window.addEventListener('DOMContentLoaded', () => {
+      const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
+      if (chkBox) chkBox.checked = false;
+      sessionStorage.removeItem('search_city_active');
+    });
+  } 
+  // Pokud NENÍ město zadané v URL a uživatel nemá uloženo vlastní, načte se Praha
+  else if (!urlMesto && savedUserCity !== 'true') {
+    localStorage.setItem('defaultCityName', 'Praha');
+    localStorage.setItem('defaultCityLat', '50.08');
+    localStorage.setItem('defaultCityLon', '14.42');
+    localStorage.setItem('defaultCityTemp', '22');
+    
+    mName = "Praha"; lat = 50.08; lon = 14.42; sTemp = 22;
+    
+    window.addEventListener('DOMContentLoaded', () => {
+      const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
+      if (chkBox) chkBox.checked = true;
+    });
   }
 
-  // === 2. FUNKČNOST VYHLEDÁVAČE / NAŠEPTÁVAČE ===
-  window.addEventListener('DOMContentLoaded', () => {
-    const input = document.getElementById('main-search');
-    const box = document.getElementById('main-suggestions');
+      // --- 2. SLEDOVÁNÍ ZMĚNY CHECKBOXU PRO TRVALÉ ULOŽENÍ VÝCHOZÍHO MĚSTA ---
+      window.addEventListener('DOMContentLoaded', () => {
+        const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
+        if (chkBox) {
+          chkBox.addEventListener('change', function() {
+            if (this.checked) {
+              // Pokud uživatel čtvereček zaškrtne sám, zablokujeme automatický návrat k Praze při F5
+              localStorage.setItem('user_permanently_saved_home', 'true');
+            } else {
+              // Pokud ho odškrtne, web se při F5 vrátí k Praze
+              localStorage.removeItem('user_permanently_saved_home');
+            }
+          });
+        }
 
-    if (!input || !box) return;
+        // --- 3. LOGIKA SAMOTNÉHO VYHLEDÁVÁNÍ MĚST ---
+        const mainSearch = document.getElementById('main-search');
+        const mainSuggestions = document.getElementById('main-suggestions');
+        if (!mainSearch || !mainSuggestions) return;
 
-    input.addEventListener('input', function() {
-      const dotaz = ocastiText(this.value);
-      box.innerHTML = '';
+        mainSearch.addEventListener('input', function(e) {
+          const text = e.target.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+          mainSuggestions.innerHTML = '';
+          if (text.length === 0) { mainSuggestions.style.display = 'none'; return; }
+          
+          const nalezenaMesta = mm.filter(m => m.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").startsWith(text));
+          if (nalezenaMesta.length > 0) {
+            mainSuggestions.style.display = 'block';
+            nalezenaMesta.forEach(mesta => {
+              const div = document.createElement('div'); div.innerText = mesta.n;
+              div.style.padding = '12px 15px'; div.style.cursor = 'pointer'; div.style.borderBottom = '1px solid var(--border-inner)'; div.style.color = 'var(--text-main)'; div.style.fontSize = '15px';
+              div.addEventListener('mouseenter', () => div.style.background = 'var(--border-color)');
+              div.addEventListener('mouseleave', () => div.style.background = 'transparent');
+              
+              // KLIKNUTÍ NA MĚSTO V SEZNAMU VYHLEDÁVAČE
+              div.addEventListener('click', () => {
+                // Aktivujeme režim vyhledaného města (odškrtne checkbox po reloadu)
+                sessionStorage.setItem('search_city_active', 'true');
+                
+                // Zapíšeme hodnoty vybraného města do paměti
+                localStorage.setItem('defaultCityName', mesta.n);
+                localStorage.setItem('defaultCityLat', mesta.la.toString());
+                localStorage.setItem('defaultCityLon', mesta.lo.toString());
+                localStorage.setItem('defaultCityTemp', mesta.t.toString());
 
-      if (dotaz.length < 1 || typeof mm === 'undefined') {
-        box.style.display = 'none';
-        return;
-      }
-
-      // Hledáme města začínající na zadaný text
-      const vysledky = mm
-        .filter(m => ocastiText(m.n).startsWith(dotaz))
-        .sort((a, b) => a.n.localeCompare(b.n, 'cs'))
-        .slice(0, 10);
-
-      if (vysledky.length === 0) {
-        box.style.display = 'none';
-        return;
-      }
-
-      vysledky.forEach(m => {
-        const div = document.createElement('div');
-        div.textContent = m.n;
-        div.style.padding = '10px 15px';
-        div.style.cursor = 'pointer';
-        div.style.borderBottom = '1px solid var(--border-color)';
-        div.style.color = 'var(--text-main)';
-
-        // Po kliknutí přesměrujeme na URL složku města (zachováváme vaše /web/)
-        div.addEventListener('click', () => {
-          const urlSlug = ocastiText(m.n).replace(/\s+/g, '-');
-          window.location.href = `/web/${urlSlug}/`;
+                mainSearch.value = '';
+                mainSuggestions.style.display = 'none';
+                
+                // Restartujeme stránku pro 100% načtení čistých dat z API
+                location.reload();
+              });
+              mainSuggestions.appendChild(div);
+            });
+          } else { mainSuggestions.style.display = 'none'; }
         });
 
-        box.appendChild(div);
+        document.addEventListener('click', function(e) { if (e.target !== mainSearch && e.target !== mainSuggestions) mainSuggestions.style.display = 'none'; });
       });
-
-      box.style.display = 'block';
-    });
-
-    // Zavření našeptávače při kliknutí mimo
-    document.addEventListener('click', (e) => {
-      if (!input.contains(e.target) && !box.contains(e.target)) {
-        box.style.display = 'none';
-      }
-    });
-  });
-})();
-</script>
+    })();
+    </script>
                <div style="text-align: center; position: relative;">
                   <h2 id="mesto-hlavni-nazev" style="margin: 0 0 5px 0; font-size: 1.4rem; font-weight: bold; display: inline-block;">---</h2>
                   <div id="teplota-aktualni" style="font-size: 3.5rem; font-weight: bold; margin: 5px 0; line-height: 1;">---°C</div>
@@ -1019,7 +1018,7 @@ body.light-mode {
 
   <!-- Tlačítko zobrazení všech pranostik -->
   <div style="display: flex; justify-content: flex-end; margin-top: 5px;">
-    <a href="https://meteoinfo-cz.github.io/web/pranostiky/" class="tlacitko-pranostiky" style="border: none; padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; text-decoration: none; transition: all 0.3s ease;">
+    <a href="https://www.meteoinfo.cz/pranostiky/" class="tlacitko-pranostiky" style="border: none; padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; text-decoration: none; transition: all 0.3s ease;">
       Zobrazit všechny pranostiky
     </a>
   </div>
