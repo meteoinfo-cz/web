@@ -4,7 +4,7 @@
 <script defer src="https://cloud.umami.is/script.js" data-website-id="19d1e1d0-e930-4394-a845-1b7b70261544"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blíží se výrazné zatmění Měsíce - MeteoInfo</title>
+    <title>Bleskové zprávy - MeteoInfo</title>
 <link rel="icon" href="/favicon.ico" type="image/x-icon">
 <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192x192.png">
 <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512x512.png">
@@ -12,7 +12,6 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 <link rel="manifest" href="/manifest.json">
-<meta name="robots" content="max-image-preview:large">
     
 <style>
         :root {
@@ -605,8 +604,8 @@ body.light-mode {
     <!-- LEVÁ STRANA: Logo a ovládací prvky pohromadě -->
     <div style="display: flex; align-items: center; gap: 25px; flex-wrap: wrap;">
         
-        <a href="https://www.meteoinfo.cz" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
-            <img src="../../apple-touch-icon.png" alt="MI" style="width: 32px; height: 32px; object-fit: contain; border-radius: 6px;">
+        <a href="https://meteoinfo-cz.github.io/web/" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
+            <img src="../apple-touch-icon.png" alt="MI" style="width: 32px; height: 32px; object-fit: contain; border-radius: 6px;">
             <h1 style="margin: 0; font-size: 1.8rem; font-weight: 800; letter-spacing: -0.5px; white-space: nowrap;">
                 <span style="color: #38bdf8;">Meteo</span><span style="color: #38bdf8;">Info</span>
             </h1>
@@ -630,22 +629,22 @@ body.light-mode {
                 <span id="live-time" style="font-weight: bold; font-size: 1.2rem; color: #ffffff;">17:16:12</span>
                 <span style="color: #484f58;">|</span>
                 <span id="live-date" style="color: #8b949e;">5. 9. 2026</span>
-                <button class="o-webu-btn" onclick="window.location.href='https://www.meteoinfo.cz/o-webu/'">O webu</button>
+                <button class="o-webu-btn" onclick="window.location.href='https://meteoinfo-cz.github.io/web/o-webu/'">O webu</button>
                 <span style="color: #484f58;">|</span>
-                <button class="o-webu-btn" onclick="window.location.href='https://www.meteoinfo.cz/aktualizace/'">Aktualizace</button>
+                <button class="o-webu-btn" onclick="window.location.href='https://meteoinfo-cz.github.io/web/aktualizace/'">Aktualizace</button>
                 <span style="color: #484f58;">|</span>
                 <button class="o-webu-btn" id="btn-openet-denik" style="font-weight: bold; color: #38bdf8;" onclick="document.getElementById('okno-denik').classList.add('active')">📖 Meteo deník</button>
                 <span style="color: #484f58;">|</span>
-                <button class="o-webu-btn" onclick="window.location.href='https://www.meteoinfo.cz/clanky/'">📰 Články</button>
+                <button class="o-webu-btn" onclick="window.location.href='https://meteoinfo-cz.github.io/web/clanky/'">📰 Články</button>
             </div>
         </div>
     </div>
 
     <!-- PRAVÁ STRANA: Tlačítka (Radar, Měsíc, Téma, Sledovat) -->
     <div style="display: flex; gap: 8px; align-items: center; flex-shrink: 0;">
-        <a href="https://www.meteoinfo.cz/meteoradar/" class="header-btn" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 4px;">🛰️ Meteoradar</a>
+        <a href="https://meteoinfo-cz.github.io/web/meteoradar/" class="header-btn" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 4px;">🛰️ Meteoradar</a>
         
-        <a id="moon-trigger-btn" href="https://www.meteoinfo.cz/astro/" class="header-btn" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 4px;">Astro 🌓</a>
+        <a id="moon-trigger-btn" href="https://meteoinfo-cz.github.io/web/astro/" class="header-btn" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 4px;">Astro 🌓</a>
         
         <button id="theme-button" class="header-btn" onclick="toggleTheme()" style="font-size: 1.1rem; padding: 4px 10px;">🌙</button>
 
@@ -664,93 +663,10 @@ body.light-mode {
 
 </header>
 
-<!-- CELÝ ČLÁNEK PŘÍMO NA STRÁNCE -->
-<main class="card" style="margin-top: 20px; background: var(--bg-card); border: 1px solid var(--border-inner); border-radius: 12px; padding: 35px;">
-    <h2 style="font-size: 2rem; color: var(--text-accent); margin-top: 0; margin-bottom: 10px;">Blíží se výrazné zatmění Měsíce</h2>
-    <div style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 30px;">
-        📅 22. srpna 2026<br>
-        <span style="font-size: 1rem; opacity: 1;">Autor: Tadeas</span>
-    </div>
-
-    <p style="margin-bottom: 20px; font-size: 1.05rem;">
-        Už za necelý týden nastane v Česku a po celém světě zatmění Měsíce. Jelikož minulý rok jsme mohli vidět úplné zatmění Měsíce, tak letos to bude pouze částečné. I přesto ale bude zakryto stínem naší planety až 93% Měsíce.
-    </p>
-
-    <!-- OBRÁZEK MĚSÍCE -->
-    <div style="text-align: center; margin: 30px 0;">
-        <div style="display: inline-block; max-width: 80%; width: 100%; border: 1px solid var(--border-inner); border-radius: 10px; overflow: hidden; background: var(--bg-body); text-align: left;">
-            <img src="../obrazky/mesic.jpg" width="1400" height="933" alt="Ilustrační foto zatmění Měsíce" style="width: 100%; height: auto; display: block;">
-            <div style="padding: 10px 15px; font-size: 0.85rem; color: var(--text-muted);">
-                Ilustrační pohled na Měsíc.
-            </div>
-        </div>
-    </div>
-
-    <p style="margin-bottom: 20px; font-size: 1.05rem;">
-        Zatímco minulý rok jsme mohli pozorovat zatmění Měsíce po západu Slunce, tak letos to bude naopak a zatmění budeme moci sledovat před východem Slunce.
-    </p>
-
-    <p style="margin-bottom: 20px; font-size: 1.05rem;">
-        Připomeňme si, že zatmění Měsíce vzniká tehdy, když je Měsíc ve fázi úplňku a Slunce, Země a Měsíc, se nacházejí v jedné přímce a sluneční záření nedopadá na Měsíc (tedy zakryjeme ho my naší planetou a vytvoříme stín na Měsíci).
-    </p>
-
-    <p style="margin-bottom: 20px; font-size: 1.05rem;">
-        Zatmění Měsíce začne v pátek 28.8.2026 ve 4:33 SELČ, kdy Měsíc začne vcházet do zemského stínu. Maximální fáze nastane v 6:12 SELČ, kdy bude zakryto až 93% Měsíce.
-    </p>
-
-    <p style="margin-bottom: 20px; font-size: 1.05rem;">
-        Zatmění Měsíce budeme moci pozorovat nad jihozápadním obzorem, kde bude i postupně zapadat. Například ale v Praze už bude Měsíc pod obzorem v 6:17 SELČ. Na některých místech (například v Opavě) už bude Měsíc zapadat v 6:02 SELČ a maximální fáze zde bude probíhat pod obzorem.
-    </p>
-
-    <!-- MAPA ZÁPADU MĚSÍCE -->
-    <div style="text-align: center; margin: 30px 0;">
-        <div style="display: inline-block; max-width: 80%; width: 100%; border: 1px solid var(--border-inner); border-radius: 10px; overflow: hidden; background: var(--bg-body); text-align: left;">
-            <img src="../obrazky/zapad-mesic.jpg" width="740" height="527" alt="Mapa západů Měsíce pro hlavní města" style="width: 100%; height: auto; display: block;">
-            <div style="padding: 10px 15px; font-size: 0.85rem; color: var(--text-muted);">
-                Mapa západů Měsíce. Hlavně ve východní polovině bude bohužel probíhat maximum pod obzorem.
-            </div>
-        </div>
-    </div>
-
-    <p style="margin-bottom: 20px; font-size: 1.05rem;">
-        Oproti zatmění Slunce, kde je potřeba speciální vybavení na pozorování, není na zatmění Měsíce potřeba žádné vybavení. Můžete úkaz pozorovat pouhým okem. Pozorování si ale můžete i vylepšit, například vzít si menší dalekohled.
-    </p>
-
-    <p style="margin-bottom: 20px; font-size: 1.05rem;">
-        Je ale potřeba si najít místo, kde bude nenarušený výhled na jihozápadní obzor, protože zatmění Měsíce se bude konat těsně nad obzorem. Doporučuji vyjet na vyvýšená místa anebo na hory.
-    </p>
-
-    <p style="margin-bottom: 20px; font-size: 1.05rem;">
-        Také dost záleží, jestli nám pozorování dovolí počasí. Zatím to vypadá, že nejvíce oblačnosti bude na západě Česka a na východě by na některých místech mohla panovat i vysoká oblačnost. Předpovědi se ale mohou ještě hodně měnit.
-    </p>
-
-    <!-- DOLNÍ ŘÁDEK: Zpět vlevo + Nadpis a tlačítka vpravo -->
-<div style="margin-top: 40px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 20px;">
-    <!-- Zpět na seznam -->
-    <div>
-        <a href="https://www.meteoinfo.cz/clanky/" style="color: var(--text-accent); text-decoration: none; font-weight: bold;">← Zpět na seznam článků</a>
-    </div>
-
-    <!-- Pravá strana: Nadpis + tlačítka -->
-    <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
-        <!-- Ztučněný text nad tlačítky -->
-        <div style="font-size: 0.9rem; font-weight: 800; color: var(--text-muted, #666); text-transform: uppercase; letter-spacing: 0.5px;">
-            Sdílej tento článek!
-        </div>
-
-        <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
-    <a href="https://www.facebook.com/sharer/sharer.php?u=https://www.meteoinfo.cz/clanky/blizi-se-zatmeni-mesice-22-srpna-2026/" target="_blank" id="share-fb" style="background: var(--bg-main, #f1f3f5); border: 1px solid var(--border-inner, #dcedf2); padding: 6px 12px; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 700; color: #1877F2; display: inline-flex; align-items: center; gap: 5px;">
-    📘 Facebook
-</a>
-
-    <a href="https://api.whatsapp.com/send?text=Přečti%20si%20tento%20článek%20na%20MeteoInfo!%20https://www.meteoinfo.cz/clanky/blizi-se-zatmeni-mesice-22-srpna-2026/" target="_blank" style="background: var(--bg-main, #f1f3f5); border: 1px solid var(--border-inner, #dcedf2); padding: 6px 12px; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 700; color: #25d366; display: inline-flex; align-items: center; gap: 5px;">
-    💬 WhatsApp
-</a>
-
-    <a href="https://twitter.com/intent/tweet?text=Přečti%20si%20tento%20článek%20na%20MeteoInfo!&url=https://www.meteoinfo.cz/clanky/blizi-se-zatmeni-mesice-22-srpna-2026/" target="_blank" style="background: var(--bg-main, #f1f3f5); border: 1px solid var(--border-inner, #dcedf2); padding: 6px 12px; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 700; color: var(--text-accent, #000); display: inline-flex; align-items: center; gap: 5px;">
-    𝕏 X
-</a>
-</div>
+<!-- OBSAH STRÁNKY S ČLÁNKY -->
+<main class="card" style="margin-top: 20px;">
+    <h2 style="font-size: 2rem; color: var(--text-accent);">📰 Bleskové zprávy</h2>
+    <p>Zde budou vycházet krátké a rychlé informativní zprávy o aktuálním vývoji počasí a mimořádných jevech.</p>
 
 <!-- VELKÉ OKNO METEO DENÍKU S ČISTOU TABULKOU -->
 <script>
