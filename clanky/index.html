@@ -638,7 +638,7 @@ body.light-mode {
                 <span style="color: #484f58;">|</span>
                 <button class="o-webu-btn" onclick="window.location.href='https://www.meteoinfo.cz/aktualizace/'">Aktualizace</button>
                 <span style="color: #484f58;">|</span>
-                <button class="o-webu-btn" id="btn-openet-denik" style="font-weight: bold; color: #38bdf8;" onclick="document.getElementById('okno-denik').classList.add('active')">📖 Meteo deník</button>
+                <button class="o-webu-btn" style="font-weight: bold; color: #38bdf8;" onclick="window.location.href='https://www.meteoinfo.cz/meteo-denik/'">📖 Meteo deník</button>
                 <span style="color: #484f58;">|</span>
                 <button class="o-webu-btn" onclick="window.location.href='https://www.meteoinfo.cz/clanky/'">📰 Články</button>
             </div>
@@ -668,335 +668,233 @@ body.light-mode {
 
 </header>
 
-        <!-- OBSAH STRÁNKY S ČLÁNKY -->
+<!-- OBSAH STRÁNKY S ČLÁNKY -->
 <main class="card" style="margin-top: 20px;">
     <h2 style="font-size: 2rem; color: var(--text-accent);">📰 Články a novinky</h2>
     <p>V této sekci budou psány různé články a novinky o počasí, astronomii a dalším.</p>
 
-<!-- NOVÝ ČLÁNEK O HURIKÁNU -->
-<div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner); padding: 20px; border-radius: 12px;">
-    <span style="color: var(--text-muted); font-size: 0.85rem;">📅 10. října 2026</span>
-    <h3 style="margin: 10px 0; font-size: 1.4rem;">
-        <a href="hurikan-simon-v-mexiku-10-rijna-2026/" style="color: var(--text-accent); text-decoration: none;">Pobřeží Mexika v ohrožení: Hurikán Simon zesílil na 4. kategorii</a>
-    </h3>
-    <p style="color: var(--text-main); margin-bottom: 15px;">
-      Hurikán Simon v posledních hodinách výrazně zesílil a dosáhl 4. kategorie. Nyní míří na jihozápadní pobřeží Mexika...
-    </p>
-    <a href="hurikan-simon-v-mexiku-10-rijna-2026/" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek &rarr;</a>
-</div>
-
-<!-- NOVÝ ČLÁNEK O HURIKÁNU -->
-<div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner); padding: 20px; border-radius: 12px;">
-    <span style="color: var(--text-muted); font-size: 0.85rem;">📅 09. října 2026</span>
-    <h3 style="margin: 10px 0; font-size: 1.4rem;">
-        <a href="hurikan-isaias-zasahne-usa-9-rijna-2026/" style="color: var(--text-accent); text-decoration: none;">Silný hurikán Isaias v následujících hodinách zasáhne USA. Hrozí velké škody a evakuace</a>
-    </h3>
-    <p style="color: var(--text-main); margin-bottom: 15px;">
-      Jižně od USA se nachází hurikán Isaias. Za posledních pár hodin rychle postoupil dále na server a začíná zasahovat USA...
-    </p>
-    <a href="hurikan-isaias-zasahne-usa-9-rijna-2026/" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek &rarr;</a>
-</div>
-
-<!-- NOVÝ ČLÁNEK O STUDENÉ FRONTĚ -->
-<div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner); padding: 20px; border-radius: 12px;">
-    <span style="color: var(--text-muted); font-size: 0.85rem;">📅 07. října 2026</span>
-    <h3 style="margin: 10px 0; font-size: 1.4rem;">
-        <a href="prejde-vyrazna-studena-fronta-7-rijna-2026/" style="color: var(--text-accent); text-decoration: none;">Prudký zlom v počasí: Přes Česko přejde studená fronta, teploty klesnou až o 10 °C</a>
-    </h3>
-    <p style="color: var(--text-main); margin-bottom: 15px;">
-      Po slunečném a teplém začátku týdne k nám do Česka pronikne studená fronta a chladnější vzduch od severozápadu. Také zaprší a ojediněle i zabouří...
-    </p>
-    <a href="prejde-vyrazna-studena-fronta-7-rijna-2026/" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek &rarr;</a>
-</div>
-
-<!-- NOVÝ ČLÁNEK O HURIKÁNU -->
-<div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner); padding: 20px; border-radius: 12px;">
-    <span style="color: var(--text-muted); font-size: 0.85rem;">📅 26. září 2026</span>
-    <h3 style="margin: 10px 0; font-size: 1.4rem;">
-        <a href="mexiko-zasahne-hurikan-polo-26-zari-2026/" style="color: var(--text-accent); text-decoration: none;">Na Mexiko míří velmi silný hurikán Polo</a>
-    </h3>
-    <p style="color: var(--text-main); margin-bottom: 15px;">
-      Na Mexiko míří hurikán Polo. Tento hurikán dosahuje až 5. nejsilnější kategorie...
-    </p>
-    <a href="mexiko-zasahne-hurikan-polo-26-zari-2026/" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek &rarr;</a>
-</div>
-
-<!-- NOVÝ ČLÁNEK O HURIKÁNU -->
-<div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner); padding: 20px; border-radius: 12px;">
-    <span style="color: var(--text-muted); font-size: 0.85rem;">📅 26. září 2026</span>
-    <h3 style="margin: 10px 0; font-size: 1.4rem;">
-        <a href="u-havaje-radi-hurikan-26-zari-2026/" style="color: var(--text-accent); text-decoration: none;">Jižně od Havaje řádí velmi silný hurikán Nolo</a>
-    </h3>
-    <p style="color: var(--text-main); margin-bottom: 15px;">
-      Jižně od Havaje se nyní nachází hurikán. Dosahuje až 4. kategorie...
-    </p>
-    <a href="u-havaje-radi-hurikan-26-zari-2026/" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek &rarr;</a>
-</div>
-
-<!-- NOVÝ ČLÁNEK O CHLADNU -->
-<div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner); padding: 20px; border-radius: 12px;">
-    <span style="color: var(--text-muted); font-size: 0.85rem;">📅 23. září 2026</span>
-    <h3 style="margin: 10px 0; font-size: 1.4rem;">
-        <a href="dneska-bylo-velmi-chladno-23-zari-2026/" style="color: var(--text-accent); text-decoration: none;">Dnešní ráno bylo hlavně na západě Čech velmi chladné</a>
-    </h3>
-    <p style="color: var(--text-main); margin-bottom: 15px;">
-      Dnešní ráno bylo na mnoha místech velmi chladné. Hlavně na západě Čech, kde dokonce i mrzlo...
-    </p>
-    <a href="dneska-bylo-velmi-chladno-23-zari-2026/" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek &rarr;</a>
-</div>
-
-<!-- NOVÝ ČLÁNEK O SNĚHU -->
-<div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner); padding: 20px; border-radius: 12px;">
-    <span style="color: var(--text-muted); font-size: 0.85rem;">📅 22. září 2026</span>
-    <h3 style="margin: 10px 0; font-size: 1.4rem;">
-        <a href="ve-vysokych-tatrach-nasnezilo-22-zari-2026/" style="color: var(--text-accent); text-decoration: none;">Ve Vysokých Tatrách nasněžilo, napadlo kolem 20 cm sněhu</a>
-    </h3>
-    <p style="color: var(--text-main); margin-bottom: 15px;">
-       Do Vysokých Tater dorazil první sníh od léta. A to dokonce ještě před začátkem astronomického podzimu...
-    </p>
-    <a href="ve-vysokych-tatrach-nasnezilo-22-zari-2026/" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek &rarr;</a>
-</div>
-
-<!-- NOVÝ ČLÁNEK O PODZIMU -->
-<div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner); padding: 20px; border-radius: 12px;">
-    <span style="color: var(--text-muted); font-size: 0.85rem;">📅 22. září 2026</span>
-    <h3 style="margin: 10px 0; font-size: 1.4rem;">
-        <a href="podzimni-pocasi-pak-otepleni-22-zari-2026/" style="color: var(--text-accent); text-decoration: none;">Podzimní počasí dorazilo, čekají nás stále chladná rána, poté oteplení</a>
-    </h3>
-    <p style="color: var(--text-main); margin-bottom: 15px;">
-       V Česku v posledních dnech panuje proměnlivé a převážně chladné počasí. Už na začátku tohoto týdne bylo větrno a chladno...
-    </p>
-    <a href="podzimni-pocasi-pak-otepleni-22-zari-2026/" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek &rarr;</a>
-</div>
-
-<!-- NOVÝ ČLÁNEK O TAJFUNU V JAPONSKU -->
-<div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner); padding: 20px; border-radius: 12px;">
-    <span style="color: var(--text-muted); font-size: 0.85rem;">📅 18. září 2026</span>
-    <h3 style="margin: 10px 0; font-size: 1.4rem;">
-        <a href="tokio-zasahne-tajfun-dujuan-18-zari-2026/" style="color: var(--text-accent); text-decoration: none;">Na Japonsko míří tajfun Dujuan, Tokio zasáhnou extrémní lijáky a silný vítr</a>
-    </h3>
-    <p style="color: var(--text-main); margin-bottom: 15px;">
-        Na Japonsko se žene tajfun Dujuan. Ten hlavně zasáhne Tokio a přinese hlavně velmi silný vítr a přívalové lijáky...
-    </p>
-    <a href="tokio-zasahne-tajfun-dujuan-18-zari-2026/" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek &rarr;</a>
-</div>
-
-<!-- NOVÝ ČLÁNEK O BOUŘKÁCH A STUDENÉ FRONTĚ -->
-<div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner); padding: 20px; border-radius: 12px;">
-    <span style="color: var(--text-muted); font-size: 0.85rem;">📅 17. září 2026</span>
-    <h3 style="margin: 10px 0; font-size: 1.4rem;">
-        <a href="zaprselo-a-byly-bourky-17-zari-2026/" style="color: var(--text-accent); text-decoration: none;">Na většině území zapršelo, nechyběly ani bouřky</a>
-    </h3>
-    <p style="color: var(--text-main); margin-bottom: 15px;">
-        Včera přes Česko přešla studená fronta. Přinesla srážky a nechyběly ani bouřky...
-    </p>
-    <a href="zaprselo-a-byly-bourky-17-zari-2026/" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek &rarr;</a>
-</div>
-
-<!-- NOVÝ ČLÁNEK O BOUŘKÁCH A STUDENÉ FRONTĚ -->
-<div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner); padding: 20px; border-radius: 12px;">
-    <span style="color: var(--text-muted); font-size: 0.85rem;">📅 15. září 2026</span>
-    <h3 style="margin: 10px 0; font-size: 1.4rem;">
-        <a href="studena-fronta-s-bourkami-15-zari-2026/" style="color: var(--text-accent); text-decoration: none;">Zítra přes Česko přejde studená fronta s bouřkami</a>
-    </h3>
-    <p style="color: var(--text-main); margin-bottom: 15px;">
-        Zítra začne přes Česko v pozdějších odpoledních hodinách přecházet studená fronta. Nebudou chybět ani srážky a bouřky...
-    </p>
-    <a href="studena-fronta-s-bourkami-15-zari-2026/" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek &rarr;</a>
-</div>
-
-<!-- NOVÝ ČLÁNEK O OCHLAZENÍ A DEŠTI -->
-<div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner); padding: 20px; border-radius: 12px;">
-    <span style="color: var(--text-muted); font-size: 0.85rem;">📅 11. září 2026</span>
-    <h3 style="margin: 10px 0; font-size: 1.4rem;">
-        <a href="ochladilo-se-a-zaprselo-11-zari-2026/" style="color: var(--text-accent); text-decoration: none;">Ochladilo se a také zapršelo</a>
-    </h3>
-    <p style="color: var(--text-main); margin-bottom: 15px;">
-        Po úterních a středečních vedrech přešla od západu studená fronta. Srazila teploty a přinesla také déšť...
-    </p>
-    <a href="ochladilo-se-a-zaprselo-11-zari-2026/" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek &rarr;</a>
-</div>
-
-<!-- NOVÝ ČLÁNEK O EXTRÉMNÍCH BOUŘKÁCH -->
-<div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner); padding: 20px; border-radius: 12px;">
-    <span style="color: var(--text-muted); font-size: 0.85rem;">📅 09. září 2026</span>
-    <h3 style="margin: 10px 0; font-size: 1.4rem;">
-        <a href="hrozi-extremne-silne-bourky-9-zari-2026/" style="color: var(--text-accent); text-decoration: none;">Slovinsko a Chorvatsko zasáhnou až extrémně silné bouřky</a>
-    </h3>
-    <p style="color: var(--text-main); margin-bottom: 15px;">
-        Zítra ve Slovinsku a v Chorvatsku (převážně v její severozápadní části) hrozí velmi nebezpečné bouřky. Hlavním rizikem budou velmi silné lijáky a obrovské kroupy...
-    </p>
-    <a href="hrozi-extremne-silne-bourky-9-zari-2026/" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek &rarr;</a>
-</div>
-
-<!-- NOVÝ ČLÁNEK O STUDENÉ FRONTĚ -->
-<div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner); padding: 20px; border-radius: 12px;">
-    <span style="color: var(--text-muted); font-size: 0.85rem;">📅 07. září 2026</span>
-    <h3 style="margin: 10px 0; font-size: 1.4rem;">
-        <a href="zitra-otepleni-pozitri-ochlazeni-7-zari-2026/" style="color: var(--text-accent); text-decoration: none;">Od zítřka oteplení, teploty dosáhnou i přes 30 °C, vzápětí ale dorazí studená fronta se srážkami</a>
-    </h3>
-    <p style="color: var(--text-main); margin-bottom: 15px;">
-        Česko čeká poměrně rozdílný týden. Zatímco v první polovině týdne budeme dosahovat i tropických teplot, v druhé polovině se výrazně ochladí a zaprší...
-    </p>
-    <a href="zitra-otepleni-pozitri-ochlazeni-7-zari-2026/" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek &rarr;</a>
-</div>
-
-<!-- NOVÝ ČLÁNEK O GLOBALNÍMU OTEPLOVÁNÍ -->
-<div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner); padding: 20px; border-radius: 12px;">
-    <span style="color: var(--text-muted); font-size: 0.85rem;">📅 04. září 2026</span>
-    <h3 style="margin: 10px 0; font-size: 1.4rem;">
-        <a href="hrozi-bourky-a-vitr-4-zari-2026/" style="color: var(--text-accent); text-decoration: none;">Na severu Čech hrozí bouřky se silnějšími nárazy větru</a>
-    </h3>
-    <p style="color: var(--text-main); margin-bottom: 15px;">
-        Dnes ve večerních hodinách dorazí od severozápadu na sever Čech bouřky. Budou přinášet zejména silnější nárazy větru...
-    </p>
-    <a href="hrozi-bourky-a-vitr-4-zari-2026/" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek &rarr;</a>
-</div>
-
-<!-- NOVÝ ČLÁNEK O GLOBALNÍMU OTEPLOVÁNÍ -->
-<div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner); padding: 20px; border-radius: 12px;">
-    <span style="color: var(--text-muted); font-size: 0.85rem;">📅 03. září 2026</span>
-    <h3 style="margin: 10px 0; font-size: 1.4rem;">
-        <a href="el-nino-mimoradne-sili-3-zari-2026/" style="color: var(--text-accent); text-decoration: none;">El Niño mimořádně sílí, blíží se „Super El Niño“</a>
-    </h3>
-    <p style="color: var(--text-main); margin-bottom: 15px;">
-        Světoví meteorologové a klimatologové v těchto dnech bijí na poplach. V rovníkové oblasti Tichého oceánu se začíná odehrávat fenomén, který v následujících měsících pravděpodobně přepíše mapu globálního počasí...
-    </p>
-    <a href="el-nino-mimoradne-sili-3-zari-2026/" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek &rarr;</a>
-</div>
-
-<!-- NOVÝ ČLÁNEK O DEŠTI VENTUSKY -->
-<div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner); padding: 20px; border-radius: 12px;">
-    <span style="color: var(--text-muted); font-size: 0.85rem;">📅 31. srpna 2026</span>
-    <h3 style="margin: 10px 0; font-size: 1.4rem;">
-        <a href="pocasi-na-zacatek-skoly-31-srpna-2026/" style="color: var(--text-accent); text-decoration: none;">Jak bude první školní den?</a>
-    </h3>
-    <p style="color: var(--text-main); margin-bottom: 15px;">
-        Prázdniny utekly jako voda a škola už klepe na dveře. A to doslova...
-    </p>
-    <a href="pocasi-na-zacatek-skoly-31-srpna-2026/" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek &rarr;</a>
-</div>
-
-<!-- NOVÝ ČLÁNEK O DEŠTI VENTUSKY -->
-<div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner); padding: 20px; border-radius: 12px;">
-    <span style="color: var(--text-muted); font-size: 0.85rem;">📅 30. srpna 2026</span>
-    <h3 style="margin: 10px 0; font-size: 1.4rem;">
-        <a href="studena-fronta-prinese-srazky-30-srpna-2026/" style="color: var(--text-accent); text-decoration: none;">Přes naše území přejde studená fronta, přinese srážky a bouřky</a>
-    </h3>
-    <p style="color: var(--text-main); margin-bottom: 15px;">
-        V zítřejších ranních hodinách začne přes Česko přecházet studená fronta. Na ní se objeví srážky a ojediněle také bouřky...
-    </p>
-    <a href="studena-fronta-prinese-srazky-30-srpna-2026/" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek &rarr;</a>
-</div>
-
-<!-- NOVÝ ČLÁNEK O DEŠTI -->
-<div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner); padding: 20px; border-radius: 12px;">
-    <span style="color: var(--text-muted); font-size: 0.85rem;">📅 29. srpna 2026</span>
-    <h3 style="margin: 10px 0; font-size: 1.4rem;">
-        <a href="zaprselo-po-celem-cesku-29-srpna-2026/" style="color: var(--text-accent); text-decoration: none;">Po delší době zapršelo po celém Česku, sucho na některých místech ale stále přetrvává</a>
-    </h3>
-    <p style="color: var(--text-main); margin-bottom: 15px;">
-        Během včerejšího dne na našem území začalo pršet. Předpovídány byly také velmi silné bouřky, které byly nakonec o něco slabší, než se očekávalo...
-    </p>
-    <a href="zaprselo-po-celem-cesku-29-srpna-2026/" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek &rarr;</a>
-</div>
-
-<!-- NOVÝ ČLÁNEK O VELMI SILNÝCH BOUŘKÁCH -->
-<div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner); padding: 20px; border-radius: 12px;">
-    <span style="color: var(--text-muted); font-size: 0.85rem;">📅 28. srpna 2026</span>
-    <h3 style="margin: 10px 0; font-size: 1.4rem;">
-        <a href="silne-bourky-a-supercely-28-srpna-2026/" style="color: var(--text-accent); text-decoration: none;">Dnes velmi silné bouřky, hrozí četné supercely</a>
-    </h3>
-    <p style="color: var(--text-main); margin-bottom: 15px;">
-        Máme tu další bouřkový den, který by mohl být, co se týče bouřek, nejintenzivnější v tomto roce. Hrozí totiž velmi silné bouřky a četné supercely...
-    </p>
-    <a href="silne-bourky-a-supercely-28-srpna-2026/" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek &rarr;</a>
-</div>
-
-<!-- NOVÝ ČLÁNEK O TAJFUNU -->
-<div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner); padding: 20px; border-radius: 12px;">
-    <span style="color: var(--text-muted); font-size: 0.85rem;">📅 27. srpna 2026</span>
-    <h3 style="margin: 10px 0; font-size: 1.4rem;">
-        <a href="tajfun-saudel-v-cine-27-srpna-2026/" style="color: var(--text-accent); text-decoration: none;">Na Čínu se řítí tajfun Saudel, na pobřeží hrozí nárazy až 150 km/h</a>
-    </h3>
-    <p style="color: var(--text-main); margin-bottom: 15px;">
-        Na jihovýchod Číny se řítí tajfun jménem Saudel. Už ji začíná ovlivňovat a na pobřeží jsou nyní nárazy větru okolo 80 km/h...
-    </p>
-    <a href="tajfun-saudel-v-cine-27-srpna-2026/" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek &rarr;</a>
-</div>
-
-<!-- NOVÝ ČLÁNEK O BOUŘKÁCH -->
-<div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner); padding: 20px; border-radius: 12px;">
-    <span style="color: var(--text-muted); font-size: 0.85rem;">📅 26. srpna 2026</span>
-    <h3 style="margin: 10px 0; font-size: 1.4rem;">
-        <a href="v-patek-silne-bourky-26-srpna-2026/" style="color: var(--text-accent); text-decoration: none;">V pátek dorazí další velmi silné bouřky s prudkými nárazy větru</a>
-    </h3>
-    <p style="color: var(--text-main); margin-bottom: 15px;">
-        Tento pátek na naše území dorazí studená fronta, která s sebou přinese ochlazení a další bouřky. Hlavně s prudkými nárazy větru...
-    </p>
-    <a href="v-patek-silne-bourky-26-srpna-2026/" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek &rarr;</a>
-</div>
-
-<!-- NOVÝ ČLÁNEK O TORNÁDU -->
-<div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner); padding: 20px; border-radius: 12px;">
-    <span style="color: var(--text-muted); font-size: 0.85rem;">📅 25. srpna 2026</span>
-    <h3 style="margin: 10px 0; font-size: 1.4rem;">
-        <a href="tornado-na-jihu-francie-25-srpna-2026/" style="color: var(--text-accent); text-decoration: none;">Na jihu Francie v obci Pomas udeřilo silné tornádo</a>
-    </h3>
-    <p style="color: var(--text-main); margin-bottom: 15px;">
-        V podvečerních hodinách se na jihu Francie začaly tvořit až extrémně silné bouřky, které přecházely i v supercely. Na jihu Francie i dokonce do tornáda...
-    </p>
-    <a href="tornado-na-jihu-francie-25-srpna-2026/" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek &rarr;</a>
-</div>
-
-<!-- NOVÝ ČLÁNEK O CHLADNÉM RÁNU -->
-<div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner); padding: 20px; border-radius: 12px;">
-    <span style="color: var(--text-muted); font-size: 0.85rem;">📅 23. srpna 2026</span>
-    <h3 style="margin: 10px 0; font-size: 1.4rem;">
-        <a href="dneska-bylo-chladne-rano-23-srpna-2026/" style="color: var(--text-accent); text-decoration: none;">Dneska bylo chladné ráno, na Šumavě i mrzlo</a>
-    </h3>
-    <p style="color: var(--text-main); margin-bottom: 15px;">
-        Po delší době k nám zavítalo chladné ráno. Třeba na Šumavě i mrzlo...
-    </p>
-    <a href="dneska-bylo-chladne-rano-23-srpna-2026/" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek &rarr;</a>
-</div>
-
-<!-- NOVÝ ČLÁNEK O ZATMĚNÍ MĚSÍCE -->
-<div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner); padding: 20px; border-radius: 12px;">
-    <span style="color: var(--text-muted); font-size: 0.85rem;">📅 22. srpna 2026</span>
-    <h3 style="margin: 10px 0; font-size: 1.4rem;">
-        <a href="blizi-se-zatmeni-mesice-22-srpna-2026/" style="color: var(--text-accent); text-decoration: none;">Blíží se výrazné zatmění Měsíce</a>
-    </h3>
-    <p style="color: var(--text-main); margin-bottom: 15px;">
-        Už za necelý týden nastane v Česku a po celém světě zatmění Měsíce. Jelikož minulý rok jsme mohli vidět úplné zatmění Měsíce, tak letos to bude pouze částečné...
-    </p>
-    <a href="blizi-se-zatmeni-mesice-22-srpna-2026/" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek →</a>
-</div>
-
-    <!-- NOVÝ ČLÁNEK O BOUŘKÁCH -->
-    <div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner);">
-        <span style="color: var(--text-muted); font-size: 0.85rem;">📅 21. srpna 2026</span>
-        <h3 style="margin: 10px 0; font-size: 1.4rem;">
-            <a href="hrozi-velmi-silne-bourky-21-srpna-2026/" style="color: var(--text-accent); text-decoration: none;">Hrozí až velmi silné bouřky, hlavním rizikem bude vítr a srážky</a>
-        </h3>
-        <p style="color: var(--text-main); margin-bottom: 15px;">
-            Česko opět čeká další bouřlivý den. Zatímco včera bouřky řádily hlavně na Moravě a ve Slezsku, tak dnes udeří hlavně ve středních Čechách a na Vysočině...
-        </p>
-        <a href="hrozi-velmi-silne-bourky-21-srpna-2026/" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek →</a>
+    <!-- Sem se dynamicky vygenerují články v mřížce -->
+    <div id="clanky-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 20px;">
+        Načítám články...
     </div>
 
-    <!-- STARŠÍ ČLÁNEK (DOLE) -->
-    <div class="asistent-box" style="margin-top: 15px; background: var(--bg-card); border: 1px solid var(--border-inner);">
-        <span style="color: var(--text-muted); font-size: 0.85rem;">📅 20. srpna 2026</span>
-        <h3 style="margin: 10px 0; font-size: 1.4rem;">
-            <a href="proc-tato-stranka-vznikla-20-srpna-2026/" style="color: var(--text-accent); text-decoration: none;">Jak a proč tato stránka vznikla?</a>
-        </h3>
-        <p style="color: var(--text-main); margin-bottom: 15px;">
-            Vítám vás v této sekci, kde budou psány články o počasí, astronomii a dalším. Přečtěte si, jak vznikl projekt MeteoInfo...
-        </p>
-        <a href="proc-tato-stranka-vznikla-20-srpna-2026/" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek →</a>
-    </div>
+    <!-- Stránkování -->
+    <div class="strankovani" id="strankovani" style="text-align: center; margin: 40px 0;"></div>
 </main>
+
+<script>
+    const seznamClanku = [
+        {
+            url: 'hurikan-simon-v-mexiku-10-rijna-2026/',
+            datum: '10. října 2026',
+            nadpis: 'Pobřeží Mexika v ohrožení: Hurikán Simon zesílil na 4. kategorii',
+            perex: 'Hurikán Simon v posledních hodinách výrazně zesílil a dosáhl 4. kategorie. Nyní míří na jihozápadní pobřeží Mexika...'
+        },
+        {
+            url: 'hurikan-isaias-zasahne-usa-9-rijna-2026/',
+            datum: '09. října 2026',
+            nadpis: 'Silný hurikán Isaias v následujících hodinách zasáhne USA. Hrozí velké škody a evakuace',
+            perex: 'Jižně od USA se nachází hurikán Isaias. Za posledních pár hodin rychle postoupil dále na server a začíná zasahovat USA...'
+        },
+        {
+            url: 'prejde-vyrazna-studena-fronta-7-rijna-2026/',
+            datum: '07. října 2026',
+            nadpis: 'Prudký zlom v počasí: Přes Česko přejde studená fronta, teploty klesnou až o 10 °C',
+            perex: 'Po slunečném a teplém začátku týdne k nám do Česka pronikne studená fronta a chladnější vzduch od severozápadu. Také zaprší a ojediněle i zabouří...'
+        },
+        {
+            url: 'mexiko-zasahne-hurikan-polo-26-zari-2026/',
+            datum: '26. září 2026',
+            nadpis: 'Na Mexiko míří velmi silný hurikán Polo',
+            perex: 'Na Mexiko míří hurikán Polo. Tento hurikán dosahuje až 5. nejsilnější kategorie...'
+        },
+        {
+            url: 'u-havaje-radi-hurikan-26-zari-2026/',
+            datum: '26. září 2026',
+            nadpis: 'Jižně od Havaje řádí velmi silný hurikán Nolo',
+            perex: 'Jižně od Havaje se nyní nachází hurikán. Dosahuje až 4. kategorie...'
+        },
+        {
+            url: 'dneska-bylo-velmi-chladno-23-zari-2026/',
+            datum: '23. září 2026',
+            nadpis: 'Dnešní ráno bylo hlavně na západě Čech velmi chladné',
+            perex: 'Dnešní ráno bylo na mnoha místech velmi chladné. Hlavně na západě Čech, kde dokonce i mrzlo...'
+        },
+        {
+            url: 've-vysokych-tatrach-nasnezilo-22-zari-2026/',
+            datum: '22. září 2026',
+            nadpis: 'Ve Vysokých Tatrách nasněžilo, napadlo kolem 20 cm sněhu',
+            perex: 'Do Vysokých Tater dorazil první sníh od léta. A to dokonce ještě před začátkem astronomického podzimu...'
+        },
+        {
+            url: 'podzimni-pocasi-pak-otepleni-22-zari-2026/',
+            datum: '22. září 2026',
+            nadpis: 'Podzimní počasí dorazilo, čekají nás stále chladná rána, poté oteplení',
+            perex: 'V Česku v posledních dnech panuje proměnlivé a převážně chladné počasí. Už na začátku tohoto týdne bylo větrno a chladno...'
+        },
+        {
+            url: 'tokio-zasahne-tajfun-dujuan-18-zari-2026/',
+            datum: '18. září 2026',
+            nadpis: 'Na Japonsko míří tajfun Dujuan, Tokio zasáhnou extrémní lijáky a silný vítr',
+            perex: 'Na Japonsko se žene tajfun Dujuan. Ten hlavně zasáhne Tokio a přinese hlavně velmi silný vítr a přívalové lijáky...'
+        },
+        {
+            url: 'zaprselo-a-byly-bourky-17-zari-2026/',
+            datum: '17. září 2026',
+            nadpis: 'Na většině území zapršelo, nechyběly ani bouřky',
+            perex: 'Včera přes Česko přešla studená fronta. Přinesla srážky a nechyběly ani bouřky...'
+        },
+        {
+            url: 'studena-fronta-s-bourkami-15-zari-2026/',
+            datum: '15. září 2026',
+            nadpis: 'Zítra přes Česko přejde studená fronta s bouřkami',
+            perex: 'Zítra začne přes Česko v pozdějších odpoledních hodinách přecházet studená fronta. Nebudou chybět ani srážky a bouřky...'
+        },
+        {
+            url: 'ochladilo-se-a-zaprselo-11-zari-2026/',
+            datum: '11. září 2026',
+            nadpis: 'Ochladilo se a také zapršelo',
+            perex: 'Po úterních a středečních vedrech přešla od západu studená fronta. Srazila teploty a přinesla také déšť...'
+        },
+        {
+            url: 'hrozi-extremne-silne-bourky-9-zari-2026/',
+            datum: '09. září 2026',
+            nadpis: 'Slovinsko a Chorvatsko zasáhnou až extrémně silné bouřky',
+            perex: 'Zítra ve Slovinsku a v Chorvatsku (převážně v její severozápadní části) hrozí velmi nebezpečné bouřky. Hlavním rizikem budou velmi silné lijáky a obrovské kroupy...'
+        },
+        {
+            url: 'zitra-otepleni-pozitri-ochlazeni-7-zari-2026/',
+            datum: '07. září 2026',
+            nadpis: 'Od zítřka oteplení, teploty dosáhnou i přes 30 °C, vzápětí ale dorazí studená fronta se srážkami',
+            perex: 'Česko čeká poměrně rozdílný týden. Zatímco v první polovině týdne budeme dosahovat i tropických teplot, v druhé polovině se výrazně ochladí a zaprší...'
+        },
+        {
+            url: 'hrozi-bourky-a-vitr-4-zari-2026/',
+            datum: '04. září 2026',
+            nadpis: 'Na severu Čech hrozí bouřky se silnějšími nárazy větru',
+            perex: 'Dnes ve večerních hodinách dorazí od severozápadu na sever Čech bouřky. Budou přinášet zejména silnější nárazy větru...'
+        },
+        {
+            url: 'el-nino-mimoradne-sili-3-zari-2026/',
+            datum: '03. září 2026',
+            nadpis: 'El Niño mimořádně sílí, blíží se „Super El Niño“',
+            perex: 'Světoví meteorologové a klimatologové v těchto dnech bijí na poplach. V rovníkové oblasti Tichého oceánu se začíná odehrávat fenomén, který v následujících měsících pravděpodobně přepíše mapu globálního počasí...'
+        },
+        {
+            url: 'pocasi-na-zacatek-skoly-31-srpna-2026/',
+            datum: '31. srpna 2026',
+            nadpis: 'Jak bude první školní den?',
+            perex: 'Prázdniny utekly jako voda a škola už klepe na dveře. A to doslova...'
+        },
+        {
+            url: 'studena-fronta-prinese-srazky-30-srpna-2026/',
+            datum: '30. srpna 2026',
+            nadpis: 'Přes naše území přejde studená fronta, přinese srážky a bouřky',
+            perex: 'V zítřejších ranních hodinách začne přes Česko přecházet studená fronta. Na ní se objeví srážky a ojediněle také bouřky...'
+        },
+        {
+            url: 'zaprselo-po-celem-cesku-29-srpna-2026/',
+            datum: '29. srpna 2026',
+            nadpis: 'Po delší době zapršelo po celém Česku, sucho na některých místech ale stále přetrvává',
+            perex: 'Během včerejšího dne na našem území začalo pršet. Předpovídány byly také velmi silné bouřky, které byly nakonec o něco slabší, než se očekávalo...'
+        },
+        {
+            url: 'silne-bourky-a-supercely-28-srpna-2026/',
+            datum: '28. srpna 2026',
+            nadpis: 'Dnes velmi silné bouřky, hrozí četné supercely',
+            perex: 'Máme tu další bouřkový den, který by mohl být, co se týče bouřek, nejintenzivnější v tomto roce. Hrozí totiž velmi silné bouřky a četné supercely...'
+        },
+        {
+            url: 'tajfun-saudel-v-cine-27-srpna-2026/',
+            datum: '27. srpna 2026',
+            nadpis: 'Na Čínu se řítí tajfun Saudel, na pobřeží hrozí nárazy až 150 km/h',
+            perex: 'Na jihovýchod Číny se řítí tajfun jménem Saudel. Už ji začíná ovlivňovat a na pobřeží jsou nyní nárazy větru okolo 80 km/h...'
+        },
+        {
+            url: 'v-patek-silne-bourky-26-srpna-2026/',
+            datum: '26. srpna 2026',
+            nadpis: 'V pátek dorazí další velmi silné bouřky s prudkými nárazy větru',
+            perex: 'Tento pátek na naše území dorazí studená fronta, která s sebou přinese ochlazení a další bouřky. Hlavně s prudkými nárazy větru...'
+        },
+        {
+            url: 'tornado-na-jihu-francie-25-srpna-2026/',
+            datum: '25. srpna 2026',
+            nadpis: 'Na jihu Francie v obci Pomas udeřilo silné tornádo',
+            perex: 'V podvečerních hodinách se na jihu Francie začaly tvořit až extrémně silné bouřky, které přecházely i v supercely. Na jihu Francie i dokonce do tornáda...'
+        },
+        {
+            url: 'dneska-bylo-chladne-rano-23-srpna-2026/',
+            datum: '23. srpna 2026',
+            nadpis: 'Dneska bylo chladné ráno, na Šumavě i mrzlo',
+            perex: 'Po delší době k nám zavítalo chladné ráno. Třeba na Šumavě i mrzlo...'
+        },
+        {
+            url: 'blizi-se-zatmeni-mesice-22-srpna-2026/',
+            datum: '22. srpna 2026',
+            nadpis: 'Blíží se výrazné zatmění Měsíce',
+            perex: 'Už za necelý týden nastane v Česku a po celém světě zatmění Měsíce. Jelikož minulý rok jsme mohli vidět úplné zatmění Měsíce, tak letos to bude pouze částečné...'
+        },
+        {
+            url: 'hrozi-velmi-silne-bourky-21-srpna-2026/',
+            datum: '21. srpna 2026',
+            nadpis: 'Hrozí až velmi silné bouřky, hlavním rizikem bude vítr a srážky',
+            perex: 'Česko opět čeká další bouřlivý den. Zatímco včera bouřky řádily hlavně na Moravě a ve Slezsku, tak dnes udeří hlavně ve středních Čechách a na Vysočině...'
+        },
+        {
+            url: 'proc-tato-stranka-vznikla-20-srpna-2026/',
+            datum: '20. srpna 2026',
+            nadpis: 'Jak a proč tato stránka vznikla?',
+            perex: 'Vítám vás v této sekci, kde budou psány články o počasí, astronomii a dalším. Přečtěte si, jak vznikl projekt MeteoInfo...'
+        }
+    ];
+
+    const clankuNaStranu = 6;
+    const urlParams = new URLSearchParams(window.location.search);
+    let aktualniStrana = parseInt(urlParams.get('strana')) || 1;
+
+    const celkemClanku = seznamClanku.length;
+    const celkemStran = Math.ceil(celkemClanku / clankuNaStranu);
+
+    if (aktualniStrana < 1) aktualniStrana = 1;
+    if (aktualniStrana > celkemStran && celkemStran > 0) aktualniStrana = celkemStran;
+
+    const start = (aktualniStrana - 1) * clankuNaStranu;
+    const aktualniClanky = seznamClanku.slice(start, start + clankuNaStranu);
+
+    let gridHtml = '';
+    if (aktualniClanky.length === 0) {
+        gridHtml = '<p style="color: var(--text-main);">Žádné články tu nejsou.</p>';
+    } else {
+        aktualniClanky.forEach(clanek => {
+            gridHtml += `
+            <div class="asistent-box" style="background: var(--bg-card); border: 1px solid var(--border-inner); padding: 20px; border-radius: 12px; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <span style="color: var(--text-muted); font-size: 0.85rem;">📅 ${clanek.datum}</span>
+                    <h3 style="margin: 10px 0; font-size: 1.4rem;">
+                        <a href="${clanek.url}" style="color: var(--text-accent); text-decoration: none;">${clanek.nadpis}</a>
+                    </h3>
+                    <p style="color: var(--text-main); margin-bottom: 15px;">${clanek.perex}</p>
+                </div>
+                <div>
+                    <a href="${clanek.url}" style="display: inline-block; background: var(--text-accent); color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Číst celý článek &rarr;</a>
+                </div>
+            </div>`;
+        });
+    }
+    document.getElementById('clanky-grid').innerHTML = gridHtml;
+
+    let paginationHtml = '';
+    if (celkemStran > 1) {
+        for (let i = 1; i <= celkemStran; i++) {
+            let aktivniStyl = (i === aktualniStrana) 
+                ? 'background: var(--text-accent); color: #fff; font-weight: bold;' 
+                : 'background: var(--bg-card); color: var(--text-main); border-color: var(--border-inner);';
+                
+            paginationHtml += `<a href="?strana=${i}" style="display: inline-block; padding: 10px 15px; margin: 0 5px; border: 1px solid #ccc; text-decoration: none; border-radius: 5px; ${aktivniStyl}">${i}</a>`;
+        }
+    }
+    document.getElementById('strankovani').innerHTML = paginationHtml;
+</script>
 
 <!-- VELKÉ OKNO METEO DENÍKU S ČISTOU TABULKOU -->
 <script>
