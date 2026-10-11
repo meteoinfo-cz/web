@@ -1534,6 +1534,90 @@ function toggleTheme() {
 <script>
     // 1. Zde si u fotek můžeš nastavit vlastní popisek, autor, datum a místo
     const detailyFotak = {
+        'fotka47': {
+            popisek: 'Galaxie v Andromedě (47)',
+            autor: 'Pavel Čalkovský',
+            datum: '26. 12. 2025',
+            misto: 'Rousínov'
+        },
+        'fotka46': {
+            popisek: 'Ranní červánky (46)',
+            autor: 'Vivi',
+            datum: '07. 10. 2026',
+            misto: 'Olomouc'
+        },
+        'fotka45': {
+            popisek: 'Vyhlídka do dálky a na oblačnost (45)',
+            autor: 'Wradam',
+            datum: '03. 07. 2026',
+            misto: 'Štramberk'
+        },
+        'fotka44': {
+            popisek: 'Západ Slunce (44)',
+            autor: 'Wradam',
+            datum: '13. 08. 2026',
+            misto: 'Olomouc'
+        },
+        'fotka43': {
+            popisek: 'Silná námraza (43)',
+            autor: 'RealStorm',
+            datum: '31. 12. 2024',
+            misto: 'Bílina'
+        },
+        'fotka42': {
+            popisek: 'Silná námraza (42)',
+            autor: 'RealStorm',
+            datum: '31. 12. 2024',
+            misto: 'Bílina'
+        },
+        'fotka41': {
+            popisek: 'Silná námraza (41)',
+            autor: 'RealStorm',
+            datum: '31. 12. 2024',
+            misto: 'Bílina'
+        },
+        'fotka40': {
+            popisek: 'Silná námraza (40)',
+            autor: 'RealStorm',
+            datum: '31. 12. 2024',
+            misto: 'Bílina'
+        },
+        'fotka39': {
+            popisek: 'Silná námraza (39)',
+            autor: 'RealStorm',
+            datum: '31. 12. 2024',
+            misto: 'Bílina'
+        },
+        'fotka38': {
+            popisek: 'Silná námraza (38)',
+            autor: 'RealStorm',
+            datum: '31. 12. 2024',
+            misto: 'Bílina'
+        },
+        'fotka37': {
+            popisek: 'Silná námraza (37)',
+            autor: 'RealStorm',
+            datum: '31. 12. 2024',
+            misto: 'Bílina'
+        },
+        'fotka36': {
+            popisek: 'Silná námraza (36)',
+            autor: 'RealStorm',
+            datum: '31. 12. 2024',
+            misto: 'Bílina'
+        },
+        'fotka35': {
+            popisek: 'Silná námraza (35)',
+            autor: 'RealStorm',
+            datum: '31. 12. 2024',
+            misto: 'Bílina'
+        },
+        'fotka34': {
+            popisek: 'Galaxie v Andromedě (34)',
+            autor: 'Pavel Čalkovský',
+            datum: '03. 10. 2026',
+            misto: 'Rousínov'
+        },
         'fotka33': {
             popisek: 'Galaxie v Andromedě (33)',
             autor: 'Pavel Čalkovský',
@@ -1736,7 +1820,7 @@ function toggleTheme() {
 
     // 2. Automaticky vytvoříme seznam všech složek od 1 do 33
     const slozky = [];
-    for (let i = 1; i <= 33; i++) {
+    for (let i = 1; i <= 47; i++) {
         let nazevSlozky = 'fotka' + i;
         
         let info = detailyFotak[nazevSlozky] || {
