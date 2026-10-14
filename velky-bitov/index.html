@@ -802,89 +802,98 @@ body.light-mode {
 
 </header>
 
-<div class="grid-top">
-  <div class="card" style="gap: 15px;">
+                 <div class="grid-top">
+    <div class="card" style="gap: 15px;">
     <!-- ======================================================= -->
-    <!-- JEDNOZNAČNĚ OPRAVENÝ SKRIPT PRO VYHLEDÁVÁNÍ A URL       -->
+    <!-- OPRAVENÝ SKRIPT PRO URL A VYHLEDÁVÁNÍ                   -->
     <!-- ======================================================= -->
     <div style="position: relative; width: 100%; margin-bottom: 10px; box-sizing: border-box;">
         <input type="text" id="main-search" placeholder="🔍 Vyhledat místo..." style="width: 100%; padding: 12px 15px; border: 2px solid var(--border-color); border-radius: 8px; background: var(--bg-color); color: var(--text-main); font-size: 16px; box-sizing: border-box; outline: none; transition: border-color 0.2s;">
         
+        <!-- Plovoucí tabulka s výsledky vyhledávání -->
         <div id="main-suggestions" style="position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-card); border: 2px solid var(--border-color); border-radius: 8px; max-height: 250px; overflow-y: auto; z-index: 9999; display: none; margin-top: 5px; box-shadow: 0 8px 16px rgba(0,0,0,0.2); box-sizing: border-box;"></div>
     </div>
 
     <script>
 (function() {
-  // Inicializace globálních proměnných
-  window.mName = window.mName || "Praha";
-  window.lat = window.lat || 50.08;
-  window.lon = window.lon || 14.42;
-  window.sTemp = window.sTemp || 22;
+  function initCitySearch() {
+    if (typeof mm === 'undefined' || !Array.isArray(mm)) return false;
 
-  function applyCity(m) {
-    localStorage.setItem('defaultCityName', m.n);
-    localStorage.setItem('defaultCityLat', m.la.toString());
-    localStorage.setItem('defaultCityLon', m.lo.toString());
-    localStorage.setItem('defaultCityTemp', m.t.toString());
-    
-    window.mName = m.n;
-    window.lat = m.la;
-    window.lon = m.lo;
-    window.sTemp = m.t;
-  }
+    // === 1. NAČTENÍ MĚSTA Z URL ADRESY (?mesto=Olomouc nebo /dlouha/) ===
+    const urlParams = new URLSearchParams(window.location.search);
+    let urlMesto = urlParams.get('mesto');
 
-  let cityApplied = false;
-
-  // 1. ZKUSÍME URL PARAMETR (?mesto=Praha)
-  const urlParams = new URLSearchParams(window.location.search);
-  let queryMesto = urlParams.get('mesto');
-
-  if (queryMesto && typeof mm !== 'undefined') {
-    const cleanQuery = queryMesto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
-    const found = mm.find(m => m.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === cleanQuery);
-    if (found) {
-      applyCity(found);
-      cityApplied = true;
-    }
-  }
-
-  // 2. PROHLEDÁME VŠECHNY ČÁSTI URL CESTY (např. /olomouc/, /predpoved/praha/)
-  if (!cityApplied && typeof mm !== 'undefined') {
-    const segments = window.location.pathname.split('/').filter(p => p && p !== 'web' && p !== 'index.html');
-    for (let seg of segments) {
-      const cleanSeg = seg.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
-      const foundSeg = mm.find(m => m.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === cleanSeg);
-      if (foundSeg) {
-        applyCity(foundSeg);
-        cityApplied = true;
-        break;
+    if (!urlMesto) {
+      const pathSegments = window.location.pathname.split('/').filter(p => p && p !== 'web' && p !== 'index.html');
+      if (pathSegments.length > 0) {
+        urlMesto = pathSegments[pathSegments.length - 1]; // Vezme poslední segment URL (např. 'dlouha')
       }
     }
-  }
 
-  // 3. POKUD NENÍ V URL, POUŽIJEME PAMĚŤ PROHLÍŽEČE (localStorage)
-  if (!cityApplied) {
-    const savedName = localStorage.getItem('defaultCityName');
-    const savedLat = localStorage.getItem('defaultCityLat');
-    const savedLon = localStorage.getItem('defaultCityLon');
-    const savedTemp = localStorage.getItem('defaultCityTemp');
+    let cityApplied = false;
 
-    if (savedName && savedLat && savedLon) {
-      window.mName = savedName;
-      window.lat = parseFloat(savedLat);
-      window.lon = parseFloat(savedLon);
-      window.sTemp = savedTemp ? parseFloat(savedTemp) : 22;
-      cityApplied = true;
+    if (urlMesto) {
+      const cleanUrlMesto = decodeURIComponent(urlMesto).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+      const nasleMesto = mm.find(m => m.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === cleanUrlMesto);
+      
+      if (nasleMesto) {
+        localStorage.setItem('defaultCityName', nasleMesto.n);
+        localStorage.setItem('defaultCityLat', nasleMesto.la.toString());
+        localStorage.setItem('defaultCityLon', nasleMesto.lo.toString());
+        localStorage.setItem('defaultCityTemp', nasleMesto.t.toString());
+        window.mName = nasleMesto.n; 
+        window.lat = nasleMesto.la; 
+        window.lon = nasleMesto.lo; 
+        window.sTemp = nasleMesto.t;
+        cityApplied = true;
+      }
     }
+
+    // --- KONTROLA PŘI STARTU STRÁNKY ---
+    const savedUserCity = localStorage.getItem('user_permanently_saved_home');
+    
+    if (sessionStorage.getItem('search_city_active') === 'true') {
+      const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
+      if (chkBox) chkBox.checked = false;
+      sessionStorage.removeItem('search_city_active');
+    } 
+    else if (!cityApplied && savedUserCity !== 'true' && !urlMesto) {
+      localStorage.setItem('defaultCityName', 'Praha');
+      localStorage.setItem('defaultCityLat', '50.08');
+      localStorage.setItem('defaultCityLon', '14.42');
+      localStorage.setItem('defaultCityTemp', '22');
+      
+      window.mName = "Praha"; window.lat = 50.08; window.lon = 14.42; window.sTemp = 22;
+      
+      const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
+      if (chkBox) chkBox.checked = true;
+    }
+
+    return true;
   }
 
-  // 4. KDYŽ NENÍ VŮBEC NIC, NASTAVÍME PRAHU
-  if (!cityApplied) {
-    applyCity({ n: "Praha", la: 50.08, lo: 14.42, t: 22 });
+  // Spustíme hned, nebo počkáme, až se pole mm načte
+  if (!initCitySearch()) {
+    let checkInterval = setInterval(() => {
+      if (initCitySearch()) {
+        clearInterval(checkInterval);
+      }
+    }, 50);
   }
 
-  // --- NAŠEPTÁVAČ A AKCE ---
+  // --- 2. SLEDOVÁNÍ ZMĚNY CHECKBOXU A VYHLEDÁVÁNÍ ---
   window.addEventListener('DOMContentLoaded', () => {
+    const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
+    if (chkBox) {
+      chkBox.addEventListener('change', function() {
+        if (this.checked) {
+          localStorage.setItem('user_permanently_saved_home', 'true');
+        } else {
+          localStorage.removeItem('user_permanently_saved_home');
+        }
+      });
+    }
+
     const mainSearch = document.getElementById('main-search');
     const mainSuggestions = document.getElementById('main-suggestions');
     if (!mainSearch || !mainSuggestions) return;
@@ -895,22 +904,27 @@ body.light-mode {
       if (text.length === 0) { mainSuggestions.style.display = 'none'; return; }
       
       if (typeof mm !== 'undefined') {
-        const matches = mm.filter(m => m.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").startsWith(text));
-        if (matches.length > 0) {
+        const nalezenaMesta = mm.filter(m => m.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").startsWith(text));
+        if (nalezenaMesta.length > 0) {
           mainSuggestions.style.display = 'block';
-          matches.forEach(mesta => {
-            const div = document.createElement('div');
+          nalezenaMesta.forEach(mesta => {
+            const div = document.createElement('div'); 
             div.innerText = mesta.n;
-            div.style.padding = '12px 15px';
-            div.style.cursor = 'pointer';
-            div.style.borderBottom = '1px solid var(--border-inner)';
-            div.style.color = 'var(--text-main)';
+            div.style.padding = '12px 15px'; 
+            div.style.cursor = 'pointer'; 
+            div.style.borderBottom = '1px solid var(--border-inner)'; 
+            div.style.color = 'var(--text-main)'; 
             div.style.fontSize = '15px';
             div.addEventListener('mouseenter', () => div.style.background = 'var(--border-color)');
             div.addEventListener('mouseleave', () => div.style.background = 'transparent');
             
             div.addEventListener('click', () => {
-              applyCity(mesta);
+              sessionStorage.setItem('search_city_active', 'true');
+              localStorage.setItem('defaultCityName', mesta.n);
+              localStorage.setItem('defaultCityLat', mesta.la.toString());
+              localStorage.setItem('defaultCityLon', mesta.lo.toString());
+              localStorage.setItem('defaultCityTemp', mesta.t.toString());
+
               mainSearch.value = '';
               mainSuggestions.style.display = 'none';
               location.reload();
@@ -928,7 +942,7 @@ body.light-mode {
     });
   });
 })();
-</script>
+    </script>
                <div style="text-align: center; position: relative;">
                   <h2 id="mesto-hlavni-nazev" style="margin: 0 0 5px 0; font-size: 1.4rem; font-weight: bold; display: inline-block;">---</h2>
                   <div id="teplota-aktualni" style="font-size: 3.5rem; font-weight: bold; margin: 5px 0; line-height: 1;">---°C</div>
