@@ -2292,46 +2292,63 @@ body.light-mode {
 ];
         
 
-        let mName = localStorage.getItem('defaultCityName') || "Olomouc";
-        mm.sort((a, b) => a.n.localeCompare(b.n, 'cs'));
-        let lat = parseFloat(localStorage.getItem('defaultCityLat')) || 49.59;
-        let lon = parseFloat(localStorage.getItem('defaultCityLon')) || 17.25;
-        let sTemp = parseFloat(localStorage.getItem('defaultCityTemp')) || 22;
+        // Výchozí hodnoty (pokud v paměti nic není, použije se Praha)
+let mName = localStorage.getItem('defaultCityName') || "Praha";
+if (typeof mm !== 'undefined' && Array.isArray(mm)) {
+    mm.sort((a, b) => a.n.localeCompare(b.n, 'cs'));
+}
+let lat = parseFloat(localStorage.getItem('defaultCityLat')) || 50.08;
+let lon = parseFloat(localStorage.getItem('defaultCityLon')) || 14.42;
+let sTemp = parseFloat(localStorage.getItem('defaultCityTemp')) || 22;
 
-        const searchInput = document.getElementById('main-search');
+const searchInput = document.getElementById('main-search');
 const list = document.getElementById('m-list');
 
-// Funkce, která vykreslí maximálně 20 výsledků, aby to bylo okamžité
+// Rychlé vykreslení maximálně 20 výsledků pro okamžitou odezvu
 function vykresliMesta(mesta) {
+    if (!list) return;
     list.innerHTML = mesta.slice(0, 20).map(m => 
         `<button class="chart-toggle-btn" style="text-align:left; width:100%">${m.n}</button>`
     ).join('');
 }
 
-// Když uživatel začne psát do vyhledávání
+// Když uživatel píše do vyhledávání
 if (searchInput) {
     searchInput.addEventListener('input', (e) => {
         const text = e.target.value.toLowerCase().trim();
         
         if (text === "") {
-            list.innerHTML = ""; // Když je políčko prázdné, seznam nic nevykresluje
+            if (list) list.innerHTML = ""; 
             return;
         }
 
-        // Najde města, která odpovídají napsanému textu
-        const nalezena = mm.filter(m => m.n.toLowerCase().includes(text));
-        vykresliMesta(nalezena);
+        if (typeof mm !== 'undefined') {
+            const nalezena = mm.filter(m => m.n.toLowerCase().includes(text));
+            vykresliMesta(nalezena);
+        }
     });
 }
 
-        function zvolM(jm, la, lo, st) {
-            lat = la;
-            lon = lo;
-            mName = jm;
-            sTemp = st;
-            document.getElementById('m-modal').classList.remove('active');
-            nactiPocasi();
-        }
+// Funkce pro výběr města
+function zvolM(jm, la, lo, st) {
+    lat = la;
+    lon = lo;
+    mName = jm;
+    sTemp = st;
+    
+    // Uložení do paměti prohlížeče
+    localStorage.setItem('defaultCityName', jm);
+    localStorage.setItem('defaultCityLat', la.toString());
+    localStorage.setItem('defaultCityLon', lo.toString());
+    localStorage.setItem('defaultCityTemp', st.toString());
+
+    const modal = document.getElementById('m-modal');
+    if (modal) modal.classList.remove('active');
+    
+    if (typeof nactiPocasi === 'function') {
+        nactiPocasi();
+    }
+}
 
         // Přidali jsme parametr 'teplota' na konec
 function ziskejIkonuUrl(kod, aktualniCasText, vychodSlunceText, zapadSlunceText, teplota) {
