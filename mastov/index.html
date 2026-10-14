@@ -805,18 +805,16 @@ body.light-mode {
 <div class="grid-top">
   <div class="card" style="gap: 15px;">
     <!-- ======================================================= -->
-    <!-- FINÁLNÍ OPRAVA PRO URL CESTY (např. /olomouc/, /jihlava/) -->
+    <!-- OPRAVENÝ SKRIPT PRO SPRÁVNÉ DETEKOVÁNÍ MĚSTA Z URL      -->
     <!-- ======================================================= -->
     <div style="position: relative; width: 100%; margin-bottom: 10px; box-sizing: border-box;">
         <input type="text" id="main-search" placeholder="🔍 Vyhledat místo..." style="width: 100%; padding: 12px 15px; border: 2px solid var(--border-color); border-radius: 8px; background: var(--bg-color); color: var(--text-main); font-size: 16px; box-sizing: border-box; outline: none; transition: border-color 0.2s;">
         
-        <!-- Plovoucí tabulka s výsledky vyhledávání -->
         <div id="main-suggestions" style="position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-card); border: 2px solid var(--border-color); border-radius: 8px; max-height: 250px; overflow-y: auto; z-index: 9999; display: none; margin-top: 5px; box-shadow: 0 8px 16px rgba(0,0,0,0.2); box-sizing: border-box;"></div>
     </div>
 
     <script>
 (function() {
-  // Funkce pro bezpečné nastavení globálních proměnných a paměti
   function setCityData(cityName, latVal, lonVal, tempVal) {
     localStorage.setItem('defaultCityName', cityName);
     localStorage.setItem('defaultCityLat', latVal.toString());
@@ -829,34 +827,39 @@ body.light-mode {
     window.sTemp = parseFloat(tempVal);
   }
 
-  // === 1. ZJIŠTĚNÍ MĚSTA Z URL (Parametr ?mesto= nebo cesta /mesto/) ===
-  const urlParams = new URLSearchParams(window.location.search);
-  let urlMesto = urlParams.get('mesto');
-
-  // Pokud není v parametru, zkusíme ho vytáhnout z URL adresy (např. /jihlava/ nebo /web/jihlava/)
-  if (!urlMesto) {
-    const pathSegments = window.location.pathname.split('/').filter(p => p && p !== 'web' && p !== 'index.html');
-    if (pathSegments.length > 0) {
-      // Vezmeme první segment cesty jako město (např. 'jihlava' z /jihlava/)
-      urlMesto = pathSegments[0];
-    }
-  }
-
-  // === 2. HIERARCHIE NAČÍTÁNÍ (URL -> Paměť -> Praha) ===
   let mestoNalezeno = false;
 
-  if (urlMesto && typeof mm !== 'undefined') {
-    const cleanUrlMesto = urlMesto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    const nasleMesto = mm.find(m => m.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === cleanUrlMesto);
+  // 1. ZKUSÍME NAJÍT MĚSTO PŘÍMO V URL PARAMETRU (?mesto=Praha)
+  const urlParams = new URLSearchParams(window.location.search);
+  let urlMestoParam = urlParams.get('mesto');
 
-    if (nasleMesto) {
-      // A) Město je v URL -> MÁ VŽDY PŘEDNOST
-      setCityData(nasleMesto.n, nasleMesto.la, nasleMesto.lo, nasleMesto.t);
+  if (urlMestoParam && typeof mm !== 'undefined') {
+    const cleanParam = urlMestoParam.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    const nalezeno = mm.find(m => m.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === cleanParam);
+    if (nalezeno) {
+      setCityData(nalezeno.n, nalezeno.la, nalezeno.lo, nalezeno.t);
       mestoNalezeno = true;
     }
   }
 
-  // B) Pokud město nebylo v URL, koukneme se do paměti (localStorage)
+  // 2. POKUD NENÍ V PARAMETRU, PROHLEDÁME CELOU CESTU URL (např. /predpovedi/praha/ nebo /olomouc/)
+  if (!mestoNalezeno && typeof mm !== 'undefined') {
+    const pathSegments = window.location.pathname.split('/').filter(p => p);
+    
+    // Projdeme VŠECHNY části URL adresy a hledáme, která odpovídá nějakému městu v databázi mm
+    for (let segment of pathSegments) {
+      const cleanSegment = segment.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      const nalezenoSeg = mm.find(m => m.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === cleanSegment);
+      
+      if (nalezenoSeg) {
+        setCityData(nalezenoSeg.n, nalezenoSeg.la, nalezenoSeg.lo, nalezenoSeg.t);
+        mestoNalezeno = true;
+        break; // Našli jsme město v URL, končíme hledání
+      }
+    }
+  }
+
+  // 3. POKUD MĚSTO NENÍ V URL, POUŽIJEME PAMĚŤ (co uživatel vyhledal naposledy)
   if (!mestoNalezeno) {
     const savedName = localStorage.getItem('defaultCityName');
     const savedLat = localStorage.getItem('defaultCityLat');
@@ -872,31 +875,13 @@ body.light-mode {
     }
   }
 
-  // C) Pokud není v URL ani v paměti -> nastavíme výchozí Prahu
+  // 4. KDYŽ NENÍ VŮBEC NIC, NASTAVÍME VÝCHOZÍ PRAHU
   if (!mestoNalezeno) {
     setCityData('Praha', 50.08, 14.42, 22);
   }
 
-  // === 3. INICIALIZACE PRVKŮ PO NAČTENÍ DOM ===
+  // --- NAŠEPTÁVAČ A UDÁLOSTI ---
   window.addEventListener('DOMContentLoaded', () => {
-    const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
-    
-    if (sessionStorage.getItem('search_city_active') === 'true') {
-      if (chkBox) chkBox.checked = false;
-      sessionStorage.removeItem('search_city_active');
-    }
-
-    if (chkBox) {
-      chkBox.addEventListener('change', function() {
-        if (this.checked) {
-          localStorage.setItem('user_permanently_saved_home', 'true');
-        } else {
-          localStorage.removeItem('user_permanently_saved_home');
-        }
-      });
-    }
-
-    // === 4. LOGIKA SAMOTNÉHO VYHLEDÁVÁNÍ A NAŠEPTÁVAČE ===
     const mainSearch = document.getElementById('main-search');
     const mainSuggestions = document.getElementById('main-suggestions');
     if (!mainSearch || !mainSuggestions) return;
@@ -927,18 +912,10 @@ body.light-mode {
             div.addEventListener('mouseenter', () => div.style.background = 'var(--border-color)');
             div.addEventListener('mouseleave', () => div.style.background = 'transparent');
             
-            // KLIKNUTÍ NA MĚSTO V SEZNAMU VYHLEDÁVAČE
             div.addEventListener('click', () => {
-              sessionStorage.setItem('search_city_active', 'true');
-              
-              // Uložíme hodnoty vybraného města
               setCityData(mesta.n, mesta.la, mesta.lo, mesta.t);
-
               mainSearch.value = '';
               mainSuggestions.style.display = 'none';
-              
-              // Pokud tvoje URL adresy mění stránky podle místa, budeš případně chtít přesměrovat na /nazev-mesta/
-              // Prozatím uděláme klasický reload:
               location.reload();
             });
 
