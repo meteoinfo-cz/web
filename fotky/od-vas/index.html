@@ -824,6 +824,72 @@ function toggleTheme() {
 <script>
     // 1. Zde si u fotek můžeš nastavit vlastní popisek, autor, datum a místo
     const detailyFotak = {
+        'fotka58': {
+            popisek: 'Výrazné červánky (58)',
+            autor: 'Vivi',
+            datum: '16. 10. 2026',
+            misto: 'Olomouc'
+        },
+        'fotka57': {
+            popisek: 'Výrazné a rudé červánky (57)',
+            autor: 'RealStorm',
+            datum: '15. 10. 2026',
+            misto: 'Bílina'
+        },
+        'fotka56': {
+            popisek: 'Výrazné a rudé červánky (56)',
+            autor: 'RealStorm',
+            datum: '15. 10. 2026',
+            misto: 'Bílina'
+        },
+        'fotka55': {
+            popisek: 'Výrazné a rudé červánky (55)',
+            autor: 'RealStorm',
+            datum: '15. 10. 2026',
+            misto: 'Bílina'
+        },
+        'fotka54': {
+            popisek: 'Sněhová vločka v detailu (54)',
+            autor: 'RealStorm',
+            datum: '08. 01. 2026',
+            misto: 'Bílina'
+        },
+        'fotka53': {
+            popisek: 'Sněhová vločka v detailu (53)',
+            autor: 'RealStorm',
+            datum: '08. 01. 2026',
+            misto: 'Bílina'
+        },
+        'fotka52': {
+            popisek: 'Sněhová vločka v detailu (52)',
+            autor: 'RealStorm',
+            datum: '08. 01. 2026',
+            misto: 'Bílina'
+        },
+        'fotka51': {
+            popisek: 'Sněhová vločka v detailu (51)',
+            autor: 'RealStorm',
+            datum: '08. 01. 2026',
+            misto: 'Bílina'
+        },
+        'fotka50': {
+            popisek: 'Sněhová vločka v detailu (50)',
+            autor: 'RealStorm',
+            datum: '08. 01. 2026',
+            misto: 'Bílina'
+        },
+        'fotka49': {
+            popisek: 'Slabá polární záře (49)',
+            autor: 'Peter Sedlák',
+            datum: '10. 10. 2026',
+            misto: 'Most'
+        },
+        'fotka48': {
+            popisek: 'Večerní obloha (48)',
+            autor: 'Vivi',
+            datum: '09. 10. 2026',
+            misto: 'Olomouc'
+        },
         'fotka47': {
             popisek: 'Galaxie v Andromedě (47)',
             autor: 'Pavel Čalkovský',
@@ -1110,7 +1176,7 @@ function toggleTheme() {
 
     // 2. Automaticky vytvoříme seznam všech složek od 1 do 33
     const slozky = [];
-    for (let i = 1; i <= 47; i++) {
+    for (let i = 1; i <= 58; i++) {
         let nazevSlozky = 'fotka' + i;
         
         let info = detailyFotak[nazevSlozky] || {
