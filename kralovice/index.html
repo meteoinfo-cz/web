@@ -879,49 +879,8 @@ body.light-mode {
 
     <script>
 (function() {
-    // 1. Okamžitě vytáhneme město z URL cesty
-    const pathSegments = window.location.pathname.split('/').filter(p => p && p !== 'web' && p !== 'index.html');
-    let urlMesto = pathSegments.length > 0 ? pathSegments[pathSegments.length - 1] : null;
-    
-    const urlParams = new URLSearchParams(window.location.search);
-    if (!urlMesto && urlParams.has('mesto')) {
-        urlMesto = urlParams.get('mesto');
-    }
-
-    // 2. Inicializace globálních proměnných z LocalStorage (výchozí stav pro uživatele)
-    window.mName = localStorage.getItem('defaultCityName') || "Praha";
-    window.lat = parseFloat(localStorage.getItem('defaultCityLat')) || 50.0755;
-    window.lon = parseFloat(localStorage.getItem('defaultCityLon')) || 14.4378;
-    window.sTemp = localStorage.getItem('defaultCityTemp') || "0";
-
-    // 3. POKUD JSME NA PODSTRÁNCE MĚSTA (např. /dlouha), přepíšeme globální proměnné OKAMŽITĚ
-    if (urlMesto) {
-        const cleanUrlMesto = decodeURIComponent(urlMesto).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
-        
-        // Pokud pole 'mm' existuje hned (máš ho v kódu nad tímto skriptem)
-        if (typeof mm !== 'undefined' && Array.isArray(mm)) {
-            const found = mm.find(m => {
-                const dbName = m.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                return dbName === cleanUrlMesto || dbName.startsWith(cleanUrlMesto);
-            });
-            
-            if (found) {
-                // Přepíšeme dočasné proměnné pro toto zobrazení (NEUKLÁDÁME do localStorage, aby se nepřepsalo výchozí město!)
-                window.mName = found.n;
-                window.lat = found.la;
-                window.lon = found.lo;
-                window.sTemp = found.t;
-            }
-        }
-    }
-
-    // Spuštění vyhledávače po načtení stránky
+    // Spuštění našeptávače až po načtení stránky
     window.addEventListener('DOMContentLoaded', () => {
-        // Pokud po načtení DOMu existuje funkce nactiPocasi, rovnou ji s novými daty zavoláme
-        if (typeof nactiPocasi === 'function') {
-            nactiPocasi();
-        }
-
         const mainSearch = document.getElementById('main-search');
         const mainSuggestions = document.getElementById('main-suggestions');
         if (!mainSearch || !mainSuggestions) return;
@@ -947,7 +906,6 @@ body.light-mode {
                         div.addEventListener('mouseleave', () => div.style.background = 'transparent');
                         
                         div.addEventListener('click', () => {
-                            // TADY naopak chceme natvrdo změnit výchozí město, protože uživatel klikl v našeptávači
                             localStorage.setItem('defaultCityName', mesta.n);
                             localStorage.setItem('defaultCityLat', mesta.la.toString());
                             localStorage.setItem('defaultCityLon', mesta.lo.toString());
@@ -955,7 +913,10 @@ body.light-mode {
 
                             mainSearch.value = '';
                             mainSuggestions.style.display = 'none';
-                            location.reload();
+                            
+                            // Přesměrování na správnou podstránku města po kliknutí v našeptávači
+                            const cistaUrl = mesta.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+                            window.location.href = '/' + cistaUrl + '/';
                         });
                         mainSuggestions.appendChild(div);
                     });
@@ -2358,16 +2319,53 @@ body.light-mode {
 ];
         
 
-        // Výchozí hodnoty (pokud v paměti nic není, použije se Praha)
-let mName = window.mName || localStorage.getItem('defaultCityName') || "Praha";
+        // --- JEDNOTNÁ A RYCHLÁ INICIALIZACE MĚSTA (URL má vždy přednost) ---
+let mName = "Praha";
+let lat = 50.08;
+let lon = 14.42;
+let sTemp = 22;
 
+// 1. Okamžitě vytáhneme název města z URL adresy (např. z /dlouha/)
+const pathSegments = window.location.pathname.split('/').filter(p => p && p !== 'web' && p !== 'index.html');
+let urlMesto = pathSegments.length > 0 ? pathSegments[pathSegments.length - 1] : null;
+const urlParams = new URLSearchParams(window.location.search);
+if (!urlMesto && urlParams.has('mesto')) {
+    urlMesto = urlParams.get('mesto');
+}
+
+// 2. Pokud v URL adrese město je, najdeme ho v seznamu 'mm' a použijeme ho
+if (urlMesto && typeof mm !== 'undefined' && Array.isArray(mm)) {
+    const cleanUrlMesto = decodeURIComponent(urlMesto).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+    const found = mm.find(m => {
+        const dbName = m.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        return dbName === cleanUrlMesto || dbName.startsWith(cleanUrlMesto);
+    });
+
+    if (found) {
+        mName = found.n;
+        lat = found.la;
+        lon = found.lo;
+        sTemp = found.t;
+    } else {
+        // Pokud město v URL sice bylo, ale nenašli jsme ho v DB, vezmeme data z paměti prohlížeče
+        mName = localStorage.getItem('defaultCityName') || "Praha";
+        lat = parseFloat(localStorage.getItem('defaultCityLat')) || 50.08;
+        lon = parseFloat(localStorage.getItem('defaultCityLon')) || 14.42;
+        sTemp = parseFloat(localStorage.getItem('defaultCityTemp')) || 22;
+    }
+} else {
+    // 3. Pokud v URL žádné město není (jsme na hlavní stránce), vezmeme výchozí město uživatele z paměti
+    mName = localStorage.getItem('defaultCityName') || "Praha";
+    lat = parseFloat(localStorage.getItem('defaultCityLat')) || 50.08;
+    lon = parseFloat(localStorage.getItem('defaultCityLon')) || 14.42;
+    sTemp = parseFloat(localStorage.getItem('defaultCityTemp')) || 22;
+}
+
+// Seřazení databáze měst
 if (typeof mm !== 'undefined' && Array.isArray(mm)) {
     mm.sort((a, b) => a.n.localeCompare(b.n, 'cs'));
 }
-
-let lat = window.lat || parseFloat(localStorage.getItem('defaultCityLat')) || 50.08;
-let lon = window.lon || parseFloat(localStorage.getItem('defaultCityLon')) || 14.42;
-let sTemp = window.sTemp || parseFloat(localStorage.getItem('defaultCityTemp')) || 22;
+// -----------------------------------------------------------------
 
 const searchInput = document.getElementById('main-search');
 const list = document.getElementById('m-list');
@@ -2404,7 +2402,6 @@ function zvolM(jm, la, lo, st) {
     mName = jm;
     sTemp = st;
     
-    // Uložení do paměti prohlížeče
     localStorage.setItem('defaultCityName', jm);
     localStorage.setItem('defaultCityLat', la.toString());
     localStorage.setItem('defaultCityLon', lo.toString());
