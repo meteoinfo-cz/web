@@ -22,4 +22,4 @@ Tento projekt je plně open-source! Pokud máte nápad na zlepšení, vylepšen�
 2. Vytvořte novou větev s vašimi úpravami.
 3. Pošlete **Pull Request** zpět ke schválení.
 
-Budu moc rád za každou pomoc a zpětnou vazbu. Pokud se vám projekt líbí, nezapomeňte dát **Star ⭐**!
+Budu moc rád za každou pomoc a zpětnou vazbu. Pokud se vám projekt líbí, nezapomeňte dát **Star! ⭐**
