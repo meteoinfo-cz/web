@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Předpověď počasí a aktuální data  pro vojenský újezd Březina | MeteoInfo</title>
 <meta name="description" content="Aktuální předpověď počasí, meteoradar online, srážky a teploty. vojenský újezd Březina - sledujte vývoj počasí na MeteoInfo.">
-<link rel="canonical" href="https://www.meteoinfo.czvojensky-ujezd-brezina/" />
+<link rel="canonical" href="https://www.meteoinfo.cz/vojensky-ujezd-brezina/" />
 <meta property="og:site_name" content="MeteoInfo">
 <meta name="apple-mobile-web-app-title" content="MeteoInfo">
 <meta name="application-name" content="MeteoInfo">
@@ -879,59 +879,121 @@ body.light-mode {
 
     <script>
 (function() {
-    // Spuštění našeptávače až po načtení stránky
+  // === 1. NAČTENÍ MĚSTA Z URL ADRESY (?mesto=Olomouc nebo /olomouc/) ===
+  const urlParams = new URLSearchParams(window.location.search);
+  let urlMesto = urlParams.get('mesto');
+
+  // Pokud není v otazníku (?mesto=...), zkusíme zjistit, zda není v cestě URL (např. /web/olomouc/)
+  if (!urlMesto) {
+    const pathSegments = window.location.pathname.split('/').filter(p => p && p !== 'web' && p !== 'index.html');
+    if (pathSegments.length > 0) {
+      urlMesto = pathSegments[0]; // Vezme složku za /web/
+    }
+  }
+
+  // Pokud jsme v URL našli název města
+  if (urlMesto) {
+    urlMesto = urlMesto.charAt(0).toUpperCase() + urlMesto.slice(1).toLowerCase();
+
+    // Najdeme město v databázi 'mm' podle názvu
+    if (typeof mm !== 'undefined') {
+      const nasleMesto = mm.find(m => m.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === urlMesto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""));
+      
+      if (nasleMesto) {
+        localStorage.setItem('defaultCityName', nasleMesto.n);
+        localStorage.setItem('defaultCityLat', nasleMesto.la.toString());
+        localStorage.setItem('defaultCityLon', nasleMesto.lo.toString());
+        localStorage.setItem('defaultCityTemp', nasleMesto.t.toString());
+        mName = nasleMesto.n; lat = nasleMesto.la; lon = nasleMesto.lo; sTemp = nasleMesto.t;
+      }
+    }
+  }
+
+  // --- KONTROLA PŘI STARTU STRÁNKY ---
+  const savedUserCity = localStorage.getItem('user_permanently_saved_home');
+  
+  if (sessionStorage.getItem('search_city_active') === 'true') {
     window.addEventListener('DOMContentLoaded', () => {
+      const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
+      if (chkBox) chkBox.checked = false;
+      sessionStorage.removeItem('search_city_active');
+    });
+  } 
+  // Pokud NENÍ město zadané v URL a uživatel nemá uloženo vlastní, načte se Praha
+  else if (!urlMesto && savedUserCity !== 'true') {
+    localStorage.setItem('defaultCityName', 'Praha');
+    localStorage.setItem('defaultCityLat', '50.08');
+    localStorage.setItem('defaultCityLon', '14.42');
+    localStorage.setItem('defaultCityTemp', '22');
+    
+    mName = "Praha"; lat = 50.08; lon = 14.42; sTemp = 22;
+    
+    window.addEventListener('DOMContentLoaded', () => {
+      const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
+      if (chkBox) chkBox.checked = true;
+    });
+  }
+
+      // --- 2. SLEDOVÁNÍ ZMĚNY CHECKBOXU PRO TRVALÉ ULOŽENÍ VÝCHOZÍHO MĚSTA ---
+      window.addEventListener('DOMContentLoaded', () => {
+        const chkBox = document.getElementById('set-default-city-chk') || document.querySelector('input[type="checkbox"]');
+        if (chkBox) {
+          chkBox.addEventListener('change', function() {
+            if (this.checked) {
+              // Pokud uživatel čtvereček zaškrtne sám, zablokujeme automatický návrat k Praze při F5
+              localStorage.setItem('user_permanently_saved_home', 'true');
+            } else {
+              // Pokud ho odškrtne, web se při F5 vrátí k Praze
+              localStorage.removeItem('user_permanently_saved_home');
+            }
+          });
+        }
+
+        // --- 3. LOGIKA SAMOTNÉHO VYHLEDÁVÁNÍ MĚST ---
         const mainSearch = document.getElementById('main-search');
         const mainSuggestions = document.getElementById('main-suggestions');
         if (!mainSearch || !mainSuggestions) return;
 
         mainSearch.addEventListener('input', function(e) {
-            const text = e.target.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
-            mainSuggestions.innerHTML = '';
-            if (text.length === 0) { mainSuggestions.style.display = 'none'; return; }
-            
-            if (typeof mm !== 'undefined') {
-                const nalezenaMesta = mm.filter(m => m.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").startsWith(text));
-                if (nalezenaMesta.length > 0) {
-                    mainSuggestions.style.display = 'block';
-                    nalezenaMesta.forEach(mesta => {
-                        const div = document.createElement('div'); 
-                        div.innerText = mesta.n;
-                        div.style.padding = '12px 15px'; 
-                        div.style.cursor = 'pointer'; 
-                        div.style.borderBottom = '1px solid var(--border-inner)'; 
-                        div.style.color = 'var(--text-main)'; 
-                        div.style.fontSize = '15px';
-                        div.addEventListener('mouseenter', () => div.style.background = 'var(--border-color)');
-                        div.addEventListener('mouseleave', () => div.style.background = 'transparent');
-                        
-                        div.addEventListener('click', () => {
-                            localStorage.setItem('defaultCityName', mesta.n);
-                            localStorage.setItem('defaultCityLat', mesta.la.toString());
-                            localStorage.setItem('defaultCityLon', mesta.lo.toString());
-                            localStorage.setItem('defaultCityTemp', mesta.t.toString());
+          const text = e.target.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+          mainSuggestions.innerHTML = '';
+          if (text.length === 0) { mainSuggestions.style.display = 'none'; return; }
+          
+          const nalezenaMesta = mm.filter(m => m.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").startsWith(text));
+          if (nalezenaMesta.length > 0) {
+            mainSuggestions.style.display = 'block';
+            nalezenaMesta.forEach(mesta => {
+              const div = document.createElement('div'); div.innerText = mesta.n;
+              div.style.padding = '12px 15px'; div.style.cursor = 'pointer'; div.style.borderBottom = '1px solid var(--border-inner)'; div.style.color = 'var(--text-main)'; div.style.fontSize = '15px';
+              div.addEventListener('mouseenter', () => div.style.background = 'var(--border-color)');
+              div.addEventListener('mouseleave', () => div.style.background = 'transparent');
+              
+              // KLIKNUTÍ NA MĚSTO V SEZNAMU VYHLEDÁVAČE
+              div.addEventListener('click', () => {
+                // Aktivujeme režim vyhledaného města (odškrtne checkbox po reloadu)
+                sessionStorage.setItem('search_city_active', 'true');
+                
+                // Zapíšeme hodnoty vybraného města do paměti
+                localStorage.setItem('defaultCityName', mesta.n);
+                localStorage.setItem('defaultCityLat', mesta.la.toString());
+                localStorage.setItem('defaultCityLon', mesta.lo.toString());
+                localStorage.setItem('defaultCityTemp', mesta.t.toString());
 
-                            mainSearch.value = '';
-                            mainSuggestions.style.display = 'none';
-                            
-                            // Přesměrování na správnou podstránku města po kliknutí v našeptávači
-                            const cistaUrl = mesta.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
-                            window.location.href = '/' + cistaUrl + '/';
-                        });
-                        mainSuggestions.appendChild(div);
-                    });
-                } else { mainSuggestions.style.display = 'none'; }
-            }
+                mainSearch.value = '';
+                mainSuggestions.style.display = 'none';
+                
+                // Restartujeme stránku pro 100% načtení čistých dat z API
+                location.reload();
+              });
+              mainSuggestions.appendChild(div);
+            });
+          } else { mainSuggestions.style.display = 'none'; }
         });
 
-        document.addEventListener('click', function(e) { 
-            if (e.target !== mainSearch && e.target !== mainSuggestions) {
-                mainSuggestions.style.display = 'none'; 
-            }
-        });
-    });
-})();
-</script>
+        document.addEventListener('click', function(e) { if (e.target !== mainSearch && e.target !== mainSuggestions) mainSuggestions.style.display = 'none'; });
+      });
+    })();
+    </script>
                <div style="text-align: center; position: relative;">
                   <h2 id="mesto-hlavni-nazev" style="margin: 0 0 5px 0; font-size: 1.4rem; font-weight: bold; display: inline-block;">---</h2>
                   <div id="teplota-aktualni" style="font-size: 3.5rem; font-weight: bold; margin: 5px 0; line-height: 1;">---°C</div>
@@ -1540,7 +1602,7 @@ rawPrecipitation = celkoveSrazkyDnes;
 
         function aktAsist(t) {
     const h = document.getElementById('asistent-hlaska');
-    document.getElementById('asistent-stupne').innerText = `METEO ASISTENT PRO MĚSTO (${mName}):`;
+    document.getElementById('asistent-stupne').innerText = `METEO ASISTENT PRO (${mName}):`;
     let textDoporuceni = "Aktuální předpověď počasí a doporučení.";
 
     if (t <= -20) textDoporuceni = "Pozor! Extrémně silný mráz pod -20°C! Doporučuje se vycházet jen v nezbytných případech.";
@@ -1786,19 +1848,16 @@ btn.onclick = function() {
     indexModal.innerHTML = `
         <div style="background: linear-gradient(135deg, #1e293b, #0f172a); border: 2px solid #38bdf8; border-radius: 12px; max-width: 800px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); color: #f8fafc; font-family: sans-serif;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #334155; padding-bottom: 10px;">
-                <h2 style="margin: 0; color: #38bdf8;">Přehled indexů aktivit pro město</h2>
+                <h2 style="margin: 0; color: #38bdf8;">Přehled indexů aktivit</h2>
                 <button id="close-indexes-btn" style="background: #38bdf8; border: none; color: #0f172a; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer;">Zavřít</button>
             </div>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px;">
                 <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #38bdf8;"><strong>🦟 Komáři:</strong><br><span style="font-size:13px; color: #cbd5e1;">${komari}</span></div>
                 <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #34d399;"><strong>🕷️ Klíšťata:</strong><br><span style="font-size:13px; color: #cbd5e1;">${klistata}</span></div>
-                <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #fbbf24;"><strong>👕 Sušení prádla:</strong><br><span style="font-size:13px; color: #cbd5e1;">${pradlo}</span></div>
-                <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #a78bfa;"><strong>✨ Astronomický:</strong><br><span style="font-size:13px; color: #cbd5e1;">${astro}</span></div>
                 <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #f472b6;"><strong>🏃 Běžecký:</strong><br><span style="font-size:13px; color: #cbd5e1;">${beh}</span></div>
                 <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #60a5fa;"><strong>🚴 Cyklistický:</strong><br><span style="font-size:13px; color: #cbd5e1;">${cyklo}</span></div>
                 <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #06b6d4;"><strong>🌊 Koupání obecně:</strong><br><span style="font-size:13px; color: #cbd5e1;">${koupacka}</span></div>
                 <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #fb7185;"><strong>🚗 Vyhřáté auto:</strong><br><span style="font-size:13px; color: #cbd5e1;">${auto}</span></div>
-                <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #38bdf8;"><strong>💦 Aquaplaning:</strong><br><span style="font-size:13px; color: #cbd5e1;">${aqua}</span></div>
                 <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid ${barvaPsi};"><strong>🐕 Psí index:</strong><br><span style="font-size:13px; color: #cbd5e1;">${psiText}</span></div>
                 <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #eab308;"><strong>☀️ UV index:</strong><br><span style="font-size:13px; color: #cbd5e1;">${uvText}</span></div>
                 <div style="background: #111827; padding: 12px; border-radius: 8px; border-left: 4px solid #10b981;"><strong>🍄 Houbařský:</strong><br><span style="font-size:13px; color: #cbd5e1;">${houby}</span></div>
