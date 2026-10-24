@@ -1113,110 +1113,150 @@ body.light-mode {
     </div>
 
     <script>
-        let mm = [];
+// --- 1. GLOBÁLNÍ PROMĚNNÉ ---
+let mm = [];
+let mName = localStorage.getItem('defaultCityName') || "Praha";
+let lat = parseFloat(localStorage.getItem('defaultCityLat')) || 50.08;
+let lon = parseFloat(localStorage.getItem('defaultCityLon')) || 14.42;
+let sTemp = parseFloat(localStorage.getItem('defaultCityTemp')) || 22;
 
-fetch('/vystup.json')
+// Funkce pro převod názvu na hezkou URL (např. "Praha 10" -> "praha-10")
+function vytvorSlug(text) {
+  return text ? text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9\s-]/g, "").replace(/[\s-]+/g, "-").strip("-") : "";
+}
+
+// --- 2. NAČTENÍ DATABÁZE A DETEKCE MĚSTA Z URL ---
+// Zjistíme, odkud fetchujeme (v indexu funguje bez lomítka, v šabloně s lomítkem)
+const cestyJsonu = window.location.pathname.includes('.html') || window.location.pathname === '/' ? 'vystup.json' : '/vystup.json';
+
+fetch(cestyJsonu)
+  .catch(() => fetch('/vystup.json'))
   .then(res => res.json())
   .then(data => {
     mm = data;
-    // Tady už máš v 'mm' načtená všechna data a skript jede dál
-  });
-        
 
-        // --- JEDNOTNÁ A RYCHLÁ INICIALIZACE MĚSTA (URL má vždy přednost) ---
-let mName = "Praha";
-let lat = 50.08;
-let lon = 14.42;
-let sTemp = 22;
-
-// 1. Okamžitě vytáhneme název města z URL adresy (např. z /dlouha/)
-const pathSegments = window.location.pathname.split('/').filter(p => p && p !== 'web' && p !== 'index.html');
-let urlMesto = pathSegments.length > 0 ? pathSegments[pathSegments.length - 1] : null;
-const urlParams = new URLSearchParams(window.location.search);
-if (!urlMesto && urlParams.has('mesto')) {
-    urlMesto = urlParams.get('mesto');
-}
-
-// 2. Pokud v URL adrese město je, najdeme ho v seznamu 'mm' a použijeme ho
-if (urlMesto && typeof mm !== 'undefined' && Array.isArray(mm)) {
-    const cleanUrlMesto = decodeURIComponent(urlMesto).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
-    const found = mm.find(m => {
-        const dbName = m.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-        return dbName === cleanUrlMesto || dbName.startsWith(cleanUrlMesto);
-    });
-
-    if (found) {
-        mName = found.n;
-        lat = found.la;
-        lon = found.lo;
-        sTemp = found.t;
-    } else {
-        // Pokud město v URL sice bylo, ale nenašli jsme ho v DB, vezmeme data z paměti prohlížeče
-        mName = localStorage.getItem('defaultCityName') || "Praha";
-        lat = parseFloat(localStorage.getItem('defaultCityLat')) || 50.08;
-        lon = parseFloat(localStorage.getItem('defaultCityLon')) || 14.42;
-        sTemp = parseFloat(localStorage.getItem('defaultCityTemp')) || 22;
+    if (Array.isArray(mm)) {
+      mm.sort((a, b) => a.n.localeCompare(b.n, 'cs'));
     }
-} else {
-    // 3. Pokud v URL žádné město není (jsme na hlavní stránce), vezmeme výchozí město uživatele z paměti
-    mName = localStorage.getItem('defaultCityName') || "Praha";
-    lat = parseFloat(localStorage.getItem('defaultCityLat')) || 50.08;
-    lon = parseFloat(localStorage.getItem('defaultCityLon')) || 14.42;
-    sTemp = parseFloat(localStorage.getItem('defaultCityTemp')) || 22;
-}
 
-// Seřazení databáze měst
-if (typeof mm !== 'undefined' && Array.isArray(mm)) {
-    mm.sort((a, b) => a.n.localeCompare(b.n, 'cs'));
-}
-// -----------------------------------------------------------------
+    // Vytáhneme město z URL cesty (např. z "/ostrava/" vytáhne "ostrava")
+    const segmenty = window.location.pathname.split('/').filter(p => p && p !== 'index.html' && p !== 'web');
+    let urlSlug = segmenty.length > 0 ? segmenty[segmenty.length - 1] : null;
 
-const searchInput = document.getElementById('main-search');
-const list = document.getElementById('m-list');
+    if (urlSlug) {
+      // Hledáme město v databázi, které odpovídá slugu z URL
+      const nalezene = mm.find(m => vytvorSlug(m.n) === urlSlug);
 
-// Rychlé vykreslení maximálně 20 výsledků pro okamžitou odezvu
-function vykresliMesta(mesta) {
-    if (!list) return;
-    list.innerHTML = mesta.slice(0, 20).map(m => 
-        `<button class="chart-toggle-btn" style="text-align:left; width:100%">${m.n}</button>`
-    ).join('');
-}
+      if (nalezene) {
+        mName = nalezene.n;
+        lat = nalezene.la;
+        lon = nalezene.lo;
+        sTemp = nalezene.t;
 
-// Když uživatel píše do vyhledávání
-if (searchInput) {
-    searchInput.addEventListener('input', (e) => {
-        const text = e.target.value.toLowerCase().trim();
-        
-        if (text === "") {
-            if (list) list.innerHTML = ""; 
-            return;
-        }
+        localStorage.setItem('defaultCityName', nalezene.n);
+        localStorage.setItem('defaultCityLat', nalezene.la.toString());
+        localStorage.setItem('defaultCityLon', nalezene.lo.toString());
+        localStorage.setItem('defaultCityTemp', nalezene.t.toString());
+      }
+    }
 
-        if (typeof mm !== 'undefined') {
-            const nalezena = mm.filter(m => m.n.toLowerCase().includes(text));
-            vykresliMesta(nalezena);
-        }
-    });
-}
-
-// Funkce pro výběr města
-function zvolM(jm, la, lo, st) {
-    lat = la;
-    lon = lo;
-    mName = jm;
-    sTemp = st;
-    
-    localStorage.setItem('defaultCityName', jm);
-    localStorage.setItem('defaultCityLat', la.toString());
-    localStorage.setItem('defaultCityLon', lo.toString());
-    localStorage.setItem('defaultCityTemp', st.toString());
-
-    const modal = document.getElementById('m-modal');
-    if (modal) modal.classList.remove('active');
-    
+    // Spustíme vykreslení počasí s finálními daty
     if (typeof nactiPocasi === 'function') {
-        nactiPocasi();
+      nactiPocasi();
     }
+  })
+  .catch(err => console.error("Chyba při inicializaci měst:", err));
+
+
+// --- 3. LOGIKA VYHLEDÁVÁNÍ A LIVE ZMĚNA URL ---
+document.addEventListener('DOMContentLoaded', () => {
+  const mainSearch = document.getElementById('main-search');
+  const mainSuggestions = document.getElementById('main-suggestions');
+  if (!mainSearch || !mainSuggestions) return;
+
+  mainSearch.addEventListener('input', function(e) {
+    const text = vytvorSlug(e.target.value);
+    mainSuggestions.innerHTML = '';
+    if (text.length === 0) { mainSuggestions.style.display = 'none'; return; }
+
+    if (typeof mm !== 'undefined' && mm.length > 0) {
+      const nalezenaMesta = mm.filter(m => vytvorSlug(m.n).startsWith(text));
+      if (nalezenaMesta.length > 0) {
+        mainSuggestions.style.display = 'block';
+        nalezenaMesta.forEach(mesta => {
+          const div = document.createElement('div');
+          div.innerText = mesta.n;
+          div.style.padding = '12px 15px';
+          div.style.cursor = 'pointer';
+          div.style.borderBottom = '1px solid var(--border-inner)';
+          div.style.color = 'var(--text-main)';
+          div.style.fontSize = '15px';
+
+          div.addEventListener('mouseenter', () => div.style.background = 'var(--border-color)');
+          div.addEventListener('mouseleave', () => div.style.background = 'transparent');
+
+          // KLIKNUTÍ NA MĚSTO V NAŠEPTÁVAČI
+          div.addEventListener('click', () => {
+            // 1. Aktualizace globálních proměnných v kódu
+            mName = mesta.n;
+            lat = mesta.la;
+            lon = mesta.lo;
+            sTemp = mesta.t;
+
+            // 2. Uložení do paměti prohlížeče
+            localStorage.setItem('defaultCityName', mesta.n);
+            localStorage.setItem('defaultCityLat', mesta.la.toString());
+            localStorage.setItem('defaultCityLon', mesta.lo.toString());
+            localStorage.setItem('defaultCityTemp', mesta.t.toString());
+
+            mainSearch.value = '';
+            mainSuggestions.style.display = 'none';
+
+            // 3. KOUZLO: Změna URL adresy nahoře v prohlížeči bez bliknutí a reloadu stránky!
+            const novySlug = vytvorSlug(mesta.n);
+            window.history.pushState({}, '', '/' + novySlug + '/');
+
+            // 4. Okamžitě překreslíme počasí na obrazovce pro nově vybrané město
+            if (typeof nactiPocasi === 'function') {
+              nactiPocasi();
+            }
+          });
+          mainSuggestions.appendChild(div);
+        });
+      } else {
+        mainSuggestions.style.display = 'none';
+      }
+    }
+  });
+
+  document.addEventListener('click', function(e) {
+    if (e.target !== mainSearch && e.target !== mainSuggestions) {
+      mainSuggestions.style.display = 'none';
+    }
+  });
+});
+
+// --- 4. FUNKCE PRO RUČNÍ ZVOLENÍ MĚSTA ---
+function zvolM(jm, la, lo, st) {
+  mName = jm;
+  lat = la;
+  lon = lo;
+  sTemp = st;
+
+  localStorage.setItem('defaultCityName', jm);
+  localStorage.setItem('defaultCityLat', la.toString());
+  localStorage.setItem('defaultCityLon', lo.toString());
+  localStorage.setItem('defaultCityTemp', st.toString());
+
+  const modal = document.getElementById('m-modal');
+  if (modal) modal.classList.remove('active');
+
+  // Při ruční volbě také aktualizujeme URL
+  window.history.pushState({}, '', '/' + vytvorSlug(jm) + '/');
+
+  if (typeof nactiPocasi === 'function') {
+    nactiPocasi();
+  }
 }
 
         // Přidali jsme parametr 'teplota' na konec
