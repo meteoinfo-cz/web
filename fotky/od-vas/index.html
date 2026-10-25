@@ -824,6 +824,72 @@ function toggleTheme() {
 <script>
     // 1. Zde si u fotek můžeš nastavit vlastní popisek, autor, datum a místo
     const detailyFotak = {
+        'fotka69': {
+            popisek: 'Pohled na oblohu s cestou a v dálce s balonem (69)',
+            autor: 'Joe Camel',
+            datum: '26. 04. 2026',
+            misto: 'Jihočeský kraj'
+        },
+        'fotka68': {
+            popisek: 'Podzimní a barevná krajina (68)',
+            autor: 'RealStorm',
+            datum: '22. 10. 2026',
+            misto: 'Bořeňská vyhlídka'
+        },
+        'fotka67': {
+            popisek: 'Podzimní a barevná krajina (67)',
+            autor: 'RealStorm',
+            datum: '22. 10. 2026',
+            misto: 'Bořeňská vyhlídka'
+        },
+        'fotka66': {
+            popisek: 'Podzimní a barevná krajina (66)',
+            autor: 'RealStorm',
+            datum: '22. 10. 2026',
+            misto: 'Bořeňská vyhlídka'
+        },
+        'fotka65': {
+            popisek: 'Podzimní a barevná krajina (65)',
+            autor: 'RealStorm',
+            datum: '22. 10. 2026',
+            misto: 'Bořeňská vyhlídka'
+        },
+        'fotka64': {
+            popisek: 'Podzimní a barevná krajina (64)',
+            autor: 'RealStorm',
+            datum: '22. 10. 2026',
+            misto: 'Bořeňská vyhlídka'
+        },
+        'fotka63': {
+            popisek: 'Mléčná dráha (63)',
+            autor: 'Joe Camel',
+            datum: '16. 08. 2026',
+            misto: 'Jihočeský kraj'
+        },
+        'fotka62': {
+            popisek: 'Barvy podzimu (62)',
+            autor: 'RealStorm',
+            datum: '22. 10. 2026',
+            misto: 'Bořeňská vyhlídka'
+        },
+        'fotka61': {
+            popisek: 'Západ Slunce (61)',
+            autor: 'Wradam',
+            datum: '12. 08. 2026',
+            misto: 'Olomouc'
+        },
+        'fotka60': {
+            popisek: 'Podzimní krajina (60)',
+            autor: 'RealStorm',
+            datum: '20. 10. 2026',
+            misto: 'Bílina'
+        },
+        'fotka59': {
+            popisek: 'Podzimní krajina (59)',
+            autor: 'RealStorm',
+            datum: '20. 10. 2026',
+            misto: 'Bílina'
+        },
         'fotka58': {
             popisek: 'Výrazné červánky (58)',
             autor: 'Vivi',
@@ -1176,7 +1242,7 @@ function toggleTheme() {
 
     // 2. Automaticky vytvoříme seznam všech složek od 1 do 33
     const slozky = [];
-    for (let i = 1; i <= 58; i++) {
+    for (let i = 1; i <= 69; i++) {
         let nazevSlozky = 'fotka' + i;
         
         let info = detailyFotak[nazevSlozky] || {
