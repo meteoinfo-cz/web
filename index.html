@@ -1111,9 +1111,18 @@ let lat = parseFloat(localStorage.getItem('defaultCityLat')) || 49.59;
 let lon = parseFloat(localStorage.getItem('defaultCityLon')) || 17.25;
 let sTemp = parseFloat(localStorage.getItem('defaultCityTemp')) || 22;
 
-// Pomocná funkce pro převod názvu na hezkou URL bez diakritiky (např. "Janův Důl" -> "januv-dul")
+// Funkce pro převod názvu na hezkou URL bez diakritiky (např. "Ostrava" -> "ostrava")
 function vytvorSlug(text) {
   return text ? text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9\s-]/g, "").replace(/[\s-]+/g, "-").trim() : "";
+}
+
+// Společná funkce, která VŽDY natvrdo přepíše URL adresu nahoře v prohlížeči
+function vynut ZmenuURL(nazevMesta) {
+    const novySlug = vytvorSlug(nazevMesta);
+    if (novySlug) {
+        // Změní URL bez bliknutí stránky na /nazev-mesta/
+        window.history.pushState({}, '', '/' + novySlug + '/');
+    }
 }
 
 // --- 2. NAČTENÍ DATABÁZE MĚST ---
@@ -1122,30 +1131,45 @@ fetch('vystup.json')
   .then(data => {
     mm = data;
 
-    // Seřazení databáze abecedně až po jejím stažení
+    // Seřazení databáze abecedně
     if (Array.isArray(mm)) {
         mm.sort((a, b) => a.n.localeCompare(b.n, 'cs'));
+    }
+
+    // Kontrola: Pokud už při příchodu je v URL nějaké město, rovnou ho načteme
+    const segmenty = window.location.pathname.split('/').filter(p => p && p !== 'index.html' && p !== 'web');
+    let urlSlug = segmenty.length > 0 ? segmenty[segmenty.length - 1] : null;
+    
+    if (urlSlug && mm.length > 0) {
+        const nalezene = mm.find(m => vytvorSlug(m.n) === urlSlug);
+        if (nalezene) {
+            mName = nalezene.n;
+            lat = nalezene.la;
+            lon = nalezene.lo;
+            sTemp = nalezene.t;
+        }
     }
 
     // Spuštění počasí na hlavní stránce
     if (typeof nactiPocasi === 'function') {
         nactiPocasi();
     }
-  });
+  })
+  .catch(err => console.error("Chyba JSON databáze:", err));
 
 const searchInput = document.getElementById('main-search');
 const list = document.getElementById('m-list');
 
 // --- 3. VYHLEDÁVÁNÍ A VYKRESLOVÁNÍ VÝSLEDKŮ ---
-// Funkce, která vykreslí maximálně 20 výsledků
 function vykresliMesta(mesta) {
     if (!list) return;
+    // Tady jsme zajistili, že kliknutí na jakékoliv město zavolá upravenou funkci zvolM
     list.innerHTML = mesta.slice(0, 20).map(m => 
         `<button class="chart-toggle-btn" style="text-align:left; width:100%" onclick="zvolM('${m.n}', ${m.la}, ${m.lo}, ${m.t})">${m.n}</button>`
     ).join('');
 }
 
-// Když uživatel začne psát do vyhledávání
+// Sledování psaní do vyhledávače
 if (searchInput) {
     searchInput.addEventListener('input', (e) => {
         const text = e.target.value.toLowerCase().trim();
@@ -1158,43 +1182,41 @@ if (searchInput) {
         if (typeof mm !== 'undefined' && mm.length > 0) {
             const nalezena = mm.filter(m => m.n.toLowerCase().includes(text));
             vykresliMesta(nalezena);
+
+            // POJISTKA: Pokud uživatel název dopíše ručně celý a stiskne enter/přestane psát, URL se přepíše taky
+            const presnaShoda = mm.find(m => m.n.toLowerCase() === text);
+            if (presnaShoda) {
+                vynutZmenuURL(presnaShoda.n);
+            }
         }
     });
 }
 
-// --- 4. AKCE PO ZVOLENÍ MĚSTA (KLIKNUTÍ) ---
+// --- 4. AKCE PO ZVOLENÍ MĚSTA ---
 function zvolM(jm, la, lo, st) {
     lat = la;
     lon = lo;
     mName = jm;
     sTemp = st;
     
-    // Uložení do paměti prohlížeče
+    // 1. Uložení do paměti prohlížeče
     localStorage.setItem('defaultCityName', jm);
     localStorage.setItem('defaultCityLat', la.toString());
     localStorage.setItem('defaultCityLon', lon.toString());
     localStorage.setItem('defaultCityTemp', st.toString());
 
+    // 2. Zavření vyhledávacího okna/modalu
     const modal = document.getElementById('m-modal');
     if (modal) modal.classList.remove('active');
     
-    // BEZPEČNÁ ZMĚNA URL ADRESY
-    const novySlug = vytvorSlug(jm);
-    
-    if (window.location.protocol === 'file:') {
-        // Pokud testuješ lokálně z disku (file://), přidáme slug jako hash parametr, aby to nespadlo
-        window.history.pushState({}, '', '#/' + novySlug + '/');
-    } else {
-        // Pokud web běží na internetu (http:// nebo https://), změní se URL na meteoinfo.cz/slug/
-        window.history.pushState({}, '', '/' + novySlug + '/');
-    }
+    // 3. HLAVNÍ OPRAVA: Okamžité přepsání URL adresy nahoře v prohlížeči!
+    vynutZmenuURL(jm);
 
-    // Aktualizace dat na obrazovce
+    // 4. Překreslení aktuálních teplot a grafů na hlavní stránce
     if (typeof nactiPocasi === 'function') {
         nactiPocasi();
     }
 }
-
 
         // Přidali jsme parametr 'teplota' na konec
 function ziskejIkonuUrl(kod, aktualniCasText, vychodSlunceText, zapadSlunceText, teplota) {
