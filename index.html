@@ -1172,15 +1172,22 @@ function zvolM(jm, la, lo, st) {
     // Uložení do paměti prohlížeče
     localStorage.setItem('defaultCityName', jm);
     localStorage.setItem('defaultCityLat', la.toString());
-    localStorage.setItem('defaultCityLon', lo.toString());
+    localStorage.setItem('defaultCityLon', lon.toString());
     localStorage.setItem('defaultCityTemp', st.toString());
 
     const modal = document.getElementById('m-modal');
     if (modal) modal.classList.remove('active');
     
-    // ZMĚNA URL V PROHLÍŽEČI BEZ RELOADU STRÁNKY
+    // BEZPEČNÁ ZMĚNA URL ADRESY
     const novySlug = vytvorSlug(jm);
-    window.history.pushState({}, '', '/' + novySlug + '/');
+    
+    if (window.location.protocol === 'file:') {
+        // Pokud testuješ lokálně z disku (file://), přidáme slug jako hash parametr, aby to nespadlo
+        window.history.pushState({}, '', '#/' + novySlug + '/');
+    } else {
+        // Pokud web běží na internetu (http:// nebo https://), změní se URL na meteoinfo.cz/slug/
+        window.history.pushState({}, '', '/' + novySlug + '/');
+    }
 
     // Aktualizace dat na obrazovce
     if (typeof nactiPocasi === 'function') {
