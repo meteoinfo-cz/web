@@ -1115,18 +1115,18 @@ body.light-mode {
     <script>
 // --- 1. GLOBÁLNÍ PROMĚNNÉ ---
 let mm = [];
-let mName = localStorage.getItem('defaultCityName') || "Praha";
-let lat = parseFloat(localStorage.getItem('defaultCityLat')) || 50.08;
-let lon = parseFloat(localStorage.getItem('defaultCityLon')) || 14.42;
-let sTemp = parseFloat(localStorage.getItem('defaultCityTemp')) || 22;
+// Inicializujeme prázdné hodnoty, abychom dali přednost URL před localStorage
+let mName = "";
+let lat = 50.08;
+let lon = 14.42;
+let sTemp = 22;
 
-// Funkce pro převod názvu na hezkou URL (např. "Praha 10" -> "praha-10")
+// Funkce pro převod názvu na hezkou URL - OPRAVENO: .strip() nahrazeno za .trim()
 function vytvorSlug(text) {
-  return text ? text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9\s-]/g, "").replace(/[\s-]+/g, "-").strip("-") : "";
+  return text ? text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9\s-]/g, "").replace(/[\s-]+/g, "-").trim() : "";
 }
 
 // --- 2. NAČTENÍ DATABÁZE A DETEKCE MĚSTA Z URL ---
-// Zjistíme, odkud fetchujeme (v indexu funguje bez lomítka, v šabloně s lomítkem)
 const cestyJsonu = window.location.pathname.includes('.html') || window.location.pathname === '/' ? 'vystup.json' : '/vystup.json';
 
 fetch(cestyJsonu)
@@ -1140,12 +1140,14 @@ fetch(cestyJsonu)
       mm.sort((a, b) => a.n.localeCompare(b.n, 'cs'));
     }
 
-    // Vytáhneme město z URL cesty (např. z "/ostrava/" vytáhne "ostrava")
+    // Získání slugu z URL adresy (např. z /januv-dul/ dostaneme "januv-dul")
     const segmenty = window.location.pathname.split('/').filter(p => p && p !== 'index.html' && p !== 'web');
     let urlSlug = segmenty.length > 0 ? segmenty[segmenty.length - 1] : null;
 
+    let prirazeno = false;
+
     if (urlSlug) {
-      // Hledáme město v databázi, které odpovídá slugu z URL
+      // Hledáme shodu v databázi podle slugu
       const nalezene = mm.find(m => vytvorSlug(m.n) === urlSlug);
 
       if (nalezene) {
@@ -1153,12 +1155,22 @@ fetch(cestyJsonu)
         lat = nalezene.la;
         lon = nalezene.lo;
         sTemp = nalezene.t;
-
-        localStorage.setItem('defaultCityName', nalezene.n);
-        localStorage.setItem('defaultCityLat', nalezene.la.toString());
-        localStorage.setItem('defaultCityLon', nalezene.lo.toString());
-        localStorage.setItem('defaultCityTemp', nalezene.t.toString());
+        prirazeno = true;
       }
+    }
+
+    // Pokud město v URL nebylo nebo se nenašlo v databázi, zkusíme localStorage, jinak dáme Prahu
+    if (!prirazeno) {
+      mName = localStorage.getItem('defaultCityName') || "Praha";
+      lat = parseFloat(localStorage.getItem('defaultCityLat')) || 50.08;
+      lon = parseFloat(localStorage.getItem('defaultCityLon')) || 14.42;
+      sTemp = parseFloat(localStorage.getItem('defaultCityTemp')) || 22;
+    } else {
+      // Pokud jsme město úspěšně načetli z URL, rovnou ho uložíme do paměti pro příště
+      localStorage.setItem('defaultCityName', mName);
+      localStorage.setItem('defaultCityLat', lat.toString());
+      localStorage.setItem('defaultCityLon', lon.toString());
+      localStorage.setItem('defaultCityTemp', sTemp.toString());
     }
 
     // Spustíme vykreslení počasí s finálními daty
@@ -1198,13 +1210,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
           // KLIKNUTÍ NA MĚSTO V NAŠEPTÁVAČI
           div.addEventListener('click', () => {
-            // 1. Aktualizace globálních proměnných v kódu
             mName = mesta.n;
             lat = mesta.la;
             lon = mesta.lo;
             sTemp = mesta.t;
 
-            // 2. Uložení do paměti prohlížeče
             localStorage.setItem('defaultCityName', mesta.n);
             localStorage.setItem('defaultCityLat', mesta.la.toString());
             localStorage.setItem('defaultCityLon', mesta.lo.toString());
@@ -1213,11 +1223,9 @@ document.addEventListener('DOMContentLoaded', () => {
             mainSearch.value = '';
             mainSuggestions.style.display = 'none';
 
-            // 3. KOUZLO: Změna URL adresy nahoře v prohlížeči bez bliknutí a reloadu stránky!
             const novySlug = vytvorSlug(mesta.n);
             window.history.pushState({}, '', '/' + novySlug + '/');
 
-            // 4. Okamžitě překreslíme počasí na obrazovce pro nově vybrané město
             if (typeof nactiPocasi === 'function') {
               nactiPocasi();
             }
@@ -1252,7 +1260,6 @@ function zvolM(jm, la, lo, st) {
   const modal = document.getElementById('m-modal');
   if (modal) modal.classList.remove('active');
 
-  // Při ruční volbě také aktualizujeme URL
   window.history.pushState({}, '', '/' + vytvorSlug(jm) + '/');
 
   if (typeof nactiPocasi === 'function') {
