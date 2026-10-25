@@ -1111,18 +1111,8 @@ let lat = parseFloat(localStorage.getItem('defaultCityLat')) || 49.59;
 let lon = parseFloat(localStorage.getItem('defaultCityLon')) || 17.25;
 let sTemp = parseFloat(localStorage.getItem('defaultCityTemp')) || 22;
 
-// Funkce pro převod názvu na hezkou URL bez diakritiky (např. "Ostrava" -> "ostrava")
 function vytvorSlug(text) {
   return text ? text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9\s-]/g, "").replace(/[\s-]+/g, "-").trim() : "";
-}
-
-// Společná funkce, která VŽDY natvrdo přepíše URL adresu nahoře v prohlížeči
-function vynut ZmenuURL(nazevMesta) {
-    const novySlug = vytvorSlug(nazevMesta);
-    if (novySlug) {
-        // Změní URL bez bliknutí stránky na /nazev-mesta/
-        window.history.pushState({}, '', '/' + novySlug + '/');
-    }
 }
 
 // --- 2. NAČTENÍ DATABÁZE MĚST ---
@@ -1130,92 +1120,82 @@ fetch('vystup.json')
   .then(res => res.json())
   .then(data => {
     mm = data;
-
-    // Seřazení databáze abecedně
     if (Array.isArray(mm)) {
         mm.sort((a, b) => a.n.localeCompare(b.n, 'cs'));
     }
-
-    // Kontrola: Pokud už při příchodu je v URL nějaké město, rovnou ho načteme
-    const segmenty = window.location.pathname.split('/').filter(p => p && p !== 'index.html' && p !== 'web');
-    let urlSlug = segmenty.length > 0 ? segmenty[segmenty.length - 1] : null;
-    
-    if (urlSlug && mm.length > 0) {
-        const nalezene = mm.find(m => vytvorSlug(m.n) === urlSlug);
-        if (nalezene) {
-            mName = nalezene.n;
-            lat = nalezene.la;
-            lon = nalezene.lo;
-            sTemp = nalezene.t;
-        }
-    }
-
-    // Spuštění počasí na hlavní stránce
     if (typeof nactiPocasi === 'function') {
         nactiPocasi();
     }
-  })
-  .catch(err => console.error("Chyba JSON databáze:", err));
+  });
 
-const searchInput = document.getElementById('main-search');
-const list = document.getElementById('m-list');
+// --- 3. LOGIKA VYHLEDÁVÁNÍ A PŘESMĚROVÁNÍ NA ČISTÉ URL ---
+document.addEventListener('DOMContentLoaded', () => {
+  const mainSearch = document.getElementById('main-search');
+  const mainSuggestions = document.getElementById('main-suggestions');
+  if (!mainSearch || !mainSuggestions) return;
 
-// --- 3. VYHLEDÁVÁNÍ A VYKRESLOVÁNÍ VÝSLEDKŮ ---
-function vykresliMesta(mesta) {
-    if (!list) return;
-    // Tady jsme zajistili, že kliknutí na jakékoliv město zavolá upravenou funkci zvolM
-    list.innerHTML = mesta.slice(0, 20).map(m => 
-        `<button class="chart-toggle-btn" style="text-align:left; width:100%" onclick="zvolM('${m.n}', ${m.la}, ${m.lo}, ${m.t})">${m.n}</button>`
-    ).join('');
-}
+  mainSearch.addEventListener('input', function(e) {
+    const text = vytvorSlug(e.target.value);
+    mainSuggestions.innerHTML = '';
+    if (text.length === 0) { mainSuggestions.style.display = 'none'; return; }
 
-// Sledování psaní do vyhledávače
-if (searchInput) {
-    searchInput.addEventListener('input', (e) => {
-        const text = e.target.value.toLowerCase().trim();
-        
-        if (text === "") {
-            if (list) list.innerHTML = ""; 
-            return;
-        }
+    if (typeof mm !== 'undefined' && mm.length > 0) {
+      const nalezenaMesta = mm.filter(m => vytvorSlug(m.n).startsWith(text));
+      if (nalezenaMesta.length > 0) {
+        mainSuggestions.style.display = 'block';
+        nalezenaMesta.slice(0, 20).forEach(mesta => {
+          const div = document.createElement('div');
+          div.innerText = mesta.n;
+          div.style.padding = '12px 15px';
+          div.style.cursor = 'pointer';
+          div.style.borderBottom = '1px solid var(--border-inner)';
+          div.style.color = 'var(--text-main)';
+          div.style.fontSize = '15px';
 
-        if (typeof mm !== 'undefined' && mm.length > 0) {
-            const nalezena = mm.filter(m => m.n.toLowerCase().includes(text));
-            vykresliMesta(nalezena);
+          div.addEventListener('mouseenter', () => div.style.background = 'var(--border-color)');
+          div.addEventListener('mouseleave', () => div.style.background = 'transparent');
 
-            // POJISTKA: Pokud uživatel název dopíše ručně celý a stiskne enter/přestane psát, URL se přepíše taky
-            const presnaShoda = mm.find(m => m.n.toLowerCase() === text);
-            if (presnaShoda) {
-                vynutZmenuURL(presnaShoda.n);
-            }
-        }
-    });
-}
+          // KLIKNUTÍ V NAŠEPTÁVAČI: Okamžitý skok na čistou URL
+          div.addEventListener('click', () => {
+            localStorage.setItem('defaultCityName', mesta.n);
+            localStorage.setItem('defaultCityLat', mesta.la.toString());
+            localStorage.setItem('defaultCityLon', mesta.lo.toString());
+            localStorage.setItem('defaultCityTemp', mesta.t.toString());
 
-// --- 4. AKCE PO ZVOLENÍ MĚSTA ---
+            mainSuggestions.style.display = 'none';
+            const novySlug = vytvorSlug(mesta.n);
+            
+            // SKOK ROVNOU NA /praha/ NEBO /olomouc/
+            window.location.href = '/' + novySlug + '/';
+          });
+          mainSuggestions.appendChild(div);
+        });
+      } else {
+        mainSuggestions.style.display = 'none';
+      }
+    }
+  });
+
+  document.addEventListener('click', function(e) {
+    if (e.target !== mainSearch && e.target !== mainSuggestions) {
+      mainSuggestions.style.display = 'none';
+    }
+  });
+});
+
+// --- 4. FUNKCE PRO RUČNÍ ZVOLENÍ MĚSTA ---
 function zvolM(jm, la, lo, st) {
-    lat = la;
-    lon = lo;
-    mName = jm;
-    sTemp = st;
-    
-    // 1. Uložení do paměti prohlížeče
-    localStorage.setItem('defaultCityName', jm);
-    localStorage.setItem('defaultCityLat', la.toString());
-    localStorage.setItem('defaultCityLon', lon.toString());
-    localStorage.setItem('defaultCityTemp', st.toString());
+  localStorage.setItem('defaultCityName', jm);
+  localStorage.setItem('defaultCityLat', la.toString());
+  localStorage.setItem('defaultCityLon', lo.toString());
+  localStorage.setItem('defaultCityTemp', st.toString());
 
-    // 2. Zavření vyhledávacího okna/modalu
-    const modal = document.getElementById('m-modal');
-    if (modal) modal.classList.remove('active');
-    
-    // 3. HLAVNÍ OPRAVA: Okamžité přepsání URL adresy nahoře v prohlížeči!
-    vynutZmenuURL(jm);
+  const modal = document.getElementById('m-modal');
+  if (modal) modal.classList.remove('active');
 
-    // 4. Překreslení aktuálních teplot a grafů na hlavní stránce
-    if (typeof nactiPocasi === 'function') {
-        nactiPocasi();
-    }
+  const novySlug = vytvorSlug(jm);
+  // SKOK ROVNOU NA ČISTÉ URL
+  window.location.href = '/' + novySlug + '/';
 }
 
         // Přidali jsme parametr 'teplota' na konec
