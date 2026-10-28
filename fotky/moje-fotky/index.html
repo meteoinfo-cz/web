@@ -602,7 +602,7 @@ body.light-mode {
     <!-- LEVÁ STRANA: Logo a ovládací prvky pohromadě -->
     <div style="display: flex; align-items: center; gap: 25px; flex-wrap: wrap;">
         
-        <a href="https://meteoinfo-cz.github.io/web/" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
+        <a href="https://www.meteoinfo.cz" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
             <img src="../../apple-touch-icon.png" alt="MI" style="width: 32px; height: 32px; object-fit: contain; border-radius: 6px;">
             <h1 style="margin: 0; font-size: 1.8rem; font-weight: 800; letter-spacing: -0.5px; white-space: nowrap;">
                 <span style="color: #38bdf8;">Meteo</span><span style="color: #38bdf8;">Info</span>
@@ -632,22 +632,22 @@ body.light-mode {
                 <span id="live-time" style="font-weight: bold; font-size: 1.2rem; color: #ffffff;">17:16:12</span>
                 <span style="color: #484f58;">|</span>
                 <span id="live-date" style="color: #8b949e;">5. 9. 2026</span>
-                <button class="o-webu-btn" onclick="window.location.href='https://meteoinfo-cz.github.io/web/o-webu/'">O webu</button>
+                <button class="o-webu-btn" onclick="window.location.href='https://www.meteoinfo.cz/o-webu/'">O webu</button>
                 <span style="color: #484f58;">|</span>
-                <button class="o-webu-btn" onclick="window.location.href='https://meteoinfo-cz.github.io/web/aktualizace/'">Aktualizace</button>
+                <button class="o-webu-btn" onclick="window.location.href='https://www.meteoinfo.cz/aktualizace/'">Aktualizace</button>
                 <span style="color: #484f58;">|</span>
-                <button class="o-webu-btn" id="btn-openet-denik" style="font-weight: bold; color: #38bdf8;" onclick="document.getElementById('okno-denik').classList.add('active')">📖 Meteo deník</button>
+                <button class="o-webu-btn" style="font-weight: bold; color: #38bdf8;" onclick="window.location.href='https://www.meteoinfo.cz/meteo-denik/'">📖 Meteo deník</button>
                 <span style="color: #484f58;">|</span>
-                <button class="o-webu-btn" onclick="window.location.href='https://meteoinfo-cz.github.io/web/clanky/'">📰 Články</button>
+                <button class="o-webu-btn" onclick="window.location.href='https://www.meteoinfo.cz/clanky/'">📰 Články</button>
             </div>
         </div>
     </div>
 
     <!-- PRAVÁ STRANA: Tlačítka (Radar, Měsíc, Téma, Sledovat) -->
     <div style="display: flex; gap: 8px; align-items: center; flex-shrink: 0;">
-        <a href="https://meteoinfo-cz.github.io/web/meteoradar/" class="header-btn" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 4px;">🛰️ Meteoradar</a>
+        <a href="https://www.meteoinfo.cz/meteoradar/" class="header-btn" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 4px;">🛰️ Meteoradar</a>
         
-        <a id="moon-trigger-btn" href="https://meteoinfo-cz.github.io/web/astro/" class="header-btn" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 4px;">Astro 🌓</a>
+        <a id="moon-trigger-btn" href="https://www.meteoinfo.cz/astro/" class="header-btn" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 4px;">Astro 🌓</a>
         
         <button id="theme-button" class="header-btn" onclick="toggleTheme()" style="font-size: 1.1rem; padding: 4px 10px;">🌙</button>
 
@@ -822,6 +822,642 @@ function toggleTheme() {
 <script>
     // 1. Zde si u fotek můžeš nastavit vlastní popisek, autor, datum a místo
     const detailyFotak = {
+        'fotka206': {
+            popisek: 'Výrazná mammata (206)',
+            autor: 'Tadeas',
+            datum: '20. 10. 2026',
+            misto: 'Bílina'
+        },
+        'fotka205': {
+            popisek: 'Souhvězdí Orion (205)',
+            autor: 'Tadeas',
+            datum: '20. 10. 2026',
+            misto: 'Bílina'
+        },
+        'fotka204': {
+            popisek: 'Levé parhelium (204)',
+            autor: 'Tadeas',
+            datum: '16. 10. 2026',
+            misto: 'Olomouc'
+        },
+        'fotka203': {
+            popisek: 'Halový jev na vysoké oblačnosti (203)',
+            autor: 'Tadeas',
+            datum: '15. 10. 2026',
+            misto: 'Bílina'
+        },
+        'fotka202': {
+            popisek: 'Výrazné červánky (202)',
+            autor: 'Tadeas',
+            datum: '15. 10. 2026',
+            misto: 'Bílina'
+        },
+        'fotka201': {
+            popisek: 'Výrazné červánky (201)',
+            autor: 'Tadeas',
+            datum: '15. 10. 2026',
+            misto: 'Bílina'
+        },
+        'fotka200': {
+            popisek: 'Výrazné červánky (200)',
+            autor: 'Tadeas',
+            datum: '08. 01. 2026',
+            misto: 'Bílina'
+        },
+        'fotka199': {
+            popisek: 'Altocumulus (199)',
+            autor: 'Tadeas',
+            datum: '20. 10. 2026',
+            misto: 'Bílina'
+        },
+        'fotka198': {
+            popisek: 'Výrazné a rudé červánky (198)',
+            autor: 'Tadeas',
+            datum: '20. 10. 2026',
+            misto: 'Bílina'
+        },
+        'fotka197': {
+            popisek: 'Výrazné a rudé červánky (197)',
+            autor: 'Tadeas',
+            datum: '16. 10. 2026',
+            misto: 'Olomouc'
+        },
+        'fotka196': {
+            popisek: 'Halový kruh kolem Slunce (196)',
+            autor: 'Tadeas',
+            datum: '15. 10. 2026',
+            misto: 'Bílina'
+        },
+        'fotka195': {
+            popisek: 'Ranní červánky (195)',
+            autor: 'Tadeas',
+            datum: '15. 10. 2026',
+            misto: 'Bílina'
+        },
+        'fotka194': {
+            popisek: 'Podzimní barvy listů (194)',
+            autor: 'Tadeas',
+            datum: '15. 10. 2026',
+            misto: 'Bílina'
+        },
+        'fotka193': {
+            popisek: 'Podzimní barvy listů (193)',
+            autor: 'Tadeas',
+            datum: '08. 01. 2026',
+            misto: 'Bílina'
+        },
+        'fotka192': {
+            popisek: 'Slabé ranní červánky (192)',
+            autor: 'Tadeas',
+            datum: '08. 01. 2026',
+            misto: 'Bílina'
+        },
+        'fotka191': {
+            popisek: 'Halový sloup (191)',
+            autor: 'Tadeas',
+            datum: '08. 01. 2026',
+            misto: 'Bílina'
+        },
+        'fotka190': {
+            popisek: 'Pravé parhelium (190)',
+            autor: 'Tadeas',
+            datum: '08. 01. 2026',
+            misto: 'Bílina'
+        },
+        'fotka189': {
+            popisek: 'Levé parhelium (189)',
+            autor: 'Tadeas',
+            datum: '08. 01. 2026',
+            misto: 'Bílina'
+        },
+        'fotka188': {
+            popisek: 'Přízemní mlha a Měsíc (188)',
+            autor: 'Tadeas',
+            datum: '10. 10. 2026',
+            misto: 'Most'
+        },
+        'fotka187': {
+            popisek: 'Východ Slunce (187)',
+            autor: 'Tadeas',
+            datum: '09. 10. 2026',
+            misto: 'Olomouc'
+        },
+        'fotka186': {
+            popisek: 'Přízemní mlha (186)',
+            autor: 'Tadeas',
+            datum: '26. 12. 2025',
+            misto: 'Rousínov'
+        },
+        'fotka185': {
+            popisek: 'Levé i pravé parhelium (185)',
+            autor: 'Tadeas',
+            datum: '07. 10. 2026',
+            misto: 'Olomouc'
+        },
+        'fotka184': {
+            popisek: 'Levé parhelium (184)',
+            autor: 'Tadeas',
+            datum: '03. 07. 2026',
+            misto: 'Štramberk'
+        },
+        'fotka183': {
+            popisek: 'Krásný altocumulus (183)',
+            autor: 'Tadeas',
+            datum: '13. 08. 2026',
+            misto: 'Olomouc'
+        },
+        'fotka182': {
+            popisek: 'Krásný altocumulus (182)',
+            autor: 'Tadeas',
+            datum: '31. 12. 2024',
+            misto: 'Bílina'
+        },
+        'fotka181': {
+            popisek: 'Pravé parhelium (181)',
+            autor: 'Tadeas',
+            datum: '31. 12. 2024',
+            misto: 'Bílina'
+        },
+        'fotka180': {
+            popisek: 'Pravé parhelium (180)',
+            autor: 'Tadeas',
+            datum: '31. 12. 2024',
+            misto: 'Bílina'
+        },
+        'fotka179': {
+            popisek: 'Večerní červánky (179)',
+            autor: 'Tadeas',
+            datum: '31. 12. 2024',
+            misto: 'Bílina'
+        },
+        'fotka178': {
+            popisek: 'Nádherné barvy těsně před východem Slunce (178)',
+            autor: 'Tadeas',
+            datum: '31. 12. 2024',
+            misto: 'Bílina'
+        },
+        'fotka177': {
+            popisek: 'Vzdálené rudé červánky (177)',
+            autor: 'Tadeas',
+            datum: '31. 12. 2024',
+            misto: 'Bílina'
+        },
+        'fotka176': {
+            popisek: 'Zlatá hodinka (176)',
+            autor: 'Tadeas',
+            datum: '31. 12. 2024',
+            misto: 'Bílina'
+        },
+        'fotka175': {
+            popisek: 'Kousek duhy (175)',
+            autor: 'Tadeas',
+            datum: '31. 12. 2024',
+            misto: 'Bílina'
+        },
+        'fotka174': {
+            popisek: 'Zlatá hodinka (174)',
+            autor: 'Tadeas',
+            datum: '31. 12. 2024',
+            misto: 'Bílina'
+        },
+        'fotka173': {
+            popisek: 'Ráno u potoka (173)',
+            autor: 'Tadeas',
+            datum: '03. 10. 2026',
+            misto: 'Rousínov'
+        },
+        'fotka172': {
+            popisek: 'Výrazné krepuskulární paprsky (172)',
+            autor: 'Tadeas',
+            datum: '09. 08. 2026',
+            misto: 'Rousínov'
+        },
+        'fotka171': {
+            popisek: 'Večerní červánky (171)',
+            autor: 'Tadeas',
+            datum: '13. 08. 2025',
+            misto: 'Rousínov'
+        },
+        'fotka170': {
+            popisek: 'Večerní červánky (170)',
+            autor: 'Tadeas',
+            datum: '20. 07. 2026',
+            misto: 'Rousínov'
+        },
+        'fotka169': {
+            popisek: 'Večerní červánky (169)',
+            autor: 'Tadeas',
+            datum: '29. 01. 2025',
+            misto: 'Rousínov'
+        },
+        'fotka168': {
+            popisek: 'Nádherné a výrazné krepuskulární paprsky (168)',
+            autor: 'Tadeas',
+            datum: '26. 04. 2026',
+            misto: 'Jihočeský kraj'
+        },
+        'fotka167': {
+            popisek: 'Mammata v pásu (167)',
+            autor: 'Tadeas',
+            datum: '22. 10. 2026',
+            misto: 'Bořeňská vyhlídka'
+        },
+        'fotka166': {
+            popisek: 'Ranní červánky (166)',
+            autor: 'Tadeas',
+            datum: '22. 10. 2026',
+            misto: 'Bořeňská vyhlídka'
+        },
+        'fotka165': {
+            popisek: 'Před východem Slunce (165)',
+            autor: 'Tadeas',
+            datum: '22. 10. 2026',
+            misto: 'Bořeňská vyhlídka'
+        },
+        'fotka164': {
+            popisek: 'Před východem Slunce (164)',
+            autor: 'Tadeas',
+            datum: '22. 10. 2026',
+            misto: 'Bořeňská vyhlídka'
+        },
+        'fotka163': {
+            popisek: 'Krásné červánky před východem Slunce (163)',
+            autor: 'Tadeas',
+            datum: '22. 10. 2026',
+            misto: 'Bořeňská vyhlídka'
+        },
+        'fotka162': {
+            popisek: 'Výrazný lenticularis (162)',
+            autor: 'Tadeas',
+            datum: '16. 08. 2026',
+            misto: 'Jihočeský kraj'
+        },
+        'fotka161': {
+            popisek: 'Výrazný lenticularis (161)',
+            autor: 'Tadeas',
+            datum: '22. 10. 2026',
+            misto: 'Bořeňská vyhlídka'
+        },
+        'fotka160': {
+            popisek: 'Nasvícené mraky (160)',
+            autor: 'Tadeas',
+            datum: '12. 08. 2026',
+            misto: 'Olomouc'
+        },
+        'fotka159': {
+            popisek: 'Výrazné červánky při západu Slunce (159)',
+            autor: 'Tadeas',
+            datum: '20. 10. 2026',
+            misto: 'Bílina'
+        },
+        'fotka158': {
+            popisek: 'Shelf cloud na slabší bouřce (158)',
+            autor: 'Tadeas',
+            datum: '20. 10. 2026',
+            misto: 'Bílina'
+        },
+        'fotka157': {
+            popisek: 'Shelf cloud na slabší bouřce (157)',
+            autor: 'Tadeas',
+            datum: '16. 10. 2026',
+            misto: 'Olomouc'
+        },
+        'fotka156': {
+            popisek: 'Shelf cloud na slabší bouřce (156)',
+            autor: 'Tadeas',
+            datum: '15. 10. 2026',
+            misto: 'Bílina'
+        },
+        'fotka155': {
+            popisek: 'Výrazný pileus (155)',
+            autor: 'Tadeas',
+            datum: '15. 10. 2026',
+            misto: 'Bílina'
+        },
+        'fotka154': {
+            popisek: 'Výrazná irizace oblaků (154)',
+            autor: 'Tadeas',
+            datum: '15. 10. 2026',
+            misto: 'Bílina'
+        },
+        'fotka153': {
+            popisek: 'Bouřková mračna (153)',
+            autor: 'Tadeas',
+            datum: '08. 01. 2026',
+            misto: 'Bílina'
+        },
+        'fotka152': {
+            popisek: 'Levé parhelium (152)',
+            autor: 'Tadeas',
+            datum: '08. 01. 2026',
+            misto: 'Bílina'
+        },
+        'fotka151': {
+            popisek: 'Malá perseida (151)',
+            autor: 'Tadeas',
+            datum: '08. 01. 2026',
+            misto: 'Bílina'
+        },
+        'fotka150': {
+            popisek: 'Větší perseida (150)',
+            autor: 'Tadeas',
+            datum: '08. 01. 2026',
+            misto: 'Bílina'
+        },
+        'fotka149': {
+            popisek: 'Léto na Nákle (149)',
+            autor: 'Tadeas',
+            datum: '08. 01. 2026',
+            misto: 'Bílina'
+        },
+        'fotka148': {
+            popisek: 'Hvězdná obloha (148)',
+            autor: 'Tadeas',
+            datum: '10. 10. 2026',
+            misto: 'Most'
+        },
+        'fotka147': {
+            popisek: 'Menší pileus (147)',
+            autor: 'Tadeas',
+            datum: '09. 10. 2026',
+            misto: 'Olomouc'
+        },
+        'fotka146': {
+            popisek: 'Cirrocumulus (146)',
+            autor: 'Tadeas',
+            datum: '26. 12. 2025',
+            misto: 'Rousínov'
+        },
+        'fotka145': {
+            popisek: 'Nasvícené mraky (145)',
+            autor: 'Tadeas',
+            datum: '07. 10. 2026',
+            misto: 'Olomouc'
+        },
+        'fotka144': {
+            popisek: 'Downburst (144)',
+            autor: 'Tadeas',
+            datum: '03. 07. 2026',
+            misto: 'Štramberk'
+        },
+        'fotka143': {
+            popisek: 'Zvláštní mraky (143)',
+            autor: 'Tadeas',
+            datum: '13. 08. 2026',
+            misto: 'Olomouc'
+        },
+        'fotka142': {
+            popisek: 'Dvě mohutné kovadliny s přeháňkami (142)',
+            autor: 'Tadeas',
+            datum: '31. 12. 2024',
+            misto: 'Bílina'
+        },
+        'fotka141': {
+            popisek: 'Altocumulus a irizace (141)',
+            autor: 'Tadeas',
+            datum: '31. 12. 2024',
+            misto: 'Bílina'
+        },
+        'fotka140': {
+            popisek: 'Večerní červánky (140)',
+            autor: 'Tadeas',
+            datum: '31. 12. 2024',
+            misto: 'Bílina'
+        },
+        'fotka139': {
+            popisek: 'Večerní červánky (139)',
+            autor: 'Tadeas',
+            datum: '31. 12. 2024',
+            misto: 'Bílina'
+        },
+        'fotka138': {
+            popisek: 'Přicházející shelf cloud (138)',
+            autor: 'Tadeas',
+            datum: '31. 12. 2024',
+            misto: 'Bílina'
+        },
+        'fotka137': {
+            popisek: 'CG blesk (137)',
+            autor: 'Tadeas',
+            datum: '31. 12. 2024',
+            misto: 'Bílina'
+        },
+        'fotka136': {
+            popisek: 'Přicházející shelf cloud (136)',
+            autor: 'Tadeas',
+            datum: '31. 12. 2024',
+            misto: 'Bílina'
+        },
+        'fotka135': {
+            popisek: 'Slabá duha po bouřce (135)',
+            autor: 'Tadeas',
+            datum: '31. 12. 2024',
+            misto: 'Bílina'
+        },
+        'fotka134': {
+            popisek: 'CG blesk (134)',
+            autor: 'Tadeas',
+            datum: '31. 12. 2024',
+            misto: 'Bílina'
+        },
+        'fotka133': {
+            popisek: 'Žlutá tráva (důsledek extrémního sucha) (133)',
+            autor: 'Tadeas',
+            datum: '03. 10. 2026',
+            misto: 'Rousínov'
+        },
+        'fotka132': {
+            popisek: 'Žlutá tráva (důsledek extrémního sucha) (132)',
+            autor: 'Tadeas',
+            datum: '09. 08. 2026',
+            misto: 'Rousínov'
+        },
+        'fotka131': {
+            popisek: 'Halový jev kolem Slunce s mraky (131)',
+            autor: 'Tadeas',
+            datum: '13. 08. 2025',
+            misto: 'Rousínov'
+        },
+        'fotka130': {
+            popisek: 'Mohutný cumulonimbus (130)',
+            autor: 'Tadeas',
+            datum: '20. 07. 2026',
+            misto: 'Rousínov'
+        },
+        'fotka129': {
+            popisek: 'Mohutný cumulonimbus (129)',
+            autor: 'Tadeas',
+            datum: '29. 01. 2025',
+            misto: 'Rousínov'
+        },
+        'fotka128': {
+            popisek: 'Lenticularis (128)',
+            autor: 'Tadeas',
+            datum: '04. 03. 2025',
+            misto: 'Rousínov'
+        },
+        'fotka127': {
+            popisek: 'CG blesk (127)',
+            autor: 'Tadeas',
+            datum: '10. 05. 2024',
+            misto: 'Rousínov'
+        },
+        'fotka126': {
+            popisek: 'Barevný západ Slunce (126)',
+            autor: 'Tadeas',
+            datum: '10. 05. 2024',
+            misto: 'Rousínov'
+        },
+        'fotka125': {
+            popisek: 'Kovadlina z velmi silné bouřky (125)',
+            autor: 'Tadeas',
+            datum: '10. 05. 2024',
+            misto: 'Rousínov'
+        },
+        'fotka124': {
+            popisek: 'Výrazné krepuskulární paprsky (124)',
+            autor: 'Tadeas',
+            datum: '10. 05. 2024',
+            misto: 'Rousínov'
+        },
+        'fotka123': {
+            popisek: 'Nasvícené mraky (123)',
+            autor: 'Tadeas',
+            datum: '20. 01. 2026',
+            misto: 'Rousínov'
+        },
+        'fotka122': {
+            popisek: 'Nasvícené mraky a Měsíc (122)',
+            autor: 'Tadeas',
+            datum: '20. 01. 2026',
+            misto: 'Rousínov'
+        },
+        'fotka121': {
+            popisek: 'Výrazná přeháňka (121)',
+            autor: 'Tadeas',
+            datum: '27. 08. 2026',
+            misto: 'Rousínov'
+        },
+        'fotka120': {
+            popisek: 'Zvláštní tvar mraku (120)',
+            autor: 'Tadeas',
+            datum: '27. 08. 2026',
+            misto: 'Rousínov'
+        },
+        'fotka119': {
+            popisek: 'Halový jev kolem Slunce (119)',
+            autor: 'Tadeas',
+            datum: '11. 01. 2026',
+            misto: 'Rousínov'
+        },
+        'fotka118': {
+            popisek: 'Slabé červánky při západu Slunce (118)',
+            autor: 'Tadeas',
+            datum: '12. 07. 2026',
+            misto: 'Rousínov'
+        },
+        'fotka117': {
+            popisek: 'Slabé červánky při západu Slunce (117)',
+            autor: 'Tadeas',
+            datum: '27. 09. 2025',
+            misto: 'Rousínov'
+        },
+        'fotka116': {
+            popisek: 'Levé parhelium (116)',
+            autor: 'Tadeas',
+            datum: '27. 09. 2025',
+            misto: 'Rousínov'
+        },
+        'fotka115': {
+            popisek: 'CC blesk (115)',
+            autor: 'Tadeas',
+            datum: '27. 09. 2026',
+            misto: 'Ressl'
+        },
+        'fotka114': {
+            popisek: 'Krásný CC rozvětvený blesk (114)',
+            autor: 'Tadeas',
+            datum: '15. 08. 2026',
+            misto: 'Protivanov'
+        },
+        'fotka113': {
+            popisek: 'Hvězdná obloha (113)',
+            autor: 'Tadeas',
+            datum: '04. 09. 2026',
+            misto: 'Olomouc'
+        },
+        'fotka112': {
+            popisek: 'Halový jev kolem Slunce (112)',
+            autor: 'Tadeas',
+            datum: '19. 09. 2026',
+            misto: 'Olomouc'
+        },
+        'fotka111': {
+            popisek: 'Vycházející "paprsky" z duhy (111)',
+            autor: 'Tadeas',
+            datum: '02. 10. 2026',
+            misto: 'Jihlava'
+        },
+        'fotka110': {
+            popisek: 'Krásné červánky (110)',
+            autor: 'Tadeas',
+            datum: '01. 10. 2026',
+            misto: 'Telč'
+        },
+        'fotka109': {
+            popisek: 'Altocumulus a slabá irizace (109)',
+            autor: 'Tadeas',
+            datum: '01. 10. 2026',
+            misto: 'Zhejral'
+        },
+        'fotka108': {
+            popisek: 'Irizace mraků (108)',
+            autor: 'Tadeas',
+            datum: '24. 09. 2026',
+            misto: 'Olomouc'
+        },
+        'fotka107': {
+            popisek: 'Východ Slunce (107)',
+            autor: 'Tadeas',
+            datum: '24. 09. 2026',
+            misto: 'Olomouc'
+        },
+        'fotka106': {
+            popisek: 'Jarní ráno (106)',
+            autor: 'Tadeas',
+            datum: '21. 09. 2026',
+            misto: 'Šumava'
+        },
+        'fotka105': {
+            popisek: 'Talovín zimní (105)',
+            autor: 'Tadeas',
+            datum: '19. 08. 2026',
+            misto: 'Kréta'
+        },
+        'fotka104': {
+            popisek: 'Nádherná a přiblížená námraza na skle (104)',
+            autor: 'Tadeas',
+            datum: '11. 09. 2026',
+            misto: 'Olomouc'
+        },
+        'fotka103': {
+            popisek: 'Nádherná a přiblížená námraza na skle (103)',
+            autor: 'Tadeas',
+            datum: '15. 09. 2026',
+            misto: 'Olomouc'
+        },
+        'fotka102': {
+            popisek: 'Východ Slunce (102)',
+            autor: 'Tadeas',
+            datum: '05. 09. 2026',
+            misto: 'Ressl'
+        },
+        'fotka101': {
+            popisek: 'Ranní červánky (101)',
+            autor: 'Tadeas',
+            datum: '15. 08. 2026',
+            misto: 'Ressl'
+        },
         'fotka100': {
             popisek: 'Silné sněžení a sněhová pokrývka (100)',
             autor: 'Tadeas',
@@ -1426,7 +2062,7 @@ function toggleTheme() {
 
     // 2. Automaticky vytvoříme seznam všech složek od 1 do 33
     const slozky = [];
-    for (let i = 1; i <= 100; i++) {
+    for (let i = 1; i <= 206; i++) {
         let nazevSlozky = 'fotka' + i;
         
         let info = detailyFotak[nazevSlozky] || {
@@ -1508,7 +2144,7 @@ footer.style.textAlign = 'center';
 footer.style.padding = '20px';
 footer.style.color = '#8b949e';
 footer.style.fontSize = '1rem';
-footer.innerHTML = '© 2026 MeteoInfo — Všechna práva vyhrazena';
+footer.innerHTML = '© 2026 MeteoInfo - Všechna práva vyhrazena';
 
 document.body.appendChild(footer);
 </script>
