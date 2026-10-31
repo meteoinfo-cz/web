@@ -69,12 +69,48 @@
             --text-dark-only: #0f172a;
         }
 
-        body { font-family: Arial, sans-serif; background: var(--bg-body); color: var(--text-main); padding: 20px; box-sizing: border-box; transition: background 0.2s, color 0.2s; }
-.container { max-width: 1200px; margin: 0 auto; }
+        body { 
+    font-family: Arial, sans-serif; 
+    background: var(--bg-body); 
+    color: var(--text-main); 
+    padding: 20px; 
+    box-sizing: border-box; 
+    transition: background 0.2s, color 0.2s; 
+}
 
-header { position: relative; display: flex; justify-content: space-between; padding: 15px; background: var(--bg-header); border-radius: 12px; align-items: center; }
-.header-left { display: flex; flex-direction: column; gap: 4px; min-width: 250px; z-index: 2; }
-.header-right { display: flex; align-items: center; gap: 20px; min-width: 320px; justify-content: flex-end; z-index: 2; }
+/* ROZŠÍŘENÍ: Nastaveno na přesných 1250px */
+.container { 
+    max-width: 1250px; 
+    margin: 0 auto; 
+    width: 100%;
+}
+
+header { 
+    position: relative; 
+    display: flex; 
+    justify-content: space-between; 
+    padding: 15px; 
+    background: var(--bg-header); 
+    border-radius: 12px; 
+    align-items: center; 
+}
+
+.header-left { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 4px; 
+    min-width: 250px; 
+    z-index: 2; 
+}
+
+.header-right { 
+    display: flex; 
+    align-items: center; 
+    gap: 20px; 
+    min-width: 320px; 
+    justify-content: flex-end; 
+    z-index: 2; 
+}
 
 .header-center-title {
     position: absolute;
@@ -91,163 +127,433 @@ header { position: relative; display: flex; justify-content: space-between; padd
     white-space: nowrap;
 }
 
-.grid-top { display: grid; grid-template-columns: 350px 810px; gap: 20px; margin-top: 20px; justify-content: space-between; }
-@media (max-width: 1200px) { .grid-top { grid-template-columns: 1fr; justify-content: center; } }
+/* Mřížka – levý box drží stabilních 350px, pravý (1fr) se přizpůsobí šířce 1250px */
+.grid-top { 
+    display: grid; 
+    grid-template-columns: 350px 1fr; 
+    gap: 20px; 
+    margin-top: 20px; 
+    justify-content: space-between; 
+}
 
-.card { background: var(--bg-card); border-radius: 12px; padding: 20px; border: 1px solid var(--border-color); height: auto; display: flex; flex-direction: column; overflow: hidden; max-width: 100%; box-sizing: border-box; }
-.asistent-box { padding: 15px; border-radius: 8px; margin-top: 0; border-left: 4px solid #64748b; background: var(--bg-inner); }
-.psi-box { padding: 15px; border-radius: 8px; margin-top: 15px; background: var(--bg-inner); border-left: 4px solid #cbd5e1; }
+@media (max-width: 1200px) { 
+    .grid-top { 
+        grid-template-columns: 1fr; 
+        justify-content: center; 
+    } 
+}
 
-.meteo-details-box { display: flex; justify-content: space-around; background: var(--bg-inner); padding: 12px; border-radius: 8px; margin-top: 15px; border: 1px solid var(--border-inner); flex-wrap: wrap; gap: 10px; }
-.meteo-detail-polozka { text-align: center; font-size: 0.85rem; color: var(--text-main); min-width: 65px; }
-.meteo-detail-hodnota { display: block; font-weight: bold; color: var(--text-accent); margin-top: 2px; font-size: 0.95rem; }
+.card { 
+    background: var(--bg-card); 
+    border-radius: 12px; 
+    padding: 20px; 
+    border: 1px solid var(--border-color); 
+    height: auto; 
+    display: flex; 
+    flex-direction: column; 
+    overflow: hidden; 
+    max-width: 100%; 
+    box-sizing: border-box; 
+}
 
-.meteo-srazky, .meteo-vitr { cursor: pointer; user-select: none; }
-.hourly-scroll-container { display: flex; justify-content: flex-start; gap: 10px; overflow-x: auto !important; padding-bottom: 12px; margin-top: 10px; margin-bottom: 5px; scrollbar-width: thin; flex-wrap: nowrap !important; width: 100%; box-sizing: border-box; }
-.hourly-item { background: var(--bg-inner-forecast); border: 1px solid var(--border-inner); border-radius: 10px; padding: 8px; text-align: center; min-width: 85px; max-width: 85px; flex-shrink: 0 !important; display: inline-block; box-sizing: border-box; }
-.hourly-time { font-size: 0.8rem; color: var(--text-main) !important; font-weight: bold; }
-.hourly-icon { width: 52px; height: 52px; margin: 4px 0; }
-.hourly-temp { font-size: 0.9rem; font-weight: bold; }
+.asistent-box { 
+    padding: 15px; 
+    border-radius: 8px; 
+    margin-top: 0; 
+    border-left: 4px solid #64748b; 
+    background: var(--bg-inner); 
+}
 
-.chart-container { position: relative; height: 220px; width: 100%; margin-top: 10px; }
-.chart-toggle-btn { background: var(--bg-inner); border: 1px solid var(--border-inner); color: var(--text-main); padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; }
-.chart-toggle-btn.active { background: var(--text-accent); color: #ffffff; border-color: var(--text-accent); font-weight: bold; }
-.chart-btn-group { display: flex; gap: 8px; margin-bottom: 10px; }
+.psi-box { 
+    padding: 15px; 
+    border-radius: 8px; 
+    margin-top: 15px; 
+    background: var(--bg-inner); 
+    border-left: 4px solid #cbd5e1; 
+}
 
-.forecast-grid-scroll { display: flex; flex-direction: column; gap: 8px; width: 100%; }
-.forecast-day-row { display: flex; justify-content: space-between; align-items: center; background: var(--bg-inner); padding: 10px 15px; border-radius: 8px; border: 1px solid var(--border-inner); font-size: 0.9rem; }
-.forecast-date { color: var(--text-muted); min-width: 90px; }
-.forecast-subdata { font-size: 0.8rem; color: var(--text-muted); display: flex; gap: 15px; }
-.weather-icon { width: 28px; height: 28px; }
+.meteo-details-box { 
+    display: flex; 
+    justify-content: space-around; 
+    background: var(--bg-inner); 
+    padding: 12px; 
+    border-radius: 8px; 
+    margin-top: 15px; 
+    border: 1px solid var(--border-inner); 
+    flex-wrap: wrap; 
+    gap: 10px; 
+}
 
-.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 1000; }
-.modal-overlay.active { display: flex; }
-.modal-box { background: var(--bg-card); padding: 25px; border-radius: 12px; border: 1px solid var(--border-color); max-width: 500px; width: 90%; position: relative; color: var(--text-main); }
-.close-btn { background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; display: block; margin: 15px auto 0 auto; }
+.meteo-detail-polozka { 
+    text-align: center; 
+    font-size: 0.85rem; 
+    color: var(--text-main); 
+    min-width: 65px; 
+}
 
-.header-btn { background: var(--bg-inner); border: 1px solid var(--border-inner); color: var(--text-main); padding: 6px 12px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 0.85rem; }
-.header-btn:hover { border-color: var(--text-accent); }
+.meteo-detail-hodnota { 
+    display: block; 
+    font-weight: bold; 
+    color: var(--text-accent); 
+    margin-top: 2px; 
+    font-size: 0.95rem; 
+}
 
-/* --- FINÁLNÍ ÚPRAVA PRO MOBIL --- */
+.meteo-srazky, .meteo-vitr { 
+    cursor: pointer; 
+    user-select: none; 
+}
+
+.hourly-scroll-container { 
+    display: flex; 
+    justify-content: flex-start; 
+    gap: 10px; 
+    overflow-x: auto !important; 
+    padding-bottom: 12px; 
+    margin-top: 10px; 
+    margin-bottom: 5px; 
+    scrollbar-width: thin; 
+    flex-wrap: nowrap !important; 
+    width: 100%; 
+    box-sizing: border-box; 
+}
+
+.hourly-item { 
+    background: var(--bg-inner-forecast); 
+    border: 1px solid var(--border-inner); 
+    border-radius: 10px; 
+    padding: 8px; 
+    text-align: center; 
+    min-width: 85px; 
+    max-width: 85px; 
+    flex-shrink: 0 !important; 
+    display: inline-block; 
+    box-sizing: border-box; 
+}
+
+.hourly-time { 
+    font-size: 0.8rem; 
+    color: var(--text-main) !important; 
+    font-weight: bold; 
+}
+
+.hourly-icon { 
+    width: 52px; 
+    height: 52px; 
+    margin: 4px 0; 
+}
+
+.hourly-temp { 
+    font-size: 0.9rem; 
+    font-weight: bold; 
+}
+
+.chart-container { 
+    position: relative; 
+    height: 220px; 
+    width: 100%; 
+    margin-top: 10px; 
+}
+
+.chart-toggle-btn { 
+    background: var(--bg-inner); 
+    border: 1px solid var(--border-inner); 
+    color: var(--text-main); 
+    padding: 6px 12px; 
+    border-radius: 6px; 
+    cursor: pointer; 
+    font-size: 0.85rem; 
+    transition: all 0.2s; 
+}
+
+.chart-toggle-btn.active { 
+    background: var(--text-accent); 
+    color: #ffffff; 
+    border-color: var(--text-accent); 
+    font-weight: bold; 
+}
+
+.chart-btn-group { 
+    display: flex; 
+    gap: 8px; 
+    margin-bottom: 10px; 
+}
+
+.forecast-grid-scroll { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 8px; 
+    width: 100%; 
+}
+
+.forecast-day-row { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    background: var(--bg-inner); 
+    padding: 10px 15px; 
+    border-radius: 8px; 
+    border: 1px solid var(--border-inner); 
+    font-size: 0.9rem; 
+}
+
+.forecast-date { 
+    color: var(--text-muted); 
+    min-width: 90px; 
+}
+
+.forecast-subdata { 
+    font-size: 0.8rem; 
+    color: var(--text-muted); 
+    display: flex; 
+    gap: 15px; 
+}
+
+.weather-icon { 
+    width: 28px; 
+    height: 28px; 
+}
+
+.modal-overlay { 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    background: rgba(0,0,0,0.7); 
+    display: none; 
+    justify-content: center; 
+    align-items: center; 
+    z-index: 1000; 
+}
+
+.modal-overlay.active { 
+    display: flex; 
+}
+
+.modal-box { 
+    background: var(--bg-card); 
+    padding: 25px; 
+    border-radius: 12px; 
+    border: 1px solid var(--border-color); 
+    max-width: 500px; 
+    width: 90%; 
+    position: relative; 
+    color: var(--text-main); 
+}
+
+.close-btn { 
+    background: #ef4444; 
+    color: white; 
+    border: none; 
+    padding: 8px 16px; 
+    border-radius: 6px; 
+    cursor: pointer; 
+    font-weight: bold; 
+    display: block; 
+    margin: 15px auto 0 auto; 
+}
+
+.header-btn { 
+    background: var(--bg-inner); 
+    border: 1px solid var(--border-inner); 
+    color: var(--text-main); 
+    padding: 6px 12px; 
+    border-radius: 6px; 
+    cursor: pointer; 
+    display: flex; 
+    align-items: center; 
+    gap: 6px; 
+    font-size: 0.85rem; 
+}
+
+.header-btn:hover { 
+    border-color: var(--text-accent); 
+}
+
+/* --- ROZTAŽENÍ HORNÍCH PRVKŮ NA PLNOU VÝŠKU (44px) --- */
 @media (max-width: 900px) {
-  /* Hlavní kontejner - vše řadíme přehledně pod sebe */
-  header {
-    position: relative !important;
-    padding: 20px 15px !important; 
+  #main-header {
+    height: auto !important;
+    min-height: 44px !important;
+    padding: 0 !important;
+    background: transparent !important;
+    margin-bottom: 15px !important;
+    width: calc(100% + 28px) !important;
+    margin-left: -14px !important;
+    margin-right: -14px !important;
+    box-sizing: border-box !important;
+  }
+
+  #main-header > div {
     display: flex !important;
-    flex-direction: column !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
     align-items: center !important;
-    gap: 15px !important; /* Automatické rozestupy mezi bloky */
-  }
-  
-  /* Nadpis - čisté vycentrované zobrazení */
-  .header-center-title {
-    position: static !important;
-    transform: none !important;
-    display: block !important;
-    order: -1 !important; 
-    margin: 0 0 10px 0 !important;
-    text-align: center !important;
-  }
-
-/* Srovná celou řadu a natvrdo ji posune doleva, aby byla pod nadpisem */
-.header-buttons-row {
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
-  gap: 8px !important; 
-  width: 100% !important;
-  
-  /* POSUN DOLEVA: Tento řádek posune celou skupinu tlačítek pod nadpis */
-  position: relative !important;
-  left: -20px !important; 
-}
-
-/* Posune Discord doprava a záporným marginem přitáhne Stáhnout s sebou doleva */
-a[href*="discord"] {
-  position: relative !important;
-  display: inline-block !important;
-  left: 5px !important;            /* Zmenšeno ze 40px, aby šel Discord doleva */
-  margin-right: 10px !important;   /* Záporný margin natvrdo přitáhne zelené tlačítko doleva */
-  top: 0px !important;
-}
-
-/* Posune DOLŮ pouze vnitřní logo/obrázek Discordu (zarovnání na střed) */
-a[href*="discord"] img,
-a[href*="discord"] i,
-a[href*="discord"] svg,
-a[href*="discord"] span {
-  position: relative !important;
-  top: 3px !important; 
-}
-
-/* Oprava celého bloku Článků a narovnání textů na mobilu */
-@media screen and (max-width: 768px) {
-  /* Cílí na celou krabici, která drží tlačítko Články */
-  div:has(> .o-webu-btn) {
-    margin-left: 0px !important;    /* Vynuluje 330px z PC, co to rozbíjelo */
-    margin-top: 5px !important;    /* Odstrčí texty bezpečně dolů */
-    text-align: center !important;  /* Vycentruje Články pěkně pod tlačítka */
+    justify-content: space-between !important;
+    gap: 0px !important;
+    padding: 0px !important;
     width: 100% !important;
-    position: relative !important;
+    background-color: var(--bg-card, #0d1117) !important;
+    border-radius: 0px !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
   }
 
-  /* Samotné tlačítko necháme přirozeně, aby nic nerozbíjelo */
-  .o-webu-btn {
-    position: static !important;
-    display: inline-block !important;
-  }
-}
-
-  /* Čas, datum a textové odkazy */
-  .header-left {
+  /* 1. Čas a datum – plná výška 44px */
+  #main-header > div > div:first-child {
     display: flex !important;
-    flex-direction: column !important;
+    flex: 1.2 1 0% !important;
+    height: 44px !important;
+    padding: 0 4px !important;
+    font-size: 12px !important;
+    background-color: var(--bg-inner, #21262d) !important;
+    border: 0px solid var(--border-inner, #30363d) !important;
+    border-radius: 0px !important;
     align-items: center !important;
-    width: 100% !important;
-    gap: 8px !important;
-    margin: 10px 0 !important;
+    justify-content: center !important;
+    order: 1 !important;
+    white-space: nowrap !important;
+    color: var(--text-main, #ffffff) !important;
+    box-sizing: border-box !important;
+  }
+  #main-header > div > div:first-child span {
+    font-size: 14px !important;
   }
 
-  /* Řádek pro Čas | O webu | Aktualizace | Meteodeník */
-  .header-info-line {
+  /* 2. O webu – plná výška 44px */
+  #main-header > div > a[href*="o-webu"] {
+    display: flex !important;
+    flex: 1 1 0 !important;
+    height: 44px !important;
+    padding: 0 !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    background-color: var(--bg-inner, #21262d) !important;
+    border: 0px solid var(--border-inner, #30363d) !important;
+    border-radius: 0px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    order: 2 !important;
+    color: var(--text-main, #c9d1d9) !important;
+    text-decoration: none !important;
+    white-space: nowrap !important;
+    box-sizing: border-box !important;
+  }
+
+  /* 3. Meteoradar – plná výška 44px */
+  #main-header > div > a[href*="meteoradar"] {
+    display: flex !important;
+    flex: 1 1 0 !important;
+    height: 44px !important;
+    padding: 0 !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    background-color: var(--bg-inner, #21262d) !important;
+    border: 0px solid var(--border-inner, #30363d) !important;
+    border-radius: 0px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    order: 3 !important;
+    color: var(--text-main, #c9d1d9) !important;
+    text-decoration: none !important;
+    white-space: nowrap !important;
+    box-sizing: border-box !important;
+  }
+
+  /* 4. Hamburger tlačítko (☰) vpravo – plná výška 44px */
+  #main-header > div::after {
+    content: "☰" !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: 0 0 44px !important;
+    height: 44px !important;
+    background-color: var(--bg-inner, #21262d) !important;
+    color: var(--text-accent, #38bdf8) !important;
+    border: 0px solid var(--border-inner, #30363d) !important;
+    border-radius: 0px !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
+    cursor: pointer !important;
+    box-sizing: border-box !important;
+    order: 4 !important;
+    transition: background-color 0.2s ease !important;
+  }
+
+  #main-header > div:hover::after,
+  #main-header > div::after:hover {
+    background-color: #30363d !important;
+  }
+
+  /* Skrytí ostatních ve výchozím stavu */
+  #main-header > div > a:not([href*="o-webu"]):not([href*="meteoradar"]),
+  #main-header > div > select,
+  #main-header > div > button#theme-button {
+    display: none !important;
+  }
+
+  /* --- PO ROZKLIKNUTÍ (.open) --- */
+  #main-header.open > div {
     display: flex !important;
     flex-wrap: wrap !important;
-    justify-content: center !important;
-    align-items: center !important;
-    gap: 10px !important;
-    color: var(--text-main);
-    font-size: 0.9rem !important;
   }
 
-  /* Spodní sekce s náhledem (Meteoradar, Měsíc) */
-  .header-preview-row {
+  #main-header.open > div > div:first-child,
+  #main-header.open > div > a[href*="o-webu"],
+  #main-header.open > div > a[href*="meteoradar"] {
     display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    gap: 12px !important;
-    width: 100% !important;
-    margin-top: 10px !important;
+    height: 44px !important;
   }
 
-  /* Sjednocení tlačítek a boxů (Meteoradar, Měsíc, Sledováno) */
-  .radar-preview-box, .moon-preview-box, .followed-box {
+  #main-header.open > div::after {
+    content: "✕" !important;
+    color: #ef4444 !important;
+    height: 44px !important;
+  }
+
+  /* Běžná tlačítka v rozbaleném menu (výška 44px) */
+  #main-header.open > div > a:not([href*="o-webu"]):not([href*="meteoradar"]) {
     display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
+    flex: 0 0 50% !important;
+    width: 50% !important;
+    height: 44px !important;
     justify-content: center !important;
-    gap: 5px !important;
-    padding: 8px 12px !important;
-    background: #111622 !important;
-    border: 1px solid var(--border-inner) !important;
-    border-radius: 8px !important;
-    min-width: 80px !important;
+    align-items: center !important;
+    border-radius: 0px !important;
+    border-top: 1px solid var(--border-inner, #30363d) !important;
+    border-right: 1px solid var(--border-inner, #30363d) !important;
+    background-color: var(--bg-inner, #21262d) !important;
+    font-size: 12px !important;
+    color: var(--text-main, #c9d1d9) !important;
+    text-decoration: none !important;
+    box-sizing: border-box !important;
+    order: 10 !important;
   }
 
-  /* Odstraněno problematické zoomování celého webu */
-  html, body {
-    zoom: 0.90 !important;
+  /* Tlačítko tématu vlevo (výška 44px) */
+  #main-header.open > div > button#theme-button {
+    display: flex !important;
+    flex: 0 0 50% !important;
+    width: 50% !important;
+    height: 44px !important;
+    justify-content: center !important;
+    align-items: center !important;
+    border-radius: 0px !important;
+    border-top: 1px solid var(--border-inner, #30363d) !important;
+    border-right: 1px solid var(--border-inner, #30363d) !important;
+    background-color: var(--bg-inner, #21262d) !important;
+    box-sizing: border-box !important;
+    order: 11 !important;
   }
+
+  /* Úplné skrytí selectu Více na mobilu */
+  #main-header.open > div > select {
+    display: none !important;
+  }
+
+  html, body {    
+    zoom: 0.90 !important;  }
 }
 
 /* --- OPRAVA A VYČIŠTĚNÍ PRO OBECNÉ TŘÍDY --- */
@@ -570,7 +876,7 @@ CSS
     white-space: pre-line;
     position: absolute;
     top: 45%;
-    left: 90px;
+    left: 100px;
     width: 270px;
     background-color: #000000;
     color: #ffffff;
@@ -594,6 +900,95 @@ CSS
     }
 }
 
+/* Zvětšení ikonek počasí v předpovědi */
+img[src*="png/"] {
+    width: 50px !important;  /* Tady si můžeš číslo změnit (např. 36px, 42px, 50px) */
+    height: auto !important;
+}
+
+  /* =======================================================
+   PRANOSTIKY – Sezónní barvy a podpora světlého/tmavého režimu
+   ======================================================= */
+
+/* Základní struktura boxu */
+#pranostika-box {
+    border-radius: 8px !important;
+    padding: 15px !important;
+    margin: 15px 0 !important;
+    box-sizing: border-box !important;
+    transition: all 0.5s ease;
+}
+
+/* ROČNÍ OBDOBÍ – Pozadí, levý okraj a barva textu */
+#pranostika-box.sezona-zima {
+    background-color: rgba(52, 152, 219, 0.05) !important;
+    border: 1px solid #30363d;
+    border-left: 4px solid #3498db !important;
+}
+#pranostika-box.sezona-zima #text-pranostiky span {
+    color: #3498db !important;
+}
+
+#pranostika-box.sezona-jaro {
+    background-color: rgba(46, 204, 113, 0.05) !important;
+    border: 1px solid #30363d;
+    border-left: 4px solid #2ecc71 !important;
+}
+#pranostika-box.sezona-jaro #text-pranostiky span {
+    color: #2ecc71 !important;
+}
+
+#pranostika-box.sezona-leto {
+    background-color: rgba(231, 76, 60, 0.05) !important;
+    border: 1px solid #30363d;
+    border-left: 4px solid #e74c3c !important;
+}
+#pranostika-box.sezona-leto #text-pranostiky span {
+    color: #e74c3c !important;
+}
+
+#pranostika-box.sezona-podzim {
+    background-color: rgba(230, 126, 34, 0.05) !important;
+    border: 1px solid #30363d;
+    border-left: 4px solid #e67e22 !important;
+}
+#pranostika-box.sezona-podzim #text-pranostiky span {
+    color: #e67e22 !important;
+}
+
+/* Nadpis a další prvky v boxu */
+#pranostika-box #pranostika-nadpis {
+    font-weight: bold !important;
+    font-size: 1.1rem !important;
+    margin-bottom: 2px !important;
+    color: inherit;
+}
+
+#text-pranostiky {
+    font-style: italic !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+    margin-bottom: 10px !important;
+}
+
+.tlacitko-pranostiky {
+    border: none !important;
+    padding: 6px 12px !important;
+    border-radius: 4px !important;
+    font-size: 0.8rem !important;
+    cursor: pointer !important;
+    text-decoration: none !important;
+    display: inline-block !important;
+    background-color: rgba(255, 255, 255, 0.08) !important;
+    color: inherit !important;
+}
+
+
+/* =======================================================
+   HLAVIČKA WEBU
+   ======================================================= */
+
 body.light-mode {
     --header-bg: #ffffff;
     --header-border: #d0d7de;
@@ -605,16 +1000,14 @@ body.light-mode {
     justify-content: space-between;
     align-items: center;
     padding: 12px 20px;
-    background-color: #1c2333 !important; /* Výchozí tmavá, aby to při načtení neblikalo bíle */
+    background-color: #1c2333 !important;
     border-bottom: 1px solid #30363d !important;
     width: 100%;
     box-sizing: border-box;
     flex-wrap: wrap;
     gap: 15px;
-    /* ÚPLNĚ ODSTRANĚNO: transition, aby nebylo zpoždění */
 }
 
-/* Když je aktivní světlý režim (uprav podle toho, jakou třídu/atribut pro světlejší režim používáš, např. .light-mode nebo [data-theme="light"]) */
 .light-mode #main-header,
 [data-theme="light"] #main-header {
     background-color: #ffffff !important;
@@ -626,71 +1019,60 @@ body.light-mode {
 <body>
     <div class="container">
 
-<header id="main-header" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; background-color: #0d1117; border-bottom: 1px solid #21262d; width: 100%; box-sizing: border-box; flex-wrap: wrap; gap: 15px;">
-
-    <!-- LEVÁ STRANA: Logo a ovládací prvky pohromadě -->
-    <div style="display: flex; align-items: center; gap: 25px; flex-wrap: wrap;">
-        
-        <a href="https://www.meteoinfo.cz" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
-            <img src="../../apple-touch-icon.png" alt="MI" style="width: 32px; height: 32px; object-fit: contain; border-radius: 6px;">
-            <h1 style="margin: 0; font-size: 1.8rem; font-weight: 800; letter-spacing: -0.5px; white-space: nowrap;">
-                <span style="color: #38bdf8;">Meteo</span><span style="color: #38bdf8;">Info</span>
-            </h1>
-            <h2 style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0;">Aktuální předpověď počasí, meteoradar, srážky a teploty pro města online</h2>
-        </a>
-
-        <!-- Ostatní věci (Discord, Stáhnout, Čas, Odkazy) -->
-        <div style="display: flex; flex-direction: column; gap: 4px;">
-            
-            <!-- 1. Řádek vlevo: Discord -->
-            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                <a href="https://discord.gg/FgqBW3pyQz" target="_blank" rel="noopener noreferrer" title="Přidej se na náš Discord Server" style="display: flex; align-items: center; background: #5865F2; padding: 5px 8px; border-radius: 6px; text-decoration: none;">
-                    <svg viewBox="0 0 127.14 96.36" style="width: 16px; height: 16px; fill: #ffffff;">
-                        <path d="M107.7,8.07A105.15,105.15,0,0,0,77.26,0a77.19,77.19,0,0,0-3.3,6.83A96.67,96.67,0,0,0,53.22,6.83,77.19,77.19,0,0,0,49.88,0,105.15,105.15,0,0,0,19.44,8.07C3.66,31.58-1.95,54.65,1,77.53A105.73,105.73,0,0,0,32,96.36a74.37,74.37,0,0,0,6.73-11,68.21,68.21,0,0,1-10.57-5c1,.74,2,1.51,3,2.26a74.12,74.12,0,0,0,64.78,0c1-.75,2-1.52,3-2.26a68.21,68.21,0,0,1-10.57,5,74.37,74.37,0,0,0,6.73,11,105.73,105.73,0,0,0,31.06-18.83C129.85,50.7,123.32,27.87,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53S36.18,40.36,42.45,40.36,53.83,46,53.83,53,48.72,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.24,60,73.24,53S78.41,40.36,84.69,40.36,96.07,46,96.07,53,91,65.69,84.69,65.69Z"/>
-                    </svg>
-                </a>
-
-            <a href="https://www.meteoinfo.cz/pratele/" style="display: inline-flex; align-items: center; padding: 5px 10px; background-color: #0366d6; color: #ffffff; border: none; border-radius: 6px; text-decoration: none; font-weight: 700; font-size: 12px;">Přátelé</a>
-
-    <!-- Nové tlačítko Foto od vás -->
-    <a href="https://www.meteoinfo.cz/fotky/" style="display: inline-flex; align-items: center; padding: 5px 10px; background-color: #0366d6; color: #ffffff; border: none; border-radius: 6px; text-decoration: none; font-weight: 700; font-size: 12px;">Fotky</a>
+<!-- VELKÉ LOGO (vlevo) + ZELENÉ TLAČÍTKO STÁHNOUT (vpravo nahoře - trvale viditelné) -->
+<div style="padding: 0px 12px 12px 5px; display: flex; align-items: center; justify-content: space-between; width: 100%; box-sizing: border-box;">
+    <!-- Logo MeteoInfo -->
+    <a href="https://www.meteoinfo.cz" style="display: inline-flex; align-items: center; gap: 12px; text-decoration: none;">
+        <img src="../../apple-touch-icon.png" alt="MI" style="width: 40px; height: 40px; object-fit: contain; border-radius: 8px;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; letter-spacing: -0.5px; white-space: nowrap;">
+            <span style="color: #38bdf8;">Meteo</span><span style="color: #38bdf8;">Info</span>
+        </h1>
+    </a>
 </div>
 
-            <!-- 2. Řádek vlevo: Čas, datum, odkazy, deník i články -->
-            <div style="display: flex; align-items: center; gap: 6px; font-size: 0.8rem; flex-wrap: wrap;">
-                <span id="live-time" style="font-weight: bold; font-size: 1.2rem; color: #ffffff;">17:16:12</span>
-                <span style="color: #484f58;">|</span>
-                <span id="live-date" style="color: #8b949e;">5. 9. 2026</span>
-                <button class="o-webu-btn" onclick="window.location.href='https://www.meteoinfo.cz/o-webu/'">O webu</button>
-                <span style="color: #484f58;">|</span>
-                <button class="o-webu-btn" onclick="window.location.href='https://www.meteoinfo.cz/aktualizace/'">Aktualizace</button>
-                <span style="color: #484f58;">|</span>
-                <button class="o-webu-btn" style="font-weight: bold; color: #38bdf8;" onclick="window.location.href='https://www.meteoinfo.cz/meteo-denik/'">📖 Meteo deník</button>
-                <span style="color: #484f58;">|</span>
-                <button class="o-webu-btn" onclick="window.location.href='https://www.meteoinfo.cz/clanky/'">📰 Články</button>
-            </div>
-        </div>
-    </div>
+<!-- HLAVNÍ PANEL S DLAŽDICEMI (zcela hranatý, bez zaoblení) -->
+<header id="main-header" style="display: flex; align-items: stretch; justify-content: space-between; gap: 6px; padding: 0 2px; background-color: var(--bg-card, #0d1117); border-bottom: 0px solid var(--border-color, #21262d); border-top: 0px solid var(--border-color, #21262d); width: 100%; box-sizing: border-box; flex-wrap: nowrap; height: 52px; margin-bottom: 15px; border-radius: 0px;">
 
-    <!-- PRAVÁ STRANA: Tlačítka (Radar, Měsíc, Téma, Sledovat) -->
-    <div style="display: flex; gap: 8px; align-items: center; flex-shrink: 0;">
-        <a href="https://www.meteoinfo.cz/meteoradar/" class="header-btn" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 4px;">🛰️ Meteoradar</a>
+    <div style="display: flex; align-items: stretch; gap: 0px; flex-wrap: nowrap; width: 100%; height: 100%; border-radius: 0px;">
         
-        <a id="moon-trigger-btn" href="https://www.meteoinfo.cz/astro/" class="header-btn" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 4px;">Astro 🌓</a>
-        
-        <button id="theme-button" class="header-btn" onclick="toggleTheme()" style="font-size: 1.1rem; padding: 4px 10px;">🌙</button>
-
-        <div class="mobilni-sledovat-kontejner" style="position: relative; display: inline-block;">
-            <button id="follow-btn" class="btn-follow">🔔 Sledovat</button>
-            <div class="info-tooltip-container">
-                <div class="info-box">i</div>
-                <div class="tooltip-text">
-                    Po kliknutí na tlačítko Sledovat Vám začnou přicházet zprávy o mimořádných situacích (např. silné bouřky, vichřice). Sledování můžete kdykoliv zrušit.
-                    <br><br>
-                    <span style="color: #ff4d4d;">UPOZORNĚNÍ: Poslední dobou je problém zprovoznit tlačítko Sledovat. Když na něj kliknete, oznámení se sice objeví, ale výstrahy už ne. Na této funkci budu dále pracovat a zkusím to co nejrychleji zprovoznit. Děkuji.</span>
-                </div>
-            </div>
+        <!-- Čas a datum -->
+        <div style="background-color: var(--bg-inner, #21262d); border: 0px solid var(--border-inner, #30363d); padding: 0 14px; display: flex; align-items: center; justify-content: center; gap: 8px; white-space: nowrap; flex: 1.2; height: 100%; box-sizing: border-box; border-radius: 0px; color: var(--text-main, #ffffff);">
+            <span id="live-time" style="font-weight: bold; font-size: 17px;">hh:mm:ss</span>
+            <span style="color: var(--text-muted, #484f58);">|</span>
+            <span id="live-date" style="color: var(--text-muted, #8b949e); font-size: 17px;">dd. mm. rrrr</span>
         </div>
+
+        <!-- O webu -->
+        <a href="https://www.meteoinfo.cz/o-webu/" onmouseover="this.style.backgroundColor='#30363d';" onmouseout="this.style.backgroundColor='var(--bg-inner, #21262d)';" style="background-color: var(--bg-inner, #21262d); border: 0px solid var(--border-inner, #30363d); color: var(--text-main, #c9d1d9); padding: 0 12px; text-decoration: none; font-size: 13px; font-weight: 600; white-space: nowrap; flex: 1; display: flex; align-items: center; justify-content: center; height: 100%; box-sizing: border-box; border-radius: 0px; transition: background-color 0.2s;">O webu</a>
+
+        <!-- Meteoradar -->
+        <a href="https://www.meteoinfo.cz/meteoradar/" onmouseover="this.style.backgroundColor='#30363d';" onmouseout="this.style.backgroundColor='var(--bg-inner, #21262d)';" style="background-color: var(--bg-inner, #21262d); border: 0px solid var(--border-inner, #30363d); color: var(--text-main, #c9d1d9); padding: 0 12px; text-decoration: none; font-size: 13px; font-weight: 600; white-space: nowrap; flex: 1; display: flex; align-items: center; justify-content: center; height: 100%; box-sizing: border-box; border-radius: 0px; transition: background-color 0.2s;">Meteoradar</a>
+
+        <!-- Články -->
+        <a href="https://www.meteoinfo.cz/clanky/" onmouseover="this.style.backgroundColor='#30363d';" onmouseout="this.style.backgroundColor='var(--bg-inner, #21262d)';" style="background-color: var(--bg-inner, #21262d); border: 0px solid var(--border-inner, #30363d); color: var(--text-main, #c9d1d9); padding: 0 12px; text-decoration: none; font-size: 13px; font-weight: 600; white-space: nowrap; flex: 1; display: flex; align-items: center; justify-content: center; height: 100%; box-sizing: border-box; border-radius: 0px; transition: background-color 0.2s;">Články</a>
+
+        <!-- Meteo deník -->
+        <a href="https://www.meteoinfo.cz/meteo-denik/" onmouseover="this.style.backgroundColor='#30363d';" onmouseout="this.style.backgroundColor='var(--bg-inner, #21262d)';" style="background-color: var(--bg-inner, #21262d); border: 0px solid var(--border-inner, #30363d); color: var(--text-main, #c9d1d9); padding: 0 12px; text-decoration: none; font-size: 13px; font-weight: 600; white-space: nowrap; flex: 1; display: flex; align-items: center; justify-content: center; height: 100%; box-sizing: border-box; border-radius: 0px; transition: background-color 0.2s;">Meteo deník</a>
+
+        <!-- Astro -->
+        <a href="https://www.meteoinfo.cz/astro/" onmouseover="this.style.backgroundColor='#30363d';" onmouseout="this.style.backgroundColor='var(--bg-inner, #21262d)';" style="background-color: var(--bg-inner, #21262d); border: 0px solid var(--border-inner, #30363d); color: var(--text-main, #c9d1d9); padding: 0 12px; text-decoration: none; font-size: 13px; font-weight: 600; white-space: nowrap; flex: 1; display: flex; align-items: center; justify-content: center; height: 100%; box-sizing: border-box; border-radius: 0px; transition: background-color 0.2s;">Astro</a>
+
+        <!-- Fotky -->
+        <a href="https://www.meteoinfo.cz/fotky/" onmouseover="this.style.backgroundColor='#30363d';" onmouseout="this.style.backgroundColor='var(--bg-inner, #21262d)';" style="background-color: var(--bg-inner, #21262d); border: 0px solid var(--border-inner, #30363d); color: var(--text-main, #c9d1d9); padding: 0 12px; text-decoration: none; font-size: 13px; font-weight: 600; white-space: nowrap; flex: 1; display: flex; align-items: center; justify-content: center; height: 100%; box-sizing: border-box; border-radius: 0px; transition: background-color 0.2s;">Fotky</a>
+
+        <!-- Přátelé -->
+        <a href="https://www.meteoinfo.cz/pratele/" onmouseover="this.style.backgroundColor='#30363d';" onmouseout="this.style.backgroundColor='var(--bg-inner, #21262d)';" style="background-color: var(--bg-inner, #21262d); border: 0px solid var(--border-inner, #30363d); color: var(--text-main, #c9d1d9); padding: 0 12px; text-decoration: none; font-size: 13px; font-weight: 600; white-space: nowrap; flex: 1; display: flex; align-items: center; justify-content: center; height: 100%; box-sizing: border-box; border-radius: 0px; transition: background-color 0.2s;">Přátelé</a>
+        
+        <!-- Aktualizace -->
+        <a href="https://www.meteoinfo.cz/aktualizace/" onmouseover="this.style.backgroundColor='#30363d';" onmouseout="this.style.backgroundColor='var(--bg-inner, #21262d)';" style="background-color: var(--bg-inner, #21262d); border: 0px solid var(--border-inner, #30363d); color: var(--text-main, #c9d1d9); padding: 0 12px; text-decoration: none; font-size: 13px; font-weight: 600; white-space: nowrap; flex: 1; display: flex; align-items: center; justify-content: center; height: 100%; box-sizing: border-box; border-radius: 0px; transition: background-color 0.2s;">Aktualizace</a>
+
+        <!-- Rozbalovací nabídka "Více" -->
+        <select onmouseover="this.style.backgroundColor='#30363d';" onmouseout="this.style.backgroundColor='var(--bg-inner, #21262d)';" style="background-color: var(--bg-inner, #21262d); border: 0px solid var(--border-inner, #30363d); color: var(--text-accent, #38bdf8); padding: 0 12px; font-size: 13px; font-weight: 600; cursor: pointer; outline: none; white-space: nowrap; flex: 1; height: 100%; box-sizing: border-box; border-radius: 0px; text-align: center; transition: background-color 0.2s;">
+            <option value="" selected>Více</option>
+        </select>
+
+        <!-- Přepínač tématu -->
+        <button id="theme-button" onclick="toggleTheme()" onmouseover="this.style.backgroundColor='#30363d';" onmouseout="this.style.backgroundColor='var(--bg-inner, #21262d)';" style="background-color: var(--bg-inner, #21262d); border: 0px solid var(--border-inner, #30363d); color: var(--text-main, #c9d1d9); font-size: 1.1rem; padding: 0 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; height: 100%; box-sizing: border-box; border-radius: 0px; flex-shrink: 0; transition: background-color 0.2s;">🌙</button>
     </div>
 
 </header>
@@ -930,6 +1312,20 @@ function toggleTheme() {
     footer.innerHTML = '© 2026 MeteoInfo - Všechna práva vyhrazena';
 
     document.body.appendChild(footer);
+</script>
+
+<script>
+  // Po kliknutí na hamburger / křížek přepne třídu .open na #main-header
+  document.getElementById('main-header').addEventListener('click', function(e) {
+    // Zjistíme, jestli uživatel kliknul v pravé části (kde je hamburger / křížek)
+    const rect = this.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    
+    // Pokud klikne do pravých cca 60 pixelů (kde bývá tlačítko ☰), otevře/zavře menu
+    if (clickX > rect.width - 70) {
+      this.classList.toggle('open');
+    }
+  });
 </script>
 
 </body> 
