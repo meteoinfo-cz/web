@@ -1023,6 +1023,25 @@ body.light-mode {
     border-bottom: 1px solid #e5e7eb !important;
 }
 
+.meteo-discord-btn {
+    display: inline-block; 
+    background-color: #22c55e; 
+    color: white; 
+    text-decoration: none; 
+    padding: 8px 12px; 
+    font-weight: bold; 
+    border-radius: 5px; 
+    font-size: 14px; 
+    text-align: center; 
+    box-shadow: 0 2px 6px rgba(34, 197, 94, 0.2);
+    transition: background-color 0.2s ease;
+}
+
+.meteo-discord-btn:hover {
+    background-color: #16a34a !important;
+    color: white !important;
+}
+
     </style>
 </head>
 <body>
@@ -1114,20 +1133,21 @@ body.light-mode {
   </div>
     
     <!-- Krátký text vysvětlující výhodu -->
-    <p style="margin: 0 0 12px 0; font-size: 11.5px; line-height: 1.4; color: #ffffff; font-weight: bold;">
-        Živá komunita pro nadšence do počasí. Dostávejte včas výstrahy, hlaste aktuální počasí ze svých měst a obcí a zapojte se do vědomostních kvízů o počasí a do soutěže o nejlepší fotky! Najdete zde i další informace mimo web! 
+    <p style="margin: 0 0 12px 0; font-size: 16px; line-height: 1.4; color: #ffffff; font-weight: bold;">
+        ⚠️ Aktuální a rychlé výstrahy do mobilu!
+Neuteče vám žádná bouřka, sněžení ani silný vítr. Sledujte aktuální a mimořádné situace z celé ČR živě s naší komunitou. 
     </p>
     
     <!-- Tlačítko a kontrolka online aktivity -->
     <div style="display: flex; flex-direction: column; gap: 8px;">
-        <a href="https://discord.gg/FgqBW3pyQz" target="_blank" style="display: inline-block; background-color: #22c55e; color: white; text-decoration: none; padding: 8px 12px; font-weight: bold; border-radius: 5px; font-size: 12.5px; text-align: center; box-shadow: 0 2px 6px rgba(34, 197, 94, 0.2);">
-            Chci včas dostávat výstrahy, hlásit počasí nebo soutěžit ➔
+        <a href="https://discord.gg/FgqBW3pyQz" target="_blank" onmouseover="this.style.backgroundColor='#16a34a'" onmouseout="this.style.backgroundColor='#22c55e'" style="display: inline-block; background-color: #22c55e; color: white; text-decoration: none; padding: 10px 12px; font-weight: bold; border-radius: 5px; font-size: 15px; text-align: center; box-shadow: 0 2px 6px rgba(34, 197, 94, 0.2); transition: background-color 0.2s;">
+            VSTOUPIT DO METEO CHATU ➔
         </a>
         
         <!-- Živý indikátor s automatickým načítáním počtu fanoušků -->
         <div style="display: flex; align-items: center; gap: 8px; justify-content: center;">
             <span style="width: 10px; height: 10px; background-color: #22c55e; border-radius: 50%; display: inline-block; box-shadow: 0 0 8px #22c55e;"></span>
-            <span style="font-size: 14px; color: #94a3b8;">Právě online: <strong id="discord-online-pocet" style="color: #22c55e; font-size: 15px;">načítání...</strong> lidí</span>
+            <span style="font-size: 14px; color: #94a3b8;">Právě online: <strong id="discord-online-pocet" style="color: #22c55e; font-size: 15px;">načítání...</strong> lidí | Vstup zdarma</span>
         </div>
     </div>
 </div>
