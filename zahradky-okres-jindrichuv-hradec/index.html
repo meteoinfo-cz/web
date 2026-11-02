@@ -1587,41 +1587,48 @@ function zvolM(jm, la, lo, st) {
   }
 }
 
-        // Přidali jsme parametr 'teplota' na konec
-function ziskejIkonuUrl(kod, aktualniCasText, vychodSlunceText, zapadSlunceText, teplota) {
-
-    // Pokud nemáš časové údaje, ošetříme základní mapování s ohledem na teplotu
-    if (!aktualniCasText || !vychodSlunceText || !zapadSlunceText) {
-        // Mrznoucí déšť jen při mrazu (např. <= 1 °C) a kódu 51
-        if (kod === 51 && teplota <= 1) return `/png/mrznouci_dest.png`;
-        // Sníh jen při teplotě pod 3 °C
-        if (kod >= 71 && kod <= 77 && teplota <= 3) return `/png/snih.png`;
-        
-        const mapovaniDen = {
-            0: "jasno", 1: "skoro_jasno", 2: "polojasno", 3: "oblacno", 45: "mlha", 48: "mlha",
-            51: "prehanky", 53: "prehanky", 55: "prehanky", 
-            61: "dest", 63: "dest", 65: "dest",
-            80: "prehanky", 81: "prehanky", 82: "prehanky", 95: "bourka"
-        };
-        return `/png/${mapovaniDen[kod] || "polojasno"}.png`;
+        function ziskejIkonuUrl(kod, aktualniCasText, vychodSlunceText, zapadSlunceText, teplota) {
+    // 1. OŠETŘENÍ TEPLOTY: Převod na čisté číslo
+    let ciselnaTeplota = 0;
+    if (teplota !== undefined && teplota !== null) {
+        ciselnaTeplota = typeof teplota === 'number' ? teplota : parseFloat(teplota);
+        if (isNaN(ciselnaTeplota)) ciselnaTeplota = 0;
     }
 
-    const spoctiMinuty = (textKombinovany) => {
-        if (typeof textKombinovany !== 'string') return 0;
-        const indexT = textKombinovany.indexOf("T");
-        if (indexT === -1) return 0;
-        const casCasti = textKombinovany.substring(indexT + 1).split(":");
-        const hodiny = parseInt(casCasti[0], 10) || 0;
-        const minuty = parseInt(casCasti[1], 10) || 0;
-        return (hodiny * 60) + minuty;
-    };
+    // 2. URČENÍ DNE / NOCI
+    let jeNoc = false;
+    if (aktualniCasText && vychodSlunceText && zapadSlunceText) {
+        const spoctiMinuty = (textKombinovany) => {
+            if (typeof textKombinovany !== 'string') return 0;
+            const indexT = textKombinovany.indexOf("T");
+            if (indexT === -1) return 0;
+            const casCasti = textKombinovany.substring(indexT + 1).split(":");
+            const hodiny = parseInt(casCasti, 10) || 0;
+            const minuty = parseInt(casCasti, 10) || 0;
+            return (hodiny * 60) + minuty;
+        };
 
-    const tedMinuty = spoctiMinuty(aktualniCasText);
-    const vychodMinuty = spoctiMinuty(vychodSlunceText);
-    const zapadMinuty = spoctiMinuty(zapadSlunceText);
-    const jeNoc = tedMinuty < vychodMinuty || tedMinuty > zapadMinuty;
+        const tedMinuty = spoctiMinuty(aktualniCasText);
+        const vychodMinuty = spoctiMinuty(vychodSlunceText);
+        const zapadMinuty = spoctiMinuty(zapadSlunceText);
+        jeNoc = tedMinuty < vychodMinuty || tedMinuty > zapadMinuty;
+    }
 
-    // HLAVNÍ MAPOVÁNÍ PRO IKONY
+    // 3. LOGIKA PRO ZIMNÍ SRÁŽKY (Sníh: 71-77, Přeháňky se sněhem: 85-86)
+    if ((kod >= 71 && kod <= 77) || kod === 85 || kod === 86) {
+        // Pokud mrzne nebo je kolem nuly (do 1 °C), padá čistý sníh
+        if (ciselnaTeplota <= 1) {
+            return `png/snih.png`;
+        }
+        // Nad 1 °C do 3 °C padá déšť se sněhem
+        if (ciselnaTeplota > 1 && ciselnaTeplota <= 3) {
+            return `png/dest_se_snehem.png`;
+        }
+        // Nad 3 °C už regulérně prší
+        return `png/${jeNoc ? "destove_prehanky_noc" : "prehanky"}.png`;
+    }
+
+    // 4. HLAVNÍ MAPOVÁNÍ PRO OSTATNÍ IKONY
     const mapovani = {
         0: jeNoc ? "jasno_noc" : "jasno",
         1: jeNoc ? "skoro_jasno_noc" : "skoro_jasno",
@@ -1629,10 +1636,12 @@ function ziskejIkonuUrl(kod, aktualniCasText, vychodSlunceText, zapadSlunceText,
         3: jeNoc ? "oblacno_noc" : "oblacno",
         45: "mlha",
         48: "mlha",
-        // Pokud je kód 51, mrznoucí déšť se ukáže jen pokud je teplota 1 °C a méně, jinak normální přeháňky
-        51: (teplota <= 1) ? "mrznouci_dest" : "prehanky",
-        53: "prehanky",
-        55: "prehanky",
+        // Místo mrznoucího deště dáváme při teplotách pod 3 °C déšť se sněhem
+        51: (ciselnaTeplota < 3) ? "dest_se_snehem" : "prehanky",
+        53: (ciselnaTeplota < 3) ? "dest_se_snehem" : "prehanky",
+        55: (ciselnaTeplota < 3) ? "dest_se_snehem" : "prehanky",
+        66: (ciselnaTeplota < 3) ? "dest_se_snehem" : "dest",
+        67: (ciselnaTeplota < 3) ? "dest_se_snehem" : "dest",
         61: "dest",
         63: "dest",
         65: "dest",
@@ -1642,17 +1651,8 @@ function ziskejIkonuUrl(kod, aktualniCasText, vychodSlunceText, zapadSlunceText,
         95: "bourka"
     };
 
-    // Pokud API hlásí sníh (kódy 71 až 77):
-    if (kod >= 71 && kod <= 77) {
-        // Sníh se zobrazí jen tehdy, když je venku opravdu chladno (např. 3 °C a méně)
-        if (teplota <= 3) {
-            return `/png/snih.png`;
-        }
-        // Pokud je tepleji (např. 5 °C a víc), zobrazí se raději běžné přeháňky/déšť
-        return `!png/${jeNoc ? "destove_prehanky_noc" : "prehanky"}.png`;
-    }
-
-    return `/png/${mapovani[kod] || "polojasno"}.png`;
+    const ikona = mapovani[kod] || "polojasno";
+    return `png/${ikona}.png`;
 }
 
         function aktualizujHomeCheck() {
