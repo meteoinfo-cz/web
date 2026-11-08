@@ -486,10 +486,11 @@ header {
     background-color: #30363d !important;
   }
 
-  /* Skrytí ostatních ve výchozím stavu */
+  /* Skrytí ostatních ve výchozím stavu (včetně položky Aktualizace uvnitř desktop-only-menu) */
   #main-header > div > a:not([href*="o-webu"]):not([href*="meteoradar"]),
   #main-header > div > select,
-  #main-header > div > button#theme-button {
+  #main-header > div > button#theme-button,
+  #main-header .desktop-only-menu {
     display: none !important;
   }
 
@@ -524,14 +525,61 @@ header {
     border-top: 1px solid var(--border-inner, #30363d) !important;
     border-right: 1px solid var(--border-inner, #30363d) !important;
     background-color: var(--bg-inner, #21262d) !important;
-    font-size: 12px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
     color: var(--text-main, #c9d1d9) !important;
     text-decoration: none !important;
     box-sizing: border-box !important;
     order: 10 !important;
   }
 
-  /* Tlačítko tématu vlevo (výška 44px) */
+  /* Speciální zobrazení tlačítka Aktualizace (vyttažené z dropdown kontejneru ven do mřížky) */
+  #main-header.open .desktop-only-menu {
+    display: flex !important;
+    flex: 0 0 50% !important;
+    width: 50% !important;
+    height: 44px !important;
+    position: static !important;
+    order: 10 !important;
+  }
+
+  #main-header.open .desktop-only-menu button#arrow-vice,
+  #main-header.open .desktop-only-menu button[onclick*="arrow-vice"] {
+    display: none !important; /* Skryjeme původní tlačítko "Více" */
+  }
+
+  #main-header.open .desktop-only-menu #dropdown-menu-vice {
+    display: flex !important;
+    position: static !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: 44px !important;
+    min-width: unset !important;
+    z-index: auto !important;
+  }
+
+  #main-header.open .desktop-only-menu #dropdown-menu-vice a {
+    display: flex !important;
+    width: 100% !important;
+    height: 44px !important;
+    justify-content: center !important;
+    align-items: center !important;
+    border-radius: 0px !important;
+    border-top: 1px solid var(--border-inner, #30363d) !important;
+    border-right: 1px solid var(--border-inner, #30363d) !important;
+    background-color: var(--bg-inner, #21262d) !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    color: var(--text-main, #c9d1d9) !important;
+    text-decoration: none !important;
+    box-sizing: border-box !important;
+    padding: 0 !important;
+  }
+
+  /* Tlačítko tématu (výška 44px) */
   #main-header.open > div > button#theme-button {
     display: flex !important;
     flex: 0 0 50% !important;
@@ -1063,13 +1111,51 @@ body.light-mode {
         <!-- Přátelé -->
         <a href="https://www.meteoinfo.cz/pratele/" onmouseover="this.style.backgroundColor='#30363d';" onmouseout="this.style.backgroundColor='var(--bg-inner, #21262d)';" style="background-color: var(--bg-inner, #21262d); border: 0px solid var(--border-inner, #30363d); color: var(--text-main, #c9d1d9); padding: 0 12px; text-decoration: none; font-size: 13px; font-weight: 600; white-space: nowrap; flex: 1; display: flex; align-items: center; justify-content: center; height: 100%; box-sizing: border-box; border-radius: 0px; transition: background-color 0.2s;">Přátelé</a>
         
-        <!-- Aktualizace -->
-        <a href="https://www.meteoinfo.cz/aktualizace/" onmouseover="this.style.backgroundColor='#30363d';" onmouseout="this.style.backgroundColor='var(--bg-inner, #21262d)';" style="background-color: var(--bg-inner, #21262d); border: 0px solid var(--border-inner, #30363d); color: var(--text-main, #c9d1d9); padding: 0 12px; text-decoration: none; font-size: 13px; font-weight: 600; white-space: nowrap; flex: 1; display: flex; align-items: center; justify-content: center; height: 100%; box-sizing: border-box; border-radius: 0px; transition: background-color 0.2s;">Aktualizace</a>
+        <!-- Webkamery -->
+        <a href="https://www.meteoinfo.cz/webkamery/" onmouseover="this.style.backgroundColor='#30363d';" onmouseout="this.style.backgroundColor='var(--bg-inner, #21262d)';" style="background-color: var(--bg-inner, #21262d); border: 0px solid var(--border-inner, #30363d); color: var(--text-main, #c9d1d9); padding: 0 12px; text-decoration: none; font-size: 13px; font-weight: 600; white-space: nowrap; flex: 1; display: flex; align-items: center; justify-content: center; height: 100%; box-sizing: border-box; border-radius: 0px; transition: background-color 0.2s;">Webkamery</a>
 
-        <!-- Rozbalovací nabídka "Více" -->
-        <select onmouseover="this.style.backgroundColor='#30363d';" onmouseout="this.style.backgroundColor='var(--bg-inner, #21262d)';" style="background-color: var(--bg-inner, #21262d); border: 0px solid var(--border-inner, #30363d); color: var(--text-accent, #38bdf8); padding: 0 12px; font-size: 13px; font-weight: 600; cursor: pointer; outline: none; white-space: nowrap; flex: 1; height: 100%; box-sizing: border-box; border-radius: 0px; text-align: center; transition: background-color 0.2s;">
-            <option value="" selected>Více</option>
-        </select>
+        <!-- Kontejner pro rozbalovací menu (skrytý na mobilu, viditelný pouze na PC) -->
+<div class="desktop-only-menu" style="position: relative; display: flex; flex: 1; height: 100%;">
+    
+    <style>
+        @media (max-width: 768px) {
+            .desktop-only-menu {
+                display: none !important;
+            }
+        }
+    </style>
+
+    <!-- Hlavní tlačítko "Více" -->
+    <button onclick="var m = document.getElementById('dropdown-menu-vice'); var arrow = document.getElementById('arrow-vice'); if(m.style.display === 'block') { m.style.display = 'none'; arrow.innerHTML = '▼'; } else { m.style.display = 'block'; arrow.innerHTML = '▲'; }" 
+       onmouseover="this.style.backgroundColor='#30363d';" 
+       onmouseout="this.style.backgroundColor='var(--bg-inner, #21262d)';" 
+       style="background-color: var(--bg-inner, #21262d); border: 0px solid var(--border-inner, #30363d); color: var(--text-accent, #38bdf8); padding: 0 16px; font-size: 13px; font-weight: 600; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; white-space: nowrap; width: 100%; height: 100%; box-sizing: border-box; border-radius: 0px; transition: background-color 0.2s; outline: none;">
+        Více <span id="arrow-vice" style="font-size: 10px;">▼</span>
+    </button>
+
+    <!-- Vysouvací sloupeček s položkami -->
+    <div id="dropdown-menu-vice" style="display: none; position: absolute; top: 100%; right: 0; background-color: var(--bg-inner, #21262d); border: 1px solid var(--border-inner, #30363d); border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); min-width: 160px; z-index: 999; padding: 6px; box-sizing: border-box;">
+        
+        <!-- Položka: Aktualizace -->
+        <a href="https://www.meteoinfo.cz/aktualizace/" 
+           onmouseover="this.style.backgroundColor='#30363d';" 
+           onmouseout="this.style.backgroundColor='transparent';" 
+           style="display: block; padding: 10px 14px; color: var(--text-main, #f8fafc); font-size: 13px; font-weight: 600; text-decoration: none; border-radius: 6px; transition: background-color 0.2s;">
+            Aktualizace
+        </a>
+
+        <!-- Sem můžeš v budoucnu jednoduše přidat další tlačítka pod sebe: -->
+        <!-- 
+        <a href="https://www.meteoinfo.cz/dalsi-stranka/" 
+           onmouseover="this.style.backgroundColor='#30363d';" 
+           onmouseout="this.style.backgroundColor='transparent';" 
+           style="display: block; padding: 10px 14px; color: var(--text-main, #f8fafc); font-size: 13px; font-weight: 500; text-decoration: none; border-radius: 6px; transition: background-color 0.2s;">
+            Další stránka
+        </a> 
+        -->
+
+    </div>
+</div>
 
         <!-- Přepínač tématu -->
         <button id="theme-button" onclick="toggleTheme()" onmouseover="this.style.backgroundColor='#30363d';" onmouseout="this.style.backgroundColor='var(--bg-inner, #21262d)';" style="background-color: var(--bg-inner, #21262d); border: 0px solid var(--border-inner, #30363d); color: var(--text-main, #c9d1d9); font-size: 1.1rem; padding: 0 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; height: 100%; box-sizing: border-box; border-radius: 0px; flex-shrink: 0; transition: background-color 0.2s;">🌙</button>
@@ -1319,6 +1405,41 @@ function toggleTheme() {
       this.classList.toggle('open');
     }
   });
+</script>
+
+<script>
+    // 1. PŘI KAŽDÉM NAČTENÍ / OBNOVENÍ STRÁNKY SE UJISTÍME, ŽE JE MENU ZAVŘENÉ A ŠIPKA NAHORU
+    document.addEventListener("DOMContentLoaded", function() {
+        var dropdown = document.getElementById('dropdown-menu-vice');
+        var arrow = document.getElementById('arrow-vice');
+        if (dropdown) dropdown.style.display = 'none';
+        if (arrow) arrow.innerHTML = '▲';
+    });
+
+    // 2. KLASICKÉ OVLÁDÁNÍ KLIKNUTÍM
+    window.addEventListener('click', function(e) {
+        var dropdown = document.getElementById('dropdown-menu-vice');
+        var arrow = document.getElementById('arrow-vice');
+        if (!dropdown) return;
+
+        // Zjištění, zda bylo kliknuto na tlačítko "Více"
+        var toggleButton = e.target.closest('button[onclick*="dropdown-menu-vice"]');
+
+        if (toggleButton) {
+            // Po kliknutí na tlačítko zjistíme nový stav menu
+            setTimeout(function() {
+                if (dropdown.style.display === 'block') {
+                    if (arrow) arrow.innerHTML = '▼'; // Otevřeno = šipka dolů
+                } else {
+                    if (arrow) arrow.innerHTML = '▲'; // Zavřeno = šipka nahoru
+                }
+            }, 10);
+        } else if (!e.target.closest('#dropdown-menu-vice')) {
+            // Pokud klikneme mimo, menu se zavře a šipka skočí zpět nahoru
+            dropdown.style.display = 'none';
+            if (arrow) arrow.innerHTML = '▲';
+        }
+    });
 </script>
 
 </body> 
