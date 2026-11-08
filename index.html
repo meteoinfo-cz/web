@@ -478,10 +478,11 @@ header {
     background-color: #30363d !important;
   }
 
-  /* Skrytí ostatních ve výchozím stavu */
+  /* Skrytí ostatních ve výchozím stavu (včetně položky Aktualizace uvnitř desktop-only-menu) */
   #main-header > div > a:not([href*="o-webu"]):not([href*="meteoradar"]),
   #main-header > div > select,
-  #main-header > div > button#theme-button {
+  #main-header > div > button#theme-button,
+  #main-header .desktop-only-menu {
     display: none !important;
   }
 
@@ -516,14 +517,61 @@ header {
     border-top: 1px solid var(--border-inner, #30363d) !important;
     border-right: 1px solid var(--border-inner, #30363d) !important;
     background-color: var(--bg-inner, #21262d) !important;
-    font-size: 12px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
     color: var(--text-main, #c9d1d9) !important;
     text-decoration: none !important;
     box-sizing: border-box !important;
     order: 10 !important;
   }
 
-  /* Tlačítko tématu vlevo (výška 44px) */
+  /* Speciální zobrazení tlačítka Aktualizace (vyttažené z dropdown kontejneru ven do mřížky) */
+  #main-header.open .desktop-only-menu {
+    display: flex !important;
+    flex: 0 0 50% !important;
+    width: 50% !important;
+    height: 44px !important;
+    position: static !important;
+    order: 10 !important;
+  }
+
+  #main-header.open .desktop-only-menu button#arrow-vice,
+  #main-header.open .desktop-only-menu button[onclick*="arrow-vice"] {
+    display: none !important; /* Skryjeme původní tlačítko "Více" */
+  }
+
+  #main-header.open .desktop-only-menu #dropdown-menu-vice {
+    display: flex !important;
+    position: static !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: 44px !important;
+    min-width: unset !important;
+    z-index: auto !important;
+  }
+
+  #main-header.open .desktop-only-menu #dropdown-menu-vice a {
+    display: flex !important;
+    width: 100% !important;
+    height: 44px !important;
+    justify-content: center !important;
+    align-items: center !important;
+    border-radius: 0px !important;
+    border-top: 1px solid var(--border-inner, #30363d) !important;
+    border-right: 1px solid var(--border-inner, #30363d) !important;
+    background-color: var(--bg-inner, #21262d) !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    color: var(--text-main, #c9d1d9) !important;
+    text-decoration: none !important;
+    box-sizing: border-box !important;
+    padding: 0 !important;
+  }
+
+  /* Tlačítko tématu (výška 44px) */
   #main-header.open > div > button#theme-button {
     display: flex !important;
     flex: 0 0 50% !important;
@@ -1084,19 +1132,58 @@ body.light-mode {
         <!-- Přátelé -->
         <a href="https://www.meteoinfo.cz/pratele/" onmouseover="this.style.backgroundColor='#30363d';" onmouseout="this.style.backgroundColor='var(--bg-inner, #21262d)';" style="background-color: var(--bg-inner, #21262d); border: 0px solid var(--border-inner, #30363d); color: var(--text-main, #c9d1d9); padding: 0 12px; text-decoration: none; font-size: 13px; font-weight: 600; white-space: nowrap; flex: 1; display: flex; align-items: center; justify-content: center; height: 100%; box-sizing: border-box; border-radius: 0px; transition: background-color 0.2s;">Přátelé</a>
         
-        <!-- Aktualizace -->
-        <a href="https://www.meteoinfo.cz/aktualizace/" onmouseover="this.style.backgroundColor='#30363d';" onmouseout="this.style.backgroundColor='var(--bg-inner, #21262d)';" style="background-color: var(--bg-inner, #21262d); border: 0px solid var(--border-inner, #30363d); color: var(--text-main, #c9d1d9); padding: 0 12px; text-decoration: none; font-size: 13px; font-weight: 600; white-space: nowrap; flex: 1; display: flex; align-items: center; justify-content: center; height: 100%; box-sizing: border-box; border-radius: 0px; transition: background-color 0.2s;">Aktualizace</a>
+        <!-- Webkamery -->
+        <a href="https://www.meteoinfo.cz/webkamery/" onmouseover="this.style.backgroundColor='#30363d';" onmouseout="this.style.backgroundColor='var(--bg-inner, #21262d)';" style="background-color: var(--bg-inner, #21262d); border: 0px solid var(--border-inner, #30363d); color: var(--text-main, #c9d1d9); padding: 0 12px; text-decoration: none; font-size: 13px; font-weight: 600; white-space: nowrap; flex: 1; display: flex; align-items: center; justify-content: center; height: 100%; box-sizing: border-box; border-radius: 0px; transition: background-color 0.2s;">Webkamery</a>
 
-        <!-- Rozbalovací nabídka "Více" -->
-        <select onmouseover="this.style.backgroundColor='#30363d';" onmouseout="this.style.backgroundColor='var(--bg-inner, #21262d)';" style="background-color: var(--bg-inner, #21262d); border: 0px solid var(--border-inner, #30363d); color: var(--text-accent, #38bdf8); padding: 0 12px; font-size: 13px; font-weight: 600; cursor: pointer; outline: none; white-space: nowrap; flex: 1; height: 100%; box-sizing: border-box; border-radius: 0px; text-align: center; transition: background-color 0.2s;">
-            <option value="" selected>Více</option>
-        </select>
+        <!-- Kontejner pro rozbalovací menu (skrytý na mobilu, viditelný pouze na PC) -->
+<div class="desktop-only-menu" style="position: relative; display: flex; flex: 1; height: 100%;">
+    
+    <style>
+        @media (max-width: 768px) {
+            .desktop-only-menu {
+                display: none !important;
+            }
+        }
+    </style>
+
+    <!-- Hlavní tlačítko "Více" -->
+    <button onclick="var m = document.getElementById('dropdown-menu-vice'); var arrow = document.getElementById('arrow-vice'); if(m.style.display === 'block') { m.style.display = 'none'; arrow.innerHTML = '▼'; } else { m.style.display = 'block'; arrow.innerHTML = '▲'; }" 
+       onmouseover="this.style.backgroundColor='#30363d';" 
+       onmouseout="this.style.backgroundColor='var(--bg-inner, #21262d)';" 
+       style="background-color: var(--bg-inner, #21262d); border: 0px solid var(--border-inner, #30363d); color: var(--text-accent, #38bdf8); padding: 0 16px; font-size: 13px; font-weight: 600; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; white-space: nowrap; width: 100%; height: 100%; box-sizing: border-box; border-radius: 0px; transition: background-color 0.2s; outline: none;">
+        Více <span id="arrow-vice" style="font-size: 10px;">▼</span>
+    </button>
+
+    <!-- Vysouvací sloupeček s položkami -->
+    <div id="dropdown-menu-vice" style="display: none; position: absolute; top: 100%; right: 0; background-color: var(--bg-inner, #21262d); border: 1px solid var(--border-inner, #30363d); border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); min-width: 160px; z-index: 999; padding: 6px; box-sizing: border-box;">
+        
+        <!-- Položka: Aktualizace -->
+        <a href="https://www.meteoinfo.cz/aktualizace/" 
+           onmouseover="this.style.backgroundColor='#30363d';" 
+           onmouseout="this.style.backgroundColor='transparent';" 
+           style="display: block; padding: 10px 14px; color: var(--text-main, #f8fafc); font-size: 13px; font-weight: 600; text-decoration: none; border-radius: 6px; transition: background-color 0.2s;">
+            Aktualizace
+        </a>
+
+        <!-- Sem můžeš v budoucnu jednoduše přidat další tlačítka pod sebe: -->
+        <!-- 
+        <a href="https://www.meteoinfo.cz/dalsi-stranka/" 
+           onmouseover="this.style.backgroundColor='#30363d';" 
+           onmouseout="this.style.backgroundColor='transparent';" 
+           style="display: block; padding: 10px 14px; color: var(--text-main, #f8fafc); font-size: 13px; font-weight: 500; text-decoration: none; border-radius: 6px; transition: background-color 0.2s;">
+            Další stránka
+        </a> 
+        -->
+
+    </div>
+</div>
 
         <!-- Přepínač tématu -->
         <button id="theme-button" onclick="toggleTheme()" onmouseover="this.style.backgroundColor='#30363d';" onmouseout="this.style.backgroundColor='var(--bg-inner, #21262d)';" style="background-color: var(--bg-inner, #21262d); border: 0px solid var(--border-inner, #30363d); color: var(--text-main, #c9d1d9); font-size: 1.1rem; padding: 0 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; height: 100%; box-sizing: border-box; border-radius: 0px; flex-shrink: 0; transition: background-color 0.2s;">🌙</button>
     </div>
 
 </header>
+
 
                  <div class="grid-top">
             <div class="card" style="gap: 15px;">
@@ -1400,15 +1487,11 @@ Neuteče vám žádná bouřka, sněžení ani silný vítr. Sledujte aktuální
             </div>
         </div>
 
-        <div class="card" style="margin-top: 20px;">
-            <h3 id="predpoved-nadpis" style="margin: 0 0 15px 0; font-size: 1.2rem; color: var(--text-accent);">Předpověď na 14 dní</h3>
-            <div class="forecast-grid-scroll" id="forecast-container"></div>
+        
+                        <div class="forecast-grid-scroll" id="forecast-container"></div>
         </div>
     </div>
 
-<div class="card" style="margin-top: 20px; text-align: center; padding: 20px; color: #8b949e; font-size: 1rem;">
-    © 2026 MeteoInfo - Všechna práva vyhrazena
-</div>
 
     <div id="m-modal" class="modal-overlay">
         <div class="modal-box">
@@ -1795,8 +1878,8 @@ function createOrUpdateChart() {
     aktualizujHomeCheck();
 
     try {
-        // 1. OPRAVENO URL: V části hourly= jsme přidali relative_humidity_2m, uv_index a pressure_msl
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,pressure_msl,wind_speed_10m,precipitation,snowfall,weather_code,european_aqi,uv_index&hourly=temperature_2m,weather_code,precipitation,wind_speed_10m,relative_humidity_2m,uv_index,pressure_msl&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,wind_speed_10m_max,precipitation_sum,relative_humidity_2m_mean,pressure_msl_mean&forecast_days=14&timezone=auto`;
+        // Ponecháváme forecast_days=3, aby měl graf a hodinová předpověď dostatek dat pro vykreslení
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,pressure_msl,wind_speed_10m,precipitation,snowfall,weather_code,european_aqi,uv_index&hourly=temperature_2m,weather_code,precipitation,wind_speed_10m,relative_humidity_2m,uv_index,pressure_msl&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,wind_speed_10m_max,precipitation_sum,relative_humidity_2m_mean,pressure_msl_mean&forecast_days=3&timezone=auto`;
         
         const res = await fetch(url);
         const d = await res.json();
@@ -1804,14 +1887,14 @@ function createOrUpdateChart() {
         container.innerHTML = "";
         hourlyContainer.innerHTML = "";
 
-        // 2. ULOŽENÍ HODINOVÝCH DAT DO GLOBÁLNÍCH PROMĚNNÝCH PRO GRAF
-        window.globHourlyTimes = d.hourly.time;                  // Časy (osa X)
-        window.globHourlyTemp = d.hourly.temperature_2m;         // Teplota
-        window.globHourlyRain = d.hourly.precipitation;          // Srážky
-        window.globHourlyWind = d.hourly.wind_speed_10m;         // Vítr
-        window.globHourlyHumidity = d.hourly.relative_humidity_2m; // Vlhkost
-        window.globHourlyUV = d.hourly.uv_index;                 // UV index
-        window.globHourlyPressure = d.hourly.pressure_msl;       // Tlak vzduchu
+        // ULOŽENÍ HODINOVÝCH DAT DO GLOBÁLNÍCH PROMĚNNÝCH PRO GRAF
+        window.globHourlyTimes = d.hourly.time;                  
+        window.globHourlyTemp = d.hourly.temperature_2m;         
+        window.globHourlyRain = d.hourly.precipitation;          
+        window.globHourlyWind = d.hourly.wind_speed_10m;         
+        window.globHourlyHumidity = d.hourly.relative_humidity_2m; 
+        window.globHourlyUV = d.hourly.uv_index;                 
+        window.globHourlyPressure = d.hourly.pressure_msl;       
 
         // Zobrazení aktuálních hodnot na stránce
         const tReal = Math.round(d.current.temperature_2m);
@@ -1829,83 +1912,74 @@ function createOrUpdateChart() {
         rawPrecipitation = d.current.precipitation;
         rawSnowfall = d.current.snowfall;
 
-        // 3. OKAMŽITÉ VYKRESLENÍ/AKTUALIZACE GRAFU PO STAŽENÍ DAT
+        // OKAMŽITÉ VYKRESLENÍ/AKTUALIZACE GRAFU PO STAŽENÍ DAT
         if (typeof createOrUpdateChart === 'function') {
             createOrUpdateChart();
         }
 
-// Spočítáme celkový součet srážek od půlnoci
-let celkoveSrazkyDnes = 0;
-const mistniHodina = new Date().getHours();
-const casovyPosunHodin = Math.round(new Date().getTimezoneOffset() / 60);
-const apiAktualniIndex = mistniHodina + casovyPosunHodin;
+        // Výpočet srážek od půlnoci
+        let celkoveSrazkyDnes = 0;
+        const mistniHodina = new Date().getHours();
+        const casovyPosunHodin = Math.round(new Date().getTimezoneOffset() / 60);
+        const apiAktualniIndex = mistniHodina + casovyPosunHodin;
 
-if (d && d.hourly && d.hourly.precipitation) {
-    for (let i = 0; i <= apiAktualniIndex; i++) {
-        if (d.hourly.precipitation[i] !== undefined) {
-            celkoveSrazkyDnes += d.hourly.precipitation[i];
-        }
-    }
-} else {
-    celkoveSrazkyDnes = d.current.precipitation !== undefined ? d.current.precipitation : 0;
-}
-
-rawPrecipitation = celkoveSrazkyDnes;
-
-                updatePrecipitationDisplay();
-
-                document.getElementById('meteo-vychod').innerHTML = d.daily && d.daily.sunrise ? formatujCasSlunce(d.daily.sunrise[0]) : "---:---";
-                document.getElementById('meteo-zapad').innerHTML = d.daily && d.daily.sunset ? formatujCasSlunce(d.daily.sunset[0]) : "---:---";
-
-                const uvIndexValue = d.current.uv_index !== undefined ? d.current.uv_index : 0;
-                document.getElementById('meteo-uv').innerHTML = uvIndexValue.toFixed(1);
-
-                document.getElementById('meteo-ovzdusi').innerHTML = d.current.european_aqi !== undefined ? vyhodnotOvzdusi(d.current.european_aqi) : "---";
-                
-                aktAsist(tReal);
-                aktualizujPsiIndex(tReal);
-                aktualizujFaziMesice();
-                
-                const aktualniHodina = new Date().getHours();
-                globHourlyTimes = []; globHourlyTemp = []; globHourlyRain = []; globHourlyWind = [];
-                for (let j = aktualniHodina; j < aktualniHodina + 30; j++) {
-                    if (!d.hourly.time[j]) break;
-                    const hData = new Date(d.hourly.time[j]);
-                    const fCas = `${hData.getHours().toString().padStart(2, '0')}:00`;
-                    if (j < aktualniHodina + 24) {
-                                    const denIndex = Math.floor(j / 24);
-            hourlyContainer.innerHTML += `<div class="hourly-item"><div class="hourly-time">${fCas}</div><img src="${ziskejIkonuUrl(d.hourly.weather_code[j], d.hourly.time[j], d.daily.sunrise[denIndex], d.daily.sunset[denIndex])}" class="hourly-icon" alt="počasí"><div class="hourly-temp">${Math.round(d.hourly.temperature_2m[j])}°C</div></div>`;
-
-
-                    }
-                                            if (j % 2 === 0) {
-            globHourlyTimes.push(fCas);
-            globHourlyTemp.push(Math.round(d.hourly.temperature_2m[j]));
-            globHourlyRain.push(d.hourly.precipitation[j]);
-            globHourlyWind.push(Math.round(d.hourly.wind_speed_10m[j]));
-            
-            // OPRAVA: Nové řádky musí být uvnitř této podmínky mezi stejnými závorkami
-            if (d.hourly.relative_humidity_2m) globHourlyHumidity.push(d.hourly.relative_humidity_2m[j]);
-            if (d.hourly.uv_index) globHourlyUV.push(d.hourly.uv_index[j]);
-            if (d.hourly.surface_pressure) globHourlyPressure.push(Math.round(d.hourly.surface_pressure[j]));
-        }
-    }
-    createOrUpdateChart();
-
-                
-                const dny = ["Neděle", "Pondělí", "Úterý", "Středa", "Čtvrtek", "Pátek", "Sobota"];
-                for (let i = 0; i < 14; i++) {
-                    if (!d.daily.time[i]) break;
-                    const dDat = new Date(d.daily.time[i]);
-                    const jmDne = i === 0 ? "Dnes" : dny[dDat.getDay()];
-                    const fDat = `${dDat.getDate()}.${dDat.getMonth()+1}.`;
-                    container.innerHTML += `<div class="forecast-day-row"> <div class="forecast-date"><strong>${jmDne}</strong> <span>${fDat}</span></div> <img src="${ziskejIkonuUrl(d.daily.weather_code[i], d.daily.temperature_2m_min[i])}" class="weather-icon" alt="počasí"> <div style="font-weight:bold; min-width:70px; text-align:right;">${Math.round(d.daily.temperature_2m_max[i])}° / <span style="color:var(--text-muted); font-weight:normal;">${Math.round(d.daily.temperature_2m_min[i])}°</span></div> <div class="forecast-subdata"> <span>💧 ${Math.round(d.daily.relative_humidity_2m_mean[i])}%</span> <span>🌧️ ${d.daily.precipitation_sum[i].toFixed(1)}mm</span> </div> </div>`;
+        if (d && d.hourly && d.hourly.precipitation) {
+            for (let i = 0; i <= apiAktualniIndex; i++) {
+                if (d.hourly.precipitation[i] !== undefined) {
+                    celkoveSrazkyDnes += d.hourly.precipitation[i];
                 }
-            } catch (e) {
-                console.error(e);
-                document.getElementById('teplota-aktualni').innerText = "---";
+            }
+        } else {
+            celkoveSrazkyDnes = d.current.precipitation !== undefined ? d.current.precipitation : 0;
+        }
+
+        rawPrecipitation = celkoveSrazkyDnes;
+        updatePrecipitationDisplay();
+
+        document.getElementById('meteo-vychod').innerHTML = d.daily && d.daily.sunrise ? formatujCasSlunce(d.daily.sunrise[0]) : "---:---";
+        document.getElementById('meteo-zapad').innerHTML = d.daily && d.daily.sunset ? formatujCasSlunce(d.daily.sunset[0]) : "---:---";
+
+        const uvIndexValue = d.current.uv_index !== undefined ? d.current.uv_index : 0;
+        document.getElementById('meteo-uv').innerHTML = uvIndexValue.toFixed(1);
+
+        document.getElementById('meteo-ovzdusi').innerHTML = d.current.european_aqi !== undefined ? vyhodnotOvzdusi(d.current.european_aqi) : "---";
+        
+        aktAsist(tReal);
+        aktualizujPsiIndex(tReal);
+        aktualizujFaziMesice();
+        
+        const aktualniHodina = new Date().getHours();
+        globHourlyTimes = []; globHourlyTemp = []; globHourlyRain = []; globHourlyWind = [];
+        for (let j = aktualniHodina; j < aktualniHodina + 30; j++) {
+            if (!d.hourly.time[j]) break;
+            const hData = new Date(d.hourly.time[j]);
+            const fCas = `${hData.getHours().toString().padStart(2, '0')}:00`;
+            if (j < aktualniHodina + 24) {
+                const denIndex = Math.floor(j / 24);
+                hourlyContainer.innerHTML += `<div class="hourly-item"><div class="hourly-time">${fCas}</div><img src="${ziskejIkonuUrl(d.hourly.weather_code[j], d.hourly.time[j], d.daily.sunrise[denIndex], d.daily.sunset[denIndex])}" class="hourly-icon" alt="počasí"><div class="hourly-temp">${Math.round(d.hourly.temperature_2m[j])}°C</div></div>`;
+            }
+            if (j % 2 === 0) {
+                globHourlyTimes.push(fCas);
+                globHourlyTemp.push(Math.round(d.hourly.temperature_2m[j]));
+                globHourlyRain.push(d.hourly.precipitation[j]);
+                globHourlyWind.push(Math.round(d.hourly.wind_speed_10m[j]));
+                
+                if (d.hourly.relative_humidity_2m) globHourlyHumidity.push(d.hourly.relative_humidity_2m[j]);
+                if (d.hourly.uv_index) globHourlyUV.push(d.hourly.uv_index[j]);
+                if (d.hourly.surface_pressure) globHourlyPressure.push(Math.round(d.hourly.surface_pressure[j]));
             }
         }
+        createOrUpdateChart();
+
+        // ZDE BYL CYKLUS PRO 14 DNÍ – NYNÍ JE ODSTRANĚN
+        // Kontejner pouze vyčistíme, aby v něm nic nezůstalo. Datová struktura v API zůstává pro grafy zachována.
+        container.innerHTML = ""; 
+
+    } catch (e) {
+        console.error(e);
+        document.getElementById('teplota-aktualni').innerText = "---";
+    }
+}
 
         function aktAsist(t) {
     const h = document.getElementById('asistent-hlaska');
@@ -2863,6 +2937,41 @@ document.addEventListener("DOMContentLoaded", function() {
 </script>
 
 <script>
+    // 1. PŘI KAŽDÉM NAČTENÍ / OBNOVENÍ STRÁNKY SE UJISTÍME, ŽE JE MENU ZAVŘENÉ A ŠIPKA NAHORU
+    document.addEventListener("DOMContentLoaded", function() {
+        var dropdown = document.getElementById('dropdown-menu-vice');
+        var arrow = document.getElementById('arrow-vice');
+        if (dropdown) dropdown.style.display = 'none';
+        if (arrow) arrow.innerHTML = '▲';
+    });
+
+    // 2. KLASICKÉ OVLÁDÁNÍ KLIKNUTÍM
+    window.addEventListener('click', function(e) {
+        var dropdown = document.getElementById('dropdown-menu-vice');
+        var arrow = document.getElementById('arrow-vice');
+        if (!dropdown) return;
+
+        // Zjištění, zda bylo kliknuto na tlačítko "Více"
+        var toggleButton = e.target.closest('button[onclick*="dropdown-menu-vice"]');
+
+        if (toggleButton) {
+            // Po kliknutí na tlačítko zjistíme nový stav menu
+            setTimeout(function() {
+                if (dropdown.style.display === 'block') {
+                    if (arrow) arrow.innerHTML = '▼'; // Otevřeno = šipka dolů
+                } else {
+                    if (arrow) arrow.innerHTML = '▲'; // Zavřeno = šipka nahoru
+                }
+            }, 10);
+        } else if (!e.target.closest('#dropdown-menu-vice')) {
+            // Pokud klikneme mimo, menu se zavře a šipka skočí zpět nahoru
+            dropdown.style.display = 'none';
+            if (arrow) arrow.innerHTML = '▲';
+        }
+    });
+</script>
+
+<script>
   // Po kliknutí na hamburger / křížek přepne třídu .open na #main-header
   document.getElementById('main-header').addEventListener('click', function(e) {
     // Zjistíme, jestli uživatel kliknul v pravé části (kde je hamburger / křížek)
@@ -2874,6 +2983,219 @@ document.addEventListener("DOMContentLoaded", function() {
       this.classList.toggle('open');
     }
   });
+</script>
+
+<style>
+    /* 1. Výchozí barvy = SVĚTLÝ REŽIM */
+    .weather-cameras-section {
+        --box-bg: #ffffff;
+        --box-border: #e2e8f0;
+        --card-bg: #ffffff;
+        --card-border: #cbd5e1;
+        --text-main: #0f172a;
+        --text-sub: #64748b;
+        --btn-bg: #f1f5f9;
+        --btn-text: #0284c7;
+    }
+
+    /* 2. Automatická detekce systémového tmavého režimu */
+    @media (prefers-color-scheme: dark) {
+        .weather-cameras-section:not([data-bs-theme="light"]):not([data-theme="light"]):not(.light-mode) {
+            --box-bg: #111827;
+            --box-border: #1f2937;
+            --card-bg: #1e293b;
+            --card-border: #334155;
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+            --btn-bg: #1e293b;
+            --btn-text: #38bdf8;
+        }
+    }
+
+    /* 3. VYNUCENÝ TMAVÝ REŽIM */
+    [data-bs-theme="dark"] .weather-cameras-section,
+    [data-theme="dark"] .weather-cameras-section,
+    html.dark .weather-cameras-section,
+    body.dark .weather-cameras-section,
+    .dark .weather-cameras-section,
+    .dark-mode .weather-cameras-section,
+    .theme-dark .weather-cameras-section {
+        --box-bg: #111827 !important;
+        --box-border: #1f2937 !important;
+        --card-bg: #1e293b !important;
+        --card-border: #334155 !important;
+        --text-main: #f8fafc !important;
+        --text-sub: #94a3b8 !important;
+        --btn-bg: #1e293b !important;
+        --btn-text: #38bdf8 !important;
+    }
+
+    /* 4. VYNUCENÝ SVĚTLÝ REŽIM */
+    [data-bs-theme="light"] .weather-cameras-section,
+    [data-theme="light"] .weather-cameras-section,
+    html.light .weather-cameras-section,
+    body.light .weather-cameras-section,
+    .light .weather-cameras-section,
+    .light-mode .weather-cameras-section {
+        --box-bg: #ffffff !important;
+        --box-border: #e2e8f0 !important;
+        --card-bg: #ffffff !important;
+        --card-border: #cbd5e1 !important;
+        --text-main: #0f172a !important;
+        --text-sub: #64748b !important;
+        --btn-bg: #f1f5f9 !important;
+        --btn-text: #0284c7 !important;
+    }
+
+    /* RESPONZIVITA PRO MOBILY: mřížka pod sebe + širší box na mobilu */
+    @media (max-width: 768px) {
+        .cameras-grid {
+            grid-template-columns: 1fr !important;
+        }
+        .weather-cameras-section {
+            padding: 20px 0px !important; /* zmenší vnější okraje, takže box se na mobilu roztáhne */
+        }
+    }
+</style>
+
+<!-- Hlavní obalový box -->
+<section class="weather-cameras-section" style="background-color: transparent; padding: 30px 20px; font-family: sans-serif; width: 100%; box-sizing: border-box;">
+    <div style="background-color: var(--box-bg); border: 1.5px solid var(--box-border); border-radius: 16px; padding: 30px; max-width: 1200px; margin: 0 auto; box-shadow: 0 10px 25px rgba(0,0,0,0.1); transition: background-color 0.3s ease, border-color 0.3s ease;">
+        
+        <!-- Nadpis -->
+        <h2 style="text-align: left; color: var(--btn-text); margin-top: 0; margin-bottom: 25px; font-size: 2rem;">Živé webkamery</h2>
+
+        <!-- Mřížka kamer (PC = 2x2, mobil = 1 sloupec pod sebou) -->
+        <div class="cameras-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+
+            <!-- 1. Praha - Libuš -->
+            <div style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; transition: background-color 0.3s ease, border-color 0.3s ease;">
+                <a href="www.meteoinfo.cz/webkamery/praha-libus/" target="_blank" rel="noopener" style="text-decoration: none; display: block;">
+                    <div id="cam-1" style="height: 300px; background-size: cover; background-position: center; background-color: var(--card-bg);"></div>
+                </a>
+                <div style="padding: 15px; background-color: var(--card-bg);">
+                    <a href="https://produkty.chmi.cz/webkamery" target="_blank" rel="noopener" style="color: var(--text-main); text-decoration: none; font-weight: bold; font-size: 1.1rem;">Praha - Libuš</a>
+                    <div style="margin-top: 6px; font-size: 0.85rem; color: var(--text-sub);">
+                        Zdroj dat: <a href="https://produkty.chmi.cz/webkamery/webcamDetail.php?cam=praha_libus2&range=6" target="_blank" rel="noopener" style="color: var(--btn-text); text-decoration: underline;">ČHMÚ</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Brno -->
+            <div style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; transition: background-color 0.3s ease, border-color 0.3s ease;">
+                <a href="www.meteoinfo.cz/webkamery/brno/" target="_blank" rel="noopener" style="text-decoration: none; display: block;">
+                    <div id="cam-2" style="height: 300px; background-size: cover; background-position: center; background-color: var(--card-bg);"></div>
+                </a>
+                <div style="padding: 15px; background-color: var(--card-bg);">
+                    <a href="https://produkty.chmi.cz/webkamery" target="_blank" rel="noopener" style="color: var(--text-main); text-decoration: none; font-weight: bold; font-size: 1.1rem;">Brno</a>
+                    <div style="margin-top: 6px; font-size: 0.85rem; color: var(--text-sub);">
+                        Zdroj dat: <a href="https://produkty.chmi.cz/webkamery/webcamDetail.php?cam=brno&range=6" target="_blank" rel="noopener" style="color: var(--btn-text); text-decoration: underline;">ČHMÚ</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Liberec -->
+            <div style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; transition: background-color 0.3s ease, border-color 0.3s ease;">
+                <a href="www.meteoinfo.cz/webkamery/liberec/" target="_blank" rel="noopener" style="text-decoration: none; display: block;">
+                    <div id="cam-3" style="height: 300px; background-size: cover; background-position: center; background-color: var(--card-bg);"></div>
+                </a>
+                <div style="padding: 15px; background-color: var(--card-bg);">
+                    <a href="https://produkty.chmi.cz/webkamery" target="_blank" rel="noopener" style="color: var(--text-main); text-decoration: none; font-weight: bold; font-size: 1.1rem;">Liberec</a>
+                    <div style="margin-top: 6px; font-size: 0.85rem; color: var(--text-sub);">
+                        Zdroj dat: <a href="https://produkty.chmi.cz/webkamery/webcamDetail.php?cam=lklb&range=6" target="_blank" rel="noopener" style="color: var(--btn-text); text-decoration: underline;">ČHMÚ</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Plzeň - Mikulka -->
+            <div style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; transition: background-color 0.3s ease, border-color 0.3s ease;">
+                <a href="www.meteoinfo.cz/webkamery/plzen-mikulka/" target="_blank" rel="noopener" style="text-decoration: none; display: block;">
+                    <div id="cam-4" style="height: 300px; background-size: cover; background-position: center; background-color: var(--card-bg);"></div>
+                </a>
+                <div style="padding: 15px; background-color: var(--card-bg);">
+                    <a href="https://produkty.chmi.cz/webkamery" target="_blank" rel="noopener" style="color: var(--text-main); text-decoration: none; font-weight: bold; font-size: 1.1rem;">Plzeň - Mikulka</a>
+                    <div style="margin-top: 6px; font-size: 0.85rem; color: var(--text-sub);">
+                        Zdroj dat: <a href="https://produkty.chmi.cz/webkamery/webcamDetail.php?cam=plzen2&range=6" target="_blank" rel="noopener" style="color: var(--btn-text); text-decoration: underline;">ČHMÚ</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Tlačítko Zobrazit více -->
+        <div style="text-align: center; margin-top: 25px;">
+            <a href="https://www.meteoinfo.cz/webkamery/" target="_blank" rel="noopener" 
+               style="background-color: var(--btn-bg); color: var(--btn-text); border: 1px solid var(--card-border); padding: 12px 28px; border-radius: 8px; font-size: 1rem; text-decoration: none; display: inline-block; transition: opacity 0.2s ease;"
+               onmouseover="this.style.opacity='0.8';" 
+               onmouseout="this.style.opacity='1';">
+                Zobrazit více kamer
+            </a>
+        </div>
+
+    </div>
+</section>
+
+<!-- Skript pro načítání kamer -->
+<script>
+    function loadCameraWithFallback(elementId, folderName, minutesAgo) {
+        var now = new Date();
+        now.setTime(now.getTime() - (minutesAgo * 60000));
+        
+        var year = now.getFullYear();
+        var month = String(now.getMonth() + 1).padStart(2, '0');
+        var day = String(now.getDate()).padStart(2, '0');
+        var dateStr = year + month + day;
+        
+        var hours = String(now.getHours()).padStart(2, '0');
+        var minutes = now.getMinutes();
+        minutes = Math.floor(minutes / 5) * 5;
+        var minStr = String(minutes).padStart(2, '0');
+        var timeStr = hours + minStr;
+        
+        var t = new Date().getTime();
+        var element = document.getElementById(elementId);
+        if (!element) return;
+
+        var imageUrl = "https://produkty.chmi.cz/webkamery/input_data/kam/" + folderName + "/" + dateStr + "." + timeStr + ".jpg?t=" + t;
+        
+        var imgLoader = new Image();
+        imgLoader.onload = function() {
+            element.style.backgroundImage = "url('" + imageUrl + "')";
+        };
+        imgLoader.onerror = function() {
+            if (minutesAgo < 30) {
+                loadCameraWithFallback(elementId, folderName, minutesAgo + 5);
+            }
+        };
+        imgLoader.src = imageUrl;
+    }
+
+    function updateAllCameras() {
+        loadCameraWithFallback('cam-1', 'data_praha_libus2', 0);
+        loadCameraWithFallback('cam-2', 'data_brno', 0);
+        loadCameraWithFallback('cam-3', 'data_lklb', 0);
+        loadCameraWithFallback('cam-4', 'data_plzen2', 0);
+    }
+
+    updateAllCameras();
+    setInterval(updateAllCameras, 300000);
+</script>
+
+<!-- JavaScript pro automatické vygenerování patičky -->
+<script>
+const footer = document.createElement('div');
+footer.className = 'card';
+footer.style.maxWidth = '20000px';
+footer.style.width = '100%';
+footer.style.margin = '25px auto 0px auto';
+footer.style.boxSizing = 'border-box';
+footer.style.textAlign = 'center';
+footer.style.padding = '20px';
+footer.style.color = '#8b949e';
+footer.style.fontSize = '1rem';
+footer.innerHTML = '© 2026 MeteoInfo - Všechna práva vyhrazena';
+
+document.body.appendChild(footer);
 </script>
 
 </body>
