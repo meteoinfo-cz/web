@@ -1292,6 +1292,12 @@ function toggleTheme() {
 <script>
     // 1. Zde si u fotek můžeš nastavit vlastní popisek, autor, datum a místo
     const detailyFotak = {
+        'fotka72': {
+            popisek: 'Zimní a noční obloha (72)',
+            autor: 'Pavel Čalkovský',
+            datum: '13. 11. 2026',
+            misto: 'Rousínov'
+        },
         'fotka71': {
             popisek: 'Cumulus a altocumulus (71)',
             autor: 'Vivi',
@@ -1722,7 +1728,7 @@ function toggleTheme() {
 
     // 2. Automaticky vytvoříme seznam všech složek od 1 do 33
     const slozky = [];
-    for (let i = 1; i <= 71; i++) {
+    for (let i = 1; i <= 72; i++) {
         let nazevSlozky = 'fotka' + i;
         
         let info = detailyFotak[nazevSlozky] || {
