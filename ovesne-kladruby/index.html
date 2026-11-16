@@ -1099,7 +1099,7 @@ body.light-mode {
 <div style="padding: 0px 12px 12px 5px; display: flex; align-items: center; justify-content: space-between; width: 100%; box-sizing: border-box;">
     <!-- Logo MeteoInfo -->
     <a href="https://www.meteoinfo.cz" style="display: inline-flex; align-items: center; gap: 12px; text-decoration: none;">
-        <img src="apple-touch-icon.png" alt="MI" style="width: 40px; height: 40px; object-fit: contain; border-radius: 8px;">
+        <img src="../apple-touch-icon.png" alt="MI" style="width: 40px; height: 40px; object-fit: contain; border-radius: 8px;">
         <h1 style="margin: 0; font-size: 2rem; font-weight: 800; letter-spacing: -0.5px; white-space: nowrap;">
             <span style="color: #38bdf8;">Meteo</span><span style="color: #38bdf8;">Info</span>
         </h1>
@@ -1226,7 +1226,7 @@ Neuteče vám žádná bouřka, sněžení ani silný vítr. Sledujte aktuální
     
     <!-- Tlačítko a kontrolka online aktivity -->
     <div style="display: flex; flex-direction: column; gap: 8px;">
-        <a href="https://discord.gg/FgqBW3pyQz" target="_blank" onmouseover="this.style.backgroundColor='#16a34a'" onmouseout="this.style.backgroundColor='#22c55e'" style="display: inline-block; background-color: #22c55e; color: white; text-decoration: none; padding: 10px 12px; font-weight: bold; border-radius: 5px; font-size: 15px; text-align: center; box-shadow: 0 2px 6px rgba(34, 197, 94, 0.2); transition: background-color 0.2s;">
+        <a href="https://discord.gg/f88fc7awF4" target="_blank" onmouseover="this.style.backgroundColor='#16a34a'" onmouseout="this.style.backgroundColor='#22c55e'" style="display: inline-block; background-color: #22c55e; color: white; text-decoration: none; padding: 10px 12px; font-weight: bold; border-radius: 5px; font-size: 15px; text-align: center; box-shadow: 0 2px 6px rgba(34, 197, 94, 0.2); transition: background-color 0.2s;">
             VSTOUPIT DO METEO CHATU ➔
         </a>
         
@@ -1671,22 +1671,7 @@ function zvolM(jm, la, lo, st) {
         // Přidali jsme parametr 'teplota' na konec
 function ziskejIkonuUrl(kod, aktualniCasText, vychodSlunceText, zapadSlunceText, teplota) {
 
-    // Pokud nemáš časové údaje, ošetříme základní mapování s ohledem na teplotu
-    if (!aktualniCasText || !vychodSlunceText || !zapadSlunceText) {
-        // Mrznoucí déšť jen při mrazu (např. <= 1 °C) a kódu 51
-        if (kod === 51 && teplota <= 1) return `png/mrznouci_dest.png`;
-        // Sníh jen při teplotě pod 3 °C
-        if (kod >= 71 && kod <= 77 && teplota <= 3) return `png/snih.png`;
-        
-        const mapovaniDen = {
-            0: "jasno", 1: "skoro_jasno", 2: "polojasno", 3: "oblacno", 45: "mlha", 48: "mlha",
-            51: "prehanky", 53: "prehanky", 55: "prehanky", 
-            61: "dest", 63: "dest", 65: "dest",
-            80: "prehanky", 81: "prehanky", 82: "prehanky", 95: "bourka"
-        };
-        return `png/${mapovaniDen[kod] || "polojasno"}.png`;
-    }
-
+    // Pomocná funkce pro převod času na minuty
     const spoctiMinuty = (textKombinovany) => {
         if (typeof textKombinovany !== 'string') return 0;
         const indexT = textKombinovany.indexOf("T");
@@ -1697,12 +1682,38 @@ function ziskejIkonuUrl(kod, aktualniCasText, vychodSlunceText, zapadSlunceText,
         return (hodiny * 60) + minuty;
     };
 
-    const tedMinuty = spoctiMinuty(aktualniCasText);
-    const vychodMinuty = spoctiMinuty(vychodSlunceText);
-    const zapadMinuty = spoctiMinuty(zapadSlunceText);
-    const jeNoc = tedMinuty < vychodMinuty || tedMinuty > zapadMinuty;
+    // Zjištění, zda je noc (pokud máme časové údaje)
+    let jeNoc = false;
+    if (aktualniCasText && vychodSlunceText && zapadSlunceText) {
+        const tedMinuty = spoctiMinuty(aktualniCasText);
+        const vychodMinuty = spoctiMinuty(vychodSlunceText);
+        const zapadMinuty = spoctiMinuty(zapadSlunceText);
+        jeNoc = tedMinuty < vychodMinuty || tedMinuty > zapadMinuty;
+    }
 
-    // HLAVNÍ MAPOVÁNÍ PRO IKONY
+    // --- HLAVNÍ KONTROLA TEPLOTY PRO SRÁŽKY (MRAZ / SNÍH) ---
+    // Pokud je teplota 1 °C nebo méně a jedná se o srážkové kódy (déšť, přeháňky, mrznoucí déšť):
+    if (teplota <= 1) {
+        // Pokud API hlásí přeháňky (80, 81, 82) nebo slabší déšť/mrznoucí déšť
+        if (kod === 51 || kod === 80 || kod === 81 || kod === 82) {
+            return `/png/${jeNoc ? "snehove_prehanky_noc" : "snehove_prehanky"}.png`;
+        }
+        // Pokud API hlásí silnější déšť (61, 63, 65) nebo přímo sníh (71-77) v mrazu
+        if ((kod >= 61 && kod <= 65) || (kod >= 71 && kod <= 77)) {
+            return `/png/snih.png`;
+        }
+    }
+
+    // Pokud API explicitně hlásí sníh (71-77) i při vyšší teplotě (např. do 3 °C)
+    if (kod >= 71 && kod <= 77) {
+        if (teplota <= 3) {
+            return `/png/snih.png`;
+        }
+        // Pokud je tepleji nad 3 °C, spadne to do běžných dešťových přeháněk
+        return `/png/${jeNoc ? "destove_prehanky_noc" : "prehanky"}.png`;
+    }
+
+    // HLAVNÍ MAPOVÁNÍ PRO OSTATNÍ POČASÍ (když je tepleji než 1 °C)
     const mapovani = {
         0: jeNoc ? "jasno_noc" : "jasno",
         1: jeNoc ? "skoro_jasno_noc" : "skoro_jasno",
@@ -1710,8 +1721,7 @@ function ziskejIkonuUrl(kod, aktualniCasText, vychodSlunceText, zapadSlunceText,
         3: jeNoc ? "oblacno_noc" : "oblacno",
         45: "mlha",
         48: "mlha",
-        // Pokud je kód 51, mrznoucí déšť se ukáže jen pokud je teplota 1 °C a méně, jinak normální přeháňky
-        51: (teplota <= 1) ? "mrznouci_dest" : "prehanky",
+        51: "prehanky",
         53: "prehanky",
         55: "prehanky",
         61: "dest",
@@ -1723,17 +1733,7 @@ function ziskejIkonuUrl(kod, aktualniCasText, vychodSlunceText, zapadSlunceText,
         95: "bourka"
     };
 
-    // Pokud API hlásí sníh (kódy 71 až 77):
-    if (kod >= 71 && kod <= 77) {
-        // Sníh se zobrazí jen tehdy, když je venku opravdu chladno (např. 3 °C a méně)
-        if (teplota <= 3) {
-            return `png/snih.png`;
-        }
-        // Pokud je tepleji (např. 5 °C a víc), zobrazí se raději běžné přeháňky/déšť
-        return `png/${jeNoc ? "destove_prehanky_noc" : "prehanky"}.png`;
-    }
-
-    return `png/${mapovani[kod] || "polojasno"}.png`;
+    return `/png/${mapovani[kod] || "polojasno"}.png`;
 }
 
         function aktualizujHomeCheck() {
