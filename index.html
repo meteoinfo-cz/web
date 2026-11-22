@@ -1551,7 +1551,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Chytrá funkce pro ikony počasí
 function ziskejIkonuUrl(kod, aktualniCasText, vychodSlunceText, zapadSlunceText, teplota) {
     const spoctiMinuty = (textKombinovany) => {
         if (typeof textKombinovany !== 'string') return 0;
@@ -1571,20 +1570,30 @@ function ziskejIkonuUrl(kod, aktualniCasText, vychodSlunceText, zapadSlunceText,
         jeNoc = tedMinuty < vychodMinuty || tedMinuty > zapadMinuty;
     }
 
-    if (teplota <= 1) {
-        if (kod === 51 || kod === 80 || kod === 81 || kod === 82) {
+    const cisloKodu = Number(kod);
+    const t = Number(teplota);
+
+    const jePrehanky = [51, 53, 55, 80, 81, 82, 85, 86].includes(cisloKodu);
+    const jeTrvaleSrazky = (cisloKodu >= 61 && cisloKodu <= 67) || (cisloKodu >= 71 && cisloKodu <= 77);
+
+    // Do 2 °C včetně (včetně 1 °C, 0 °C, -8 °C...) -> sníh
+    if (!Number.isNaN(t) && t <= 2) {
+        if (jePrehanky) {
             return `png/${jeNoc ? "snehove_prehanky_noc" : "snehove_prehanky"}.png`;
         }
-        if ((kod >= 61 && kod <= 65) || (kod >= 71 && kod <= 77)) {
-            return `png/snih.png`;
+        if (jeTrvaleSrazky) {
+            return "png/snih.png";
         }
     }
 
-    if (kod >= 71 && kod <= 77) {
-        if (teplota <= 3) {
-            return `png/snih.png`;
+    // Od 3 °C a více -> déšť
+    if (!Number.isNaN(t) && t >= 3) {
+        if (jePrehanky) {
+            return `png/${jeNoc ? "destove_prehanky_noc" : "prehanky"}.png`;
         }
-        return `png/${jeNoc ? "destove_prehanky_noc" : "prehanky"}.png`;
+        if (jeTrvaleSrazky) {
+            return "png/dest.png";
+        }
     }
 
     const mapovani = {
@@ -1600,13 +1609,19 @@ function ziskejIkonuUrl(kod, aktualniCasText, vychodSlunceText, zapadSlunceText,
         61: "dest",
         63: "dest",
         65: "dest",
-        80: jeNoc ? "destove_prehanky_noc" : "prehanky", 
+        71: "snih",
+        73: "snih",
+        75: "snih",
+        77: "snih",
+        80: jeNoc ? "destove_prehanky_noc" : "prehanky",
         81: jeNoc ? "destove_prehanky_noc" : "prehanky",
         82: jeNoc ? "destove_prehanky_noc" : "prehanky",
+        85: jeNoc ? "snehove_prehanky_noc" : "snehove_prehanky",
+        86: jeNoc ? "snehove_prehanky_noc" : "snehove_prehanky",
         95: "bourka"
     };
 
-    return `png/${mapovani[kod] || "polojasno"}.png`;
+    return `png/${mapovani[cisloKodu] || "polojasno"}.png`;
 }
 
         function aktualizujHomeCheck() {
